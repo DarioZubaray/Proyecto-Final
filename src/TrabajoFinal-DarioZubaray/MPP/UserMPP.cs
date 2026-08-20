@@ -22,6 +22,20 @@ namespace MPP
         #endregion
 
         #region Métodos
+        private UserBE MapearUsuario(DataRow fila)
+        {
+            return new UserBE
+            {
+                Id = Convert.ToInt32(fila["id"]),
+                UserName = fila["user_name"].ToString(),
+                PasswordHash = fila["password_hash"].ToString(),
+                IsActive = Convert.ToBoolean(fila["is_active"]),
+                RetriesCount = Convert.ToInt32(fila["retries_count"]),
+                LastUpdate = (DateTime)fila["last_update"],
+                CreatedAt = (DateTime)fila["created_at"]
+            };
+        }
+
         public UserBE ObtenerPorUserName(string userName)
         {
             string consulta = @"SELECT id, user_name, password_hash, is_active,
@@ -41,17 +55,7 @@ namespace MPP
                 return null;
             }
 
-            DataRow fila = tabla.Rows[0];
-            UserBE user = new UserBE();
-            user.Id = Convert.ToInt32(fila["id"]);
-            user.UserName = fila["user_name"].ToString();
-            user.PasswordHash = fila["password_hash"].ToString();
-            user.IsActive = Convert.ToBoolean(fila["is_active"]);
-            user.RetriesCount = Convert.ToInt32(fila["retries_count"]);
-            user.LastUpdate = (DateTime)fila["last_update"];
-            user.CreatedAt = (DateTime)fila["created_at"];
-
-            return user;
+            return MapearUsuario(tabla.Rows[0]);
         }
 
         public bool ActualizarLastUpdate(int userId, DateTime lastUpdate)
@@ -192,17 +196,7 @@ namespace MPP
                 return null;
             }
 
-            DataRow fila = tabla.Rows[0];
-            UserBE userDB = new UserBE();
-            userDB.Id = Convert.ToInt32(fila["id"]);
-            userDB.UserName = fila["user_name"].ToString();
-            userDB.PasswordHash = fila["password_hash"].ToString();
-            userDB.IsActive = Convert.ToBoolean(fila["is_active"]);
-            userDB.RetriesCount = Convert.ToInt32(fila["retries_count"]);
-            userDB.LastUpdate = (DateTime)fila["last_update"];
-            userDB.CreatedAt = (DateTime)fila["created_at"];
-
-            return userDB;
+            return MapearUsuario(tabla.Rows[0]);
         }
 
         public List<UserBE> ListarTodo()
@@ -219,15 +213,7 @@ namespace MPP
             {
                 foreach (DataRow fila in tabla.Rows)
                 {
-                    UserBE userDB = new UserBE();
-                    userDB.Id = Convert.ToInt32(fila["id"]);
-                    userDB.UserName = fila["user_name"].ToString();
-                    userDB.PasswordHash = fila["password_hash"].ToString();
-                    userDB.IsActive = Convert.ToBoolean(fila["is_active"]);
-                    userDB.RetriesCount = Convert.ToInt32(fila["retries_count"]);
-                    userDB.LastUpdate = (DateTime)fila["last_update"];
-                    userDB.CreatedAt = (DateTime)fila["created_at"];
-                    userList.Add(userDB);
+                    userList.Add(MapearUsuario(fila));
                 }
             }
             return userList;
