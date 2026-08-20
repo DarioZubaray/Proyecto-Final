@@ -31,7 +31,7 @@ namespace BLL
 
         public UserBE ListarObjeto(UserBE user)
         {
-            throw new System.NotImplementedException();
+            return _userMPP.ListarObjeto(user);
         }
 
         public List<UserBE> ListarTodo()
