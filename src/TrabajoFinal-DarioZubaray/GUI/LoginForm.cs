@@ -12,7 +12,7 @@ namespace TrabajoFinal_DarioZubaray
         private AuthBLL _authBLL;
         #endregion
 
-        #region Inicializdores
+        #region Constructores
         public LoginForm()
         {
             InitializeComponent();
@@ -21,7 +21,7 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region Eventos
-        private void button1_Click(object sender, EventArgs e)
+        private void btnLogin_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;
             var username = txtUser.Text;
@@ -65,7 +65,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (e.KeyCode == Keys.Enter)
             {
-                button1.PerformClick();
+                btnLogin.PerformClick();
                 e.SuppressKeyPress = true;
             }
         }

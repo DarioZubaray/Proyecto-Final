@@ -8,25 +8,25 @@ namespace BLL
     public class UserBLL
     {
         #region Propiedades
-        private UserMPP mapeador;
+        private UserMPP _userMPP;
         #endregion
 
         #region Constructores
         public UserBLL()
         {
-            mapeador = new UserMPP();
+            _userMPP = new UserMPP();
         }
         #endregion
 
         #region Métodos
         public bool Baja(UserBE user)
         {
-            return mapeador.Baja(user);
+            return _userMPP.Baja(user);
         }
 
         public bool Guardar(UserBE user)
         {
-            return mapeador.Guardar(user);
+            return _userMPP.Guardar(user);
         }
 
         public UserBE ListarObjeto(UserBE user)
@@ -36,7 +36,7 @@ namespace BLL
 
         public List<UserBE> ListarTodo()
         {
-            return mapeador.ListarTodo();
+            return _userMPP.ListarTodo();
         }
         #endregion
     }
