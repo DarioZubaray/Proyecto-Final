@@ -8,7 +8,7 @@ using DAL;
 
 namespace MPP
 {
-    public class UserMPP
+    public class UserMPP : IUserMPP
     {
         #region Propiedades
         private AccesoDAL _acceso;

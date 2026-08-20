@@ -5,16 +5,20 @@ using MPP;
 
 namespace BLL
 {
-    public class UserBLL
+    public class UserBLL : IUserBLL
     {
         #region Propiedades
-        private UserMPP _userMPP;
+        private readonly IUserMPP _userMPP;
         #endregion
 
         #region Constructores
-        public UserBLL()
+        public UserBLL() : this(new MPP.UserMPP())
         {
-            _userMPP = new UserMPP();
+        }
+
+        public UserBLL(IUserMPP userMPP)
+        {
+            _userMPP = userMPP;
         }
         #endregion
 

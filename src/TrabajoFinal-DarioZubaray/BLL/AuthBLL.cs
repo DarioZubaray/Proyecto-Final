@@ -4,17 +4,21 @@ using MPP;
 
 namespace BLL
 {
-    public class AuthBLL
+    public class AuthBLL : IAuthBLL
     {
         #region Propiedades
-        private UserMPP _userMPP;
+        private readonly IUserMPP _userMPP;
         private const int MaxRetries = 3;
         #endregion
 
         #region Constructores
-        public AuthBLL()
+        public AuthBLL() : this(new MPP.UserMPP())
         {
-            _userMPP = new UserMPP();
+        }
+
+        public AuthBLL(IUserMPP userMPP)
+        {
+            _userMPP = userMPP;
         }
         #endregion
 

@@ -10,14 +10,14 @@ namespace TrabajoFinal_DarioZubaray
     public partial class LoginForm : Form
     {
         #region Propiedades
-        private AuthBLL _authBLL;
+        private IAuthBLL _authBLL;
         #endregion
 
         #region Constructores
         public LoginForm()
         {
             InitializeComponent();
-            _authBLL = new AuthBLL();
+            _authBLL = ServiceLocator.CreateAuthBLL();
             AplicarRecursos();
         }
         #endregion
