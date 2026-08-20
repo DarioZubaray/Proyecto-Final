@@ -23,11 +23,20 @@ namespace DAL
         #region Metodos Genericos
         public DataTable Leer(string consulta)
         {
+            return Leer(consulta, null);
+        }
+
+        public DataTable Leer(string consulta, SqlParameter[] parametros)
+        {
             DataTable tabla = new DataTable();
             try
             {
                 this.conexion.Open();
                 SqlDataAdapter Da = new SqlDataAdapter(consulta, this.conexion);
+                if (parametros != null)
+                {
+                    Da.SelectCommand.Parameters.AddRange(parametros);
+                }
                 Da.Fill(tabla);
             }
             catch
@@ -43,6 +52,11 @@ namespace DAL
 
         public int LeerScalar(string consulta)
         {
+            return LeerScalar(consulta, null);
+        }
+
+        public int LeerScalar(string consulta, SqlParameter[] parametros)
+        {
             try
             {
                 this.conexion.Open();
@@ -52,6 +66,10 @@ namespace DAL
                     Connection = this.conexion,
                     CommandText = consulta
                 };
+                if (parametros != null)
+                {
+                    sqlCommand.Parameters.AddRange(parametros);
+                }
                 int respuesta = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
                 return respuesta;
@@ -68,6 +86,11 @@ namespace DAL
 
         public bool Guardar(string consulta)
         {
+            return Guardar(consulta, null);
+        }
+
+        public bool Guardar(string consulta, SqlParameter[] parametros)
+        {
             try
             {
                 this.conexion.Open();
@@ -77,6 +100,10 @@ namespace DAL
                     Connection = this.conexion,
                     CommandText = consulta
                 };
+                if (parametros != null)
+                {
+                    sqlCommand.Parameters.AddRange(parametros);
+                }
                 int respuesta = sqlCommand.ExecuteNonQuery();
                 return respuesta > 0;
             }

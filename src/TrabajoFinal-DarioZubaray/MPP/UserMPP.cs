@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 
 using BE;
 using DAL;
@@ -23,10 +24,17 @@ namespace MPP
         #region Métodos
         public UserBE ObtenerPorUserName(string userName)
         {
-            string consulta = string.Format(@"SELECT id, user_name, password_hash, is_active, retries_count, last_update, created_at
-                                              FROM Users WHERE user_name = '{0}'", userName);
+            string consulta = @"SELECT id, user_name, password_hash, is_active,
+                                       retries_count, last_update, created_at
+                                FROM Users
+                                WHERE user_name = @userName";
 
-            DataTable tabla = this._acceso.Leer(consulta);
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@userName", userName)
+            };
+
+            DataTable tabla = this._acceso.Leer(consulta, parametros);
 
             if (tabla.Rows.Count == 0)
             {
@@ -48,58 +56,136 @@ namespace MPP
 
         public bool ActualizarLastUpdate(int userId, DateTime lastUpdate)
         {
-            string consulta = string.Format(@"UPDATE Users SET last_update = '{0}' WHERE id = {1}",
-                                            lastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), userId);
-            return this._acceso.Guardar(consulta);
+            string consulta = @"UPDATE Users
+                                SET last_update = @lastUpdate
+                                WHERE id = @id";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@lastUpdate", lastUpdate),
+                new SqlParameter("@id", userId)
+            };
+
+            return this._acceso.Guardar(consulta, parametros);
         }
 
         public bool ActualizarRetries(int userId, int retriesCount)
         {
-            string consulta = string.Format(@"UPDATE Users SET retries_count = {0} WHERE id = {1}",
-                                            retriesCount, userId);
-            return this._acceso.Guardar(consulta);
+            string consulta = @"UPDATE Users
+                                SET retries_count = @retriesCount
+                                WHERE id = @id";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@retriesCount", retriesCount),
+                new SqlParameter("@id", userId)
+            };
+
+            return this._acceso.Guardar(consulta, parametros);
         }
 
         public bool Desactivar(int userId)
         {
-            string consulta = string.Format(@"UPDATE Users SET is_active = 0, retries_count = 3 WHERE id = {0}", userId);
-            return this._acceso.Guardar(consulta);
+            string consulta = @"UPDATE Users
+                                SET is_active = 0, retries_count = 3
+                                WHERE id = @id";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@id", userId)
+            };
+
+            return this._acceso.Guardar(consulta, parametros);
         }
 
         public bool Baja(UserBE user)
         {
-            string consulta = string.Format(@"UPDATE Users SET is_active = 0 WHERE id = {0}", user.Id);
-            return this._acceso.Guardar(consulta);
+            string consulta = @"UPDATE Users
+                                SET is_active = 0
+                                WHERE id = @id";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@id", user.Id)
+            };
+
+            return this._acceso.Guardar(consulta, parametros);
         }
 
         public bool Guardar(UserBE user)
         {
             if (user.Id == 0)
             {
-                string inserccionUsuario = string.Format(@"INSERT INTO Users(user_name, password_hash, is_active, retries_count, last_update, created_at) 
-                                                VALUES('{0}','{1}',{2},{3},'{4}','{5}');
-                                                SELECT SCOPE_IDENTITY();",
-                                                user.UserName, user.PasswordHash, user.IsActive ? 1 : 0, user.RetriesCount, user.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
-
-                var nuevoId = this._acceso.LeerScalar(inserccionUsuario);
-
-                return nuevoId > 0;
+                return Insertar(user);
             }
             else
             {
-                string actualizacionUsuario = string.Format(@"UPDATE Users SET user_name='{0}', password_hash='{1}', is_active={2}, retries_count={3}, last_update='{4}', created_at='{5}' WHERE id={6}",
-                    user.UserName, user.PasswordHash, user.IsActive ? 1 : 0, user.RetriesCount, user.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"), user.Id);
-
-                return this._acceso.Guardar(actualizacionUsuario);
+                return Actualizar(user);
             }
+        }
+
+        private bool Insertar(UserBE user)
+        {
+            string consulta = @"INSERT INTO Users
+                                    (user_name, password_hash, is_active,
+                                     retries_count, last_update, created_at)
+                                VALUES
+                                    (@userName, @passwordHash, @isActive,
+                                     @retriesCount, @lastUpdate, @createdAt);
+                                SELECT SCOPE_IDENTITY();";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@userName", user.UserName),
+                new SqlParameter("@passwordHash", user.PasswordHash),
+                new SqlParameter("@isActive", user.IsActive),
+                new SqlParameter("@retriesCount", user.RetriesCount),
+                new SqlParameter("@lastUpdate", user.LastUpdate),
+                new SqlParameter("@createdAt", user.CreatedAt)
+            };
+
+            var nuevoId = this._acceso.LeerScalar(consulta, parametros);
+            return nuevoId > 0;
+        }
+
+        private bool Actualizar(UserBE user)
+        {
+            string consulta = @"UPDATE Users
+                                SET user_name = @userName,
+                                    password_hash = @passwordHash,
+                                    is_active = @isActive,
+                                    retries_count = @retriesCount,
+                                    last_update = @lastUpdate,
+                                    created_at = @createdAt
+                                WHERE id = @id";
+
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@id", user.Id),
+                new SqlParameter("@userName", user.UserName),
+                new SqlParameter("@passwordHash", user.PasswordHash),
+                new SqlParameter("@isActive", user.IsActive),
+                new SqlParameter("@retriesCount", user.RetriesCount),
+                new SqlParameter("@lastUpdate", user.LastUpdate),
+                new SqlParameter("@createdAt", user.CreatedAt)
+            };
+
+            return this._acceso.Guardar(consulta, parametros);
         }
 
         public UserBE ListarObjeto(UserBE objeto)
         {
-            string consulta = string.Format(@"SELECT id, user_name, password_hash, is_active, retries_count, last_update, created_at
-                                              FROM Users WHERE id = {0}", objeto.Id);
+            string consulta = @"SELECT id, user_name, password_hash, is_active,
+                                       retries_count, last_update, created_at
+                                FROM Users
+                                WHERE id = @id";
 
-            DataTable tabla = this._acceso.Leer(consulta);
+            SqlParameter[] parametros = new SqlParameter[]
+            {
+                new SqlParameter("@id", objeto.Id)
+            };
+
+            DataTable tabla = this._acceso.Leer(consulta, parametros);
 
             if (tabla.Rows.Count == 0)
             {
@@ -123,7 +209,8 @@ namespace MPP
         {
             List<UserBE> userList = new List<UserBE>();
 
-            string consulta = @"SELECT id, user_name, password_hash, is_active, retries_count, last_update, created_at
+            string consulta = @"SELECT id, user_name, password_hash, is_active,
+                                       retries_count, last_update, created_at
                                 FROM Users";
 
             DataTable tabla = this._acceso.Leer(consulta);
