@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BLL;
 using BE;
+using TrabajoFinal_DarioZubaray.Properties;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -17,6 +18,20 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _authBLL = new AuthBLL();
+            AplicarRecursos();
+        }
+        #endregion
+
+        #region Métodos
+        private void AplicarRecursos()
+        {
+            this.Text = Resources.Main_Title;
+            groupBox1.Text = Resources.Login_Title;
+            lblUser.Text = Resources.Login_UsernameLabel;
+            lblPass.Text = Resources.Login_PasswordLabel;
+            btnLogin.Text = Resources.Login_Button;
+            lblDeveloper.Text = Resources.Login_Developer;
+            lblMessage.Text = Resources.Login_MessageInvalid;
         }
         #endregion
 

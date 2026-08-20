@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TrabajoFinal_DarioZubaray.Properties;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -15,7 +9,15 @@ namespace TrabajoFinal_DarioZubaray
         public MainForm()
         {
             InitializeComponent();
+            AplicarRecursos();
             this.FormClosing += MainForm_FormClosing;
+        }
+
+        private void AplicarRecursos()
+        {
+            this.Text = Resources.Main_Title;
+            archivoToolStripMenuItem.Text = Resources.Main_MenuFile;
+            cerrarSesiónToolStripMenuItem.Text = Resources.Main_MenuLogout;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

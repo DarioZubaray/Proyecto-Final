@@ -23,19 +23,19 @@ namespace BLL
         {
             if (!CredencialesValidas(userName, password))
             {
-                return CrearLoginFallido("Usuario y contraseña son obligatorios.");
+                return CrearLoginFallido(Messages.Auth_RequiredFields);
             }
 
             UserBE user = _userMPP.ObtenerPorUserName(userName);
 
             if (user == null)
             {
-                return CrearLoginFallido("Usuario o contraseña incorrectos.");
+                return CrearLoginFallido(Messages.Auth_InvalidCredentials);
             }
 
             if (!user.IsActive)
             {
-                return CrearLoginFallido("Usuario bloqueado. Contacte al administrador.");
+                return CrearLoginFallido(Messages.Auth_UserBlocked);
             }
 
             return AutenticarUsuario(user, password);
@@ -77,7 +77,7 @@ namespace BLL
             return new LoginResult
             {
                 Success = true,
-                Message = "Login exitoso.",
+                Message = Messages.Auth_LoginSuccess,
                 User = user
             };
         }
@@ -89,14 +89,13 @@ namespace BLL
             if (user.RetriesCount >= MaxRetries)
             {
                 _userMPP.Desactivar(user.Id);
-                return CrearLoginFallido(
-                    "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador.");
+                return CrearLoginFallido(Messages.Auth_MaxRetriesExceeded);
             }
 
             _userMPP.ActualizarRetries(user.Id, user.RetriesCount);
             int retriesLeft = MaxRetries - user.RetriesCount;
             return CrearLoginFallido(
-                $"Usuario o contraseña incorrectos. Intentos restantes: {retriesLeft}");
+                string.Format(Messages.Auth_RetriesLeft, retriesLeft));
         }
 
         private LoginResult CrearLoginFallido(string mensaje)
