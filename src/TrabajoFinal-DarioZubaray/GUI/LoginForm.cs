@@ -41,6 +41,7 @@ namespace TrabajoFinal_DarioZubaray
                 DialogResult dialogResult = mainForm.ShowDialog();
                 this.Show();
                 txtUser.Text = "";
+                txtUser.Focus();
                 txtPass.Text = "";
                 lblMessage.Visible = false;
             }

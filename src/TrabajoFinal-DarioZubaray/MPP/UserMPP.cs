@@ -29,7 +29,9 @@ namespace MPP
             DataTable tabla = this._acceso.Leer(consulta);
 
             if (tabla.Rows.Count == 0)
+            {
                 return null;
+            }
 
             DataRow fila = tabla.Rows[0];
             UserBE user = new UserBE();
@@ -47,14 +49,14 @@ namespace MPP
         public bool ActualizarLastUpdate(int userId, DateTime lastUpdate)
         {
             string consulta = string.Format(@"UPDATE Users SET last_update = '{0}' WHERE id = {1}",
-                lastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), userId);
+                                            lastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), userId);
             return this._acceso.Guardar(consulta);
         }
 
         public bool ActualizarRetries(int userId, int retriesCount)
         {
             string consulta = string.Format(@"UPDATE Users SET retries_count = {0} WHERE id = {1}",
-                retriesCount, userId);
+                                            retriesCount, userId);
             return this._acceso.Guardar(consulta);
         }
 
@@ -64,20 +66,20 @@ namespace MPP
             return this._acceso.Guardar(consulta);
         }
 
-        public bool Baja(UserBE objeto)
+        public bool Baja(UserBE user)
         {
-            string consulta = string.Format(@"UPDATE Users SET is_active = 0 WHERE id = {0}", objeto.Id);
+            string consulta = string.Format(@"UPDATE Users SET is_active = 0 WHERE id = {0}", user.Id);
             return this._acceso.Guardar(consulta);
         }
 
-        public bool Guardar(UserBE objeto)
+        public bool Guardar(UserBE user)
         {
-            if (objeto.Id == 0)
+            if (user.Id == 0)
             {
                 string inserccionUsuario = string.Format(@"INSERT INTO Users(user_name, password_hash, is_active, retries_count, last_update, created_at) 
                                                 VALUES('{0}','{1}',{2},{3},'{4}','{5}');
                                                 SELECT SCOPE_IDENTITY();",
-                                                objeto.UserName, objeto.PasswordHash, objeto.IsActive ? 1 : 0, objeto.RetriesCount, objeto.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), objeto.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
+                                                user.UserName, user.PasswordHash, user.IsActive ? 1 : 0, user.RetriesCount, user.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 var nuevoId = this._acceso.LeerScalar(inserccionUsuario);
 
@@ -86,7 +88,7 @@ namespace MPP
             else
             {
                 string actualizacionUsuario = string.Format(@"UPDATE Users SET user_name='{0}', password_hash='{1}', is_active={2}, retries_count={3}, last_update='{4}', created_at='{5}' WHERE id={6}",
-                    objeto.UserName, objeto.PasswordHash, objeto.IsActive ? 1 : 0, objeto.RetriesCount, objeto.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), objeto.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"), objeto.Id);
+                    user.UserName, user.PasswordHash, user.IsActive ? 1 : 0, user.RetriesCount, user.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), user.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"), user.Id);
 
                 return this._acceso.Guardar(actualizacionUsuario);
             }
@@ -100,7 +102,9 @@ namespace MPP
             DataTable tabla = this._acceso.Leer(consulta);
 
             if (tabla.Rows.Count == 0)
+            {
                 return null;
+            }
 
             DataRow fila = tabla.Rows[0];
             UserBE userDB = new UserBE();

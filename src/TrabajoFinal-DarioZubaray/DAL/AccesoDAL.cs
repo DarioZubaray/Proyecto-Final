@@ -7,14 +7,18 @@ namespace DAL
 {
     public class AccesoDAL
     {
+        #region Propiedades
         private SqlConnection conexion;
         SqlCommand sqlCommand;
+        #endregion
 
+        #region Constructores
         public AccesoDAL()
         {
             this.conexion = new SqlConnection();
             this.conexion.ConnectionString = ConfigurationManager.ConnectionStrings["cadenaConexion"].ToString();
         }
+        #endregion
 
         #region Metodos Genericos
         public DataTable Leer(string consulta)
@@ -86,6 +90,5 @@ namespace DAL
             }
         }
         #endregion
-
     }
 }
