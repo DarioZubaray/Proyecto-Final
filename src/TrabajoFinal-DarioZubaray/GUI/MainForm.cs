@@ -9,11 +9,11 @@ namespace TrabajoFinal_DarioZubaray
         public MainForm()
         {
             InitializeComponent();
-            AplicarRecursos();
+            ApplyResources();
             this.FormClosing += MainForm_FormClosing;
         }
 
-        private void AplicarRecursos()
+        private void ApplyResources()
         {
             this.Text = Resources.Main_Title;
             archivoToolStripMenuItem.Text = Resources.Main_MenuFile;

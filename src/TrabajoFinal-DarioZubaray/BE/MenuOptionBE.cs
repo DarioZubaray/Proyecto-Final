@@ -1,5 +1,3 @@
-using System;
-
 namespace BE
 {
     public class MenuOptionBE
@@ -12,18 +10,20 @@ namespace BE
 
         public MenuOptionBE() { }
 
-        public MenuOptionBE(int pId, string pName, string pLabel, string pDescription, bool pIsGlobal)
+        public MenuOptionBE(
+            int id, string name, string label,
+            string description, bool isGlobal)
         {
-            this.Id = pId;
-            this.Name = pName;
-            this.Label = pLabel;
-            this.Description = pDescription;
-            this.IsGlobal = pIsGlobal;
+            Id = id;
+            Name = name;
+            Label = label;
+            Description = description;
+            IsGlobal = isGlobal;
         }
 
         public override string ToString()
         {
-            return $"{Label}";
+            return Label;
         }
     }
 }

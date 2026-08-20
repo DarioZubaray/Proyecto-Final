@@ -6,9 +6,9 @@ namespace BLL
 {
     public interface IUserBLL
     {
-        bool Baja(UserBE user);
-        bool Guardar(UserBE user);
-        UserBE ListarObjeto(UserBE user);
-        List<UserBE> ListarTodo();
+        bool Delete(UserBE user);
+        bool Save(UserBE user);
+        UserBE FindById(UserBE user);
+        List<UserBE> FindAll();
     }
 }

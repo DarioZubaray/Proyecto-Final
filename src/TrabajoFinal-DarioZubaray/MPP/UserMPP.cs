@@ -10,33 +10,142 @@ namespace MPP
 {
     public class UserMPP : IUserMPP
     {
-        #region Propiedades
-        private AccesoDAL _acceso;
+        #region Fields
+        private AccessDAL _access;
         #endregion
 
-        #region Constructores
+        #region Constructor
         public UserMPP()
         {
-            this._acceso = new AccesoDAL();
+            _access = new AccessDAL();
         }
         #endregion
 
-        #region Métodos
-        private UserBE MapearUsuario(DataRow fila)
+        #region Public Methods
+        public UserBE GetByUserName(string userName)
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at
+                            FROM Users
+                            WHERE user_name = @userName";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@userName", userName)
+            };
+
+            return FindOne(query, parameters);
+        }
+
+        public bool UpdateLastUpdate(int userId, DateTime lastUpdate)
+        {
+            string query = @"UPDATE Users
+                            SET last_update = @lastUpdate
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@lastUpdate", lastUpdate),
+                new SqlParameter("@id", userId)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
+        public bool UpdateRetries(int userId, int retriesCount)
+        {
+            string query = @"UPDATE Users
+                            SET retries_count = @retriesCount
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@retriesCount", retriesCount),
+                new SqlParameter("@id", userId)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
+        public bool Deactivate(int userId)
+        {
+            string query = @"UPDATE Users
+                            SET is_active = 0, retries_count = 3
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@id", userId)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
+        public bool Delete(UserBE user)
+        {
+            string query = @"UPDATE Users
+                            SET is_active = 0
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@id", user.Id)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
+        public bool Save(UserBE user)
+        {
+            if (user.Id == 0)
+            {
+                return Insert(user);
+            }
+
+            return Update(user);
+        }
+
+        public UserBE FindById(UserBE user)
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at
+                            FROM Users
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@id", user.Id)
+            };
+
+            return FindOne(query, parameters);
+        }
+
+        public List<UserBE> FindAll()
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at
+                            FROM Users";
+
+            return FindMany(query);
+        }
+        #endregion
+
+        #region Private Methods
+        private UserBE MapUser(DataRow row)
         {
             return new UserBE
             {
-                Id = Convert.ToInt32(fila["id"]),
-                UserName = fila["user_name"].ToString(),
-                PasswordHash = fila["password_hash"].ToString(),
-                IsActive = Convert.ToBoolean(fila["is_active"]),
-                RetriesCount = Convert.ToInt32(fila["retries_count"]),
-                LastUpdate = (DateTime)fila["last_update"],
-                CreatedAt = (DateTime)fila["created_at"]
+                Id = Convert.ToInt32(row["id"]),
+                UserName = row["user_name"].ToString(),
+                PasswordHash = row["password_hash"].ToString(),
+                IsActive = Convert.ToBoolean(row["is_active"]),
+                RetriesCount = Convert.ToInt32(row["retries_count"]),
+                LastUpdate = (DateTime)row["last_update"],
+                CreatedAt = (DateTime)row["created_at"]
             };
         }
 
-        private SqlParameter[] CrearParametrosUsuario(UserBE user)
+        private SqlParameter[] CreateUserParameters(UserBE user)
         {
             return new SqlParameter[]
             {
@@ -49,166 +158,59 @@ namespace MPP
             };
         }
 
-        public UserBE ObtenerPorUserName(string userName)
+        private bool Insert(UserBE user)
         {
-            string consulta = @"SELECT id, user_name, password_hash, is_active,
-                                       retries_count, last_update, created_at
-                                FROM Users
-                                WHERE user_name = @userName";
+            string query = @"INSERT INTO Users
+                                (user_name, password_hash, is_active,
+                                 retries_count, last_update, created_at)
+                            VALUES
+                                (@userName, @passwordHash, @isActive,
+                                 @retriesCount, @lastUpdate, @createdAt);
+                            SELECT SCOPE_IDENTITY();";
 
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@userName", userName)
-            };
-
-            return BuscarUno(consulta, parametros);
+            SqlParameter[] parameters = CreateUserParameters(user);
+            var newId = _access.ReadScalar(query, parameters);
+            return newId > 0;
         }
 
-        public bool ActualizarLastUpdate(int userId, DateTime lastUpdate)
+        private bool Update(UserBE user)
         {
-            string consulta = @"UPDATE Users
-                                SET last_update = @lastUpdate
-                                WHERE id = @id";
+            string query = @"UPDATE Users
+                            SET user_name = @userName,
+                                password_hash = @passwordHash,
+                                is_active = @isActive,
+                                retries_count = @retriesCount,
+                                last_update = @lastUpdate,
+                                created_at = @createdAt
+                            WHERE id = @id";
 
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@lastUpdate", lastUpdate),
-                new SqlParameter("@id", userId)
-            };
-
-            return this._acceso.Guardar(consulta, parametros);
+            SqlParameter[] parameters = CreateUserParameters(user);
+            return _access.Save(query, parameters);
         }
 
-        public bool ActualizarRetries(int userId, int retriesCount)
+        private UserBE FindOne(string query, SqlParameter[] parameters)
         {
-            string consulta = @"UPDATE Users
-                                SET retries_count = @retriesCount
-                                WHERE id = @id";
+            DataTable table = _access.Read(query, parameters);
 
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@retriesCount", retriesCount),
-                new SqlParameter("@id", userId)
-            };
-
-            return this._acceso.Guardar(consulta, parametros);
-        }
-
-        public bool Desactivar(int userId)
-        {
-            string consulta = @"UPDATE Users
-                                SET is_active = 0, retries_count = 3
-                                WHERE id = @id";
-
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@id", userId)
-            };
-
-            return this._acceso.Guardar(consulta, parametros);
-        }
-
-        public bool Baja(UserBE user)
-        {
-            string consulta = @"UPDATE Users
-                                SET is_active = 0
-                                WHERE id = @id";
-
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@id", user.Id)
-            };
-
-            return this._acceso.Guardar(consulta, parametros);
-        }
-
-        public bool Guardar(UserBE user)
-        {
-            if (user.Id == 0)
-            {
-                return Insertar(user);
-            }
-
-            return Actualizar(user);
-        }
-
-        private bool Insertar(UserBE user)
-        {
-            string consulta = @"INSERT INTO Users
-                                    (user_name, password_hash, is_active,
-                                     retries_count, last_update, created_at)
-                                VALUES
-                                    (@userName, @passwordHash, @isActive,
-                                     @retriesCount, @lastUpdate, @createdAt);
-                                SELECT SCOPE_IDENTITY();";
-
-            SqlParameter[] parametros = CrearParametrosUsuario(user);
-            var nuevoId = this._acceso.LeerScalar(consulta, parametros);
-            return nuevoId > 0;
-        }
-
-        private bool Actualizar(UserBE user)
-        {
-            string consulta = @"UPDATE Users
-                                SET user_name = @userName,
-                                    password_hash = @passwordHash,
-                                    is_active = @isActive,
-                                    retries_count = @retriesCount,
-                                    last_update = @lastUpdate,
-                                    created_at = @createdAt
-                                WHERE id = @id";
-
-            SqlParameter[] parametros = CrearParametrosUsuario(user);
-            return this._acceso.Guardar(consulta, parametros);
-        }
-
-        public UserBE ListarObjeto(UserBE objeto)
-        {
-            string consulta = @"SELECT id, user_name, password_hash, is_active,
-                                       retries_count, last_update, created_at
-                                FROM Users
-                                WHERE id = @id";
-
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@id", objeto.Id)
-            };
-
-            return BuscarUno(consulta, parametros);
-        }
-
-        public List<UserBE> ListarTodo()
-        {
-            string consulta = @"SELECT id, user_name, password_hash, is_active,
-                                       retries_count, last_update, created_at
-                                FROM Users";
-
-            return BuscarTodos(consulta);
-        }
-
-        private UserBE BuscarUno(string consulta, SqlParameter[] parametros)
-        {
-            DataTable tabla = this._acceso.Leer(consulta, parametros);
-
-            if (tabla.Rows.Count == 0)
+            if (table.Rows.Count == 0)
             {
                 return null;
             }
 
-            return MapearUsuario(tabla.Rows[0]);
+            return MapUser(table.Rows[0]);
         }
 
-        private List<UserBE> BuscarTodos(string consulta)
+        private List<UserBE> FindMany(string query)
         {
-            List<UserBE> userList = new List<UserBE>();
-            DataTable tabla = this._acceso.Leer(consulta);
+            List<UserBE> users = new List<UserBE>();
+            DataTable table = _access.Read(query);
 
-            foreach (DataRow fila in tabla.Rows)
+            foreach (DataRow row in table.Rows)
             {
-                userList.Add(MapearUsuario(fila));
+                users.Add(MapUser(row));
             }
 
-            return userList;
+            return users;
         }
         #endregion
     }

@@ -13,11 +13,11 @@ namespace BE
             Options = new List<MenuOptionBE>();
         }
 
-        public RoleBE(int pId, string pName, List<MenuOptionBE> pOptions)
+        public RoleBE(int id, string name, List<MenuOptionBE> options)
         {
-            this.Id = pId;
-            this.Name = pName;
-            this.Options = pOptions ?? new List<MenuOptionBE>();
+            Id = id;
+            Name = name;
+            Options = options ?? new List<MenuOptionBE>();
         }
 
         public bool HasOption(string optionName)
@@ -27,7 +27,7 @@ namespace BE
 
         public override string ToString()
         {
-            return $"{Name} ({Options.Count} opciones)";
+            return $"{Name} ({Options.Count} options)";
         }
     }
 }

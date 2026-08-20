@@ -7,13 +7,13 @@ namespace MPP
 {
     public interface IUserMPP
     {
-        UserBE ObtenerPorUserName(string userName);
-        bool ActualizarLastUpdate(int userId, DateTime lastUpdate);
-        bool ActualizarRetries(int userId, int retriesCount);
-        bool Desactivar(int userId);
-        bool Baja(UserBE user);
-        bool Guardar(UserBE user);
-        UserBE ListarObjeto(UserBE objeto);
-        List<UserBE> ListarTodo();
+        UserBE GetByUserName(string userName);
+        bool UpdateLastUpdate(int userId, DateTime lastUpdate);
+        bool UpdateRetries(int userId, int retriesCount);
+        bool Deactivate(int userId);
+        bool Delete(UserBE user);
+        bool Save(UserBE user);
+        UserBE FindById(UserBE user);
+        List<UserBE> FindAll();
     }
 }

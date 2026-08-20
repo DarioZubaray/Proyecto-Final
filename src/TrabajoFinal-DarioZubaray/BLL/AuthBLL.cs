@@ -6,12 +6,12 @@ namespace BLL
 {
     public class AuthBLL : IAuthBLL
     {
-        #region Propiedades
+        #region Fields
         private readonly IUserMPP _userMPP;
         private const int MaxRetries = 3;
         #endregion
 
-        #region Constructores
+        #region Constructors
         public AuthBLL() : this(new MPP.UserMPP())
         {
         }
@@ -22,60 +22,64 @@ namespace BLL
         }
         #endregion
 
-        #region Métodos
+        #region Public Methods
         public LoginResult Login(string userName, string password)
         {
-            if (!CredencialesValidas(userName, password))
+            if (!AreCredentialsValid(userName, password))
             {
-                return CrearLoginFallido(Messages.Auth_RequiredFields);
+                return CreateLoginFailed(Messages.Auth_RequiredFields);
             }
 
-            UserBE user = _userMPP.ObtenerPorUserName(userName);
+            UserBE user = _userMPP.GetByUserName(userName);
 
             if (user == null)
             {
-                return CrearLoginFallido(Messages.Auth_InvalidCredentials);
+                return CreateLoginFailed(Messages.Auth_InvalidCredentials);
             }
 
             if (!user.IsActive)
             {
-                return CrearLoginFallido(Messages.Auth_UserBlocked);
+                return CreateLoginFailed(Messages.Auth_UserBlocked);
             }
 
-            return AutenticarUsuario(user, password);
+            return AuthenticateUser(user, password);
         }
 
         public bool Logout(UserBE user)
         {
-            return _userMPP.Guardar(user);
+            return _userMPP.Save(user);
+        }
+        #endregion
+
+        #region Private Methods
+        private bool AreCredentialsValid(string userName, string password)
+        {
+            return !string.IsNullOrEmpty(userName)
+                && !string.IsNullOrEmpty(password);
         }
 
-        private bool CredencialesValidas(string userName, string password)
+        private LoginResult AuthenticateUser(UserBE user, string password)
         {
-            return !string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password);
-        }
+            bool isPasswordValid = EncryptionBLL
+                .VerifyPassword(password, user.PasswordHash);
 
-        private LoginResult AutenticarUsuario(UserBE user, string password)
-        {
-            bool passwordValido = EncriptacionBLL.VerifyPassword(password, user.PasswordHash);
-
-            if (passwordValido)
+            if (isPasswordValid)
             {
-                return LoginExitoso(user);
+                return LoginSuccessful(user);
             }
 
-            return LoginFallido(user);
+            return LoginFailed(user);
         }
 
-        private LoginResult LoginExitoso(UserBE user)
+        private LoginResult LoginSuccessful(UserBE user)
         {
             user.LastUpdate = DateTime.Now;
-            _userMPP.ActualizarLastUpdate(user.Id, user.LastUpdate);
+            _userMPP.UpdateLastUpdate(user.Id, user.LastUpdate);
 
             if (user.RetriesCount != 0)
             {
                 user.RetriesCount = 0;
-                _userMPP.ActualizarRetries(user.Id, 0);
+                _userMPP.UpdateRetries(user.Id, 0);
             }
 
             return new LoginResult
@@ -86,25 +90,25 @@ namespace BLL
             };
         }
 
-        private LoginResult LoginFallido(UserBE user)
+        private LoginResult LoginFailed(UserBE user)
         {
             user.RetriesCount++;
 
             if (user.RetriesCount >= MaxRetries)
             {
-                _userMPP.Desactivar(user.Id);
-                return CrearLoginFallido(Messages.Auth_MaxRetriesExceeded);
+                _userMPP.Deactivate(user.Id);
+                return CreateLoginFailed(Messages.Auth_MaxRetriesExceeded);
             }
 
-            _userMPP.ActualizarRetries(user.Id, user.RetriesCount);
+            _userMPP.UpdateRetries(user.Id, user.RetriesCount);
             int retriesLeft = MaxRetries - user.RetriesCount;
-            return CrearLoginFallido(
+            return CreateLoginFailed(
                 string.Format(Messages.Auth_RetriesLeft, retriesLeft));
         }
 
-        private LoginResult CrearLoginFallido(string mensaje)
+        private LoginResult CreateLoginFailed(string message)
         {
-            return new LoginResult { Success = false, Message = mensaje };
+            return new LoginResult { Success = false, Message = message };
         }
         #endregion
     }

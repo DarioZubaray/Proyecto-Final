@@ -9,21 +9,21 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class LoginForm : Form
     {
-        #region Propiedades
+        #region Fields
         private IAuthBLL _authBLL;
         #endregion
 
-        #region Constructores
+        #region Constructor
         public LoginForm()
         {
             InitializeComponent();
             _authBLL = ServiceLocator.CreateAuthBLL();
-            AplicarRecursos();
+            ApplyResources();
         }
         #endregion
 
-        #region Métodos
-        private void AplicarRecursos()
+        #region Private Methods
+        private void ApplyResources()
         {
             this.Text = Resources.Main_Title;
             groupBox1.Text = Resources.Login_Title;
@@ -35,7 +35,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
-        #region Eventos
+        #region Events
         private void btnLogin_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;

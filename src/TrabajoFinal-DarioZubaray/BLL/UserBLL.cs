@@ -7,11 +7,11 @@ namespace BLL
 {
     public class UserBLL : IUserBLL
     {
-        #region Propiedades
+        #region Fields
         private readonly IUserMPP _userMPP;
         #endregion
 
-        #region Constructores
+        #region Constructors
         public UserBLL() : this(new MPP.UserMPP())
         {
         }
@@ -22,25 +22,25 @@ namespace BLL
         }
         #endregion
 
-        #region Métodos
-        public bool Baja(UserBE user)
+        #region Public Methods
+        public bool Delete(UserBE user)
         {
-            return _userMPP.Baja(user);
+            return _userMPP.Delete(user);
         }
 
-        public bool Guardar(UserBE user)
+        public bool Save(UserBE user)
         {
-            return _userMPP.Guardar(user);
+            return _userMPP.Save(user);
         }
 
-        public UserBE ListarObjeto(UserBE user)
+        public UserBE FindById(UserBE user)
         {
-            return _userMPP.ListarObjeto(user);
+            return _userMPP.FindById(user);
         }
 
-        public List<UserBE> ListarTodo()
+        public List<UserBE> FindAll()
         {
-            return _userMPP.ListarTodo();
+            return _userMPP.FindAll();
         }
         #endregion
     }
