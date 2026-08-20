@@ -53,9 +53,9 @@ namespace BLL
 
         private LoginResult AutenticarUsuario(UserBE user, string password)
         {
-            string hashedPassword = EncriptacionBLL.HashPassword(password);
+            bool passwordValido = EncriptacionBLL.VerifyPassword(password, user.PasswordHash);
 
-            if (user.PasswordHash == hashedPassword)
+            if (passwordValido)
             {
                 return LoginExitoso(user);
             }
