@@ -36,6 +36,19 @@ namespace MPP
             };
         }
 
+        private SqlParameter[] CrearParametrosUsuario(UserBE user)
+        {
+            return new SqlParameter[]
+            {
+                new SqlParameter("@userName", user.UserName),
+                new SqlParameter("@passwordHash", user.PasswordHash),
+                new SqlParameter("@isActive", user.IsActive),
+                new SqlParameter("@retriesCount", user.RetriesCount),
+                new SqlParameter("@lastUpdate", user.LastUpdate),
+                new SqlParameter("@createdAt", user.CreatedAt)
+            };
+        }
+
         public UserBE ObtenerPorUserName(string userName)
         {
             string consulta = @"SELECT id, user_name, password_hash, is_active,
@@ -48,14 +61,7 @@ namespace MPP
                 new SqlParameter("@userName", userName)
             };
 
-            DataTable tabla = this._acceso.Leer(consulta, parametros);
-
-            if (tabla.Rows.Count == 0)
-            {
-                return null;
-            }
-
-            return MapearUsuario(tabla.Rows[0]);
+            return BuscarUno(consulta, parametros);
         }
 
         public bool ActualizarLastUpdate(int userId, DateTime lastUpdate)
@@ -122,10 +128,8 @@ namespace MPP
             {
                 return Insertar(user);
             }
-            else
-            {
-                return Actualizar(user);
-            }
+
+            return Actualizar(user);
         }
 
         private bool Insertar(UserBE user)
@@ -138,16 +142,7 @@ namespace MPP
                                      @retriesCount, @lastUpdate, @createdAt);
                                 SELECT SCOPE_IDENTITY();";
 
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@userName", user.UserName),
-                new SqlParameter("@passwordHash", user.PasswordHash),
-                new SqlParameter("@isActive", user.IsActive),
-                new SqlParameter("@retriesCount", user.RetriesCount),
-                new SqlParameter("@lastUpdate", user.LastUpdate),
-                new SqlParameter("@createdAt", user.CreatedAt)
-            };
-
+            SqlParameter[] parametros = CrearParametrosUsuario(user);
             var nuevoId = this._acceso.LeerScalar(consulta, parametros);
             return nuevoId > 0;
         }
@@ -163,17 +158,7 @@ namespace MPP
                                     created_at = @createdAt
                                 WHERE id = @id";
 
-            SqlParameter[] parametros = new SqlParameter[]
-            {
-                new SqlParameter("@id", user.Id),
-                new SqlParameter("@userName", user.UserName),
-                new SqlParameter("@passwordHash", user.PasswordHash),
-                new SqlParameter("@isActive", user.IsActive),
-                new SqlParameter("@retriesCount", user.RetriesCount),
-                new SqlParameter("@lastUpdate", user.LastUpdate),
-                new SqlParameter("@createdAt", user.CreatedAt)
-            };
-
+            SqlParameter[] parametros = CrearParametrosUsuario(user);
             return this._acceso.Guardar(consulta, parametros);
         }
 
@@ -189,6 +174,20 @@ namespace MPP
                 new SqlParameter("@id", objeto.Id)
             };
 
+            return BuscarUno(consulta, parametros);
+        }
+
+        public List<UserBE> ListarTodo()
+        {
+            string consulta = @"SELECT id, user_name, password_hash, is_active,
+                                       retries_count, last_update, created_at
+                                FROM Users";
+
+            return BuscarTodos(consulta);
+        }
+
+        private UserBE BuscarUno(string consulta, SqlParameter[] parametros)
+        {
             DataTable tabla = this._acceso.Leer(consulta, parametros);
 
             if (tabla.Rows.Count == 0)
@@ -199,23 +198,16 @@ namespace MPP
             return MapearUsuario(tabla.Rows[0]);
         }
 
-        public List<UserBE> ListarTodo()
+        private List<UserBE> BuscarTodos(string consulta)
         {
             List<UserBE> userList = new List<UserBE>();
-
-            string consulta = @"SELECT id, user_name, password_hash, is_active,
-                                       retries_count, last_update, created_at
-                                FROM Users";
-
             DataTable tabla = this._acceso.Leer(consulta);
 
-            if (tabla.Rows.Count > 0)
+            foreach (DataRow fila in tabla.Rows)
             {
-                foreach (DataRow fila in tabla.Rows)
-                {
-                    userList.Add(MapearUsuario(fila));
-                }
+                userList.Add(MapearUsuario(fila));
             }
+
             return userList;
         }
         #endregion

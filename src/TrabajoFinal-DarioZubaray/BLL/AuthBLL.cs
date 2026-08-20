@@ -7,73 +7,101 @@ namespace BLL
     public class AuthBLL
     {
         #region Propiedades
-        private UserMPP mapeador;
+        private UserMPP _userMPP;
         private const int MaxRetries = 3;
         #endregion
 
         #region Constructores
         public AuthBLL()
         {
-            mapeador = new UserMPP();
+            _userMPP = new UserMPP();
         }
         #endregion
 
         #region Métodos
         public LoginResult Login(string userName, string password)
         {
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            if (!CredencialesValidas(userName, password))
             {
-                return new LoginResult { Success = false, Message = "Usuario y contraseña son obligatorios." };
+                return CrearLoginFallido("Usuario y contraseña son obligatorios.");
             }
 
-            UserBE user = mapeador.ObtenerPorUserName(userName);
+            UserBE user = _userMPP.ObtenerPorUserName(userName);
 
             if (user == null)
             {
-                return new LoginResult { Success = false, Message = "Usuario o contraseña incorrectos." };
+                return CrearLoginFallido("Usuario o contraseña incorrectos.");
             }
 
             if (!user.IsActive)
             {
-                return new LoginResult { Success = false, Message = "Usuario bloqueado. Contacte al administrador." };
+                return CrearLoginFallido("Usuario bloqueado. Contacte al administrador.");
             }
 
-            string hashedPassword = EncriptacionBLL.HashPassword(password);
-
-            if (user.PasswordHash == hashedPassword)
-            {
-                user.LastUpdate = DateTime.Now;
-                mapeador.ActualizarLastUpdate(user.Id, user.LastUpdate);
-
-                if (user.RetriesCount != 0)
-                {
-                    user.RetriesCount = 0;
-                    mapeador.ActualizarRetries(user.Id, 0);
-                }
-
-                return new LoginResult { Success = true, Message = "Login exitoso.", User = user };
-            }
-            else
-            {
-                user.RetriesCount++;
-
-                if (user.RetriesCount >= MaxRetries)
-                {
-                    mapeador.Desactivar(user.Id);
-                    return new LoginResult { Success = false, Message = "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador." };
-                }
-                else
-                {
-                    mapeador.ActualizarRetries(user.Id, user.RetriesCount);
-                    int retriesLeft = MaxRetries - user.RetriesCount;
-                    return new LoginResult { Success = false, Message = $"Usuario o contraseña incorrectos. Intentos restantes: {retriesLeft}" };
-                }
-            }
+            return AutenticarUsuario(user, password);
         }
 
         public bool Logout(UserBE user)
         {
-            return mapeador.Guardar(user);
+            return _userMPP.Guardar(user);
+        }
+
+        private bool CredencialesValidas(string userName, string password)
+        {
+            return !string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password);
+        }
+
+        private LoginResult AutenticarUsuario(UserBE user, string password)
+        {
+            string hashedPassword = EncriptacionBLL.HashPassword(password);
+
+            if (user.PasswordHash == hashedPassword)
+            {
+                return LoginExitoso(user);
+            }
+
+            return LoginFallido(user);
+        }
+
+        private LoginResult LoginExitoso(UserBE user)
+        {
+            user.LastUpdate = DateTime.Now;
+            _userMPP.ActualizarLastUpdate(user.Id, user.LastUpdate);
+
+            if (user.RetriesCount != 0)
+            {
+                user.RetriesCount = 0;
+                _userMPP.ActualizarRetries(user.Id, 0);
+            }
+
+            return new LoginResult
+            {
+                Success = true,
+                Message = "Login exitoso.",
+                User = user
+            };
+        }
+
+        private LoginResult LoginFallido(UserBE user)
+        {
+            user.RetriesCount++;
+
+            if (user.RetriesCount >= MaxRetries)
+            {
+                _userMPP.Desactivar(user.Id);
+                return CrearLoginFallido(
+                    "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador.");
+            }
+
+            _userMPP.ActualizarRetries(user.Id, user.RetriesCount);
+            int retriesLeft = MaxRetries - user.RetriesCount;
+            return CrearLoginFallido(
+                $"Usuario o contraseña incorrectos. Intentos restantes: {retriesLeft}");
+        }
+
+        private LoginResult CrearLoginFallido(string mensaje)
+        {
+            return new LoginResult { Success = false, Message = mensaje };
         }
         #endregion
     }
