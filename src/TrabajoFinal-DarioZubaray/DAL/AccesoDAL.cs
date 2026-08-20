@@ -8,15 +8,14 @@ namespace DAL
     public class AccesoDAL
     {
         #region Propiedades
-        private SqlConnection conexion;
-        SqlCommand sqlCommand;
+        private readonly string _connectionString;
         #endregion
 
         #region Constructores
         public AccesoDAL()
         {
-            this.conexion = new SqlConnection();
-            this.conexion.ConnectionString = ConfigurationManager.ConnectionStrings["cadenaConexion"].ToString();
+            _connectionString = ConfigurationManager
+                .ConnectionStrings["cadenaConexion"].ToString();
         }
         #endregion
 
@@ -28,26 +27,22 @@ namespace DAL
 
         public DataTable Leer(string consulta, SqlParameter[] parametros)
         {
-            DataTable tabla = new DataTable();
-            try
+            using (var conexion = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(consulta, conexion))
             {
-                this.conexion.Open();
-                SqlDataAdapter Da = new SqlDataAdapter(consulta, this.conexion);
                 if (parametros != null)
                 {
-                    Da.SelectCommand.Parameters.AddRange(parametros);
+                    command.Parameters.AddRange(parametros);
                 }
-                Da.Fill(tabla);
+
+                using (var adapter = new SqlDataAdapter(command))
+                {
+                    var tabla = new DataTable();
+                    conexion.Open();
+                    adapter.Fill(tabla);
+                    return tabla;
+                }
             }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                this.conexion.Close();
-            }
-            return tabla;
         }
 
         public int LeerScalar(string consulta)
@@ -57,30 +52,18 @@ namespace DAL
 
         public int LeerScalar(string consulta, SqlParameter[] parametros)
         {
-            try
+            using (var conexion = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(consulta, conexion))
             {
-                this.conexion.Open();
-                sqlCommand = new SqlCommand
-                {
-                    CommandType = CommandType.Text,
-                    Connection = this.conexion,
-                    CommandText = consulta
-                };
+                command.CommandType = CommandType.Text;
+
                 if (parametros != null)
                 {
-                    sqlCommand.Parameters.AddRange(parametros);
+                    command.Parameters.AddRange(parametros);
                 }
-                int respuesta = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                return respuesta;
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                this.conexion.Close();
+                conexion.Open();
+                return Convert.ToInt32(command.ExecuteScalar());
             }
         }
 
@@ -91,29 +74,18 @@ namespace DAL
 
         public bool Guardar(string consulta, SqlParameter[] parametros)
         {
-            try
+            using (var conexion = new SqlConnection(_connectionString))
+            using (var command = new SqlCommand(consulta, conexion))
             {
-                this.conexion.Open();
-                sqlCommand = new SqlCommand
-                {
-                    CommandType = CommandType.Text,
-                    Connection = this.conexion,
-                    CommandText = consulta
-                };
+                command.CommandType = CommandType.Text;
+
                 if (parametros != null)
                 {
-                    sqlCommand.Parameters.AddRange(parametros);
+                    command.Parameters.AddRange(parametros);
                 }
-                int respuesta = sqlCommand.ExecuteNonQuery();
-                return respuesta > 0;
-            }
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                this.conexion.Close();
+
+                conexion.Open();
+                return command.ExecuteNonQuery() > 0;
             }
         }
         #endregion
