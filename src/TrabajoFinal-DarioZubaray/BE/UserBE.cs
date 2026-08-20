@@ -12,13 +12,15 @@ namespace BE
         public int RetriesCount { get; set; }
         public DateTime LastUpdate { get; set; }
         public DateTime CreatedAt { get; set; }
+        public int RoleId { get; set; }
+        public RoleBE Role { get; set; }
 
         #endregion
 
         #region Constructores
         public UserBE() { }
 
-        public UserBE(int pId, string pUserName, string pPasswordHash, bool pIsActive, int pRetriesCount, DateTime pLastUpdate, DateTime pCreatedAt)
+        public UserBE(int pId, string pUserName, string pPasswordHash, bool pIsActive, int pRetriesCount, DateTime pLastUpdate, DateTime pCreatedAt, int pRoleId)
         {
             this.Id = pId;
             this.UserName = pUserName;
@@ -27,12 +29,15 @@ namespace BE
             this.RetriesCount = pRetriesCount;
             this.LastUpdate = pLastUpdate;
             this.CreatedAt = pCreatedAt;
+            this.RoleId = pRoleId;
         }
         #endregion
 
+        #region Métodos
         public override string ToString()
         {
             return $"{Id}, {UserName}, {IsActive}, {LastUpdate}";
         }
+        #endregion
     }
 }

@@ -1,31 +1,44 @@
 ﻿using System;
 using System.Windows.Forms;
 
+using BLL;
+using BE;
+
 namespace TrabajoFinal_DarioZubaray
 {
     public partial class LoginForm : Form
     {
+        #region Propiedades
+        private AuthBLL _authBLL;
+        #endregion
+
+        #region Inicializdores
         public LoginForm()
         {
             InitializeComponent();
+            _authBLL = new AuthBLL();
         }
+        #endregion
 
+        #region Eventos
         private void button1_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;
-            var user = txtUser.Text;
-            var pass = txtPass.Text;
+            var username = txtUser.Text;
+            var password = txtPass.Text;
 
-            if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(pass))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
                 return;
             }
 
-            if (user == "admin" && pass == "admin")
+            LoginResult result = _authBLL.Login(username, password);
+
+            if (result.Success)
             {
                 this.Hide();
                 MainForm mainForm = new MainForm();
-                DialogResult result = mainForm.ShowDialog();
+                DialogResult dialogResult = mainForm.ShowDialog();
                 this.Show();
                 txtUser.Text = "";
                 txtPass.Text = "";
@@ -33,6 +46,7 @@ namespace TrabajoFinal_DarioZubaray
             }
             else
             {
+                lblMessage.Text = result.Message;
                 lblMessage.Visible = true;
             }
         }
@@ -54,5 +68,6 @@ namespace TrabajoFinal_DarioZubaray
                 e.SuppressKeyPress = true;
             }
         }
+        #endregion
     }
 }

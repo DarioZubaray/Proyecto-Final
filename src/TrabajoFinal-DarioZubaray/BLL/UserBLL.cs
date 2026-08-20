@@ -7,13 +7,18 @@ namespace BLL
 {
     public class UserBLL
     {
+        #region Propiedades
         private UserMPP mapeador;
+        #endregion
 
+        #region Constructores
         public UserBLL()
         {
             mapeador = new UserMPP();
         }
+        #endregion
 
+        #region Métodos
         public bool Baja(UserBE user)
         {
             return mapeador.Baja(user);
@@ -33,5 +38,6 @@ namespace BLL
         {
             return mapeador.ListarTodo();
         }
+        #endregion
     }
 }

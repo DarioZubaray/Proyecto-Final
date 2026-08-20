@@ -9,16 +9,64 @@ namespace MPP
 {
     public class UserMPP
     {
+        #region Propiedades
         private AccesoDAL _acceso;
+        #endregion
 
+        #region Constructores
         public UserMPP()
         {
             this._acceso = new AccesoDAL();
         }
+        #endregion
+
+        #region Métodos
+        public UserBE ObtenerPorUserName(string userName)
+        {
+            string consulta = string.Format(@"SELECT id, user_name, password_hash, is_active, retries_count, last_update, created_at
+                                              FROM Users WHERE user_name = '{0}'", userName);
+
+            DataTable tabla = this._acceso.Leer(consulta);
+
+            if (tabla.Rows.Count == 0)
+                return null;
+
+            DataRow fila = tabla.Rows[0];
+            UserBE user = new UserBE();
+            user.Id = Convert.ToInt32(fila["id"]);
+            user.UserName = fila["user_name"].ToString();
+            user.PasswordHash = fila["password_hash"].ToString();
+            user.IsActive = Convert.ToBoolean(fila["is_active"]);
+            user.RetriesCount = Convert.ToInt32(fila["retries_count"]);
+            user.LastUpdate = (DateTime)fila["last_update"];
+            user.CreatedAt = (DateTime)fila["created_at"];
+
+            return user;
+        }
+
+        public bool ActualizarLastUpdate(int userId, DateTime lastUpdate)
+        {
+            string consulta = string.Format(@"UPDATE Users SET last_update = '{0}' WHERE id = {1}",
+                lastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), userId);
+            return this._acceso.Guardar(consulta);
+        }
+
+        public bool ActualizarRetries(int userId, int retriesCount)
+        {
+            string consulta = string.Format(@"UPDATE Users SET retries_count = {0} WHERE id = {1}",
+                retriesCount, userId);
+            return this._acceso.Guardar(consulta);
+        }
+
+        public bool Desactivar(int userId)
+        {
+            string consulta = string.Format(@"UPDATE Users SET is_active = 0, retries_count = 3 WHERE id = {0}", userId);
+            return this._acceso.Guardar(consulta);
+        }
 
         public bool Baja(UserBE objeto)
         {
-            string consulta = string.Format(@"UPDATE Alumno SET activo = 0 WHERE legajo = {0}", objeto.Id);
+            string consulta = string.Format(@"UPDATE Users SET is_active = 0 WHERE id = {0}", objeto.Id);
             return this._acceso.Guardar(consulta);
         }
 
@@ -26,10 +74,10 @@ namespace MPP
         {
             if (objeto.Id == 0)
             {
-                string inserccionUsuario = string.Format(@"INSERT INTO User(user_name, password_hash, is_active, retries_count, last_update, created_at) 
+                string inserccionUsuario = string.Format(@"INSERT INTO Users(user_name, password_hash, is_active, retries_count, last_update, created_at) 
                                                 VALUES('{0}','{1}',{2},{3},'{4}','{5}');
                                                 SELECT SCOPE_IDENTITY();",
-                                                objeto.UserName, objeto.PasswordHash, objeto.IsActive, objeto.RetriesCount, objeto.LastUpdate, objeto.CreatedAt);
+                                                objeto.UserName, objeto.PasswordHash, objeto.IsActive ? 1 : 0, objeto.RetriesCount, objeto.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), objeto.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 var nuevoId = this._acceso.LeerScalar(inserccionUsuario);
 
@@ -37,10 +85,8 @@ namespace MPP
             }
             else
             {
-                string actualizacionUsuario = string.Format(@"UPDATE User(user_name, password_hash, is_active, retries_count, last_update, created_at) 
-                                                VALUES('{0}','{1}',{2},{3},'{4}','{5}');
-                                                SELECT SCOPE_IDENTITY();",
-                                                objeto.UserName, objeto.PasswordHash, objeto.IsActive, objeto.RetriesCount, objeto.LastUpdate, objeto.CreatedAt);
+                string actualizacionUsuario = string.Format(@"UPDATE Users SET user_name='{0}', password_hash='{1}', is_active={2}, retries_count={3}, last_update='{4}', created_at='{5}' WHERE id={6}",
+                    objeto.UserName, objeto.PasswordHash, objeto.IsActive ? 1 : 0, objeto.RetriesCount, objeto.LastUpdate.ToString("yyyy-MM-dd HH:mm:ss"), objeto.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"), objeto.Id);
 
                 return this._acceso.Guardar(actualizacionUsuario);
             }
@@ -48,27 +94,24 @@ namespace MPP
 
         public UserBE ListarObjeto(UserBE objeto)
         {
-            string Consulta = string.Format(@"SELECT a.legajo, a.nombre_apellido, a.documento, a.fecha_nacimiento, d.calle_numero, d.ciudad 
-                                            FROM Alumno a
-                                            INNER JOIN Direccion d ON a.legajo = d.id_legajo
-                                            WHERE a.activo = 1 and a.legajo = {0}", objeto.Id);
+            string consulta = string.Format(@"SELECT id, user_name, password_hash, is_active, retries_count, last_update, created_at
+                                              FROM Users WHERE id = {0}", objeto.Id);
 
-            DataTable Tabla = this._acceso.Leer(Consulta);
+            DataTable tabla = this._acceso.Leer(consulta);
 
+            if (tabla.Rows.Count == 0)
+                return null;
+
+            DataRow fila = tabla.Rows[0];
             UserBE userDB = new UserBE();
-            if (Tabla.Rows.Count > 0)
-            {
-                foreach (DataRow fila in Tabla.Rows)
-                {
-                    userDB.Id = Convert.ToInt32(fila[0]);
-                    userDB.UserName = fila[1].ToString();
-                    userDB.PasswordHash = fila[2].ToString();
-                    userDB.IsActive = Convert.ToBoolean(fila[3]);
-                    userDB.RetriesCount = Convert.ToInt32(fila[4]);
-                    userDB.LastUpdate = (DateTime)fila[5];
-                    userDB.CreatedAt = (DateTime)fila[6];
-                }
-            }
+            userDB.Id = Convert.ToInt32(fila["id"]);
+            userDB.UserName = fila["user_name"].ToString();
+            userDB.PasswordHash = fila["password_hash"].ToString();
+            userDB.IsActive = Convert.ToBoolean(fila["is_active"]);
+            userDB.RetriesCount = Convert.ToInt32(fila["retries_count"]);
+            userDB.LastUpdate = (DateTime)fila["last_update"];
+            userDB.CreatedAt = (DateTime)fila["created_at"];
+
             return userDB;
         }
 
@@ -76,31 +119,28 @@ namespace MPP
         {
             List<UserBE> userList = new List<UserBE>();
 
-            string Consulta = @"SELECT a.legajo, a.nombre_apellido, a.documento, a.fecha_nacimiento, 
-                                        d.calle_numero, d.ciudad 
-                                FROM Alumno a
-                                INNER JOIN Direccion d ON a.legajo = d.id_legajo
-                                WHERE a.activo = 1";
+            string consulta = @"SELECT id, user_name, password_hash, is_active, retries_count, last_update, created_at
+                                FROM Users";
 
-            DataTable Tabla = this._acceso.Leer(Consulta);
+            DataTable tabla = this._acceso.Leer(consulta);
 
-            if (Tabla.Rows.Count > 0)
+            if (tabla.Rows.Count > 0)
             {
-                foreach (DataRow fila in Tabla.Rows)
+                foreach (DataRow fila in tabla.Rows)
                 {
                     UserBE userDB = new UserBE();
-
-                    userDB.Id = Convert.ToInt32(fila[0]);
-                    userDB.UserName = fila[1].ToString();
-                    userDB.PasswordHash = fila[2].ToString();
-                    userDB.IsActive = Convert.ToBoolean(fila[3]);
-                    userDB.RetriesCount = Convert.ToInt32(fila[4]);
-                    userDB.LastUpdate = (DateTime)fila[5];
-                    userDB.CreatedAt = (DateTime)fila[6];
+                    userDB.Id = Convert.ToInt32(fila["id"]);
+                    userDB.UserName = fila["user_name"].ToString();
+                    userDB.PasswordHash = fila["password_hash"].ToString();
+                    userDB.IsActive = Convert.ToBoolean(fila["is_active"]);
+                    userDB.RetriesCount = Convert.ToInt32(fila["retries_count"]);
+                    userDB.LastUpdate = (DateTime)fila["last_update"];
+                    userDB.CreatedAt = (DateTime)fila["created_at"];
                     userList.Add(userDB);
                 }
             }
             return userList;
         }
+        #endregion
     }
 }

@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UserBE.cs" />
+    <Compile Include="LoginResult.cs" />
+    <Compile Include="MenuOptionBE.cs" />
+    <Compile Include="RoleBE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
