@@ -232,6 +232,21 @@ namespace MPP
             return _access.Save(query, parameters);
         }
 
+        public bool UpdatePassword(int userId, string passwordHash)
+        {
+            string query = @"UPDATE Users
+                            SET password_hash = @passwordHash
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@passwordHash", passwordHash),
+                new SqlParameter("@id", userId)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
         private UserBE FindOne(string query, SqlParameter[] parameters)
         {
             DataTable table = _access.Read(query, parameters);

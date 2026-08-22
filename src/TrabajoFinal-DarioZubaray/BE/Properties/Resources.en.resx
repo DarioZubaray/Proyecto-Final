@@ -121,6 +121,9 @@
   <data name="Main_MenuPreferences" xml:space="preserve">
     <value>Preferences</value>
   </data>
+  <data name="Main_MenuChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
   <data name="Main_MenuAdministration" xml:space="preserve">
     <value>Administration</value>
   </data>
@@ -192,5 +195,35 @@
   </data>
   <data name="UserForm_RoleUser" xml:space="preserve">
     <value>User</value>
+  </data>
+  <data name="ChangePassword_Title" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangePassword_CurrentLabel" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="ChangePassword_NewLabel" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="ChangePassword_ConfirmLabel" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="ChangePassword_ChangeButton" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="ChangePassword_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ChangePassword_RequiredFields" xml:space="preserve">
+    <value>All fields are required.</value>
+  </data>
+  <data name="ChangePassword_PasswordsMismatch" xml:space="preserve">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="ChangePassword_InvalidCurrent" xml:space="preserve">
+    <value>Current password is incorrect.</value>
+  </data>
+  <data name="ChangePassword_Success" xml:space="preserve">
+    <value>Password changed successfully.</value>
   </data>
 </root>

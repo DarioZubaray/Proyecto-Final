@@ -52,6 +52,26 @@ namespace BLL
         {
             return _userMPP.UpdateLanguage(userId, language);
         }
+
+        public bool ChangePassword(int userId, string currentPassword, string newPassword)
+        {
+            UserBE user = _userMPP.FindById(new UserBE { Id = userId });
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            bool isValid = EncryptionBLL.VerifyPassword(currentPassword, user.PasswordHash);
+
+            if (!isValid)
+            {
+                return false;
+            }
+
+            string newHash = EncryptionBLL.HashPassword(newPassword);
+            return _userMPP.UpdatePassword(userId, newHash);
+        }
         #endregion
     }
 }

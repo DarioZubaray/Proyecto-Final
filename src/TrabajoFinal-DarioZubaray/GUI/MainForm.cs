@@ -23,6 +23,7 @@ namespace TrabajoFinal_DarioZubaray
             this.Text = Resources.Main_Title;
             archivoToolStripMenuItem.Text = Resources.Main_MenuFile;
             preferenciasToolStripMenuItem.Text = Resources.Main_MenuPreferences;
+            cambiarContraseñaToolStripMenuItem.Text = Resources.Main_MenuChangePassword;
             cerrarSesiónToolStripMenuItem.Text = Resources.Main_MenuLogout;
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
@@ -63,6 +64,12 @@ namespace TrabajoFinal_DarioZubaray
                 MdiParent = this
             };
             form.Show();
+        }
+
+        private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new ChangePasswordForm(_user);
+            form.ShowDialog();
         }
     }
 }

@@ -250,6 +250,15 @@ namespace BE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Cambiar Contraseña.
+        /// </summary>
+        public static string Main_MenuChangePassword {
+            get {
+                return ResourceManager.GetString("Main_MenuChangePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Administración.
         /// </summary>
         public static string Main_MenuAdministration {
@@ -462,6 +471,96 @@ namespace BE.Properties {
         public static string UserForm_RoleUser {
             get {
                 return ResourceManager.GetString("UserForm_RoleUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cambiar Contraseña.
+        /// </summary>
+        public static string ChangePassword_Title {
+            get {
+                return ResourceManager.GetString("ChangePassword_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Contraseña actual.
+        /// </summary>
+        public static string ChangePassword_CurrentLabel {
+            get {
+                return ResourceManager.GetString("ChangePassword_CurrentLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Nueva contraseña.
+        /// </summary>
+        public static string ChangePassword_NewLabel {
+            get {
+                return ResourceManager.GetString("ChangePassword_NewLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Confirmar contraseña.
+        /// </summary>
+        public static string ChangePassword_ConfirmLabel {
+            get {
+                return ResourceManager.GetString("ChangePassword_ConfirmLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cambiar.
+        /// </summary>
+        public static string ChangePassword_ChangeButton {
+            get {
+                return ResourceManager.GetString("ChangePassword_ChangeButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cancelar.
+        /// </summary>
+        public static string ChangePassword_CancelButton {
+            get {
+                return ResourceManager.GetString("ChangePassword_CancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Todos los campos son obligatorios.
+        /// </summary>
+        public static string ChangePassword_RequiredFields {
+            get {
+                return ResourceManager.GetString("ChangePassword_RequiredFields", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Las contraseñas no coinciden.
+        /// </summary>
+        public static string ChangePassword_PasswordsMismatch {
+            get {
+                return ResourceManager.GetString("ChangePassword_PasswordsMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La contraseña actual es incorrecta.
+        /// </summary>
+        public static string ChangePassword_InvalidCurrent {
+            get {
+                return ResourceManager.GetString("ChangePassword_InvalidCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Contraseña cambiada correctamente.
+        /// </summary>
+        public static string ChangePassword_Success {
+            get {
+                return ResourceManager.GetString("ChangePassword_Success", resourceCulture);
             }
         }
     }
