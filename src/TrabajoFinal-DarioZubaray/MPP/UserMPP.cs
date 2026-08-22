@@ -26,7 +26,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language
+                                   language, role_id
                             FROM Users
                             WHERE user_name = @userName";
 
@@ -110,7 +110,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language
+                                   language, role_id
                             FROM Users
                             WHERE id = @id";
 
@@ -126,10 +126,26 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language
+                                   language, role_id
                             FROM Users";
 
             return FindMany(query);
+        }
+
+        public List<UserBE> FindByUserName(string userName)
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at,
+                                   language, role_id
+                            FROM Users
+                            WHERE user_name LIKE @userName";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@userName", "%" + userName + "%")
+            };
+
+            return FindMany(query, parameters);
         }
         #endregion
 
@@ -145,7 +161,8 @@ namespace MPP
                 RetriesCount = Convert.ToInt32(row["retries_count"]),
                 LastUpdate = (DateTime)row["last_update"],
                 CreatedAt = (DateTime)row["created_at"],
-                Language = row["language"].ToString()
+                Language = row["language"].ToString(),
+                RoleId = row["role_id"] != DBNull.Value ? Convert.ToInt32(row["role_id"]) : 0
             };
         }
 
@@ -159,7 +176,8 @@ namespace MPP
                 new SqlParameter("@retriesCount", user.RetriesCount),
                 new SqlParameter("@lastUpdate", user.LastUpdate),
                 new SqlParameter("@createdAt", user.CreatedAt),
-                new SqlParameter("@language", user.Language ?? "es")
+                new SqlParameter("@language", user.Language ?? "es"),
+                new SqlParameter("@roleId", user.RoleId)
             };
         }
 
@@ -167,10 +185,10 @@ namespace MPP
         {
             string query = @"INSERT INTO Users
                                 (user_name, password_hash, is_active,
-                                 retries_count, last_update, created_at, language)
+                                 retries_count, last_update, created_at, language, role_id)
                             VALUES
                                 (@userName, @passwordHash, @isActive,
-                                 @retriesCount, @lastUpdate, @createdAt, @language);
+                                 @retriesCount, @lastUpdate, @createdAt, @language, @roleId);
                             SELECT SCOPE_IDENTITY();";
 
             SqlParameter[] parameters = CreateUserParameters(user);
@@ -187,7 +205,8 @@ namespace MPP
                                 retries_count = @retriesCount,
                                 last_update = @lastUpdate,
                                 created_at = @createdAt,
-                                language = @language
+                                language = @language,
+                                role_id = @roleId
                             WHERE id = @id";
 
             SqlParameter[] parameters = CreateUserParameters(user);
@@ -229,6 +248,19 @@ namespace MPP
         {
             List<UserBE> users = new List<UserBE>();
             DataTable table = _access.Read(query);
+
+            foreach (DataRow row in table.Rows)
+            {
+                users.Add(MapUser(row));
+            }
+
+            return users;
+        }
+
+        private List<UserBE> FindMany(string query, SqlParameter[] parameters)
+        {
+            List<UserBE> users = new List<UserBE>();
+            DataTable table = _access.Read(query, parameters);
 
             foreach (DataRow row in table.Rows)
             {

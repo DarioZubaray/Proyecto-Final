@@ -248,5 +248,221 @@ namespace BE.Properties {
                 return ResourceManager.GetString("Main_MenuPreferences", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Administración.
+        /// </summary>
+        public static string Main_MenuAdministration {
+            get {
+                return ResourceManager.GetString("Main_MenuAdministration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Usuarios.
+        /// </summary>
+        public static string Main_MenuUsers {
+            get {
+                return ResourceManager.GetString("Main_MenuUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Gestión de Usuarios.
+        /// </summary>
+        public static string UserManagement_Title {
+            get {
+                return ResourceManager.GetString("UserManagement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Nuevo.
+        /// </summary>
+        public static string UserManagement_New {
+            get {
+                return ResourceManager.GetString("UserManagement_New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Editar.
+        /// </summary>
+        public static string UserManagement_Edit {
+            get {
+                return ResourceManager.GetString("UserManagement_Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Eliminar.
+        /// </summary>
+        public static string UserManagement_Delete {
+            get {
+                return ResourceManager.GetString("UserManagement_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Buscar.
+        /// </summary>
+        public static string UserManagement_Search {
+            get {
+                return ResourceManager.GetString("UserManagement_Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ¿Está seguro que desea eliminar el usuario "{0}"?.
+        /// </summary>
+        public static string UserManagement_DeleteConfirm {
+            get {
+                return ResourceManager.GetString("UserManagement_DeleteConfirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Usuario eliminado correctamente..
+        /// </summary>
+        public static string UserManagement_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("UserManagement_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Seleccione un usuario de la grilla..
+        /// </summary>
+        public static string UserManagement_SelectUser {
+            get {
+                return ResourceManager.GetString("UserManagement_SelectUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Nombre de usuario:.
+        /// </summary>
+        public static string UserManagement_SearchLabel {
+            get {
+                return ResourceManager.GetString("UserManagement_SearchLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Nuevo Usuario.
+        /// </summary>
+        public static string UserForm_NewTitle {
+            get {
+                return ResourceManager.GetString("UserForm_NewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Editar Usuario.
+        /// </summary>
+        public static string UserForm_EditTitle {
+            get {
+                return ResourceManager.GetString("UserForm_EditTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Nombre de usuario.
+        /// </summary>
+        public static string UserForm_UserNameLabel {
+            get {
+                return ResourceManager.GetString("UserForm_UserNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Contraseña.
+        /// </summary>
+        public static string UserForm_PasswordLabel {
+            get {
+                return ResourceManager.GetString("UserForm_PasswordLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Activo.
+        /// </summary>
+        public static string UserForm_IsActiveLabel {
+            get {
+                return ResourceManager.GetString("UserForm_IsActiveLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Rol.
+        /// </summary>
+        public static string UserForm_RoleLabel {
+            get {
+                return ResourceManager.GetString("UserForm_RoleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Guardar.
+        /// </summary>
+        public static string UserForm_Save {
+            get {
+                return ResourceManager.GetString("UserForm_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cancelar.
+        /// </summary>
+        public static string UserForm_Cancel {
+            get {
+                return ResourceManager.GetString("UserForm_Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El nombre de usuario es obligatorio..
+        /// </summary>
+        public static string UserForm_UserNameRequired {
+            get {
+                return ResourceManager.GetString("UserForm_UserNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a La contraseña es obligatoria..
+        /// </summary>
+        public static string UserForm_PasswordRequired {
+            get {
+                return ResourceManager.GetString("UserForm_PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Usuario guardado correctamente..
+        /// </summary>
+        public static string UserForm_UserSaved {
+            get {
+                return ResourceManager.GetString("UserForm_UserSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Administrador.
+        /// </summary>
+        public static string UserForm_RoleAdmin {
+            get {
+                return ResourceManager.GetString("UserForm_RoleAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Usuario.
+        /// </summary>
+        public static string UserForm_RoleUser {
+            get {
+                return ResourceManager.GetString("UserForm_RoleUser", resourceCulture);
+            }
+        }
     }
 }
