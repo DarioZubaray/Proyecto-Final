@@ -4,7 +4,7 @@ namespace BE
 {
     public class UserBE
     {
-        #region Propiedades
+        #region Properties
         public int Id { get; set; }
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
@@ -14,26 +14,28 @@ namespace BE
         public DateTime CreatedAt { get; set; }
         public int RoleId { get; set; }
         public RoleBE Role { get; set; }
-
         #endregion
 
-        #region Constructores
+        #region Constructors
         public UserBE() { }
 
-        public UserBE(int pId, string pUserName, string pPasswordHash, bool pIsActive, int pRetriesCount, DateTime pLastUpdate, DateTime pCreatedAt, int pRoleId)
+        public UserBE(
+            int id, string userName, string passwordHash,
+            bool isActive, int retriesCount, DateTime lastUpdate,
+            DateTime createdAt, int roleId)
         {
-            this.Id = pId;
-            this.UserName = pUserName;
-            this.PasswordHash = pPasswordHash;
-            this.IsActive = pIsActive;
-            this.RetriesCount = pRetriesCount;
-            this.LastUpdate = pLastUpdate;
-            this.CreatedAt = pCreatedAt;
-            this.RoleId = pRoleId;
+            Id = id;
+            UserName = userName;
+            PasswordHash = passwordHash;
+            IsActive = isActive;
+            RetriesCount = retriesCount;
+            LastUpdate = lastUpdate;
+            CreatedAt = createdAt;
+            RoleId = roleId;
         }
         #endregion
 
-        #region Métodos
+        #region Methods
         public override string ToString()
         {
             return $"{Id}, {UserName}, {IsActive}, {LastUpdate}";

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Login_Title" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="Login_UsernameLabel" xml:space="preserve">
+    <value>Usuario</value>
+  </data>
+  <data name="Login_PasswordLabel" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="Login_Button" xml:space="preserve">
+    <value>Iniciar Sesión</value>
+  </data>
+  <data name="Login_MessageInvalid" xml:space="preserve">
+    <value>Usuario o Contraseña no válidos!</value>
+  </data>
+  <data name="Login_Developer" xml:space="preserve">
+    <value>desarrollado por Darío Zubaray</value>
+  </data>
+  <data name="Main_Title" xml:space="preserve">
+    <value>Aplicativo Académico</value>
+  </data>
+  <data name="Main_MenuFile" xml:space="preserve">
+    <value>Archivo</value>
+  </data>
+  <data name="Main_MenuLogout" xml:space="preserve">
+    <value>Cerrar Sesión</value>
+  </data>
+  <data name="Auth_RequiredFields" xml:space="preserve">
+    <value>Usuario y contraseña son obligatorios.</value>
+  </data>
+  <data name="Auth_InvalidCredentials" xml:space="preserve">
+    <value>Usuario o contraseña incorrectos.</value>
+  </data>
+  <data name="Auth_UserBlocked" xml:space="preserve">
+    <value>Usuario bloqueado. Contacte al administrador.</value>
+  </data>
+  <data name="Auth_LoginSuccess" xml:space="preserve">
+    <value>Login exitoso.</value>
+  </data>
+  <data name="Auth_MaxRetriesExceeded" xml:space="preserve">
+    <value>Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador.</value>
+  </data>
+  <data name="Auth_RetriesLeft" xml:space="preserve">
+    <value>Usuario o contraseña incorrectos. Intentos restantes: {0}</value>
+  </data>
+  <data name="Role_OptionsCount" xml:space="preserve">
+    <value>{0} opciones</value>
+  </data>
+</root>

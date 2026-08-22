@@ -1,6 +1,0 @@
-D:\UAI\05-TrabajoFinal\repositorio\src\TrabajoFinal-DarioZubaray\BE\bin\Debug\BE.dll
-D:\UAI\05-TrabajoFinal\repositorio\src\TrabajoFinal-DarioZubaray\BE\bin\Debug\BE.pdb
-D:\UAI\05-TrabajoFinal\repositorio\src\TrabajoFinal-DarioZubaray\BE\obj\Debug\BE.csproj.AssemblyReference.cache
-D:\UAI\05-TrabajoFinal\repositorio\src\TrabajoFinal-DarioZubaray\BE\obj\Debug\BE.csproj.CoreCompileInputs.cache
-D:\UAI\05-TrabajoFinal\repositorio\src\TrabajoFinal-DarioZubaray\BE\obj\Debug\BE.dll
-D:\UAI\05-TrabajoFinal\repositorio\src\TrabajoFinal-DarioZubaray\BE\obj\Debug\BE.pdb

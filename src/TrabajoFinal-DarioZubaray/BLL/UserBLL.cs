@@ -5,38 +5,42 @@ using MPP;
 
 namespace BLL
 {
-    public class UserBLL
+    public class UserBLL : IUserBLL
     {
-        #region Propiedades
-        private UserMPP mapeador;
+        #region Fields
+        private readonly IUserMPP _userMPP;
         #endregion
 
-        #region Constructores
-        public UserBLL()
+        #region Constructors
+        public UserBLL() : this(new MPP.UserMPP())
         {
-            mapeador = new UserMPP();
+        }
+
+        public UserBLL(IUserMPP userMPP)
+        {
+            _userMPP = userMPP;
         }
         #endregion
 
-        #region Métodos
-        public bool Baja(UserBE user)
+        #region Public Methods
+        public bool Delete(UserBE user)
         {
-            return mapeador.Baja(user);
+            return _userMPP.Delete(user);
         }
 
-        public bool Guardar(UserBE user)
+        public bool Save(UserBE user)
         {
-            return mapeador.Guardar(user);
+            return _userMPP.Save(user);
         }
 
-        public UserBE ListarObjeto(UserBE user)
+        public UserBE FindById(UserBE user)
         {
-            throw new System.NotImplementedException();
+            return _userMPP.FindById(user);
         }
 
-        public List<UserBE> ListarTodo()
+        public List<UserBE> FindAll()
         {
-            return mapeador.ListarTodo();
+            return _userMPP.FindAll();
         }
         #endregion
     }

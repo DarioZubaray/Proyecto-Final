@@ -1,0 +1,15 @@
+# .NET / Visual Studio
+**/bin/
+**/obj/
+
+# NuGet packages
+**/packages/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build outputs
+*.dll
+*.exe

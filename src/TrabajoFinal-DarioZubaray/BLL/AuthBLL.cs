@@ -1,79 +1,115 @@
 ﻿using System;
 using BE;
+using BE.Properties;
 using MPP;
 
 namespace BLL
 {
-    public class AuthBLL
+    public class AuthBLL : IAuthBLL
     {
-        #region Propiedades
-        private UserMPP mapeador;
+        #region Fields
+        private readonly IUserMPP _userMPP;
         private const int MaxRetries = 3;
         #endregion
 
-        #region Constructores
-        public AuthBLL()
+        #region Constructors
+        public AuthBLL() : this(new MPP.UserMPP())
         {
-            mapeador = new UserMPP();
+        }
+
+        public AuthBLL(IUserMPP userMPP)
+        {
+            _userMPP = userMPP;
         }
         #endregion
 
-        #region Métodos
+        #region Public Methods
         public LoginResult Login(string userName, string password)
         {
-            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            if (!AreCredentialsValid(userName, password))
             {
-                return new LoginResult { Success = false, Message = "Usuario y contraseña son obligatorios." };
+                return CreateLoginFailed(Resources.Auth_RequiredFields);
             }
 
-            UserBE user = mapeador.ObtenerPorUserName(userName);
+            UserBE user = _userMPP.GetByUserName(userName);
 
             if (user == null)
             {
-                return new LoginResult { Success = false, Message = "Usuario o contraseña incorrectos." };
+                return CreateLoginFailed(Resources.Auth_InvalidCredentials);
             }
 
             if (!user.IsActive)
             {
-                return new LoginResult { Success = false, Message = "Usuario bloqueado. Contacte al administrador." };
+                return CreateLoginFailed(Resources.Auth_UserBlocked);
             }
 
-            string hashedPassword = EncriptacionBLL.HashPassword(password);
-
-            if (user.PasswordHash == hashedPassword)
-            {
-                user.LastUpdate = DateTime.Now;
-                mapeador.ActualizarLastUpdate(user.Id, user.LastUpdate);
-
-                if (user.RetriesCount != 0)
-                {
-                    user.RetriesCount = 0;
-                    mapeador.ActualizarRetries(user.Id, 0);
-                }
-
-                return new LoginResult { Success = true, Message = "Login exitoso.", User = user };
-            }
-            else
-            {
-                user.RetriesCount++;
-
-                if (user.RetriesCount >= MaxRetries)
-                {
-                    mapeador.Desactivar(user.Id);
-                    return new LoginResult { Success = false, Message = "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador." };
-                }
-                else
-                {
-                    mapeador.ActualizarRetries(user.Id, user.RetriesCount);
-                    int retriesLeft = MaxRetries - user.RetriesCount;
-                    return new LoginResult { Success = false, Message = $"Usuario o contraseña incorrectos. Intentos restantes: {retriesLeft}" };
-                }
-            }
+            return AuthenticateUser(user, password);
         }
 
         public bool Logout(UserBE user)
         {
-            return mapeador.Guardar(user);
+            return _userMPP.Save(user);
+        }
+        #endregion
+
+        #region Private Methods
+        private bool AreCredentialsValid(string userName, string password)
+        {
+            return !string.IsNullOrEmpty(userName)
+                && !string.IsNullOrEmpty(password);
+        }
+
+        private LoginResult AuthenticateUser(UserBE user, string password)
+        {
+            bool isPasswordValid = EncryptionBLL
+                .VerifyPassword(password, user.PasswordHash);
+
+            if (isPasswordValid)
+            {
+                return LoginSuccessful(user);
+            }
+
+            return LoginFailed(user);
+        }
+
+        private LoginResult LoginSuccessful(UserBE user)
+        {
+            user.LastUpdate = DateTime.Now;
+            _userMPP.UpdateLastUpdate(user.Id, user.LastUpdate);
+
+            if (user.RetriesCount != 0)
+            {
+                user.RetriesCount = 0;
+                _userMPP.UpdateRetries(user.Id, 0);
+            }
+
+            return new LoginResult
+            {
+                Success = true,
+                Message = Resources.Auth_LoginSuccess,
+                User = user
+            };
+        }
+
+        private LoginResult LoginFailed(UserBE user)
+        {
+            user.RetriesCount++;
+
+            if (user.RetriesCount >= MaxRetries)
+            {
+                _userMPP.Deactivate(user.Id);
+                return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded);
+            }
+
+            _userMPP.UpdateRetries(user.Id, user.RetriesCount);
+            int retriesLeft = MaxRetries - user.RetriesCount;
+            return CreateLoginFailed(
+                string.Format(Resources.Auth_RetriesLeft, retriesLeft));
+        }
+
+        private LoginResult CreateLoginFailed(string message)
+        {
+            return new LoginResult { Success = false, Message = message };
         }
         #endregion
     }

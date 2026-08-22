@@ -3,25 +3,40 @@ using System.Windows.Forms;
 
 using BLL;
 using BE;
+using BE.Properties;
 
 namespace TrabajoFinal_DarioZubaray
 {
     public partial class LoginForm : Form
     {
-        #region Propiedades
-        private AuthBLL _authBLL;
+        #region Fields
+        private IAuthBLL _authBLL;
         #endregion
 
-        #region Inicializdores
+        #region Constructor
         public LoginForm()
         {
             InitializeComponent();
-            _authBLL = new AuthBLL();
+            _authBLL = ServiceLocator.CreateAuthBLL();
+            ApplyResources();
         }
         #endregion
 
-        #region Eventos
-        private void button1_Click(object sender, EventArgs e)
+        #region Private Methods
+        private void ApplyResources()
+        {
+            this.Text = Resources.Main_Title;
+            groupBox1.Text = Resources.Login_Title;
+            lblUser.Text = Resources.Login_UsernameLabel;
+            lblPass.Text = Resources.Login_PasswordLabel;
+            btnLogin.Text = Resources.Login_Button;
+            lblDeveloper.Text = Resources.Login_Developer;
+            lblMessage.Text = Resources.Login_MessageInvalid;
+        }
+        #endregion
+
+        #region Events
+        private void btnLogin_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;
             var username = txtUser.Text;
@@ -41,6 +56,7 @@ namespace TrabajoFinal_DarioZubaray
                 DialogResult dialogResult = mainForm.ShowDialog();
                 this.Show();
                 txtUser.Text = "";
+                txtUser.Focus();
                 txtPass.Text = "";
                 lblMessage.Visible = false;
             }
@@ -64,7 +80,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (e.KeyCode == Keys.Enter)
             {
-                button1.PerformClick();
+                btnLogin.PerformClick();
                 e.SuppressKeyPress = true;
             }
         }
