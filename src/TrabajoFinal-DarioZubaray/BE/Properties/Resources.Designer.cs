@@ -203,5 +203,50 @@ namespace BE.Properties {
                 return ResourceManager.GetString("Role_OptionsCount", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Preferencias.
+        /// </summary>
+        public static string Preferences_Title {
+            get {
+                return ResourceManager.GetString("Preferences_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Idioma.
+        /// </summary>
+        public static string Preferences_LanguageLabel {
+            get {
+                return ResourceManager.GetString("Preferences_LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Guardar.
+        /// </summary>
+        public static string Preferences_SaveButton {
+            get {
+                return ResourceManager.GetString("Preferences_SaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Idioma guardado correctamente.
+        /// </summary>
+        public static string Preferences_SaveSuccess {
+            get {
+                return ResourceManager.GetString("Preferences_SaveSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Preferencias.
+        /// </summary>
+        public static string Main_MenuPreferences {
+            get {
+                return ResourceManager.GetString("Main_MenuPreferences", resourceCulture);
+            }
+        }
     }
 }

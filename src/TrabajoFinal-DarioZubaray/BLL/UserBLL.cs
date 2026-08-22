@@ -42,6 +42,11 @@ namespace BLL
         {
             return _userMPP.FindAll();
         }
+
+        public bool UpdateLanguage(int userId, string language)
+        {
+            return _userMPP.UpdateLanguage(userId, language);
+        }
         #endregion
     }
 }

@@ -10,5 +10,6 @@ namespace BLL
         bool Save(UserBE user);
         UserBE FindById(UserBE user);
         List<UserBE> FindAll();
+        bool UpdateLanguage(int userId, string language);
     }
 }

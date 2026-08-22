@@ -51,9 +51,12 @@ namespace TrabajoFinal_DarioZubaray
 
             if (result.Success)
             {
+                CultureHelper.SetCulture(result.User.Language);
                 this.Hide();
-                MainForm mainForm = new MainForm();
+                MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
+                CultureHelper.SetCulture(CultureHelper.DefaultLanguage);
+                ApplyResources();
                 this.Show();
                 txtUser.Text = "";
                 txtUser.Focus();

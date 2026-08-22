@@ -25,7 +25,8 @@ namespace MPP
         public UserBE GetByUserName(string userName)
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
-                                   retries_count, last_update, created_at
+                                   retries_count, last_update, created_at,
+                                   language
                             FROM Users
                             WHERE user_name = @userName";
 
@@ -108,7 +109,8 @@ namespace MPP
         public UserBE FindById(UserBE user)
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
-                                   retries_count, last_update, created_at
+                                   retries_count, last_update, created_at,
+                                   language
                             FROM Users
                             WHERE id = @id";
 
@@ -123,7 +125,8 @@ namespace MPP
         public List<UserBE> FindAll()
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
-                                   retries_count, last_update, created_at
+                                   retries_count, last_update, created_at,
+                                   language
                             FROM Users";
 
             return FindMany(query);
@@ -141,7 +144,8 @@ namespace MPP
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 RetriesCount = Convert.ToInt32(row["retries_count"]),
                 LastUpdate = (DateTime)row["last_update"],
-                CreatedAt = (DateTime)row["created_at"]
+                CreatedAt = (DateTime)row["created_at"],
+                Language = row["language"].ToString()
             };
         }
 
@@ -154,7 +158,8 @@ namespace MPP
                 new SqlParameter("@isActive", user.IsActive),
                 new SqlParameter("@retriesCount", user.RetriesCount),
                 new SqlParameter("@lastUpdate", user.LastUpdate),
-                new SqlParameter("@createdAt", user.CreatedAt)
+                new SqlParameter("@createdAt", user.CreatedAt),
+                new SqlParameter("@language", user.Language ?? "es")
             };
         }
 
@@ -162,10 +167,10 @@ namespace MPP
         {
             string query = @"INSERT INTO Users
                                 (user_name, password_hash, is_active,
-                                 retries_count, last_update, created_at)
+                                 retries_count, last_update, created_at, language)
                             VALUES
                                 (@userName, @passwordHash, @isActive,
-                                 @retriesCount, @lastUpdate, @createdAt);
+                                 @retriesCount, @lastUpdate, @createdAt, @language);
                             SELECT SCOPE_IDENTITY();";
 
             SqlParameter[] parameters = CreateUserParameters(user);
@@ -181,10 +186,30 @@ namespace MPP
                                 is_active = @isActive,
                                 retries_count = @retriesCount,
                                 last_update = @lastUpdate,
-                                created_at = @createdAt
+                                created_at = @createdAt,
+                                language = @language
                             WHERE id = @id";
 
             SqlParameter[] parameters = CreateUserParameters(user);
+            var idParam = new SqlParameter("@id", user.Id);
+            var allParameters = new SqlParameter[parameters.Length + 1];
+            parameters.CopyTo(allParameters, 0);
+            allParameters[parameters.Length] = idParam;
+            return _access.Save(query, allParameters);
+        }
+
+        public bool UpdateLanguage(int userId, string language)
+        {
+            string query = @"UPDATE Users
+                            SET language = @language
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@language", language),
+                new SqlParameter("@id", userId)
+            };
+
             return _access.Save(query, parameters);
         }
 

@@ -145,6 +145,7 @@ namespace TrabajoFinal_DarioZubaray
             this.ClientSize = new System.Drawing.Size(529, 321);
             this.Controls.Add(this.groupBox1);
             this.Name = "LoginForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Aplicativo Académico";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
