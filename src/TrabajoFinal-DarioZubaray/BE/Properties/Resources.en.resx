@@ -121,4 +121,109 @@
   <data name="Main_MenuPreferences" xml:space="preserve">
     <value>Preferences</value>
   </data>
+  <data name="Main_MenuChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="Main_MenuAdministration" xml:space="preserve">
+    <value>Administration</value>
+  </data>
+  <data name="Main_MenuUsers" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="UserManagement_Title" xml:space="preserve">
+    <value>User Management</value>
+  </data>
+  <data name="UserManagement_New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="UserManagement_Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="UserManagement_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="UserManagement_Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="UserManagement_DeleteConfirm" xml:space="preserve">
+    <value>Are you sure you want to delete user "{0}"?</value>
+  </data>
+  <data name="UserManagement_DeleteSuccess" xml:space="preserve">
+    <value>User deleted successfully.</value>
+  </data>
+  <data name="UserManagement_SelectUser" xml:space="preserve">
+    <value>Select a user from the grid.</value>
+  </data>
+  <data name="UserManagement_SearchLabel" xml:space="preserve">
+    <value>Username:</value>
+  </data>
+  <data name="UserForm_NewTitle" xml:space="preserve">
+    <value>New User</value>
+  </data>
+  <data name="UserForm_EditTitle" xml:space="preserve">
+    <value>Edit User</value>
+  </data>
+  <data name="UserForm_UserNameLabel" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="UserForm_PasswordLabel" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="UserForm_IsActiveLabel" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="UserForm_RoleLabel" xml:space="preserve">
+    <value>Role</value>
+  </data>
+  <data name="UserForm_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="UserForm_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="UserForm_UserNameRequired" xml:space="preserve">
+    <value>Username is required.</value>
+  </data>
+  <data name="UserForm_PasswordRequired" xml:space="preserve">
+    <value>Password is required.</value>
+  </data>
+  <data name="UserForm_UserSaved" xml:space="preserve">
+    <value>User saved successfully.</value>
+  </data>
+  <data name="UserForm_RoleAdmin" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="UserForm_RoleUser" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="ChangePassword_Title" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangePassword_CurrentLabel" xml:space="preserve">
+    <value>Current password</value>
+  </data>
+  <data name="ChangePassword_NewLabel" xml:space="preserve">
+    <value>New password</value>
+  </data>
+  <data name="ChangePassword_ConfirmLabel" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="ChangePassword_ChangeButton" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="ChangePassword_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="ChangePassword_RequiredFields" xml:space="preserve">
+    <value>All fields are required.</value>
+  </data>
+  <data name="ChangePassword_PasswordsMismatch" xml:space="preserve">
+    <value>Passwords do not match.</value>
+  </data>
+  <data name="ChangePassword_InvalidCurrent" xml:space="preserve">
+    <value>Current password is incorrect.</value>
+  </data>
+  <data name="ChangePassword_Success" xml:space="preserve">
+    <value>Password changed successfully.</value>
+  </data>
 </root>

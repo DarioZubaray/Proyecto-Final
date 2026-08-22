@@ -15,6 +15,8 @@ namespace MPP
         bool Save(UserBE user);
         UserBE FindById(UserBE user);
         List<UserBE> FindAll();
+        List<UserBE> FindByUserName(string userName);
         bool UpdateLanguage(int userId, string language);
+        bool UpdatePassword(int userId, string passwordHash);
     }
 }
