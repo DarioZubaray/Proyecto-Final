@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
-using TrabajoFinal_DarioZubaray.Properties;
+using BE.Properties;
 
 namespace TrabajoFinal_DarioZubaray
 {

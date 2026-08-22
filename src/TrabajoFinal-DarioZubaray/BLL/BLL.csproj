@@ -48,7 +48,6 @@
     <Compile Include="EncryptionBLL.cs" />
     <Compile Include="IAuthBLL.cs" />
     <Compile Include="IUserBLL.cs" />
-    <Compile Include="Messages.cs" />
     <Compile Include="ServiceLocator.cs" />
     <Compile Include="UserBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

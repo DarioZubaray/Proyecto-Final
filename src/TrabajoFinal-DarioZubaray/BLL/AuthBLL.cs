@@ -1,5 +1,6 @@
 ﻿using System;
 using BE;
+using BE.Properties;
 using MPP;
 
 namespace BLL
@@ -27,19 +28,19 @@ namespace BLL
         {
             if (!AreCredentialsValid(userName, password))
             {
-                return CreateLoginFailed(Messages.Auth_RequiredFields);
+                return CreateLoginFailed(Resources.Auth_RequiredFields);
             }
 
             UserBE user = _userMPP.GetByUserName(userName);
 
             if (user == null)
             {
-                return CreateLoginFailed(Messages.Auth_InvalidCredentials);
+                return CreateLoginFailed(Resources.Auth_InvalidCredentials);
             }
 
             if (!user.IsActive)
             {
-                return CreateLoginFailed(Messages.Auth_UserBlocked);
+                return CreateLoginFailed(Resources.Auth_UserBlocked);
             }
 
             return AuthenticateUser(user, password);
@@ -85,7 +86,7 @@ namespace BLL
             return new LoginResult
             {
                 Success = true,
-                Message = Messages.Auth_LoginSuccess,
+                Message = Resources.Auth_LoginSuccess,
                 User = user
             };
         }
@@ -97,13 +98,13 @@ namespace BLL
             if (user.RetriesCount >= MaxRetries)
             {
                 _userMPP.Deactivate(user.Id);
-                return CreateLoginFailed(Messages.Auth_MaxRetriesExceeded);
+                return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded);
             }
 
             _userMPP.UpdateRetries(user.Id, user.RetriesCount);
             int retriesLeft = MaxRetries - user.RetriesCount;
             return CreateLoginFailed(
-                string.Format(Messages.Auth_RetriesLeft, retriesLeft));
+                string.Format(Resources.Auth_RetriesLeft, retriesLeft));
         }
 
         private LoginResult CreateLoginFailed(string message)

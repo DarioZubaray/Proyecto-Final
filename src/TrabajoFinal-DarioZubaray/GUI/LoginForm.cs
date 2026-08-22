@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 using BLL;
 using BE;
-using TrabajoFinal_DarioZubaray.Properties;
+using BE.Properties;
 
 namespace TrabajoFinal_DarioZubaray
 {
