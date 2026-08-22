@@ -32,6 +32,7 @@ namespace TrabajoFinal_DarioZubaray
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferenciasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,6 +49,7 @@ namespace TrabajoFinal_DarioZubaray
             // archivoToolStripMenuItem
             // 
             this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.preferenciasToolStripMenuItem,
             this.cerrarSesiónToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
             this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
@@ -60,6 +62,13 @@ namespace TrabajoFinal_DarioZubaray
             this.cerrarSesiónToolStripMenuItem.Text = "Cerrar Sesión";
             this.cerrarSesiónToolStripMenuItem.Click += new System.EventHandler(this.cerrarSesiónToolStripMenuItem_Click);
             // 
+            // preferenciasToolStripMenuItem
+            // 
+            this.preferenciasToolStripMenuItem.Name = "preferenciasToolStripMenuItem";
+            this.preferenciasToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.preferenciasToolStripMenuItem.Text = "Preferencias";
+            this.preferenciasToolStripMenuItem.Click += new System.EventHandler(this.preferenciasToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -69,6 +78,7 @@ namespace TrabajoFinal_DarioZubaray
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Aplicativo Académico";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -82,6 +92,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem archivoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cerrarSesiónToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem preferenciasToolStripMenuItem;
     }
 }
 

@@ -58,6 +58,12 @@
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PreferencesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreferencesForm.Designer.cs">
+      <DependentUpon>PreferencesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="LoginForm.resx">
@@ -65,6 +71,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreferencesForm.resx">
+      <DependentUpon>PreferencesForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
