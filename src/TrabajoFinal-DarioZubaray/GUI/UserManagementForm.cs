@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+
 using BE;
 using BE.Properties;
 using BLL;
@@ -8,9 +9,12 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class UserManagementForm : Form
     {
+        #region Propiedades
         private readonly UserBE _currentUser;
         private readonly IUserBLL _userBLL;
+        #endregion
 
+        #region Constructores
         public UserManagementForm(UserBE user)
         {
             InitializeComponent();
@@ -19,7 +23,9 @@ namespace TrabajoFinal_DarioZubaray
             ApplyResources();
             LoadUsers();
         }
+        #endregion
 
+        #region Métodos
         private void ApplyResources()
         {
             this.Text = Resources.UserManagement_Title;
@@ -39,7 +45,10 @@ namespace TrabajoFinal_DarioZubaray
 
         private void ConfigureGrid()
         {
-            if (dgvUsers.Columns.Count == 0) return;
+            if (dgvUsers.Columns.Count == 0)
+            {
+                return;
+            }
 
             dgvUsers.Columns["Id"].HeaderText = "ID";
             dgvUsers.Columns["UserName"].HeaderText = Resources.UserForm_UserNameLabel;
@@ -65,7 +74,9 @@ namespace TrabajoFinal_DarioZubaray
             if (dgvUsers.CurrentRow == null) return null;
             return dgvUsers.CurrentRow.DataBoundItem as UserBE;
         }
+        #endregion
 
+        #region Eventos
         private void btnNew_Click(object sender, EventArgs e)
         {
             using (var form = new UserForm())
@@ -140,5 +151,6 @@ namespace TrabajoFinal_DarioZubaray
                 e.SuppressKeyPress = true;
             }
         }
+        #endregion
     }
 }

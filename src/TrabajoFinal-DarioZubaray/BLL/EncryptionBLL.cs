@@ -6,6 +6,7 @@ namespace BLL
 {
     public static class EncryptionBLL
     {
+        #region Métodos
         public static string HashPassword(string password)
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
@@ -57,5 +58,6 @@ namespace BLL
                 return builder.ToString() == storedHash;
             }
         }
+        #endregion
     }
 }

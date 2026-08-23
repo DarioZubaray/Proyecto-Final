@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 
 namespace BE
 {
     public class UserBE
     {
-        #region Properties
+        #region Propiedades
         public int Id { get; set; }
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
@@ -17,7 +17,7 @@ namespace BE
         public string Language { get; set; }
         #endregion
 
-        #region Constructors
+        #region Constructor
         public UserBE() { }
 
         public UserBE(
@@ -37,7 +37,7 @@ namespace BE
         }
         #endregion
 
-        #region Methods
+        #region Métodos
         public override string ToString()
         {
             return $"{Id}, {UserName}, {IsActive}, {LastUpdate}";

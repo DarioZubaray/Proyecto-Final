@@ -4,15 +4,20 @@ namespace BE
 {
     public class RoleBE
     {
+        #region Propiedades
         public int Id { get; set; }
         public string Name { get; set; }
         public List<MenuOptionBE> Options { get; set; }
+        #endregion
 
+        #region Constructor
         public RoleBE()
         {
             Options = new List<MenuOptionBE>();
         }
+        #endregion
 
+        #region Métodos
         public RoleBE(int id, string name, List<MenuOptionBE> options)
         {
             Id = id;
@@ -29,5 +34,6 @@ namespace BE
         {
             return $"{Name} ({Options.Count} options)";
         }
+        #endregion
     }
 }

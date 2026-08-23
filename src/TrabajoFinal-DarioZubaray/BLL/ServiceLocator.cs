@@ -4,8 +4,11 @@ namespace BLL
 {
     public static class ServiceLocator
     {
+        #region Propiedades
         private static IUserMPP _userMPP;
+        #endregion
 
+        #region Métodos
         public static IUserMPP GetUserMPP()
         {
             if (_userMPP == null)
@@ -25,5 +28,6 @@ namespace BLL
         {
             return new UserBLL(GetUserMPP());
         }
+        #endregion
     }
 }
