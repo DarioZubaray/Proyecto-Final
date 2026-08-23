@@ -563,5 +563,23 @@ namespace BE.Properties {
                 return ResourceManager.GetString("ChangePassword_Success", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ☺.
+        /// </summary>
+        public static string ChangePassword_GroupBox {
+            get {
+                return ResourceManager.GetString("ChangePassword_GroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ☺.
+        /// </summary>
+        public static string Preferences_GroupBox {
+            get {
+                return ResourceManager.GetString("Preferences_GroupBox", resourceCulture);
+            }
+        }
     }
 }

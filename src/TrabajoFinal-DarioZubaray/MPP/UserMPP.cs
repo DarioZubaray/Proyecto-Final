@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,7 +10,7 @@ namespace MPP
 {
     public class UserMPP : IUserMPP
     {
-        #region Fields
+        #region Propiedades
         private AccessDAL _access;
         #endregion
 
@@ -21,7 +21,7 @@ namespace MPP
         }
         #endregion
 
-        #region Public Methods
+        #region Métodos Públicos
         public UserBE GetByUserName(string userName)
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
@@ -149,7 +149,7 @@ namespace MPP
         }
         #endregion
 
-        #region Private Methods
+        #region Métodos Privados
         private UserBE MapUser(DataRow row)
         {
             return new UserBE

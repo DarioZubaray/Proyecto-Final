@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using BE;
 using MPP;
@@ -7,11 +7,11 @@ namespace BLL
 {
     public class UserBLL : IUserBLL
     {
-        #region Fields
+        #region Propiedades
         private readonly IUserMPP _userMPP;
         #endregion
 
-        #region Constructors
+        #region Constructor
         public UserBLL() : this(new MPP.UserMPP())
         {
         }
@@ -22,7 +22,7 @@ namespace BLL
         }
         #endregion
 
-        #region Public Methods
+        #region Métodos
         public bool Delete(UserBE user)
         {
             return _userMPP.Delete(user);

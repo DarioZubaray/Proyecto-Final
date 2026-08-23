@@ -226,4 +226,10 @@
   <data name="ChangePassword_Success" xml:space="preserve">
     <value>Senha alterada com sucesso.</value>
   </data>
+  <data name="Preferences_GroupBox" xml:space="preserve">
+    <value>Preferências</value>
+  </data>
+  <data name="ChangePassword_GroupBox" xml:space="preserve">
+    <value>Alterar Senha</value>
+  </data>
 </root>

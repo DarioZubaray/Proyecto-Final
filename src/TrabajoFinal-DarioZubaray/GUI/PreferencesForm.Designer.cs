@@ -43,14 +43,14 @@ namespace TrabajoFinal_DarioZubaray
             this.groupBox1.Controls.Add(this.lblLanguage);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(360, 150);
+            this.groupBox1.Size = new System.Drawing.Size(360, 180);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "☺";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(21, 121);
+            this.btnSave.Location = new System.Drawing.Point(140, 130);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
             this.btnSave.TabIndex = 2;
@@ -61,9 +61,9 @@ namespace TrabajoFinal_DarioZubaray
             // cbLanguage
             // 
             this.cbLanguage.FormattingEnabled = true;
-            this.cbLanguage.Location = new System.Drawing.Point(74, 26);
+            this.cbLanguage.Location = new System.Drawing.Point(140, 26);
             this.cbLanguage.Name = "cbLanguage";
-            this.cbLanguage.Size = new System.Drawing.Size(121, 21);
+            this.cbLanguage.Size = new System.Drawing.Size(200, 21);
             this.cbLanguage.TabIndex = 1;
             // 
             // lblLanguage
@@ -79,7 +79,7 @@ namespace TrabajoFinal_DarioZubaray
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 171);
+            this.ClientSize = new System.Drawing.Size(384, 201);
             this.Controls.Add(this.groupBox1);
             this.Name = "PreferencesForm";
             this.Text = "Preferences";

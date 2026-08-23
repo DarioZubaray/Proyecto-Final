@@ -118,6 +118,9 @@
   <data name="Preferences_SaveSuccess" xml:space="preserve">
     <value>Idioma guardado correctamente.</value>
   </data>
+  <data name="Preferences_GroupBox" xml:space="preserve">
+    <value>Preferencias</value>
+  </data>
   <data name="Main_MenuPreferences" xml:space="preserve">
     <value>Preferencias</value>
   </data>
@@ -225,5 +228,8 @@
   </data>
   <data name="ChangePassword_Success" xml:space="preserve">
     <value>Contraseña cambiada correctamente.</value>
+  </data>
+  <data name="ChangePassword_GroupBox" xml:space="preserve">
+    <value>Cambiar Contraseña</value>
   </data>
 </root>

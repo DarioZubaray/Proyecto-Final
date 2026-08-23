@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+
 using BE;
 using BE.Properties;
 using MPP;
@@ -7,12 +8,12 @@ namespace BLL
 {
     public class AuthBLL : IAuthBLL
     {
-        #region Fields
+        #region Propiedades
         private readonly IUserMPP _userMPP;
-        private const int MaxRetries = 3;
+        private const int MAX_RETRIES = 3;
         #endregion
 
-        #region Constructors
+        #region Constructor
         public AuthBLL() : this(new MPP.UserMPP())
         {
         }
@@ -23,7 +24,7 @@ namespace BLL
         }
         #endregion
 
-        #region Public Methods
+        #region Métodos Públicos
         public LoginResult Login(string userName, string password)
         {
             if (!AreCredentialsValid(userName, password))
@@ -52,7 +53,7 @@ namespace BLL
         }
         #endregion
 
-        #region Private Methods
+        #region Métodos Privados
         private bool AreCredentialsValid(string userName, string password)
         {
             return !string.IsNullOrEmpty(userName)
@@ -95,14 +96,14 @@ namespace BLL
         {
             user.RetriesCount++;
 
-            if (user.RetriesCount >= MaxRetries)
+            if (user.RetriesCount >= MAX_RETRIES)
             {
                 _userMPP.Deactivate(user.Id);
                 return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded);
             }
 
             _userMPP.UpdateRetries(user.Id, user.RetriesCount);
-            int retriesLeft = MaxRetries - user.RetriesCount;
+            int retriesLeft = MAX_RETRIES - user.RetriesCount;
             return CreateLoginFailed(
                 string.Format(Resources.Auth_RetriesLeft, retriesLeft));
         }

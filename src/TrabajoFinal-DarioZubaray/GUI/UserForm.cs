@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+
 using BE;
 using BE.Properties;
 using BLL;
@@ -9,10 +10,13 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class UserForm : Form
     {
+        #region Propiedades
         private readonly IUserBLL _userBLL;
         private readonly UserBE _user;
         private readonly bool _isNewUser;
+        #endregion
 
+        #region Constructor
         public UserForm()
         {
             InitializeComponent();
@@ -32,6 +36,49 @@ namespace TrabajoFinal_DarioZubaray
             ApplyResources();
             LoadRoles();
             LoadUserData();
+        }
+        #endregion
+
+        #region Métodos
+        private bool ValidateInputs()
+        {
+            if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
+            {
+                MessageBox.Show(Resources.UserForm_UserNameRequired);
+                txtUserName.Focus();
+                return false;
+            }
+
+            if (_isNewUser && string.IsNullOrEmpty(txtPassword.Text))
+            {
+                MessageBox.Show(Resources.UserForm_PasswordRequired);
+                txtPassword.Focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        private void MapUserFromUI()
+        {
+            _user.UserName = txtUserName.Text.Trim();
+            _user.IsActive = chkIsActive.Checked;
+            _user.RoleId = (int)cbRole.SelectedValue;
+
+            if (_isNewUser)
+            {
+                _user.PasswordHash = EncryptionBLL.HashPassword(txtPassword.Text);
+                _user.RetriesCount = 0;
+                _user.CreatedAt = DateTime.Now;
+                _user.Language = "es";
+            }
+
+            _user.LastUpdate = DateTime.Now;
+        }
+
+        private bool SaveUser()
+        {
+            return _userBLL.Save(_user);
         }
 
         private void ApplyResources()
@@ -76,40 +123,19 @@ namespace TrabajoFinal_DarioZubaray
                 lblPassword.Visible = false;
             }
         }
+        #endregion
 
+        #region Eventos
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
+            if (!ValidateInputs())
             {
-                MessageBox.Show(Resources.UserForm_UserNameRequired);
-                txtUserName.Focus();
                 return;
             }
 
-            if (_isNewUser && string.IsNullOrEmpty(txtPassword.Text))
-            {
-                MessageBox.Show(Resources.UserForm_PasswordRequired);
-                txtPassword.Focus();
-                return;
-            }
+            MapUserFromUI();
 
-            _user.UserName = txtUserName.Text.Trim();
-            _user.IsActive = chkIsActive.Checked;
-            _user.RoleId = (int)cbRole.SelectedValue;
-
-            if (_isNewUser)
-            {
-                _user.PasswordHash = EncryptionBLL.HashPassword(txtPassword.Text);
-                _user.RetriesCount = 0;
-                _user.CreatedAt = DateTime.Now;
-                _user.Language = "es";
-            }
-
-            _user.LastUpdate = DateTime.Now;
-
-            bool saved = _userBLL.Save(_user);
-
-            if (saved)
+            if (SaveUser())
             {
                 MessageBox.Show(Resources.UserForm_UserSaved);
                 this.DialogResult = DialogResult.OK;
@@ -122,5 +148,6 @@ namespace TrabajoFinal_DarioZubaray
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+        #endregion
     }
 }

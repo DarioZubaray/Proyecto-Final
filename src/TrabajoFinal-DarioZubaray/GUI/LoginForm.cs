@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
-using BLL;
 using BE;
 using BE.Properties;
+using BLL;
 
 namespace TrabajoFinal_DarioZubaray
 {
     public partial class LoginForm : Form
     {
-        #region Fields
+        #region Propiedades
         private IAuthBLL _authBLL;
         #endregion
 
@@ -22,7 +22,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
-        #region Private Methods
+        #region Métodos
         private void ApplyResources()
         {
             this.Text = Resources.Main_Title;
@@ -35,7 +35,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
-        #region Events
+        #region Eventos
         private void btnLogin_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;

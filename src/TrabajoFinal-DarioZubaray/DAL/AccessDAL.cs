@@ -7,7 +7,7 @@ namespace DAL
 {
     public class AccessDAL
     {
-        #region Fields
+        #region Propiedades
         private readonly string _connectionString;
         #endregion
 
@@ -19,7 +19,7 @@ namespace DAL
         }
         #endregion
 
-        #region Public Methods
+        #region Métodos
         public DataTable Read(string query)
         {
             return Read(query, null);
