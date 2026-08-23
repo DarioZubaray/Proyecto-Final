@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthBLL.cs" />
+    <Compile Include="CultureHelper.cs" />
     <Compile Include="EncryptionBLL.cs" />
     <Compile Include="IAuthBLL.cs" />
     <Compile Include="IUserBLL.cs" />

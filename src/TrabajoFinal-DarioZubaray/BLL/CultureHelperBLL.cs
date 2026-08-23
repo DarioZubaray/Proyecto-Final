@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
-namespace BE
+namespace BLL
 {
-    public static class CultureHelper
+    public static class CultureHelperBLL
     {
         private static readonly Dictionary<string, CultureInfo> _cultures =
             new Dictionary<string, CultureInfo>

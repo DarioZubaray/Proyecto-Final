@@ -42,8 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UserBE.cs" />
-    <Compile Include="CultureHelper.cs" />
-    <Compile Include="LoginResult.cs" />
+
+    <Compile Include="LoginResultDTO.cs" />
     <Compile Include="MenuOptionBE.cs" />
     <Compile Include="RoleBE.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

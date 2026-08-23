@@ -15,7 +15,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _user = user;
-            _userBLL = ServiceLocator.CreateUserBLL();
+            _userBLL = ServiceLocatorBLL.CreateUserBLL();
             ApplyResources();
         }
 

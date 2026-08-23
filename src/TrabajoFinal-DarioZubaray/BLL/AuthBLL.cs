@@ -25,7 +25,7 @@ namespace BLL
         #endregion
 
         #region Métodos Públicos
-        public LoginResult Login(string userName, string password)
+        public LoginResultDTO Login(string userName, string password)
         {
             if (!AreCredentialsValid(userName, password))
             {
@@ -60,7 +60,7 @@ namespace BLL
                 && !string.IsNullOrEmpty(password);
         }
 
-        private LoginResult AuthenticateUser(UserBE user, string password)
+        private LoginResultDTO AuthenticateUser(UserBE user, string password)
         {
             bool isPasswordValid = EncryptionBLL
                 .VerifyPassword(password, user.PasswordHash);
@@ -73,7 +73,7 @@ namespace BLL
             return LoginFailed(user);
         }
 
-        private LoginResult LoginSuccessful(UserBE user)
+        private LoginResultDTO LoginSuccessful(UserBE user)
         {
             user.LastUpdate = DateTime.Now;
             _userMPP.UpdateLastUpdate(user.Id, user.LastUpdate);
@@ -84,7 +84,7 @@ namespace BLL
                 _userMPP.UpdateRetries(user.Id, 0);
             }
 
-            return new LoginResult
+            return new LoginResultDTO
             {
                 Success = true,
                 Message = Resources.Auth_LoginSuccess,
@@ -92,7 +92,7 @@ namespace BLL
             };
         }
 
-        private LoginResult LoginFailed(UserBE user)
+        private LoginResultDTO LoginFailed(UserBE user)
         {
             user.RetriesCount++;
 
@@ -108,9 +108,9 @@ namespace BLL
                 string.Format(Resources.Auth_RetriesLeft, retriesLeft));
         }
 
-        private LoginResult CreateLoginFailed(string message)
+        private LoginResultDTO CreateLoginFailed(string message)
         {
-            return new LoginResult { Success = false, Message = message };
+            return new LoginResultDTO { Success = false, Message = message };
         }
         #endregion
     }

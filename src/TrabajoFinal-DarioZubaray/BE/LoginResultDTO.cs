@@ -1,6 +1,6 @@
 namespace BE
 {
-    public class LoginResult
+    public class LoginResultDTO
     {
         #region Propiedades
         public bool Success { get; set; }

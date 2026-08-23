@@ -17,7 +17,7 @@ namespace TrabajoFinal_DarioZubaray
         public LoginForm()
         {
             InitializeComponent();
-            _authBLL = ServiceLocator.CreateAuthBLL();
+            _authBLL = ServiceLocatorBLL.CreateAuthBLL();
             ApplyResources();
         }
         #endregion
@@ -47,15 +47,15 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            LoginResult result = _authBLL.Login(username, password);
+            LoginResultDTO result = _authBLL.Login(username, password);
 
             if (result.Success)
             {
-                CultureHelper.SetCulture(result.User.Language);
+                CultureHelperBLL.SetCulture(result.User.Language);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
-                CultureHelper.SetCulture(CultureHelper.DefaultLanguage);
+                CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
                 ApplyResources();
                 this.Show();
                 txtUser.Text = "";

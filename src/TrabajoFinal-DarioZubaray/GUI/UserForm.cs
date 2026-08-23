@@ -20,7 +20,7 @@ namespace TrabajoFinal_DarioZubaray
         public UserForm()
         {
             InitializeComponent();
-            _userBLL = ServiceLocator.CreateUserBLL();
+            _userBLL = ServiceLocatorBLL.CreateUserBLL();
             _isNewUser = true;
             _user = new UserBE();
             ApplyResources();
@@ -30,7 +30,7 @@ namespace TrabajoFinal_DarioZubaray
         public UserForm(UserBE user)
         {
             InitializeComponent();
-            _userBLL = ServiceLocator.CreateUserBLL();
+            _userBLL = ServiceLocatorBLL.CreateUserBLL();
             _isNewUser = false;
             _user = user;
             ApplyResources();

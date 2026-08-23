@@ -21,7 +21,7 @@ namespace TrabajoFinal_DarioZubaray
             InitializeComponent();
             _user = user;
             _mainForm = mainForm;
-            _userBLL = ServiceLocator.CreateUserBLL();
+            _userBLL = ServiceLocatorBLL.CreateUserBLL();
             LoadLanguages();
             ApplyResources();
         }
@@ -30,10 +30,10 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private void LoadLanguages()
         {
-            cbLanguage.DataSource = CultureHelper.GetSupportedLanguages();
+            cbLanguage.DataSource = CultureHelperBLL.GetSupportedLanguages();
             cbLanguage.DisplayMember = "DisplayName";
             cbLanguage.ValueMember = "Code";
-            cbLanguage.SelectedValue = _user.Language ?? CultureHelper.DefaultLanguage;
+            cbLanguage.SelectedValue = _user.Language ?? CultureHelperBLL.DefaultLanguage;
         }
 
         private void ApplyResources()
@@ -60,7 +60,7 @@ namespace TrabajoFinal_DarioZubaray
             if (saved)
             {
                 _user.Language = selectedLanguage;
-                CultureHelper.SetCulture(selectedLanguage);
+                CultureHelperBLL.SetCulture(selectedLanguage);
                 _mainForm.ApplyResources();
                 ApplyResources();
                 MessageBox.Show(Resources.Preferences_SaveSuccess);

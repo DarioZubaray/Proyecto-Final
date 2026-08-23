@@ -2,7 +2,7 @@ using MPP;
 
 namespace BLL
 {
-    public static class ServiceLocator
+    public static class ServiceLocatorBLL
     {
         #region Propiedades
         private static IUserMPP _userMPP;
