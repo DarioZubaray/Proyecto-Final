@@ -32,12 +32,12 @@ namespace TrabajoFinal_DarioZubaray
             this.lblUser = new System.Windows.Forms.Label();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblMessage = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnLogin = new System.Windows.Forms.Button();
             this.lblPass = new System.Windows.Forms.Label();
             this.txtPass = new System.Windows.Forms.TextBox();
-            this.btnLogin = new System.Windows.Forms.Button();
             this.lblDeveloper = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.lblMessage = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -71,7 +71,42 @@ namespace TrabajoFinal_DarioZubaray
             this.groupBox1.Size = new System.Drawing.Size(500, 300);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Iniciar Sesión";
+            this.groupBox1.Text = "☻";
+            // 
+            // lblMessage
+            // 
+            this.lblMessage.AutoSize = true;
+            this.lblMessage.ForeColor = System.Drawing.Color.IndianRed;
+            this.lblMessage.Location = new System.Drawing.Point(159, 208);
+            this.lblMessage.Name = "lblMessage";
+            this.lblMessage.Size = new System.Drawing.Size(163, 13);
+            this.lblMessage.TabIndex = 7;
+            this.lblMessage.Text = "Usuario o Contraseña no válidos!";
+            this.lblMessage.Visible = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.txtUser);
+            this.panel1.Controls.Add(this.lblUser);
+            this.panel1.Controls.Add(this.btnLogin);
+            this.panel1.Controls.Add(this.lblPass);
+            this.panel1.Controls.Add(this.txtPass);
+            this.panel1.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panel1.Location = new System.Drawing.Point(120, 105);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(262, 100);
+            this.panel1.TabIndex = 6;
+            // 
+            // btnLogin
+            // 
+            this.btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogin.Location = new System.Drawing.Point(154, 73);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(100, 23);
+            this.btnLogin.TabIndex = 4;
+            this.btnLogin.Text = "Iniciar Sesión";
+            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // lblPass
             // 
@@ -93,17 +128,6 @@ namespace TrabajoFinal_DarioZubaray
             this.txtPass.TabIndex = 3;
             this.txtPass.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPass_KeyDown);
             // 
-            // btnLogin
-            // 
-            this.btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.Location = new System.Drawing.Point(154, 73);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(100, 23);
-            this.btnLogin.TabIndex = 4;
-            this.btnLogin.Text = "Iniciar Sesión";
-            this.btnLogin.UseVisualStyleBackColor = true;
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
-            // 
             // lblDeveloper
             // 
             this.lblDeveloper.AutoSize = true;
@@ -113,30 +137,6 @@ namespace TrabajoFinal_DarioZubaray
             this.lblDeveloper.Size = new System.Drawing.Size(130, 12);
             this.lblDeveloper.TabIndex = 5;
             this.lblDeveloper.Text = "desarrollado por Darío Zubaray";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.txtUser);
-            this.panel1.Controls.Add(this.lblUser);
-            this.panel1.Controls.Add(this.btnLogin);
-            this.panel1.Controls.Add(this.lblPass);
-            this.panel1.Controls.Add(this.txtPass);
-            this.panel1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel1.Location = new System.Drawing.Point(120, 105);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(262, 100);
-            this.panel1.TabIndex = 6;
-            // 
-            // lblMessage
-            // 
-            this.lblMessage.AutoSize = true;
-            this.lblMessage.ForeColor = System.Drawing.Color.IndianRed;
-            this.lblMessage.Location = new System.Drawing.Point(159, 208);
-            this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(163, 13);
-            this.lblMessage.TabIndex = 7;
-            this.lblMessage.Text = "Usuario o Contraseña no válidos!";
-            this.lblMessage.Visible = false;
             // 
             // LoginForm
             // 

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+
 using BE;
 using BE.Properties;
 using BLL;
@@ -8,10 +9,13 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class PreferencesForm : Form
     {
+        #region Propiedades
         private readonly UserBE _user;
         private readonly MainForm _mainForm;
         private readonly IUserBLL _userBLL;
+        #endregion
 
+        #region Constructor
         public PreferencesForm(UserBE user, MainForm mainForm)
         {
             InitializeComponent();
@@ -21,7 +25,9 @@ namespace TrabajoFinal_DarioZubaray
             LoadLanguages();
             ApplyResources();
         }
+        #endregion
 
+        #region Métodos
         private void LoadLanguages()
         {
             cbLanguage.DataSource = CultureHelper.GetSupportedLanguages();
@@ -30,17 +36,16 @@ namespace TrabajoFinal_DarioZubaray
             cbLanguage.SelectedValue = _user.Language ?? CultureHelper.DefaultLanguage;
         }
 
-        #region Private Methods
         private void ApplyResources()
         {
             this.Text = Resources.Preferences_Title;
-            groupBox1.Text = Resources.Preferences_Title;
+            groupBox1.Text = Resources.Preferences_GroupBox;
             lblLanguage.Text = Resources.Preferences_LanguageLabel;
             btnSave.Text = Resources.Preferences_SaveButton;
         }
         #endregion
 
-        #region Events
+        #region Eventos
         private void btnSave_Click(object sender, EventArgs e)
         {
             string selectedLanguage = cbLanguage.SelectedValue?.ToString();

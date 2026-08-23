@@ -23,8 +23,7 @@ namespace BLL
 
         private static bool IsLegacyHash(string hashedPassword)
         {
-            if (string.IsNullOrEmpty(hashedPassword)
-                || hashedPassword.Length != 64)
+            if (string.IsNullOrEmpty(hashedPassword) || hashedPassword.Length != 64)
             {
                 return false;
             }
@@ -45,13 +44,11 @@ namespace BLL
             return true;
         }
 
-        private static bool VerifyLegacyHash(
-            string password, string storedHash)
+        private static bool VerifyLegacyHash(string password, string storedHash)
         {
             using (SHA256 sha256 = SHA256.Create())
             {
-                byte[] bytes = sha256.ComputeHash(
-                    Encoding.UTF8.GetBytes(password));
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
                 StringBuilder builder = new StringBuilder();
                 for (int i = 0; i < bytes.Length; i++)
                 {

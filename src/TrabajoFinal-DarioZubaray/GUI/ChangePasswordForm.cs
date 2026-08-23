@@ -22,6 +22,7 @@ namespace TrabajoFinal_DarioZubaray
         private void ApplyResources()
         {
             this.Text = Resources.ChangePassword_Title;
+            groupBox1.Text = Resources.ChangePassword_GroupBox;
             lblCurrentPassword.Text = Resources.ChangePassword_CurrentLabel;
             lblNewPassword.Text = Resources.ChangePassword_NewLabel;
             lblConfirmPassword.Text = Resources.ChangePassword_ConfirmLabel;

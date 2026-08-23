@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+
 using BE;
 using BE.Properties;
 
@@ -7,8 +8,11 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class MainForm : Form
     {
+        #region Propiedades
         private readonly UserBE _user;
+        #endregion
 
+        #region Constructor
         public MainForm(UserBE user)
         {
             InitializeComponent();
@@ -17,6 +21,7 @@ namespace TrabajoFinal_DarioZubaray
             ConfigureAdminMenu();
             this.FormClosing += MainForm_FormClosing;
         }
+        #endregion
 
         public void ApplyResources()
         {
@@ -29,6 +34,7 @@ namespace TrabajoFinal_DarioZubaray
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
         }
 
+        #region Métodos
         private void ConfigureAdminMenu()
         {
             administraciónToolStripMenuItem.Visible = _user.RoleId == 1;
@@ -47,7 +53,9 @@ namespace TrabajoFinal_DarioZubaray
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+        #endregion
 
+        #region MenuItem_Click
         private void preferenciasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new PreferencesForm(_user, this)
@@ -68,8 +76,12 @@ namespace TrabajoFinal_DarioZubaray
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new ChangePasswordForm(_user);
-            form.ShowDialog();
+            var form = new ChangePasswordForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
         }
+        #endregion
     }
 }
