@@ -34,6 +34,7 @@ CREATE TABLE [dbo].[Users] (
     [last_update]   DATETIME       NOT NULL,
     [created_at]    DATETIME       NOT NULL DEFAULT GETDATE(),
     [role_id]       INT            NULL,
+    [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
 
     CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[Roles]([id])
 );
