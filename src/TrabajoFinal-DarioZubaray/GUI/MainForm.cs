@@ -41,7 +41,7 @@ namespace TrabajoFinal_DarioZubaray
         private void ConfigureMenuVisibility()
         {
             administraciónToolStripMenuItem.Visible = _session != null
-                && _session.HasPermission("USERS_VIEW");
+                && _session.HasPermission("FORM_USER_MGMT");
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
