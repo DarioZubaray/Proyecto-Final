@@ -27,7 +27,6 @@ namespace TrabajoFinal_DarioZubaray
             lblNewPassword.Text = Resources.ChangePassword_NewLabel;
             lblConfirmPassword.Text = Resources.ChangePassword_ConfirmLabel;
             btnChange.Text = Resources.ChangePassword_ChangeButton;
-            btnCancel.Text = Resources.ChangePassword_CancelButton;
         }
 
         private void btnChange_Click(object sender, EventArgs e)
@@ -59,12 +58,6 @@ namespace TrabajoFinal_DarioZubaray
 
             MessageBox.Show(Resources.ChangePassword_Success);
             this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
     }

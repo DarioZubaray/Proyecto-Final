@@ -60,7 +60,6 @@ namespace TrabajoFinal_DarioZubaray
             dgvUsers.Columns["RetriesCount"].Visible = false;
             dgvUsers.Columns["CreatedAt"].Visible = false;
             dgvUsers.Columns["Language"].Visible = false;
-            dgvUsers.Columns["Role"].Visible = false;
 
             dgvUsers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsers.MultiSelect = false;
