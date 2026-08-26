@@ -1,30 +1,42 @@
 use Trabajo_Final;
 
--- 1 Tabla de roles
+-- =============================================
+-- CREATE: Esquema completo de tablas
+-- =============================================
+
+-- 1. Roles
 CREATE TABLE [dbo].[Roles] (
     [id]   INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [name] NVARCHAR(100)  NOT NULL UNIQUE
 );
 
--- 2 Tabla de opciones de menú / permisos
-CREATE TABLE [dbo].[MenuOptions] (
+-- 2. Permisos (cada permiso = 1 formulario)
+CREATE TABLE [dbo].[Permissions] (
     [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [name]        NVARCHAR(100)  NOT NULL UNIQUE,
     [label]       NVARCHAR(100)  NOT NULL,
-    [description] NVARCHAR(256)  NULL,
-    [is_global]   BIT            NOT NULL DEFAULT 0
+    [description] NVARCHAR(256)  NULL
 );
 
--- 3 Tabla intermedia Roles <-> MenuOptions (N:N)
-CREATE TABLE [dbo].[RoleMenuOptions] (
-    [role_id]        INT NOT NULL,
-    [menu_option_id] INT NOT NULL,
-    PRIMARY KEY ([role_id], [menu_option_id]),
-    CONSTRAINT fk_rolemenuoptions_roles       FOREIGN KEY ([role_id])        REFERENCES [dbo].[Roles]([id]),
-    CONSTRAINT fk_rolemenuoptions_menuoptions FOREIGN KEY ([menu_option_id]) REFERENCES [dbo].[MenuOptions]([id])
+-- 3. Relación Roles <-> Permisos (N:N)
+CREATE TABLE [dbo].[RolePermissions] (
+    [role_id]       INT NOT NULL,
+    [permission_id] INT NOT NULL,
+    PRIMARY KEY ([role_id], [permission_id]),
+    CONSTRAINT fk_rolepermissions_roles       FOREIGN KEY ([role_id])       REFERENCES [dbo].[Roles]([id]),
+    CONSTRAINT fk_rolepermissions_permissions FOREIGN KEY ([permission_id]) REFERENCES [dbo].[Permissions]([id])
 );
 
--- 4 Tabla de usuarios
+-- 4. Jerarquía de roles (padre -> hijo, para Composite)
+CREATE TABLE [dbo].[RoleHierarchy] (
+    [parent_role_id] INT NOT NULL,
+    [child_role_id]  INT NOT NULL,
+    PRIMARY KEY ([parent_role_id], [child_role_id]),
+    CONSTRAINT fk_rolehierarchy_parent FOREIGN KEY ([parent_role_id]) REFERENCES [dbo].[Roles]([id]),
+    CONSTRAINT fk_rolehierarchy_child  FOREIGN KEY ([child_role_id])  REFERENCES [dbo].[Roles]([id])
+);
+
+-- 5. Usuarios
 CREATE TABLE [dbo].[Users] (
     [id]            INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [user_name]     NVARCHAR(100)  NOT NULL,
@@ -35,7 +47,6 @@ CREATE TABLE [dbo].[Users] (
     [created_at]    DATETIME       NOT NULL DEFAULT GETDATE(),
     [role_id]       INT            NULL,
     [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
-
     CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[Roles]([id])
 );
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
