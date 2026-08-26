@@ -30,6 +30,26 @@ namespace BE
             return Options.Exists(o => o.Name == optionName);
         }
 
+        public RoleComposite ToComposite(List<RoleBE> childRoles = null)
+        {
+            var composite = new RoleComposite(Id, Name);
+
+            foreach (var option in Options)
+            {
+                composite.AddChild(new PermissionLeaf(option));
+            }
+
+            if (childRoles != null)
+            {
+                foreach (var childRole in childRoles)
+                {
+                    composite.AddChild(childRole.ToComposite());
+                }
+            }
+
+            return composite;
+        }
+
         public override string ToString()
         {
             return $"{Name} ({Options.Count} options)";

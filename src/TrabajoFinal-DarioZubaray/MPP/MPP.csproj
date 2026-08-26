@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRoleMPP.cs" />
+    <Compile Include="RoleMPP.cs" />
     <Compile Include="IUserMPP.cs" />
     <Compile Include="UserMPP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

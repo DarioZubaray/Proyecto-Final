@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BE;
 using BE.Properties;
+using BLL;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -10,6 +11,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _user;
+        private readonly RoleComposite _roleTree;
         #endregion
 
         #region Constructor
@@ -17,8 +19,9 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _user = user;
+            _roleTree = BuildRoleTree();
             ApplyResources();
-            ConfigureAdminMenu();
+            ConfigureMenuVisibility();
             this.FormClosing += MainForm_FormClosing;
         }
         #endregion
@@ -35,9 +38,16 @@ namespace TrabajoFinal_DarioZubaray
         }
 
         #region Métodos
-        private void ConfigureAdminMenu()
+        private RoleComposite BuildRoleTree()
         {
-            administraciónToolStripMenuItem.Visible = _user.RoleId == 1;
+            var permissionBLL = ServiceLocatorBLL.CreatePermissionBLL();
+            return permissionBLL.BuildRoleTree(_user.RoleId);
+        }
+
+        private void ConfigureMenuVisibility()
+        {
+            administraciónToolStripMenuItem.Visible = _roleTree != null
+                && _roleTree.HasPermission("USERS_VIEW");
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

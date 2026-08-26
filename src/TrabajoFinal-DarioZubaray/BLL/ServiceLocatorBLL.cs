@@ -6,6 +6,7 @@ namespace BLL
     {
         #region Propiedades
         private static IUserMPP _userMPP;
+        private static IRoleMPP _roleMPP;
         #endregion
 
         #region Métodos
@@ -19,6 +20,16 @@ namespace BLL
             return _userMPP;
         }
 
+        public static IRoleMPP GetRoleMPP()
+        {
+            if (_roleMPP == null)
+            {
+                _roleMPP = new RoleMPP();
+            }
+
+            return _roleMPP;
+        }
+
         public static IAuthBLL CreateAuthBLL()
         {
             return new AuthBLL(GetUserMPP());
@@ -27,6 +38,11 @@ namespace BLL
         public static IUserBLL CreateUserBLL()
         {
             return new UserBLL(GetUserMPP());
+        }
+
+        public static PermissionBLL CreatePermissionBLL()
+        {
+            return new PermissionBLL(GetRoleMPP());
         }
         #endregion
     }
