@@ -63,6 +63,7 @@
     <Compile Include="IAuthBLL.cs" />
     <Compile Include="IUserBLL.cs" />
     <Compile Include="PermissionBLL.cs" />
+    <Compile Include="SessionManager.cs" />
     <Compile Include="ServiceLocatorBLL.cs" />
     <Compile Include="UserBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

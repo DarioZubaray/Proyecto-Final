@@ -11,7 +11,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _user;
-        private readonly RoleComposite _roleTree;
+        private readonly SessionManager _session;
         #endregion
 
         #region Constructor
@@ -19,7 +19,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _user = user;
-            _roleTree = BuildRoleTree();
+            _session = SessionManager.GetInstance(user.Id);
             ApplyResources();
             ConfigureMenuVisibility();
             this.FormClosing += MainForm_FormClosing;
@@ -38,16 +38,10 @@ namespace TrabajoFinal_DarioZubaray
         }
 
         #region Métodos
-        private RoleComposite BuildRoleTree()
-        {
-            var permissionBLL = ServiceLocatorBLL.CreatePermissionBLL();
-            return permissionBLL.BuildRoleTree(_user.RoleId);
-        }
-
         private void ConfigureMenuVisibility()
         {
-            administraciónToolStripMenuItem.Visible = _roleTree != null
-                && _roleTree.HasPermission("USERS_VIEW");
+            administraciónToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("USERS_VIEW");
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

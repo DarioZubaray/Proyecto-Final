@@ -13,6 +13,7 @@ namespace TrabajoFinal_DarioZubaray
         private readonly UserBE _user;
         private readonly MainForm _mainForm;
         private readonly IUserBLL _userBLL;
+        private readonly SessionManager _session;
         #endregion
 
         #region Constructor
@@ -22,6 +23,7 @@ namespace TrabajoFinal_DarioZubaray
             _user = user;
             _mainForm = mainForm;
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
+            _session = SessionManager.GetInstance(user.Id);
             LoadLanguages();
             ApplyResources();
         }
@@ -59,8 +61,7 @@ namespace TrabajoFinal_DarioZubaray
 
             if (saved)
             {
-                _user.Language = selectedLanguage;
-                CultureHelperBLL.SetCulture(selectedLanguage);
+                _session.UpdateLanguage(selectedLanguage);
                 _mainForm.ApplyResources();
                 ApplyResources();
                 MessageBox.Show(Resources.Preferences_SaveSuccess);

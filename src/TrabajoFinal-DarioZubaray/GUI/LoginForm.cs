@@ -51,10 +51,11 @@ namespace TrabajoFinal_DarioZubaray
 
             if (result.Success)
             {
-                CultureHelperBLL.SetCulture(result.User.Language);
+                SessionManager.CreateSession(result.User);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
+                SessionManager.RemoveSession(result.User.Id);
                 CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
                 ApplyResources();
                 this.Show();
