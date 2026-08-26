@@ -44,6 +44,11 @@ namespace BLL
         {
             return new PermissionBLL(GetRoleMPP());
         }
+
+        public static IRoleBLL CreateRoleBLL()
+        {
+            return new RoleBLL(GetRoleMPP());
+        }
         #endregion
     }
 }

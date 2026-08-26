@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using BE;
@@ -12,6 +13,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly IUserBLL _userBLL;
+        private readonly IRoleBLL _roleBLL;
         private readonly UserBE _user;
         private readonly bool _isNewUser;
         #endregion
@@ -21,6 +23,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
+            _roleBLL = ServiceLocatorBLL.CreateRoleBLL();
             _isNewUser = true;
             _user = new UserBE();
             ApplyResources();
@@ -31,6 +34,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
+            _roleBLL = ServiceLocatorBLL.CreateRoleBLL();
             _isNewUser = false;
             _user = user;
             ApplyResources();
@@ -94,15 +98,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private void LoadRoles()
         {
-            var roles = new List<KeyValuePair<int, string>>
-            {
-                new KeyValuePair<int, string>(1, Resources.UserForm_RoleAdmin),
-                new KeyValuePair<int, string>(2, Resources.UserForm_RoleUser)
-            };
+            List<RoleBE> roles = _roleBLL.FindAll();
 
-            cbRole.DataSource = roles;
-            cbRole.DisplayMember = "Value";
-            cbRole.ValueMember = "Key";
+            cbRole.DataSource = roles.Select(r => new { r.Id, r.Name }).ToList();
+            cbRole.DisplayMember = "Name";
+            cbRole.ValueMember = "Id";
             cbRole.SelectedIndex = 0;
         }
 
