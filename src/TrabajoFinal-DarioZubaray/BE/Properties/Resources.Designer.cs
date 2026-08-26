@@ -581,5 +581,23 @@ namespace BE.Properties {
                 return ResourceManager.GetString("Preferences_GroupBox", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Usuario:.
+        /// </summary>
+        public static string Main_FooterUser {
+            get {
+                return ResourceManager.GetString("Main FooterUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Rol:.
+        /// </summary>
+        public static string Main_FooterRole {
+            get {
+                return ResourceManager.GetString("Main FooterRole", resourceCulture);
+            }
+        }
     }
 }

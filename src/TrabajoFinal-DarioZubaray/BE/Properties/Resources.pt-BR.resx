@@ -232,4 +232,10 @@
   <data name="ChangePassword_GroupBox" xml:space="preserve">
     <value>Alterar Senha</value>
   </data>
+  <data name="Main FooterUser" xml:space="preserve">
+    <value>Usuário:</value>
+  </data>
+  <data name="Main FooterRole" xml:space="preserve">
+    <value>Função:</value>
+  </data>
 </root>

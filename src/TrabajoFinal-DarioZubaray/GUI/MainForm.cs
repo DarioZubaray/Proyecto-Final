@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 using BE;
@@ -22,6 +24,7 @@ namespace TrabajoFinal_DarioZubaray
             _session = SessionManager.GetInstance(user.Id);
             ApplyResources();
             ConfigureMenuVisibility();
+            UpdateFooter();
             this.FormClosing += MainForm_FormClosing;
         }
         #endregion
@@ -35,6 +38,7 @@ namespace TrabajoFinal_DarioZubaray
             cerrarSesiónToolStripMenuItem.Text = Resources.Main_MenuLogout;
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
+            UpdateFooter();
         }
 
         #region Métodos
@@ -42,6 +46,39 @@ namespace TrabajoFinal_DarioZubaray
         {
             administraciónToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_USER_MGMT");
+        }
+
+        private void UpdateFooter()
+        {
+            lblUserInfo.Text = $" {Resources.Main_FooterUser} {_user.UserName} ";
+            lblRoleInfo.Text = $" | {Resources.Main_FooterRole} {GetRoleNames()} ";
+        }
+
+        private string GetRoleNames()
+        {
+            if (_session?.RoleTree == null)
+            {
+                return "-";
+            }
+
+            var roleNames = CollectRoleNames(_session.RoleTree);
+            return roleNames.Any() ? string.Join(", ", roleNames.Distinct()) : "-";
+        }
+
+        private List<string> CollectRoleNames(IRoleComponent component)
+        {
+            var names = new List<string>();
+
+            if (component is RoleComposite composite)
+            {
+                names.Add(composite.Name);
+                foreach (var child in composite.GetChildren())
+                {
+                    names.AddRange(CollectRoleNames(child));
+                }
+            }
+
+            return names;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
