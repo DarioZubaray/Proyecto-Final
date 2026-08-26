@@ -6,6 +6,6 @@ namespace BE
     {
         string Name { get; }
         bool HasPermission(string permissionName);
-        List<MenuOptionBE> GetAllPermissions();
+        List<PermissionBE> GetAllPermissions();
     }
 }

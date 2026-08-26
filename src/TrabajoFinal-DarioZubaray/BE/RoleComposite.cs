@@ -51,9 +51,9 @@ namespace BE
             return false;
         }
 
-        public List<MenuOptionBE> GetAllPermissions()
+        public List<PermissionBE> GetAllPermissions()
         {
-            var permissions = new List<MenuOptionBE>();
+            var permissions = new List<PermissionBE>();
             foreach (var child in _children)
             {
                 permissions.AddRange(child.GetAllPermissions());

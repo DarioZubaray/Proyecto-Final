@@ -44,7 +44,7 @@
     <Compile Include="UserBE.cs" />
 
     <Compile Include="LoginResultDTO.cs" />
-    <Compile Include="MenuOptionBE.cs" />
+    <Compile Include="PermissionBE.cs" />
     <Compile Include="IRoleComponent.cs" />
     <Compile Include="PermissionLeaf.cs" />
     <Compile Include="RoleComposite.cs" />

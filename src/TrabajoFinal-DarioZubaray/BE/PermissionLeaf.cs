@@ -5,12 +5,12 @@ namespace BE
     public class PermissionLeaf : IRoleComponent
     {
         #region Propiedades
-        private readonly MenuOptionBE _option;
+        private readonly PermissionBE _option;
         public string Name => _option.Name;
         #endregion
 
         #region Constructor
-        public PermissionLeaf(MenuOptionBE option)
+        public PermissionLeaf(PermissionBE option)
         {
             _option = option;
         }
@@ -22,9 +22,9 @@ namespace BE
             return _option.Name == permissionName;
         }
 
-        public List<MenuOptionBE> GetAllPermissions()
+        public List<PermissionBE> GetAllPermissions()
         {
-            return new List<MenuOptionBE> { _option };
+            return new List<PermissionBE> { _option };
         }
 
         public override string ToString()

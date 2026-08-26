@@ -13,7 +13,6 @@ namespace BE
         public DateTime LastUpdate { get; set; }
         public DateTime CreatedAt { get; set; }
         public int RoleId { get; set; }
-        public RoleBE Role { get; set; }
         public string Language { get; set; }
         #endregion
 

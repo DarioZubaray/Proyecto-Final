@@ -8,7 +8,7 @@ namespace MPP
     {
         RoleBE FindById(int roleId);
         List<RoleBE> FindAll();
-        List<MenuOptionBE> GetMenuOptionsByRoleId(int roleId);
+        List<PermissionBE> GetPermissionsByRoleId(int roleId);
         List<int> GetChildRoleIds(int parentId);
     }
 }

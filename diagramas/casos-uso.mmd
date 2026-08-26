@@ -1,0 +1,37 @@
+graph LR
+    Actor Admin
+    Actor Supervisor
+    Actor Operador
+
+    UC1[Iniciar Sesion]
+    UC2[Cerrar Sesion]
+    UC3[Gestionar Usuarios]
+    UC4[Gestionar Roles]
+    UC5[Ver Quejas]
+    UC6[Gestionar Quejas]
+    UC7[Ver Reportes]
+    UC8[Cambiar Idioma]
+    UC9[Cambiar Contrasena]
+
+    Admin --> UC1
+    Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC8
+    Admin --> UC9
+
+    Supervisor --> UC1
+    Supervisor --> UC2
+    Supervisor --> UC3
+    Supervisor --> UC5
+    Supervisor --> UC6
+    Supervisor --> UC7
+    Supervisor --> UC8
+    Supervisor --> UC9
+
+    Operador --> UC1
+    Operador --> UC2
+    Operador --> UC3
+    Operador --> UC5
+    Operador --> UC8
+    Operador --> UC9

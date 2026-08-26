@@ -1,27 +1,23 @@
 namespace BE
 {
-    public class MenuOptionBE
+    public class PermissionBE
     {
         #region Propiedades
         public int Id { get; set; }
         public string Name { get; set; }
         public string Label { get; set; }
         public string Description { get; set; }
-        public bool IsGlobal { get; set; }
         #endregion
 
         #region Constructor
-        public MenuOptionBE() { }
+        public PermissionBE() { }
 
-        public MenuOptionBE(
-            int id, string name, string label,
-            string description, bool isGlobal)
+        public PermissionBE(int id, string name, string label, string description)
         {
             Id = id;
             Name = name;
             Label = label;
             Description = description;
-            IsGlobal = isGlobal;
         }
         #endregion
 

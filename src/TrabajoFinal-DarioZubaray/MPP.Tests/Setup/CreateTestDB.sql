@@ -13,8 +13,8 @@ GO
 
 -- Eliminar tablas si existen (para recrear limpio)
 IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL DROP TABLE dbo.Users;
-IF OBJECT_ID('dbo.RoleMenuOptions', 'U') IS NOT NULL DROP TABLE dbo.RoleMenuOptions;
-IF OBJECT_ID('dbo.MenuOptions', 'U') IS NOT NULL DROP TABLE dbo.MenuOptions;
+IF OBJECT_ID('dbo.RolePermissions', 'U') IS NOT NULL DROP TABLE dbo.RolePermissions;
+IF OBJECT_ID('dbo.Permissions', 'U') IS NOT NULL DROP TABLE dbo.Permissions;
 IF OBJECT_ID('dbo.Roles', 'U') IS NOT NULL DROP TABLE dbo.Roles;
 GO
 
@@ -24,20 +24,19 @@ CREATE TABLE [dbo].[Roles] (
     [name] NVARCHAR(100)  NOT NULL UNIQUE
 );
 
-CREATE TABLE [dbo].[MenuOptions] (
+CREATE TABLE [dbo].[Permissions] (
     [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [name]        NVARCHAR(100)  NOT NULL UNIQUE,
     [label]       NVARCHAR(100)  NOT NULL,
-    [description] NVARCHAR(256)  NULL,
-    [is_global]   BIT            NOT NULL DEFAULT 0
+    [description] NVARCHAR(256)  NULL
 );
 
-CREATE TABLE [dbo].[RoleMenuOptions] (
-    [role_id]        INT NOT NULL,
-    [menu_option_id] INT NOT NULL,
-    PRIMARY KEY ([role_id], [menu_option_id]),
-    CONSTRAINT fk_rolemenuoptions_roles       FOREIGN KEY ([role_id])        REFERENCES [dbo].[Roles]([id]),
-    CONSTRAINT fk_rolemenuoptions_menuoptions FOREIGN KEY ([menu_option_id]) REFERENCES [dbo].[MenuOptions]([id])
+CREATE TABLE [dbo].[RolePermissions] (
+    [role_id]       INT NOT NULL,
+    [permission_id] INT NOT NULL,
+    PRIMARY KEY ([role_id], [permission_id]),
+    CONSTRAINT fk_rolepermissions_roles       FOREIGN KEY ([role_id])       REFERENCES [dbo].[Roles]([id]),
+    CONSTRAINT fk_rolepermissions_permissions FOREIGN KEY ([permission_id]) REFERENCES [dbo].[Permissions]([id])
 );
 
 CREATE TABLE [dbo].[Users] (

@@ -1,0 +1,58 @@
+classDiagram
+    class UserBE {
+        +int Id
+        +string UserName
+        +string PasswordHash
+        +bool IsActive
+        +int RetriesCount
+        +DateTime LastUpdate
+        +DateTime CreatedAt
+        +int RoleId
+        +string Language
+    }
+
+    class RoleBE {
+        +int Id
+        +string Name
+        +List~PermissionBE~ Permissions
+        +HasPermission(string) bool
+        +ToComposite(List~RoleBE~) RoleComposite
+    }
+
+    class PermissionBE {
+        +int Id
+        +string Name
+        +string Label
+        +string Description
+    }
+
+    class IRoleComponent {
+        <<interface>>
+        +string Name
+        +HasPermission(string) bool
+        +GetAllPermissions() List~PermissionBE~
+    }
+
+    class RoleComposite {
+        +int Id
+        +string Name
+        -List~IRoleComponent~ _children
+        +AddChild(IRoleComponent)
+        +RemoveChild(IRoleComponent)
+        +HasPermission(string) bool
+        +GetAllPermissions() List~PermissionBE~
+    }
+
+    class PermissionLeaf {
+        -PermissionBE _option
+        +HasPermission(string) bool
+        +GetAllPermissions() List~PermissionBE~
+    }
+
+    UserBE --> RoleBE : roleId
+    RoleBE "1" --> "*" PermissionBE : permissions
+    RoleBE "1" --> "*" RoleBE : children (jerarquia)
+    IRoleComponent <|.. RoleComposite
+    IRoleComponent <|.. PermissionLeaf
+    RoleComposite o-- "*" IRoleComponent : children
+    PermissionLeaf --> PermissionBE : wraps

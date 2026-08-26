@@ -42,7 +42,7 @@ namespace MPP
             {
                 Id = Convert.ToInt32(row["id"]),
                 Name = row["name"].ToString(),
-                Options = GetMenuOptionsByRoleId(roleId)
+                Permissions = GetPermissionsByRoleId(roleId)
             };
 
             return role;
@@ -61,40 +61,39 @@ namespace MPP
                 {
                     Id = roleId,
                     Name = row["name"].ToString(),
-                    Options = GetMenuOptionsByRoleId(roleId)
+                    Permissions = GetPermissionsByRoleId(roleId)
                 });
             }
 
             return roles;
         }
 
-        public List<MenuOptionBE> GetMenuOptionsByRoleId(int roleId)
+        public List<PermissionBE> GetPermissionsByRoleId(int roleId)
         {
-            string query = @"SELECT mo.id, mo.name, mo.label, mo.description, mo.is_global
-                            FROM MenuOptions mo
-                            INNER JOIN RoleMenuOptions rmo ON mo.id = rmo.menu_option_id
-                            WHERE rmo.role_id = @roleId";
+            string query = @"SELECT p.id, p.name, p.label, p.description
+                            FROM Permissions p
+                            INNER JOIN RolePermissions rp ON p.id = rp.permission_id
+                            WHERE rp.role_id = @roleId";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@roleId", roleId)
             };
 
             DataTable table = _access.Read(query, parameters);
-            List<MenuOptionBE> options = new List<MenuOptionBE>();
+            List<PermissionBE> permissions = new List<PermissionBE>();
 
             foreach (DataRow row in table.Rows)
             {
-                options.Add(new MenuOptionBE
+                permissions.Add(new PermissionBE
                 {
                     Id = Convert.ToInt32(row["id"]),
                     Name = row["name"].ToString(),
                     Label = row["label"].ToString(),
-                    Description = row["description"].ToString(),
-                    IsGlobal = Convert.ToBoolean(row["is_global"])
+                    Description = row["description"].ToString()
                 });
             }
 
-            return options;
+            return permissions;
         }
 
         public List<int> GetChildRoleIds(int parentId)

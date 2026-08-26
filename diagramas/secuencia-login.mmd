@@ -1,0 +1,29 @@
+sequenceDiagram
+    actor User
+    participant LF as LoginForm
+    participant Auth as AuthBLL
+    participant SM as SessionManager
+    participant PBLL as PermissionBLL
+    participant RMPP as RoleMPP
+    participant MF as MainForm
+
+    User->>LF: Ingresar credenciales
+    LF->>Auth: Login(username, password)
+    Auth-->>LF: LoginResultDTO(user)
+    LF->>SM: CreateSession(user)
+    SM->>PBLL: BuildRoleTree(user.RoleId)
+    PBLL->>RMPP: FindById(roleId)
+    RMPP-->>PBLL: RoleBE + Permissions
+    PBLL->>RMPP: GetChildRoleIds(roleId)
+    RMPP-->>PBLL: List childIds
+    loop Cada hijo
+        PBLL->>RMPP: FindById(childId)
+        RMPP-->>PBLL: RoleBE hijo
+    end
+    PBLL-->>SM: RoleComposite (arbol completo)
+    SM-->>LF: SessionManager instance
+    LF->>MF: new MainForm(user)
+    MF->>SM: GetInstance(userId)
+    SM-->>MF: SessionManager
+    MF->>MF: HasPermission("USERS_VIEW")
+    MF-->>User: Mostrar menu segun permisos

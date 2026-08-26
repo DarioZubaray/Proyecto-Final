@@ -7,36 +7,36 @@ namespace BE
         #region Propiedades
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<MenuOptionBE> Options { get; set; }
+        public List<PermissionBE> Permissions { get; set; }
         #endregion
 
         #region Constructor
         public RoleBE()
         {
-            Options = new List<MenuOptionBE>();
+            Permissions = new List<PermissionBE>();
         }
         #endregion
 
         #region Métodos
-        public RoleBE(int id, string name, List<MenuOptionBE> options)
+        public RoleBE(int id, string name, List<PermissionBE> permissions)
         {
             Id = id;
             Name = name;
-            Options = options ?? new List<MenuOptionBE>();
+            Permissions = permissions ?? new List<PermissionBE>();
         }
 
-        public bool HasOption(string optionName)
+        public bool HasPermission(string permissionName)
         {
-            return Options.Exists(o => o.Name == optionName);
+            return Permissions.Exists(p => p.Name == permissionName);
         }
 
         public RoleComposite ToComposite(List<RoleBE> childRoles = null)
         {
             var composite = new RoleComposite(Id, Name);
 
-            foreach (var option in Options)
+            foreach (var permission in Permissions)
             {
-                composite.AddChild(new PermissionLeaf(option));
+                composite.AddChild(new PermissionLeaf(permission));
             }
 
             if (childRoles != null)
@@ -52,7 +52,7 @@ namespace BE
 
         public override string ToString()
         {
-            return $"{Name} ({Options.Count} options)";
+            return $"{Name} ({Permissions.Count} permissions)";
         }
         #endregion
     }
