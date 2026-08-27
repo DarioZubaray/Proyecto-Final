@@ -13,7 +13,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _user;
-        private readonly SessionManager _session;
+        private readonly SessionManagerBLL _session;
         #endregion
 
         #region Constructor
@@ -21,7 +21,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _user = user;
-            _session = SessionManager.GetInstance(user.Id);
+            _session = SessionManagerBLL.GetInstance(user.Id);
             ApplyResources();
             ConfigureMenuVisibility();
             UpdateFooter();
@@ -65,11 +65,11 @@ namespace TrabajoFinal_DarioZubaray
             return roleNames.Any() ? string.Join(", ", roleNames.Distinct()) : "-";
         }
 
-        private List<string> CollectRoleNames(IRoleComponent component)
+        private List<string> CollectRoleNames(IRoleComponentBE component)
         {
             var names = new List<string>();
 
-            if (component is RoleComposite composite)
+            if (component is RoleCompositeBE composite)
             {
                 names.Add(composite.Name);
                 foreach (var child in composite.GetChildren())

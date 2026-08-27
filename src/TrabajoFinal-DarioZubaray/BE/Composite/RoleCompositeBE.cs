@@ -2,21 +2,21 @@ using System.Collections.Generic;
 
 namespace BE
 {
-    public class RoleComposite : IRoleComponent
+    public class RoleCompositeBE : IRoleComponentBE
     {
         #region Propiedades
         public int Id { get; set; }
         public string Name { get; set; }
-        private readonly List<IRoleComponent> _children;
+        private readonly List<IRoleComponentBE> _children;
         #endregion
 
         #region Constructor
-        public RoleComposite()
+        public RoleCompositeBE()
         {
-            _children = new List<IRoleComponent>();
+            _children = new List<IRoleComponentBE>();
         }
 
-        public RoleComposite(int id, string name) : this()
+        public RoleCompositeBE(int id, string name) : this()
         {
             Id = id;
             Name = name;
@@ -24,19 +24,19 @@ namespace BE
         #endregion
 
         #region Métodos
-        public void AddChild(IRoleComponent child)
+        public void AddChild(IRoleComponentBE child)
         {
             _children.Add(child);
         }
 
-        public void RemoveChild(IRoleComponent child)
+        public void RemoveChild(IRoleComponentBE child)
         {
             _children.Remove(child);
         }
 
-        public List<IRoleComponent> GetChildren()
+        public List<IRoleComponentBE> GetChildren()
         {
-            return new List<IRoleComponent>(_children);
+            return new List<IRoleComponentBE>(_children);
         }
 
         public bool HasPermission(string permissionName)

@@ -5,18 +5,18 @@ using MPP;
 
 namespace BLL
 {
-    public class SessionManager
+    public class SessionManagerBLL
     {
         #region Propiedades
-        private static Dictionary<int, SessionManager> _instances
-            = new Dictionary<int, SessionManager>();
+        private static Dictionary<int, SessionManagerBLL> _instances
+            = new Dictionary<int, SessionManagerBLL>();
 
         public UserBE User { get; private set; }
-        public RoleComposite RoleTree { get; private set; }
+        public RoleCompositeBE RoleTree { get; private set; }
         #endregion
 
         #region Constructor
-        private SessionManager(UserBE user, RoleComposite roleTree)
+        private SessionManagerBLL(UserBE user, RoleCompositeBE roleTree)
         {
             User = user;
             RoleTree = roleTree;
@@ -24,7 +24,7 @@ namespace BLL
         #endregion
 
         #region Métodos Públicos
-        public static SessionManager GetInstance(int userId)
+        public static SessionManagerBLL GetInstance(int userId)
         {
             if (!_instances.ContainsKey(userId))
             {
@@ -33,7 +33,7 @@ namespace BLL
             return _instances[userId];
         }
 
-        public static SessionManager CreateSession(UserBE user)
+        public static SessionManagerBLL CreateSession(UserBE user)
         {
             if (user == null)
             {
@@ -41,9 +41,9 @@ namespace BLL
             }
 
             var permissionBLL = new PermissionBLL();
-            RoleComposite roleTree = permissionBLL.BuildRoleTree(user.RoleId);
+            RoleCompositeBE roleTree = permissionBLL.BuildRoleTree(user.RoleId);
 
-            var session = new SessionManager(user, roleTree);
+            var session = new SessionManagerBLL(user, roleTree);
             _instances[user.Id] = session;
 
             CultureHelperBLL.SetCulture(user.Language);

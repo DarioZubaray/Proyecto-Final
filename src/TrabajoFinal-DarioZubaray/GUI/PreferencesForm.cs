@@ -13,7 +13,7 @@ namespace TrabajoFinal_DarioZubaray
         private readonly UserBE _user;
         private readonly MainForm _mainForm;
         private readonly IUserBLL _userBLL;
-        private readonly SessionManager _session;
+        private readonly SessionManagerBLL _session;
         #endregion
 
         #region Constructor
@@ -23,7 +23,7 @@ namespace TrabajoFinal_DarioZubaray
             _user = user;
             _mainForm = mainForm;
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
-            _session = SessionManager.GetInstance(user.Id);
+            _session = SessionManagerBLL.GetInstance(user.Id);
             LoadLanguages();
             ApplyResources();
         }

@@ -23,7 +23,7 @@ namespace BLL
         #endregion
 
         #region Métodos Públicos
-        public RoleComposite BuildRoleTree(int roleId)
+        public RoleCompositeBE BuildRoleTree(int roleId)
         {
             RoleBE role = _roleMPP.FindById(roleId);
 
@@ -47,7 +47,7 @@ namespace BLL
             return role.ToComposite(childRoles);
         }
 
-        public bool HasPermission(RoleComposite roleTree, string permissionName)
+        public bool HasPermission(RoleCompositeBE roleTree, string permissionName)
         {
             if (roleTree == null)
             {

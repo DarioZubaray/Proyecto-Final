@@ -47,15 +47,15 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            LoginResultDTO result = _authBLL.Login(username, password);
+            LoginResultBE result = _authBLL.Login(username, password);
 
             if (result.Success)
             {
-                SessionManager.CreateSession(result.User);
+                SessionManagerBLL.CreateSession(result.User);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
-                SessionManager.RemoveSession(result.User.Id);
+                SessionManagerBLL.RemoveSession(result.User.Id);
                 CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
                 ApplyResources();
                 this.Show();

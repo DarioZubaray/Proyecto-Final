@@ -4,7 +4,7 @@ namespace BLL
 {
     public interface IAuthBLL
     {
-        LoginResultDTO Login(string userName, string password);
+        LoginResultBE Login(string userName, string password);
         bool Logout(UserBE user);
     }
 }

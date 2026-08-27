@@ -34,7 +34,7 @@ namespace BLL.Tests
         [TestMethod]
         public void GetSupportedLanguages_Returns3Languages()
         {
-            List<LanguageItem> languages = CultureHelperBLL.GetSupportedLanguages();
+            List<LanguageItemBLL> languages = CultureHelperBLL.GetSupportedLanguages();
 
             Assert.AreEqual(3, languages.Count);
             Assert.AreEqual("es", languages[0].Code);

@@ -30,13 +30,13 @@ namespace BE
             return Permissions.Exists(p => p.Name == permissionName);
         }
 
-        public RoleComposite ToComposite(List<RoleBE> childRoles = null)
+        public RoleCompositeBE ToComposite(List<RoleBE> childRoles = null)
         {
-            var composite = new RoleComposite(Id, Name);
+            var composite = new RoleCompositeBE(Id, Name);
 
             foreach (var permission in Permissions)
             {
-                composite.AddChild(new PermissionLeaf(permission));
+                composite.AddChild(new PermissionLeafBE(permission));
             }
 
             if (childRoles != null)

@@ -29,18 +29,18 @@ namespace BLL
             Thread.CurrentThread.CurrentUICulture = culture;
         }
 
-        public static List<LanguageItem> GetSupportedLanguages()
+        public static List<LanguageItemBLL> GetSupportedLanguages()
         {
-            return new List<LanguageItem>
+            return new List<LanguageItemBLL>
             {
-                new LanguageItem { Code = "es", DisplayName = "Español" },
-                new LanguageItem { Code = "en", DisplayName = "English" },
-                new LanguageItem { Code = "pt-BR", DisplayName = "Português (Brasil)" }
+                new LanguageItemBLL { Code = "es", DisplayName = "Español" },
+                new LanguageItemBLL { Code = "en", DisplayName = "English" },
+                new LanguageItemBLL { Code = "pt-BR", DisplayName = "Português (Brasil)" }
             };
         }
     }
 
-    public class LanguageItem
+    public class LanguageItemBLL
     {
         public string Code { get; set; }
         public string DisplayName { get; set; }

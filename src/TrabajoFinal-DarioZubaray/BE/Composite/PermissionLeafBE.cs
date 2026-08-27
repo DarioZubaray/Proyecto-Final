@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace BE
 {
-    public class PermissionLeaf : IRoleComponent
+    public class PermissionLeafBE : IRoleComponentBE
     {
         #region Propiedades
         private readonly PermissionBE _option;
@@ -10,7 +10,7 @@ namespace BE
         #endregion
 
         #region Constructor
-        public PermissionLeaf(PermissionBE option)
+        public PermissionLeafBE(PermissionBE option)
         {
             _option = option;
         }

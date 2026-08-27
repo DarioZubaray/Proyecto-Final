@@ -57,17 +57,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthBLL.cs" />
-    <Compile Include="CultureHelperBLL.cs" />
-    <Compile Include="EncryptionBLL.cs" />
-    <Compile Include="IAuthBLL.cs" />
-    <Compile Include="IUserBLL.cs" />
-    <Compile Include="IRoleBLL.cs" />
-    <Compile Include="PermissionBLL.cs" />
-    <Compile Include="RoleBLL.cs" />
-    <Compile Include="SessionManager.cs" />
-    <Compile Include="ServiceLocatorBLL.cs" />
-    <Compile Include="UserBLL.cs" />
+    <Compile Include="Interfaces\IUserBLL.cs" />
+    <Compile Include="Interfaces\IRoleBLL.cs" />
+    <Compile Include="Interfaces\IAuthBLL.cs" />
+    <Compile Include="Services\UserBLL.cs" />
+    <Compile Include="Services\RoleBLL.cs" />
+    <Compile Include="Services\AuthBLL.cs" />
+    <Compile Include="Services\PermissionBLL.cs" />
+    <Compile Include="Helpers\EncryptionBLL.cs" />
+    <Compile Include="Helpers\CultureHelperBLL.cs" />
+    <Compile Include="Helpers\SessionManagerBLL.cs" />
+    <Compile Include="Helpers\ServiceLocatorBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
