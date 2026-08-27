@@ -238,4 +238,40 @@
   <data name="Main FooterRole" xml:space="preserve">
     <value>Rol:</value>
   </data>
+  <data name="Main_MenuRoles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="RoleManagement_Title" xml:space="preserve">
+    <value>Gestión de Roles</value>
+  </data>
+  <data name="RoleManagement_RoleLabel" xml:space="preserve">
+    <value>Rol:</value>
+  </data>
+  <data name="RoleManagement_Create" xml:space="preserve">
+    <value>Crear Rol</value>
+  </data>
+  <data name="RoleManagement_Delete" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="RoleManagement_Available" xml:space="preserve">
+    <value>Disponibles</value>
+  </data>
+  <data name="RoleManagement_Assigned" xml:space="preserve">
+    <value>Asignados</value>
+  </data>
+  <data name="RoleManagement_Add" xml:space="preserve">
+    <value>&gt;&gt;</value>
+  </data>
+  <data name="RoleManagement_Remove" xml:space="preserve">
+    <value>&lt;&lt;</value>
+  </data>
+  <data name="RoleManagement_NameRequired" xml:space="preserve">
+    <value>El nombre del rol es obligatorio.</value>
+  </data>
+  <data name="RoleManagement_SelectRole" xml:space="preserve">
+    <value>Seleccione un rol de la lista.</value>
+  </data>
+  <data name="RoleManagement_ConfirmDelete" xml:space="preserve">
+    <value>¿Está seguro que desea eliminar el rol "{0}"?</value>
+  </data>
 </root>

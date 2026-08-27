@@ -72,6 +72,11 @@ namespace BLL
             string newHash = EncryptionBLL.HashPassword(newPassword);
             return _userMPP.UpdatePassword(userId, newHash);
         }
+
+        public int CountByRoleId(int roleId)
+        {
+            return _userMPP.CountByRoleId(roleId);
+        }
         #endregion
     }
 }

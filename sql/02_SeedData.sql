@@ -15,14 +15,13 @@ INSERT INTO [dbo].[Roles] (name) VALUES
 -- =============================================
 -- Permisos (cada uno = 1 formulario)
 -- =============================================
-INSERT INTO [dbo].[Permissions] (name, label, description) VALUES
-('FORM_USER_MGMT',    'ABM Usuarios',       'Formulario de gestion de usuarios'),
-('FORM_ROLE_MGMT',    'ABM Roles',          'Formulario de gestion de roles'),
-('FORM_COMPLAINTS',   'Quejas',             'Formulario de quejas'),
-('FORM_REPORTS',      'Reportes',           'Formulario de reportes'),
-('FORM_SETTINGS',     'Configuracion',      'Formulario de configuracion'),
-('FORM_CHANGE_PASS',  'Cambiar Contrasena', 'Formulario de cambio de contrasena'),
-('FORM_PREFERENCES',  'Preferencias',       'Formulario de preferencias/idioma');
+INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
+('FORM_USER_MGMT',    'ABM Usuarios',       'Formulario de gestion de usuarios', 0),
+('FORM_ROLE_MGMT',    'ABM Roles',          'Formulario de gestion de roles', 0),
+('FORM_COMPLAINTS',   'Quejas',             'Formulario de quejas', 0),
+('FORM_REPORTS',      'Reportes',           'Formulario de reportes', 0),
+('FORM_CHANGE_PASS',  'Cambiar Contrasena', 'Formulario de cambio de contrasena', 1),
+('FORM_PREFERENCES',  'Preferencias',       'Formulario de preferencias/idioma', 1);
 
 -- =============================================
 -- Asignación de permisos a roles

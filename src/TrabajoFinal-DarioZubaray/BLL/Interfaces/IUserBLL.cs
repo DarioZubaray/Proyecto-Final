@@ -13,5 +13,6 @@ namespace BLL
         List<UserBE> FindByUserName(string userName);
         bool UpdateLanguage(int userId, string language);
         bool ChangePassword(int userId, string currentPassword, string newPassword);
+        int CountByRoleId(int roleId);
     }
 }

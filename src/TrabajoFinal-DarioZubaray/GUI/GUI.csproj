@@ -98,6 +98,18 @@
     <Compile Include="ChangePasswordForm.Designer.cs">
       <DependentUpon>ChangePasswordForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="RoleManagementForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RoleManagementForm.Designer.cs">
+      <DependentUpon>RoleManagementForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TestComplaintsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestReportsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="LoginForm.resx">

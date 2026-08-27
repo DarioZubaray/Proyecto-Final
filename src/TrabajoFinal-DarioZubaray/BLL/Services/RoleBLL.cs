@@ -42,6 +42,39 @@ namespace BLL
         {
             return _roleMPP.GetChildRoleIds(parentId);
         }
+
+        public int Save(RoleBE role)
+        {
+            return _roleMPP.Save(role);
+        }
+
+        public void SavePermissions(int roleId, List<int> permissionIds)
+        {
+            List<PermissionBE> currentPerms = _roleMPP.GetPermissionsByRoleId(roleId);
+            List<int> systemPermIds = currentPerms
+                .FindAll(p => p.IsSystem)
+                .ConvertAll(p => p.Id);
+
+            foreach (int sysId in systemPermIds)
+            {
+                if (!permissionIds.Contains(sysId))
+                {
+                    permissionIds.Add(sysId);
+                }
+            }
+
+            _roleMPP.SavePermissions(roleId, permissionIds);
+        }
+
+        public bool Delete(int roleId)
+        {
+            return _roleMPP.Delete(roleId);
+        }
+
+        public List<PermissionBE> GetAllPermissions()
+        {
+            return _roleMPP.GetAllPermissions();
+        }
         #endregion
     }
 }

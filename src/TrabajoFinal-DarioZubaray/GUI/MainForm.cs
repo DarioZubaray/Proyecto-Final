@@ -38,6 +38,7 @@ namespace TrabajoFinal_DarioZubaray
             cerrarSesiónToolStripMenuItem.Text = Resources.Main_MenuLogout;
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
+            rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
             UpdateFooter();
         }
 
@@ -46,6 +47,8 @@ namespace TrabajoFinal_DarioZubaray
         {
             administraciónToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_USER_MGMT");
+            rolesToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_ROLE_MGMT");
         }
 
         private void UpdateFooter()
@@ -109,6 +112,15 @@ namespace TrabajoFinal_DarioZubaray
         private void usuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var form = new UserManagementForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
+        private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new RoleManagementForm
             {
                 MdiParent = this
             };

@@ -147,6 +147,15 @@ namespace MPP
 
             return FindMany(query, parameters);
         }
+        public int CountByRoleId(int roleId)
+        {
+            string query = @"SELECT COUNT(*) FROM Users WHERE role_id = @roleId";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@roleId", roleId)
+            };
+            return _access.ReadScalar(query, parameters);
+        }
         #endregion
 
         #region Métodos Privados

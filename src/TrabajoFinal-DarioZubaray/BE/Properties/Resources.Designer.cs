@@ -599,5 +599,113 @@ namespace BE.Properties {
                 return ResourceManager.GetString("Main FooterRole", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Roles.
+        /// </summary>
+        public static string Main_MenuRoles {
+            get {
+                return ResourceManager.GetString("Main_MenuRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Gestión de Roles.
+        /// </summary>
+        public static string RoleManagement_Title {
+            get {
+                return ResourceManager.GetString("RoleManagement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Rol:.
+        /// </summary>
+        public static string RoleManagement_RoleLabel {
+            get {
+                return ResourceManager.GetString("RoleManagement_RoleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Crear Rol.
+        /// </summary>
+        public static string RoleManagement_Create {
+            get {
+                return ResourceManager.GetString("RoleManagement_Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Eliminar.
+        /// </summary>
+        public static string RoleManagement_Delete {
+            get {
+                return ResourceManager.GetString("RoleManagement_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Disponibles.
+        /// </summary>
+        public static string RoleManagement_Available {
+            get {
+                return ResourceManager.GetString("RoleManagement_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Asignados.
+        /// </summary>
+        public static string RoleManagement_Assigned {
+            get {
+                return ResourceManager.GetString("RoleManagement_Assigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &gt;&gt;.
+        /// </summary>
+        public static string RoleManagement_Add {
+            get {
+                return ResourceManager.GetString("RoleManagement_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &lt;&lt;.
+        /// </summary>
+        public static string RoleManagement_Remove {
+            get {
+                return ResourceManager.GetString("RoleManagement_Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El nombre del rol es obligatorio..
+        /// </summary>
+        public static string RoleManagement_NameRequired {
+            get {
+                return ResourceManager.GetString("RoleManagement_NameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Seleccione un rol de la lista..
+        /// </summary>
+        public static string RoleManagement_SelectRole {
+            get {
+                return ResourceManager.GetString("RoleManagement_SelectRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ¿Está seguro que desea eliminar el rol "{0}"?.
+        /// </summary>
+        public static string RoleManagement_ConfirmDelete {
+            get {
+                return ResourceManager.GetString("RoleManagement_ConfirmDelete", resourceCulture);
+            }
+        }
     }
 }

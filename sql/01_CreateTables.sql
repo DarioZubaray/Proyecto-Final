@@ -15,7 +15,8 @@ CREATE TABLE [dbo].[Permissions] (
     [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [name]        NVARCHAR(100)  NOT NULL UNIQUE,
     [label]       NVARCHAR(100)  NOT NULL,
-    [description] NVARCHAR(256)  NULL
+    [description] NVARCHAR(256)  NULL,
+    [is_system]   BIT            NOT NULL DEFAULT 0
 );
 
 -- 3. Relación Roles <-> Permisos (N:N)
