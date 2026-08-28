@@ -14,8 +14,7 @@ namespace DAL
         #region Constructor
         public AccessDAL()
         {
-            _connectionString = ConfigurationManager
-                .ConnectionStrings["cadenaConexion"].ToString();
+            _connectionString = ConfigurationManager.ConnectionStrings["cadenaConexion"].ToString();
         }
         #endregion
 
