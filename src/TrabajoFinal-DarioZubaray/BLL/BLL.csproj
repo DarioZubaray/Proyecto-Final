@@ -71,6 +71,10 @@
     <Compile Include="Services\ActivityLoggingDecorator.cs" />
     <Compile Include="Helpers\EncryptionBLL.cs" />
     <Compile Include="Helpers\CultureHelperBLL.cs" />
+    <Compile Include="Strategy\IPasswordStrategy.cs" />
+    <Compile Include="Strategy\BcryptPasswordStrategy.cs" />
+    <Compile Include="Strategy\LegacySha256PasswordStrategy.cs" />
+    <Compile Include="Strategy\PasswordHasher.cs" />
     <Compile Include="Helpers\SessionManagerBLL.cs" />
     <Compile Include="Helpers\ServiceLocatorBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -80,7 +80,11 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `IActivity` (componente) | Interfaz componente del patrón **Decorator**: define `Execute()` y los datos de una actividad. |
 | `BaseActivity` | Componente concreto del **Decorator**: representa una actividad concreta (acceso a formulario, login o logout) sin efectos secundarios. |
 | `ActivityLoggingDecorator` | Decorador del **Decorator**: envuelve una `IActivity` y, al finalizar, guarda el registro en la base. |
-| `EncryptionBLL` (static) | Hash y verificación de contraseñas con **BCrypt**; además verifica hashes "legacy" (SHA-256 de 64 hex) para compatibilidad con datos existentes. |
+| `EncryptionBLL` (static) | Fachada de compatibilidad del hash/verificación de contraseñas: delega en `PasswordHasher.Default` (patrón **Strategy**). |
+| `IPasswordStrategy` | Interfaz estrategia del **Strategy**: `Matches`, `Hash` y `Verify`. |
+| `BcryptPasswordStrategy` | Estrategia concreta que cifra y verifica con **BCrypt** (algoritmo actual). |
+| `LegacySha256PasswordStrategy` | Estrategia concreta de **SHA-256** (64 hex) para verificar contraseñas legadas de datos existentes. |
+| `PasswordHasher` | Contexto del **Strategy**: elige la estrategia adecuada según el formato del hash y expone `Hash`/`Verify`. |
 | `CultureHelperBLL` (static) | Gestión de idioma/cultura (`es`, `en`, `pt-BR`). Define los idiomas soportados y aplica la cultura al hilo actual. |
 | `ServiceLocatorBLL` (static) | **Singleton / Localizador de servicios.** Mantiene una única instancia por servicio de persistencia y crea la lógica de negocio correspondiente. |
 | `SessionManagerBLL` | **Multiton de sesiones.** Mantiene el estado de la sesión por usuario (multiton: una instancia por `userId`). |
@@ -190,6 +194,25 @@ Participantes:
 - **MainForm**: cada opción del menú que abre un formulario registra un `LogFormAccess` (Preferencias, Usuarios, Roles, Cambiar Contraseña).
 - **ActivityHistoryForm**: lista paginada de las actividades del usuario autenticado (no se registra a sí misma, para evitar ruido).
 
+### 5) Strategy — algoritmos de hash de contraseñas
+
+El **Strategy** permite intercambiar algoritmos en tiempo de ejecución sin modificar a quien los consume. Se usa para la verificación de contraseñas, que históricamente mezclaba dos algoritmos en un único `if/else` y hoy delega en estrategias intercambiables.
+
+```
+IPasswordStrategy  (interfaz estrategia: Matches / Hash / Verify)
+   ├─ BcryptPasswordStrategy        (BCrypt)
+   └─ LegacySha256PasswordStrategy  (SHA-256 legacy, para datos existentes)
+PasswordHasher  (contexto: elige la estrategia según el formato del hash)
+```
+
+Participantes:
+
+- **Estrategia** → `IPasswordStrategy` — `Matches(storedHash)` (dice si el hash le corresponde), `Hash(password)` y `Verify(plain, stored)`.
+- **Estrategia concreta** → `BcryptPasswordStrategy` (BCrypt) y `LegacySha256PasswordStrategy` (SHA-256 de 64 hex), esta última para mantener la compatibilidad con usuarios creados antes del cifrado BCrypt.
+- **Contexto** → `PasswordHasher` — mantiene una lista ordenada de estrategias; `Verify` recorre las estrategias, delega en la que `Matches` el hash guardado y, si ninguna, usa la estrategia por defecto (BCrypt).
+
+**Uso**: `EncryptionBLL` (podado a ser una fachada de compatibilidad) delega en `PasswordHasher.Default` para `HashPassword` y `VerifyPassword`; `AuthBLL`, `UserBLL` y `GUI/UserForm` siguen usando la misma API sin cambios. Agregar un tercer algoritmo (p. ej. Argon2) solo implica una nueva `IPasswordStrategy`: **Open/Closed y sin tocar el contexto**.
+
 ## Principios SOLID aplicados
 
 El código aplica los principios SOLID, en gran medida de la mano de los patrones ya documentados.
@@ -209,6 +232,7 @@ El sistema está **abierto a la extensión y cerrado a la modificación**:
 
 - **Composite**: se pueden agregar nuevos tipos de componentes de rol/permiso sin modificar la interfaz `IRoleComponentBE` ni el recorrido del árbol.
 - **Decorator**: se agrega la responsabilidad de "guardar en el historial" (`ActivityLoggingDecorator`) **sin tocar** la actividad base (`BaseActivity`); se pueden añadir nuevas actividades o decoradores sin modificar lo existente.
+- **Strategy**: se puede incorporar un tercer algoritmo de hash (p. ej. Argon2) creando una nueva `IPasswordStrategy`, **sin modificar** ni `PasswordHasher` ni a sus consumidores.
 - **Interfaces** `IUserBLL`, `IRoleBLL`, `IAuthBLL`, `IActivityBLL` y `IUserMPP`, `IRoleMPP`, `IActivityMPP`: el consumidor depende de la abstracción, por lo que se pueden incorporar nuevas implementaciones (p. ej. otra persistencia) sin alterar a quien las usa.
 
 ### L — Liskov Substitution (Sustitución de Liskov)
@@ -231,6 +255,7 @@ Las capas superiores dependen de **abstracciones**, no de concreciones:
 
 - **BLL** consume `IUserMPP`, `IRoleMPP` e `IActivityMPP`; **GUI** consume las interfaces de BLL.
 - **Inyección por constructor**: `AuthBLL(IUserMPP)`, `UserBLL(IUserMPP)`, `RoleBLL(IRoleMPP)`, `ActivityBLL(IActivityMPP)` (p. ej. BLL/Services/AuthBLL.cs). Esto habilita las pruebas con mocks y desacopla la creación, que queda centralizada en `ServiceLocatorBLL`.
+- **Strategy**: `PasswordHasher` depende de `IPasswordStrategy` (puede recibir estrategias por constructor), lo que permite sustituir el algoritmo en pruebas sin tocar el contexto.
 - La **dirección de dependencia** va de las capas altas hacia lo abstracto; el dominio (BE) no depende de nada.
 
 ### Limitaciones y puntos de mejora

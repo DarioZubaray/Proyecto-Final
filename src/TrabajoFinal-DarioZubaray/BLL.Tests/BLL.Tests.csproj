@@ -74,6 +74,7 @@
     <Compile Include="EncryptionBLLTests.cs" />
     <Compile Include="CultureHelperBLLTests.cs" />
     <Compile Include="ActivityBLLTests.cs" />
+    <Compile Include="StrategyTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

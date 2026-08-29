@@ -9,10 +9,11 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 | Parte | Ubicación | Descripción |
 |-------|-----------|-------------|
 | **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, .NET Framework 4.7.2) con arquitectura en capas. Incluye su propio README. |
-| **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator) y principios SOLID. |
-| **Base de datos — scripts SQL** | [`sql/`](sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. |
-| **Diagramas** | [`diagramas/`](diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencia de login. |
+| **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator, Strategy) y principios SOLID. |
+| **Base de datos — scripts SQL** | [`sql/`](sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. Ver [`sql/README.md`](sql/README.md). |
+| **Diagramas** | [`diagramas/`](docs/diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencia de login. |
 | **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
+| **Documentación general (`docs/`)** | [`docs/README.md`](docs/README.md) | Guía de navegación del material de documentación (diagramas y cursada). |
 
 ### Aplicación .NET (`src/TrabajoFinal-DarioZubaray/`)
 
@@ -24,17 +25,20 @@ Solución con la siguiente arquitectura en capas (cada capa es un proyecto):
 - **MPP** — capa de **mapeo**: transforma los objetos de base de datos (`DataTable`) en entidades de **BE** (y viceversa).
 - **BE** — *Business Entities*: entidades, DTOs y el patrón **Composite** de roles/permisos.
 
-Se destacan tres patrones de diseño:
+Se destacan **cuatro** patrones de diseño:
 
 - **Composite** — `IRoleComponentBE`, `RoleCompositeBE` y `PermissionLeafBE` representan la jerarquía de roles/permisos como un árbol.
 - **Singleton / Multiton** — `ServiceLocatorBLL` (singleton de servicios) y `SessionManagerBLL` (multiton de sesiones, una por usuario).
 - **Decorator** — `ActivityLoggingDecorator` envuelve una actividad (`IActivity`/`BaseActivity`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
+- **Strategy** — `PasswordHasher` elige entre algoritmos de hash intercambiables (`BcryptPasswordStrategy` y `LegacySha256PasswordStrategy`) para el cifrado/verificación de contraseñas.
 
-Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Liskov, Interface Segregation y Dependency Inversion), documentados junto a los patrones en el README del proyecto.
+Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Liskov, Interface Segregation y Dependency Inversion) — los patrones anteriores los materializan (p. ej. **Strategy** hace Open/Closed y facilita la inyección de dependencias) — todo documentado en el README del proyecto.
 
 Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md).
 
 ### Base de datos (`sql/`)
+
+Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, más un respaldo. Detalle completo en [`sql/README.md`](sql/README.md).
 
 Ejecutar los scripts en orden:
 
@@ -51,9 +55,9 @@ Ejecutar los scripts en orden:
 | `dario` | `123` | Admin (todos los permisos) |
 | `pepe`  | `123` | Alumno (solo quejas) |
 
-### Diagramas (`diagramas/`)
+### Diagramas (`docs/diagramas/`)
 
-Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato:
+Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato (índice completo en [`docs/README.md`](docs/README.md)):
 
 - `casos-uso.mmd` — casos de uso por actor (Admin, Supervisor, Operador).
 - `clases.mmd` — diagrama de clases con el patrón Composite.
