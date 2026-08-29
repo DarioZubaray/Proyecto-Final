@@ -7,17 +7,17 @@ Aplicación de escritorio **WinForms** sobre **.NET Framework 4.7.2** con arquit
 La solución está estructurada como una arquitectura en capas clásica. Cada capa es un proyecto separado y las dependencias van siempre "hacia abajo" (una capa conoce a las que están debajo, nunca al revés).
 
 ```
-┌─────────────────────────────────────────────┐
-│  GUI  (Interfaz gráfica - WinForms)         │  -> BE, BLL
-├─────────────────────────────────────────────┤
-│  BLL  (Lógica de negocio y servicios)       │  -> BE, MPP, DAL(indirecto)
-├─────────────────────────────────────────────┤
-│  MPP  (Persistencia: Modelo de Procedimientos)│ -> BE, DAL
-├─────────────────────────────────────────────┤
-│  DAL  (Acceso a datos - SQL Server)         │
-├─────────────────────────────────────────────┤
-│  BE   (Entidades de negocio)                │  (no depende de nada)
-└─────────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│  GUI  (Interfaz gráfica - WinForms)           │  -> BE, BLL
+├───────────────────────────────────────────────┤
+│  BLL  (Lógica de negocio y servicios)         │  -> BE, MPP, DAL(indirecto)
+├───────────────────────────────────────────────┤
+│  MPP  (Mapeador)                              │  -> BE, DAL
+├───────────────────────────────────────────────┤
+│  DAL  (Acceso a datos - SQL Server)           │
+├───────────────────────────────────────────────┤
+│  BE   (Entidades de negocio)                  │  (no depende de nada)
+└───────────────────────────────────────────────┘
 ```
 
 ### Capas y proyectos
@@ -26,8 +26,8 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 |----------|-----------------|
 | **BE** (*Business Entities*) | Entidades del dominio: `UserBE`, `RoleBE`, `PermissionBE`. Contiene además el **DTO** `LoginResultBE` y la implementación del patrón **Composite** de roles. No depende de ninguna otra capa. |
 | **DAL** (*Data Access Layer*) | Acceso a datos de bajo nivel. `AccessDAL` encapsula la conexión y ejecución de sentencias SQL (lectura, escalar y guardado) contra **SQL Server**, usando `SqlConnection`/`SqlCommand` y parámetros. |
-| **MPP** (*Modelo de Persistencia de Procedimientos*) | Persistencia de las entidades sobre la base realizando los *mapeos* entre filas (`DataRow`) y entidades. `UserMPP` y `RoleMPP` implementan interfaces (`IUserMPP`, `IRoleMPP`), lo que permite inyectar mocks en pruebas. |
-| **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
+| **MPP** (*Mapper*) | Capa de **mapeo** entre la base de datos y el modelo de negocio: solo transforma un `DataTable` (o similar) devuelto por `DAL` a un objeto de **BE**, y viceversa. `UserMPP`, `RoleMPP` y `ActivityMPP` implementan interfaces (`IUserMPP`, `IRoleMPP`, `IActivityMPP`), lo que permite inyectar mocks en pruebas. |
+| **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
 | **GUI** | Interfaz gráfica en WinForms: formularios de login, principal, usuarios, roles, preferencias y cambio de contraseña. El punto de entrada es `Program.cs`. |
 | **BLL.Tests** / **MPP.Tests** | Proyectos de prueba unitaria (MSTest + Moq). Cubren la lógica de `AuthBLL`, `EncryptionBLL`, `CultureHelperBLL`, `UserBLL` y la persistencia de `UserMPP`. |
 
@@ -49,6 +49,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `RoleBE` | Entidad *Rol*. Posee la lista de permisos y el método `ToComposite(...)` que convierte el rol (y sus roles hijos) en un árbol **Composite**. |
 | `PermissionBE` | Entidad *Permiso*. Identifica un formulario/acción concreta (`Name`, `Label`, `Description`, `IsSystem`). `IsSystem` marca permisos que no pueden quitarse. |
 | `LoginResultBE` (DTO) | Resultado del inicio de sesión: `Success`, `Message` y `User` autenticado. |
+| `ActivityLogBE` | Entidad que representa un registro del **Historial de Actividad**: usuario, acción, formulario, detalle y fecha/hora. |
 | `IRoleComponentBE` | Interfaz común del **Composite** (componente). Define `Name`, `HasPermission(name)` y `GetAllPermissions()`. |
 | `RoleCompositeBE` | Nodo **compuesto** del árbol: representa un rol que contiene hijos (otros roles y hojas de permiso). Permite agregar/quitar hijos y recorre el árbol para resolver permisos. |
 | `PermissionLeafBE` | **Hoja** del árbol: envuelve un `PermissionBE` concreto. Evalúa `HasPermission` contra su propio nombre. |
@@ -59,12 +60,13 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 |-------|-----------------|
 | `AccessDAL` | Abstracción del acceso a SQL Server. Lee la cadena de conexión `cadenaConexion` de la configuración y ofrece `Read`, `ReadScalar` y `Save` (con parámetros opcionales). |
 
-### MPP — Modelo de Persistencia de Procedimientos
+### MPP — Modelo de Procedimientos de Persistencia (capa de mapeo)
 
 | Clase | Responsabilidad |
 |-------|-----------------|
-| `IUserMPP` / `UserMPP` | Persistencia de usuarios. Mapea `DataRow ⇄ UserBE` y ejecuta operaciones de login (último acceso, reintentos, desactivación), CRUD, idioma y contraseña. |
-| `IRoleMPP` / `RoleMPP` | Persistencia de roles y permisos. CRUD de roles, permisos por rol, jerarquía padre-hijo (`RoleHierarchy`) y asignación de permisos. |
+| `IUserMPP` / `UserMPP` | Mapeo de usuarios: transforma filas (`DataRow`) en `UserBE` y viceversa, y persiste las operaciones de login (último acceso, reintentos, desactivación), CRUD, idioma y contraseña. |
+| `IRoleMPP` / `RoleMPP` | Mapeo de roles y permisos: transforma filas en `RoleBE`/`PermissionBE`, CRUD de roles, permisos por rol, jerarquía padre-hijo (`RoleHierarchy`) y asignación de permisos. |
+| `IActivityMPP` / `ActivityMPP` | Mapeo del historial de actividad: transforma filas en `ActivityLogBE`, inserta registros y consulta **paginada** (con `OFFSET`/`FETCH`) filtrando por usuario. |
 
 ### BLL — Business Logic Layer
 
@@ -74,6 +76,10 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `IUserBLL` / `UserBLL` | Lógica de gestión de usuarios: CRUD, búsqueda, cambio de idioma y cambio de contraseña (verificando la actual). |
 | `IRoleBLL` / `RoleBLL` | Lógica de gestión de roles: CRUD, permisos por rol (protegiendo los de sistema) y jerarquía de roles. |
 | `PermissionBLL` | Construye el árbol **Composite** de un rol mediante `BuildRoleTree(roleId)` y consulta permisos sobre el árbol (`HasPermission`). |
+| `IActivityBLL` / `ActivityBLL` | Servicio del **Historial de Actividad**. Registra accesos a formularios y el inicio/cierre de sesión (usando el **Decorator**) y consulta el historial de forma paginada. |
+| `IActivity` (componente) | Interfaz componente del patrón **Decorator**: define `Execute()` y los datos de una actividad. |
+| `BaseActivity` | Componente concreto del **Decorator**: representa una actividad concreta (acceso a formulario, login o logout) sin efectos secundarios. |
+| `ActivityLoggingDecorator` | Decorador del **Decorator**: envuelve una `IActivity` y, al finalizar, guarda el registro en la base. |
 | `EncryptionBLL` (static) | Hash y verificación de contraseñas con **BCrypt**; además verifica hashes "legacy" (SHA-256 de 64 hex) para compatibilidad con datos existentes. |
 | `CultureHelperBLL` (static) | Gestión de idioma/cultura (`es`, `en`, `pt-BR`). Define los idiomas soportados y aplica la cultura al hilo actual. |
 | `ServiceLocatorBLL` (static) | **Singleton / Localizador de servicios.** Mantiene una única instancia por servicio de persistencia y crea la lógica de negocio correspondiente. |
@@ -89,6 +95,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
 | `PreferencesForm` | Cambio de idioma; actualiza la sesión y refresca los recursos de la UI. |
 | `ChangePasswordForm` | Cambio de contraseña validando la actual. |
+| `ActivityHistoryForm` | **Historial de Actividad** (dentro del menú Archivo): lista paginada de las actividades del usuario autenticado. |
 | `TestComplaintsForm` / `TestReportsForm` | Formularios de ejemplo (quejas/reportes) usados por los permisos `FORM_COMPLAINTS` y `FORM_REPORTS`. |
 
 ## Patrones de diseño destacados
@@ -161,16 +168,89 @@ public class SessionManagerBLL
 - Cada sesión conserva el **usuario** y el **árbol Composite de su rol**, permitiendo consultas de permisos (`HasPermission`) y cambios de idioma.
 - Al iniciar sesión, `LoginForm` llama a `CreateSession(result.User)`; `MainForm` y `PreferencesForm` recuperan la sesión con `GetInstance(user.Id)`.
 
+### 4) Decorator — Historial de Actividad
+
+El **Decorator** permite añadir responsabilidades a un objeto sin modificar su clase, envolviéndolo en otro objeto que implementa la misma interfaz. Se usa para registrar en el **Historial de Actividad**: se envuelve la "actividad" que se quiere realizar y, al finalizar, se guarda el registro en la base.
+
+```
+IActivity  (interfaz componente: Execute())
+   ├─ BaseActivity            (componente concreto: actividad de acceso formulario / login / logout)
+   └─ ActivityLoggingDecorator (decorator: ejecuta la actividad y luego guarda en la base)
+```
+
+Participantes:
+
+- **Componente** → `IActivity` — `UserId`, `Action`, `FormName`, `Description` y `Execute()`.
+- **Componente concreto** → `BaseActivity` — una actividad concreta; `Execute()` no produce efectos secundarios.
+- **Decorator** → `ActivityLoggingDecorator` — recibe una `IActivity` y un `IActivityMPP`; en `Execute()` primero ejecuta la actividad envuelta y luego **guarda el registro** (`_activityMPP.Save(...)`).
+
+**Uso**: `ActivityBLL` expone `LogFormAccess`, `LogLogin` y `LogLogout`, que construyen `new ActivityLoggingDecorator(new BaseActivity(...), _activityMPP).Execute()`. Los puntos de registro son:
+
+- **LoginForm**: tras autenticar (`LogLogin`) y al cerrar sesión (`LogLogout`).
+- **MainForm**: cada opción del menú que abre un formulario registra un `LogFormAccess` (Preferencias, Usuarios, Roles, Cambiar Contraseña).
+- **ActivityHistoryForm**: lista paginada de las actividades del usuario autenticado (no se registra a sí misma, para evitar ruido).
+
+## Principios SOLID aplicados
+
+El código aplica los principios SOLID, en gran medida de la mano de los patrones ya documentados.
+
+### S — Single Responsibility (Responsabilidad Única)
+
+Cada tipo tiene **un único motivo de cambio**:
+
+- **Capas** con responsabilidad única: BE (entidades), DAL (acceso a datos), MPP (mapeo), BLL (lógica de negocio) y GUI (presentación).
+- En **BLL**, una clase por responsabilidad: `AuthBLL` (autenticación), `UserBLL` (usuarios), `RoleBLL` (roles), `PermissionBLL` (árbol de permisos) y `ActivityBLL` (historial de actividad). Helpers como `EncryptionBLL` (cifrado), `CultureHelperBLL` (idioma) y `SessionManagerBLL` (sesión) hacen una sola cosa.
+- `ServiceLocatorBLL` (BLL/Helpers/ServiceLocatorBLL.cs) tiene la **única** responsabilidad de crear/proveer dependencias.
+- En **GUI**, cada formulario cumple un rol: login, ABM usuarios, ABM roles, preferencias, cambio de contraseña e historial.
+
+### O — Open/Closed (Abierto/Cerrado)
+
+El sistema está **abierto a la extensión y cerrado a la modificación**:
+
+- **Composite**: se pueden agregar nuevos tipos de componentes de rol/permiso sin modificar la interfaz `IRoleComponentBE` ni el recorrido del árbol.
+- **Decorator**: se agrega la responsabilidad de "guardar en el historial" (`ActivityLoggingDecorator`) **sin tocar** la actividad base (`BaseActivity`); se pueden añadir nuevas actividades o decoradores sin modificar lo existente.
+- **Interfaces** `IUserBLL`, `IRoleBLL`, `IAuthBLL`, `IActivityBLL` y `IUserMPP`, `IRoleMPP`, `IActivityMPP`: el consumidor depende de la abstracción, por lo que se pueden incorporar nuevas implementaciones (p. ej. otra persistencia) sin alterar a quien las usa.
+
+### L — Liskov Substitution (Sustitución de Liskov)
+
+Los subtipos son intercambiables por su base sin romper el comportamiento:
+
+- `RoleCompositeBE` y `PermissionLeafBE` pueden usarse indistintamente como `IRoleComponentBE`; el árbol los recorre de forma uniforme en `HasPermission` y `GetAllPermissions`.
+- Las implementaciones concretas (p. ej. `UserMPP`, `RoleBLL`) son **sustituibles por mocks** en las pruebas (MSTest + Moq) sin que cambie el comportamiento de quienes las consumen.
+
+### I — Interface Segregation (Segregación de Interfaces)
+
+Interfaces **chicas y específicas por responsabilidad**: ningún cliente depende de métodos que no usa.
+
+- `IAuthBLL` expone solo `Login`/`Logout`; `IActivityBLL` solo el historial; `IUserBLL` solo usuarios; `IRoleBLL` solo roles.
+- En **MPP**, una interfaz por entidad (`IUserMPP`, `IRoleMPP`, `IActivityMPP`) en lugar de una interfaz de persistencia "gorila" que agrupe todo.
+
+### D — Dependency Inversion (Inversión de Dependencias)
+
+Las capas superiores dependen de **abstracciones**, no de concreciones:
+
+- **BLL** consume `IUserMPP`, `IRoleMPP` e `IActivityMPP`; **GUI** consume las interfaces de BLL.
+- **Inyección por constructor**: `AuthBLL(IUserMPP)`, `UserBLL(IUserMPP)`, `RoleBLL(IRoleMPP)`, `ActivityBLL(IActivityMPP)` (p. ej. BLL/Services/AuthBLL.cs). Esto habilita las pruebas con mocks y desacopla la creación, que queda centralizada en `ServiceLocatorBLL`.
+- La **dirección de dependencia** va de las capas altas hacia lo abstracto; el dominio (BE) no depende de nada.
+
+### Limitaciones y puntos de mejora
+
+Para no sobrevender el cumplimiento, cabe notar algunas decisiones que presentan margen de mejora respecto de los principios:
+
+- `ServiceLocatorBLL` es un **Service Locator estático**: aunque los constructores reciben abstracciones (buen uso de DIP), el *cableado* de dependencias queda oculto y es difícil de sustituir en pruebas sin el patrón.
+- `PermissionBLL` se expone **concreto** (sin interfaz) a través de `ServiceLocatorBLL.CreatePermissionBLL()`, a diferencia del resto de los servicios que se devuelven por su interfaz — una inconsistencia menor con DIP.
+- Las capas **MPP** dependen directamente de la clase concreta `AccessDAL` (DAL); para un desacople total convendría que DAL también expusiera una abstracción.
+
 ## Cómo ejecutar
 
 1. Abrir la solución `TrabajoFinal-DarioZubaray.sln` (Visual Studio).
 2. Configurar la cadena de conexión `cadenaConexion` (proyecto **GUI**, archivo `App.config`) apuntando a una instancia de SQL Server con la base `Trabajo_Final`.
-3. Ejecutar los scripts de [`sql/`](../../sql/) en orden (véase el README global).
+3. Ejecutar los scripts de [`sql/`](../../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_CreateTables.sql`).
 4. Compilar y ejecutar. Usuarios de prueba: `admin` / `123` (rol Admin), `pepe` / `123` (rol Alumno).
 
 ## Pruebas
 
-Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios y la persistencia. Para ejecutarlos:
+Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, el historial de actividad (Decorator y paginación) y la persistencia. Para ejecutarlos:
 
 ```
 dotnet test TrabajoFinal-DarioZubaray.sln

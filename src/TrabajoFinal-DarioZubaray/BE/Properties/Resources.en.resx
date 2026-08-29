@@ -124,6 +124,9 @@
   <data name="Main_MenuChangePassword" xml:space="preserve">
     <value>Change Password</value>
   </data>
+  <data name="Main_MenuActivityHistory" xml:space="preserve">
+    <value>Activity History</value>
+  </data>
   <data name="Main_MenuAdministration" xml:space="preserve">
     <value>Administration</value>
   </data>
@@ -273,5 +276,41 @@
   </data>
   <data name="RoleManagement_ConfirmDelete" xml:space="preserve">
     <value>Are you sure you want to delete role "{0}"?</value>
+  </data>
+  <data name="ActivityHistory_Title" xml:space="preserve">
+    <value>Activity History</value>
+  </data>
+  <data name="ActivityHistory_ColumnDate" xml:space="preserve">
+    <value>Date and Time</value>
+  </data>
+  <data name="ActivityHistory_ColumnAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="ActivityHistory_ColumnForm" xml:space="preserve">
+    <value>Form / Detail</value>
+  </data>
+  <data name="ActivityHistory_ColumnDescription" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="ActivityHistory_Prev" xml:space="preserve">
+    <value>&lt; Previous</value>
+  </data>
+  <data name="ActivityHistory_Next" xml:space="preserve">
+    <value>Next &gt;</value>
+  </data>
+  <data name="ActivityHistory_PageSize" xml:space="preserve">
+    <value>Page size:</value>
+  </data>
+  <data name="ActivityHistory_PageInfo" xml:space="preserve">
+    <value>Page {0} of {1}</value>
+  </data>
+  <data name="ActivityHistory_ActionLogin" xml:space="preserve">
+    <value>Sign in</value>
+  </data>
+  <data name="ActivityHistory_ActionLogout" xml:space="preserve">
+    <value>Sign out</value>
+  </data>
+  <data name="ActivityHistory_ActionFormAccess" xml:space="preserve">
+    <value>Form access</value>
   </data>
 </root>

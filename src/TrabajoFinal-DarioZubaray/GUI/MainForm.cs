@@ -35,6 +35,7 @@ namespace TrabajoFinal_DarioZubaray
             archivoToolStripMenuItem.Text = Resources.Main_MenuFile;
             preferenciasToolStripMenuItem.Text = Resources.Main_MenuPreferences;
             cambiarContraseñaToolStripMenuItem.Text = Resources.Main_MenuChangePassword;
+            historialActividadToolStripMenuItem.Text = Resources.Main_MenuActivityHistory;
             cerrarSesiónToolStripMenuItem.Text = Resources.Main_MenuLogout;
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
@@ -100,8 +101,18 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region MenuItem_Click
+        private void historialActividadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new ActivityHistoryForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
         private void preferenciasToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            LogFormAccess("PreferencesForm");
             var form = new PreferencesForm(_user, this)
             {
                 MdiParent = this
@@ -111,6 +122,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void usuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            LogFormAccess("UserManagementForm");
             var form = new UserManagementForm(_user)
             {
                 MdiParent = this
@@ -120,6 +132,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            LogFormAccess("RoleManagementForm");
             var form = new RoleManagementForm
             {
                 MdiParent = this
@@ -129,11 +142,25 @@ namespace TrabajoFinal_DarioZubaray
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            LogFormAccess("ChangePasswordForm");
             var form = new ChangePasswordForm(_user)
             {
                 MdiParent = this
             };
             form.Show();
+        }
+
+        private void LogFormAccess(string formName)
+        {
+            try
+            {
+                var activityBLL = ServiceLocatorBLL.CreateActivityBLL();
+                activityBLL.LogFormAccess(_user.Id, formName);
+            }
+            catch
+            {
+                // Loguear el acceso no debe impedir abrir el formulario.
+            }
         }
         #endregion
     }

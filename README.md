@@ -9,11 +9,10 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 | Parte | Ubicación | Descripción |
 |-------|-----------|-------------|
 | **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, .NET Framework 4.7.2) con arquitectura en capas. Incluye su propio README. |
-| **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades y patrones (Composite, Singleton/Multiton). |
+| **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator) y principios SOLID. |
 | **Base de datos — scripts SQL** | [`sql/`](sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. |
 | **Diagramas** | [`diagramas/`](diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencia de login. |
-| **Modelo UML / Enterprise Architect** | [`ea/`](ea/) | Proyecto modelo de Enterprise Architect (`.eapx`). |
-| **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada. |
+| **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
 
 ### Aplicación .NET (`src/TrabajoFinal-DarioZubaray/`)
 
@@ -22,15 +21,18 @@ Solución con la siguiente arquitectura en capas (cada capa es un proyecto):
 - **GUI** — interfaz gráfica (WinForms).
 - **BLL** — lógica de negocio y servicios.
 - **DAL** — acceso a datos de bajo nivel (SQL Server).
-- **MPP** — *Modelo de Persistencia de Procedimientos*: persiste las entidades del modelo sobre la base.
+- **MPP** — capa de **mapeo**: transforma los objetos de base de datos (`DataTable`) en entidades de **BE** (y viceversa).
 - **BE** — *Business Entities*: entidades, DTOs y el patrón **Composite** de roles/permisos.
 
-Se destacan dos patrones de diseño:
+Se destacan tres patrones de diseño:
 
 - **Composite** — `IRoleComponentBE`, `RoleCompositeBE` y `PermissionLeafBE` representan la jerarquía de roles/permisos como un árbol.
 - **Singleton / Multiton** — `ServiceLocatorBLL` (singleton de servicios) y `SessionManagerBLL` (multiton de sesiones, una por usuario).
+- **Decorator** — `ActivityLoggingDecorator` envuelve una actividad (`IActivity`/`BaseActivity`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
 
-📖 Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md).
+Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Liskov, Interface Segregation y Dependency Inversion), documentados junto a los patrones en el README del proyecto.
+
+Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md).
 
 ### Base de datos (`sql/`)
 

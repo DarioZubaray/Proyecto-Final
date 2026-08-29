@@ -51,3 +51,15 @@ CREATE TABLE [dbo].[Users] (
     CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[Roles]([id])
 );
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
+
+-- 6. Bitácora de actividad (Historial de Actividad) por usuario
+CREATE TABLE [dbo].[ActivityLogs] (
+    [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [user_id]     INT            NOT NULL,
+    [action]      NVARCHAR(64)   NOT NULL,
+    [form_name]   NVARCHAR(100)  NULL,
+    [description] NVARCHAR(256)  NULL,
+    [created_at]  DATETIME       NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT fk_activitylogs_users FOREIGN KEY ([user_id]) REFERENCES [dbo].[Users]([id])
+);
+CREATE INDEX ix_activitylogs_user_created ON [dbo].[ActivityLogs] ([user_id], [created_at] DESC);

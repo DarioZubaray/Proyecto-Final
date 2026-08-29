@@ -45,6 +45,8 @@
     <Compile Include="RoleMPP.cs" />
     <Compile Include="IUserMPP.cs" />
     <Compile Include="UserMPP.cs" />
+    <Compile Include="IActivityMPP.cs" />
+    <Compile Include="ActivityMPP.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

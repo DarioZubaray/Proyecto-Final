@@ -60,10 +60,15 @@
     <Compile Include="Interfaces\IUserBLL.cs" />
     <Compile Include="Interfaces\IRoleBLL.cs" />
     <Compile Include="Interfaces\IAuthBLL.cs" />
+    <Compile Include="Interfaces\IActivityBLL.cs" />
     <Compile Include="Services\UserBLL.cs" />
     <Compile Include="Services\RoleBLL.cs" />
     <Compile Include="Services\AuthBLL.cs" />
     <Compile Include="Services\PermissionBLL.cs" />
+    <Compile Include="Services\ActivityBLL.cs" />
+    <Compile Include="Services\IActivity.cs" />
+    <Compile Include="Services\BaseActivity.cs" />
+    <Compile Include="Services\ActivityLoggingDecorator.cs" />
     <Compile Include="Helpers\EncryptionBLL.cs" />
     <Compile Include="Helpers\CultureHelperBLL.cs" />
     <Compile Include="Helpers\SessionManagerBLL.cs" />

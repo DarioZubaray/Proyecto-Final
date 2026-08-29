@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="UserMPPTests.cs" />
+    <Compile Include="ActivityMPPTests.cs" />
     <Compile Include="Setup\TestDatabaseHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

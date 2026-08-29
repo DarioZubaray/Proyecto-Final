@@ -259,6 +259,15 @@ namespace BE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Historial de Actividad.
+        /// </summary>
+        public static string Main_MenuActivityHistory {
+            get {
+                return ResourceManager.GetString("Main_MenuActivityHistory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Administración.
         /// </summary>
         public static string Main_MenuAdministration {
@@ -705,6 +714,114 @@ namespace BE.Properties {
         public static string RoleManagement_ConfirmDelete {
             get {
                 return ResourceManager.GetString("RoleManagement_ConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Historial de Actividad.
+        /// </summary>
+        public static string ActivityHistory_Title {
+            get {
+                return ResourceManager.GetString("ActivityHistory_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Fecha y Hora.
+        /// </summary>
+        public static string ActivityHistory_ColumnDate {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acción.
+        /// </summary>
+        public static string ActivityHistory_ColumnAction {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Formulario / Detalle.
+        /// </summary>
+        public static string ActivityHistory_ColumnForm {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Detalle.
+        /// </summary>
+        public static string ActivityHistory_ColumnDescription {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &lt; Anterior.
+        /// </summary>
+        public static string ActivityHistory_Prev {
+            get {
+                return ResourceManager.GetString("ActivityHistory_Prev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Siguiente &gt;.
+        /// </summary>
+        public static string ActivityHistory_Next {
+            get {
+                return ResourceManager.GetString("ActivityHistory_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tamaño de página:.
+        /// </summary>
+        public static string ActivityHistory_PageSize {
+            get {
+                return ResourceManager.GetString("ActivityHistory_PageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Página {0} de {1}.
+        /// </summary>
+        public static string ActivityHistory_PageInfo {
+            get {
+                return ResourceManager.GetString("ActivityHistory_PageInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Inicio de sesión.
+        /// </summary>
+        public static string ActivityHistory_ActionLogin {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ActionLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cierre de sesión.
+        /// </summary>
+        public static string ActivityHistory_ActionLogout {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ActionLogout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acceso a formulario.
+        /// </summary>
+        public static string ActivityHistory_ActionFormAccess {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ActionFormAccess", resourceCulture);
             }
         }
     }

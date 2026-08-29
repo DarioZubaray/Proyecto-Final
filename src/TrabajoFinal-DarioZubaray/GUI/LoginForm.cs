@@ -51,11 +51,13 @@ namespace TrabajoFinal_DarioZubaray
 
             if (result.Success)
             {
+                LogLogin(result.User);
                 SessionManagerBLL.CreateSession(result.User);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
                 SessionManagerBLL.RemoveSession(result.User.Id);
+                LogLogout(result.User.Id, result.User.UserName);
                 CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
                 ApplyResources();
                 this.Show();
@@ -86,6 +88,34 @@ namespace TrabajoFinal_DarioZubaray
             {
                 btnLogin.PerformClick();
                 e.SuppressKeyPress = true;
+            }
+        }
+        #endregion
+
+        #region Historial de actividad
+        private void LogLogin(UserBE user)
+        {
+            try
+            {
+                ServiceLocatorBLL.CreateActivityBLL()
+                    .LogLogin(user.Id, user.UserName);
+            }
+            catch
+            {
+                // Loguear el acceso no debe interrumpir el flujo de login.
+            }
+        }
+
+        private void LogLogout(int userId, string userName)
+        {
+            try
+            {
+                ServiceLocatorBLL.CreateActivityBLL()
+                    .LogLogout(userId, userName);
+            }
+            catch
+            {
+                // Loguear el cierre no debe interrumpir el flujo.
             }
         }
         #endregion
