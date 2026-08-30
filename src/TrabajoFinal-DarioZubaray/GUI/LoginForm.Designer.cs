@@ -1,4 +1,4 @@
-﻿
+
 namespace TrabajoFinal_DarioZubaray
 {
     partial class LoginForm
@@ -29,129 +29,171 @@ namespace TrabajoFinal_DarioZubaray
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblUser = new System.Windows.Forms.Label();
-            this.txtUser = new System.Windows.Forms.TextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lblMessage = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnLogin = new System.Windows.Forms.Button();
-            this.lblPass = new System.Windows.Forms.Label();
-            this.txtPass = new System.Windows.Forms.TextBox();
-            this.lblDeveloper = new System.Windows.Forms.Label();
-            this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.SuspendLayout();
+            lblUser = new System.Windows.Forms.Label();
+            txtUser = new System.Windows.Forms.TextBox();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            lblDbStatus = new System.Windows.Forms.Label();
+            btnRetry = new System.Windows.Forms.Button();
+            lblMessage = new System.Windows.Forms.Label();
+            panel1 = new System.Windows.Forms.Panel();
+            btnLogin = new System.Windows.Forms.Button();
+            lblPass = new System.Windows.Forms.Label();
+            txtPass = new System.Windows.Forms.TextBox();
+            lblDeveloper = new System.Windows.Forms.Label();
+            groupBox1.SuspendLayout();
+            panel1.SuspendLayout();
+            SuspendLayout();
             // 
             // lblUser
             // 
-            this.lblUser.AutoSize = true;
-            this.lblUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUser.Location = new System.Drawing.Point(4, 13);
-            this.lblUser.Name = "lblUser";
-            this.lblUser.Size = new System.Drawing.Size(57, 17);
-            this.lblUser.TabIndex = 0;
-            this.lblUser.Text = "Usuario";
+            lblUser.AutoSize = true;
+            lblUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblUser.Location = new System.Drawing.Point(5, 15);
+            lblUser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblUser.Name = "lblUser";
+            lblUser.Size = new System.Drawing.Size(57, 17);
+            lblUser.TabIndex = 0;
+            lblUser.Text = "Usuario";
             // 
             // txtUser
             // 
-            this.txtUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUser.Location = new System.Drawing.Point(104, 13);
-            this.txtUser.Name = "txtUser";
-            this.txtUser.Size = new System.Drawing.Size(150, 23);
-            this.txtUser.TabIndex = 1;
-            this.txtUser.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtUser_KeyDown);
+            txtUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            txtUser.Location = new System.Drawing.Point(121, 15);
+            txtUser.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtUser.Name = "txtUser";
+            txtUser.Size = new System.Drawing.Size(174, 23);
+            txtUser.TabIndex = 1;
+            txtUser.KeyDown += txtUser_KeyDown;
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.lblMessage);
-            this.groupBox1.Controls.Add(this.panel1);
-            this.groupBox1.Controls.Add(this.lblDeveloper);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(500, 300);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "☻";
+            groupBox1.Controls.Add(lblDbStatus);
+            groupBox1.Controls.Add(btnRetry);
+            groupBox1.Controls.Add(lblMessage);
+            groupBox1.Controls.Add(panel1);
+            groupBox1.Controls.Add(lblDeveloper);
+            groupBox1.Location = new System.Drawing.Point(14, 14);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(583, 346);
+            groupBox1.TabIndex = 2;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "☻";
+            // 
+            // lblDbStatus
+            // 
+            lblDbStatus.AutoSize = true;
+            lblDbStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            lblDbStatus.ForeColor = System.Drawing.Color.SeaGreen;
+            lblDbStatus.Location = new System.Drawing.Point(8, 330);
+            lblDbStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblDbStatus.Name = "lblDbStatus";
+            lblDbStatus.Size = new System.Drawing.Size(100, 13);
+            lblDbStatus.TabIndex = 8;
+            lblDbStatus.Text = "Servidor conectado";
+            // 
+            // btnRetry
+            // 
+            btnRetry.Location = new System.Drawing.Point(20, 300);
+            btnRetry.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRetry.Name = "btnRetry";
+            btnRetry.Size = new System.Drawing.Size(71, 27);
+            btnRetry.TabIndex = 9;
+            btnRetry.Text = "Reintentar";
+            btnRetry.UseVisualStyleBackColor = true;
+            btnRetry.Visible = false;
+            btnRetry.Click += btnRetry_Click;
             // 
             // lblMessage
             // 
-            this.lblMessage.AutoSize = true;
-            this.lblMessage.ForeColor = System.Drawing.Color.IndianRed;
-            this.lblMessage.Location = new System.Drawing.Point(159, 208);
-            this.lblMessage.Name = "lblMessage";
-            this.lblMessage.Size = new System.Drawing.Size(163, 13);
-            this.lblMessage.TabIndex = 7;
-            this.lblMessage.Text = "Usuario o Contraseña no válidos!";
-            this.lblMessage.Visible = false;
+            lblMessage.AutoSize = false;
+            lblMessage.ForeColor = System.Drawing.Color.IndianRed;
+            lblMessage.Location = new System.Drawing.Point(0, 218);
+            lblMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblMessage.Name = "lblMessage";
+            lblMessage.Size = new System.Drawing.Size(583, 20);
+            lblMessage.TabIndex = 7;
+            lblMessage.Text = "Usuario o Contraseña no válidos!";
+            lblMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblMessage.Visible = false;
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.txtUser);
-            this.panel1.Controls.Add(this.lblUser);
-            this.panel1.Controls.Add(this.btnLogin);
-            this.panel1.Controls.Add(this.lblPass);
-            this.panel1.Controls.Add(this.txtPass);
-            this.panel1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel1.Location = new System.Drawing.Point(120, 105);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(262, 100);
-            this.panel1.TabIndex = 6;
+            panel1.Controls.Add(txtUser);
+            panel1.Controls.Add(lblUser);
+            panel1.Controls.Add(btnLogin);
+            panel1.Controls.Add(lblPass);
+            panel1.Controls.Add(txtPass);
+            panel1.ForeColor = System.Drawing.SystemColors.ControlText;
+            panel1.Location = new System.Drawing.Point(137, 99);
+            panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panel1.Name = "panel1";
+            panel1.Size = new System.Drawing.Size(306, 115);
+            panel1.TabIndex = 6;
             // 
             // btnLogin
             // 
-            this.btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.Location = new System.Drawing.Point(154, 73);
-            this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(100, 23);
-            this.btnLogin.TabIndex = 4;
-            this.btnLogin.Text = "Iniciar Sesión";
-            this.btnLogin.UseVisualStyleBackColor = true;
-            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
+            btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnLogin.Location = new System.Drawing.Point(180, 84);
+            btnLogin.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnLogin.Name = "btnLogin";
+            btnLogin.Size = new System.Drawing.Size(117, 27);
+            btnLogin.TabIndex = 4;
+            btnLogin.Text = "Iniciar Sesión";
+            btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.Click += btnLogin_Click;
             // 
             // lblPass
             // 
-            this.lblPass.AutoSize = true;
-            this.lblPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPass.Location = new System.Drawing.Point(4, 43);
-            this.lblPass.Name = "lblPass";
-            this.lblPass.Size = new System.Drawing.Size(81, 17);
-            this.lblPass.TabIndex = 2;
-            this.lblPass.Text = "Contraseña";
+            lblPass.AutoSize = true;
+            lblPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblPass.Location = new System.Drawing.Point(5, 50);
+            lblPass.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblPass.Name = "lblPass";
+            lblPass.Size = new System.Drawing.Size(81, 17);
+            lblPass.TabIndex = 2;
+            lblPass.Text = "Contraseña";
             // 
             // txtPass
             // 
-            this.txtPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPass.Location = new System.Drawing.Point(104, 43);
-            this.txtPass.Name = "txtPass";
-            this.txtPass.PasswordChar = '*';
-            this.txtPass.Size = new System.Drawing.Size(150, 23);
-            this.txtPass.TabIndex = 3;
-            this.txtPass.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPass_KeyDown);
+            txtPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            txtPass.Location = new System.Drawing.Point(121, 50);
+            txtPass.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtPass.Name = "txtPass";
+            txtPass.PasswordChar = '*';
+            txtPass.Size = new System.Drawing.Size(174, 23);
+            txtPass.TabIndex = 3;
+            txtPass.KeyDown += txtPass_KeyDown;
             // 
             // lblDeveloper
             // 
-            this.lblDeveloper.AutoSize = true;
-            this.lblDeveloper.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDeveloper.Location = new System.Drawing.Point(364, 285);
-            this.lblDeveloper.Name = "lblDeveloper";
-            this.lblDeveloper.Size = new System.Drawing.Size(130, 12);
-            this.lblDeveloper.TabIndex = 5;
-            this.lblDeveloper.Text = "desarrollado por Darío Zubaray";
+            lblDeveloper.AutoSize = true;
+            lblDeveloper.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            lblDeveloper.Location = new System.Drawing.Point(421, 330);
+            lblDeveloper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblDeveloper.Name = "lblDeveloper";
+            lblDeveloper.Size = new System.Drawing.Size(154, 13);
+            lblDeveloper.TabIndex = 5;
+            lblDeveloper.Text = "desarrollado por Darío Zubaray";
             // 
             // LoginForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(529, 321);
-            this.Controls.Add(this.groupBox1);
-            this.Name = "LoginForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Aplicativo Académico";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(617, 370);
+            Controls.Add(groupBox1);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            Name = "LoginForm";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "Aplicativo Académico";
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ResumeLayout(false);
 
         }
 
@@ -166,5 +208,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Label lblDeveloper;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblMessage;
+        private System.Windows.Forms.Label lblDbStatus;
+        private System.Windows.Forms.Button btnRetry;
     }
 }

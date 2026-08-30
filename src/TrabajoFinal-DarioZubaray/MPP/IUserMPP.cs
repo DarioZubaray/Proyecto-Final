@@ -19,5 +19,6 @@ namespace MPP
         bool UpdateLanguage(int userId, string language);
         bool UpdatePassword(int userId, string passwordHash);
         int CountByRoleId(int roleId);
+        bool TestConnection();
     }
 }

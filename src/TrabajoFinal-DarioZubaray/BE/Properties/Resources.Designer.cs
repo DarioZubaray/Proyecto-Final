@@ -824,5 +824,50 @@ namespace BE.Properties {
                 return ResourceManager.GetString("ActivityHistory_ActionFormAccess", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Servidor conectado.
+        /// </summary>
+        public static string Login_DbConnected {
+            get {
+                return ResourceManager.GetString("Login_DbConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Servidor no disponible.
+        /// </summary>
+        public static string Login_DbDisconnected {
+            get {
+                return ResourceManager.GetString("Login_DbDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Reintentar.
+        /// </summary>
+        public static string Login_RetryButton {
+            get {
+                return ResourceManager.GetString("Login_RetryButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Verificando conexión....
+        /// </summary>
+        public static string Login_DbChecking {
+            get {
+                return ResourceManager.GetString("Login_DbChecking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Base de datos no disponible. Contacte al administrador. (Código: {0}).
+        /// </summary>
+        public static string Auth_DbUnavailable {
+            get {
+                return ResourceManager.GetString("Auth_DbUnavailable", resourceCulture);
+            }
+        }
     }
 }

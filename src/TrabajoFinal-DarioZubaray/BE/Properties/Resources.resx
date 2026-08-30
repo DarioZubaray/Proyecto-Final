@@ -313,4 +313,19 @@
   <data name="ActivityHistory_ActionFormAccess" xml:space="preserve">
     <value>Acceso a formulario</value>
   </data>
+  <data name="Login_DbConnected" xml:space="preserve">
+    <value>Servidor conectado</value>
+  </data>
+  <data name="Login_DbDisconnected" xml:space="preserve">
+    <value>Servidor no disponible</value>
+  </data>
+  <data name="Login_RetryButton" xml:space="preserve">
+    <value>Reintentar</value>
+  </data>
+  <data name="Login_DbChecking" xml:space="preserve">
+    <value>Verificando conexión...</value>
+  </data>
+  <data name="Auth_DbUnavailable" xml:space="preserve">
+    <value>Base de datos no disponible. Contacte al administrador. (Código: {0})</value>
+  </data>
 </root>

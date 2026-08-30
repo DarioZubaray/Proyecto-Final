@@ -51,6 +51,11 @@ namespace BLL
         {
             return _userMPP.Save(user);
         }
+
+        public bool TestConnection()
+        {
+            return _userMPP.TestConnection();
+        }
         #endregion
 
         #region Métodos Privados

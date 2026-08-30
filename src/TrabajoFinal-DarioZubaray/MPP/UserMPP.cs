@@ -156,6 +156,11 @@ namespace MPP
             };
             return _access.ReadScalar(query, parameters);
         }
+
+        public bool TestConnection()
+        {
+            return _access.TestConnection();
+        }
         #endregion
 
         #region Métodos Privados

@@ -313,4 +313,19 @@
   <data name="ActivityHistory_ActionFormAccess" xml:space="preserve">
     <value>Form access</value>
   </data>
+  <data name="Login_DbConnected" xml:space="preserve">
+    <value>Server connected</value>
+  </data>
+  <data name="Login_DbDisconnected" xml:space="preserve">
+    <value>Server unavailable</value>
+  </data>
+  <data name="Login_RetryButton" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Login_DbChecking" xml:space="preserve">
+    <value>Checking connection...</value>
+  </data>
+  <data name="Auth_DbUnavailable" xml:space="preserve">
+    <value>Database unavailable. Contact the administrator. (Code: {0})</value>
+  </data>
 </root>

@@ -87,6 +87,15 @@ namespace DAL
                 return command.ExecuteNonQuery() > 0;
             }
         }
+
+        public bool TestConnection()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return true;
+            }
+        }
         #endregion
     }
 }
