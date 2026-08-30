@@ -53,6 +53,11 @@ namespace BLL
             return _userMPP.UpdateLanguage(userId, language);
         }
 
+        public bool UpdateTheme(int userId, string theme)
+        {
+            return _userMPP.UpdateTheme(userId, theme);
+        }
+
         public bool ChangePassword(int userId, string currentPassword, string newPassword)
         {
             UserBE user = _userMPP.FindById(new UserBE { Id = userId });

@@ -19,7 +19,7 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region Constructor
-        public UserForm()
+        public UserForm(string theme)
         {
             InitializeComponent();
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
@@ -28,9 +28,10 @@ namespace TrabajoFinal_DarioZubaray
             _user = new UserBE();
             ApplyResources();
             LoadRoles();
+            ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
 
-        public UserForm(UserBE user)
+        public UserForm(UserBE user, string theme)
         {
             InitializeComponent();
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
@@ -40,6 +41,7 @@ namespace TrabajoFinal_DarioZubaray
             ApplyResources();
             LoadRoles();
             LoadUserData();
+            ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 

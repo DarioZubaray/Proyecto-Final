@@ -33,27 +33,31 @@ namespace TrabajoFinal_DarioZubaray
             this.btnSave = new System.Windows.Forms.Button();
             this.cbLanguage = new System.Windows.Forms.ComboBox();
             this.lblLanguage = new System.Windows.Forms.Label();
+            this.lblTheme = new System.Windows.Forms.Label();
+            this.cbTheme = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lblTheme);
+            this.groupBox1.Controls.Add(this.cbTheme);
             this.groupBox1.Controls.Add(this.btnSave);
             this.groupBox1.Controls.Add(this.cbLanguage);
             this.groupBox1.Controls.Add(this.lblLanguage);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(360, 180);
+            this.groupBox1.Size = new System.Drawing.Size(360, 220);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "☺";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(140, 130);
+            this.btnSave.Location = new System.Drawing.Point(140, 175);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 2;
+            this.btnSave.TabIndex = 4;
             this.btnSave.Text = "Guardar";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -75,11 +79,28 @@ namespace TrabajoFinal_DarioZubaray
             this.lblLanguage.TabIndex = 0;
             this.lblLanguage.Text = "Idioma";
             // 
+            // lblTheme
+            // 
+            this.lblTheme.AutoSize = true;
+            this.lblTheme.Location = new System.Drawing.Point(18, 75);
+            this.lblTheme.Name = "lblTheme";
+            this.lblTheme.Size = new System.Drawing.Size(32, 13);
+            this.lblTheme.TabIndex = 2;
+            this.lblTheme.Text = "Tema";
+            // 
+            // cbTheme
+            // 
+            this.cbTheme.FormattingEnabled = true;
+            this.cbTheme.Location = new System.Drawing.Point(140, 72);
+            this.cbTheme.Name = "cbTheme";
+            this.cbTheme.Size = new System.Drawing.Size(200, 21);
+            this.cbTheme.TabIndex = 3;
+            // 
             // PreferencesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 201);
+            this.ClientSize = new System.Drawing.Size(384, 241);
             this.Controls.Add(this.groupBox1);
             this.Name = "PreferencesForm";
             this.Text = "Preferences";
@@ -95,5 +116,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.ComboBox cbLanguage;
         private System.Windows.Forms.Label lblLanguage;
+        private System.Windows.Forms.Label lblTheme;
+        private System.Windows.Forms.ComboBox cbTheme;
     }
 }

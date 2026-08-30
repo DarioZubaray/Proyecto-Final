@@ -68,6 +68,14 @@ namespace BLL
             }
         }
 
+        public void UpdateTheme(string theme)
+        {
+            if (User != null)
+            {
+                User.Theme = theme;
+            }
+        }
+
         public bool HasPermission(string permissionName)
         {
             if (RoleTree == null)

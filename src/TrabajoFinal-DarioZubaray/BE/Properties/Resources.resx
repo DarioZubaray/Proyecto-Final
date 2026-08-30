@@ -112,6 +112,18 @@
   <data name="Preferences_LanguageLabel" xml:space="preserve">
     <value>Idioma</value>
   </data>
+  <data name="Preferences_ThemeLabel" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Oscuro</value>
+  </data>
   <data name="Preferences_SaveButton" xml:space="preserve">
     <value>Guardar</value>
   </data>

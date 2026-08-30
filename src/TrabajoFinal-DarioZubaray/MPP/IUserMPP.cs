@@ -17,6 +17,7 @@ namespace MPP
         List<UserBE> FindAll();
         List<UserBE> FindByUserName(string userName);
         bool UpdateLanguage(int userId, string language);
+        bool UpdateTheme(int userId, string theme);
         bool UpdatePassword(int userId, string passwordHash);
         int CountByRoleId(int roleId);
         bool TestConnection();

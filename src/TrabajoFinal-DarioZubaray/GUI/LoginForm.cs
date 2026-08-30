@@ -10,10 +10,6 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class LoginForm : Form
     {
-        #region Constantes
-        private const string DB_ERROR_CODE = "DB-001";
-        #endregion
-
         #region Propiedades
         private IAuthBLL _authBLL;
         #endregion
@@ -24,6 +20,7 @@ namespace TrabajoFinal_DarioZubaray
             InitializeComponent();
             _authBLL = ServiceLocatorBLL.CreateAuthBLL();
             ApplyResources();
+            ThemeHelper.ApplyTheme(this, ThemeHelper.System);
             CheckDatabaseConnectionAsync();
         }
         #endregion
@@ -126,6 +123,7 @@ namespace TrabajoFinal_DarioZubaray
                 LogLogout(result.User.Id, result.User.UserName);
                 CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
                 ApplyResources();
+                ThemeHelper.ApplyTheme(this, ThemeHelper.System);
                 this.Show();
                 txtUser.Text = "";
                 txtUser.Focus();
@@ -142,7 +140,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void ShowDatabaseUnavailable()
         {
-            lblMessage.Text = string.Format(Resources.Auth_DbUnavailable, DB_ERROR_CODE);
+            lblMessage.Text = string.Format(Resources.Auth_DbUnavailable, ErrorCodesBLL.Database.Unavailable);
             lblMessage.Visible = true;
             SetDatabaseStatus(false);
         }

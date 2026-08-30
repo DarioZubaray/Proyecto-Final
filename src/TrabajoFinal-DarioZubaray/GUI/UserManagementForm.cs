@@ -22,6 +22,7 @@ namespace TrabajoFinal_DarioZubaray
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             ApplyResources();
             LoadUsers();
+            ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
@@ -78,7 +79,8 @@ namespace TrabajoFinal_DarioZubaray
         #region Eventos
         private void btnNew_Click(object sender, EventArgs e)
         {
-            using (var form = new UserForm())
+            string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
+            using (var form = new UserForm(theme))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -96,7 +98,8 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            using (var form = new UserForm(user))
+            string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
+            using (var form = new UserForm(user, theme))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {

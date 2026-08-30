@@ -23,11 +23,17 @@ namespace TrabajoFinal_DarioZubaray
             _user = user;
             _session = SessionManagerBLL.GetInstance(user.Id);
             ApplyResources();
+            ApplyTheme();
             ConfigureMenuVisibility();
             UpdateFooter();
             this.FormClosing += MainForm_FormClosing;
         }
         #endregion
+
+        public void ApplyTheme()
+        {
+            ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
+        }
 
         public void ApplyResources()
         {
@@ -133,7 +139,7 @@ namespace TrabajoFinal_DarioZubaray
         private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LogFormAccess("RoleManagementForm");
-            var form = new RoleManagementForm
+            var form = new RoleManagementForm(_user)
             {
                 MdiParent = this
             };

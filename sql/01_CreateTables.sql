@@ -48,6 +48,7 @@ CREATE TABLE [dbo].[Users] (
     [created_at]    DATETIME       NOT NULL DEFAULT GETDATE(),
     [role_id]       INT            NULL,
     [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
+    [theme]         NVARCHAR(20)   NOT NULL DEFAULT 'System',
     CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[Roles]([id])
 );
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);

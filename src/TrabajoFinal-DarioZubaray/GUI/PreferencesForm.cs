@@ -25,7 +25,9 @@ namespace TrabajoFinal_DarioZubaray
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             _session = SessionManagerBLL.GetInstance(user.Id);
             LoadLanguages();
+            LoadThemes();
             ApplyResources();
+            ApplyTheme();
         }
         #endregion
 
@@ -38,12 +40,32 @@ namespace TrabajoFinal_DarioZubaray
             cbLanguage.SelectedValue = _user.Language ?? CultureHelperBLL.DefaultLanguage;
         }
 
+        private void LoadThemes()
+        {
+            cbTheme.DataSource = ThemeHelper.GetSupportedThemes();
+            cbTheme.DisplayMember = "DisplayName";
+            cbTheme.ValueMember = "Code";
+            cbTheme.SelectedValue = _user.Theme ?? ThemeHelper.DefaultTheme;
+        }
+
         private void ApplyResources()
         {
             this.Text = Resources.Preferences_Title;
             groupBox1.Text = Resources.Preferences_GroupBox;
             lblLanguage.Text = Resources.Preferences_LanguageLabel;
+            lblTheme.Text = Resources.Preferences_ThemeLabel;
             btnSave.Text = Resources.Preferences_SaveButton;
+
+            var themes = ThemeHelper.GetSupportedThemes();
+            cbTheme.DataSource = themes;
+            cbTheme.DisplayMember = "DisplayName";
+            cbTheme.ValueMember = "Code";
+            cbTheme.SelectedValue = _user.Theme ?? ThemeHelper.DefaultTheme;
+        }
+
+        private void ApplyTheme()
+        {
+            ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
@@ -51,19 +73,25 @@ namespace TrabajoFinal_DarioZubaray
         private void btnSave_Click(object sender, EventArgs e)
         {
             string selectedLanguage = cbLanguage.SelectedValue?.ToString();
+            string selectedTheme = cbTheme.SelectedValue?.ToString();
 
-            if (string.IsNullOrEmpty(selectedLanguage))
+            if (string.IsNullOrEmpty(selectedLanguage) || string.IsNullOrEmpty(selectedTheme))
             {
                 return;
             }
 
-            bool saved = _userBLL.UpdateLanguage(_user.Id, selectedLanguage);
+            bool languageSaved = _userBLL.UpdateLanguage(_user.Id, selectedLanguage);
+            bool themeSaved = _userBLL.UpdateTheme(_user.Id, selectedTheme);
 
-            if (saved)
+            if (languageSaved && themeSaved)
             {
                 _session.UpdateLanguage(selectedLanguage);
+                _session.UpdateTheme(selectedTheme);
                 _mainForm.ApplyResources();
+                _mainForm.ApplyTheme();
+                ThemeHelper.ApplyThemeToAllOpenForms(selectedTheme);
                 ApplyResources();
+                ApplyTheme();
                 MessageBox.Show(Resources.Preferences_SaveSuccess);
             }
         }

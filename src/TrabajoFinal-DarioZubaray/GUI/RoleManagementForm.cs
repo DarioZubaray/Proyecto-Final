@@ -17,13 +17,14 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region Constructor
-        public RoleManagementForm()
+        public RoleManagementForm(UserBE user)
         {
             InitializeComponent();
             _roleBLL = ServiceLocatorBLL.CreateRoleBLL();
             ApplyResources();
             LoadAllPermissions();
             LoadRoles();
+            ThemeHelper.ApplyTheme(this, user.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 

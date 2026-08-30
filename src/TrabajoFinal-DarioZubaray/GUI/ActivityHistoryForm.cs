@@ -35,6 +35,7 @@ namespace TrabajoFinal_DarioZubaray
             InitializeControls();
             ApplyResources();
             LoadPage();
+            ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 

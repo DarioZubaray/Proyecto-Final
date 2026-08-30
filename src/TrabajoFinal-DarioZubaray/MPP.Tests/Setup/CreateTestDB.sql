@@ -49,6 +49,7 @@ CREATE TABLE [dbo].[Users] (
     [created_at]    DATETIME       NOT NULL DEFAULT GETDATE(),
     [role_id]       INT            NULL,
     [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
+    [theme]         NVARCHAR(20)   NOT NULL DEFAULT 'System',
     CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[Roles]([id])
 );
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
@@ -57,6 +58,6 @@ GO
 -- Datos seed para tests
 INSERT INTO [dbo].[Roles] (name) VALUES ('Admin'), ('Supervisor'), ('Operador');
 
-INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, last_update, created_at, language, role_id)
-VALUES ('testuser', '$2a$11$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ12345678', 1, 0, GETDATE(), GETDATE(), 'es', 1);
+INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, last_update, created_at, language, role_id, theme)
+VALUES ('testuser', '$2a$11$abcdefghijklmnopqrstuuABCDEFGHIJKLMNOPQRSTUVWXYZ12345678', 1, 0, GETDATE(), GETDATE(), 'es', 1, 'System');
 GO

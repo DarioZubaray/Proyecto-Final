@@ -14,6 +14,7 @@ namespace BE
         public DateTime CreatedAt { get; set; }
         public int RoleId { get; set; }
         public string Language { get; set; }
+        public string Theme { get; set; }
         #endregion
 
         #region Constructor
@@ -23,6 +24,15 @@ namespace BE
             int id, string userName, string passwordHash,
             bool isActive, int retriesCount, DateTime lastUpdate,
             DateTime createdAt, int roleId, string language)
+            : this(id, userName, passwordHash, isActive, retriesCount,
+                   lastUpdate, createdAt, roleId, language, null)
+        {
+        }
+
+        public UserBE(
+            int id, string userName, string passwordHash,
+            bool isActive, int retriesCount, DateTime lastUpdate,
+            DateTime createdAt, int roleId, string language, string theme)
         {
             Id = id;
             UserName = userName;
@@ -33,6 +43,7 @@ namespace BE
             CreatedAt = createdAt;
             RoleId = roleId;
             Language = language;
+            Theme = theme;
         }
         #endregion
 

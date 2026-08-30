@@ -17,6 +17,7 @@ namespace TrabajoFinal_DarioZubaray
             _user = user;
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             ApplyResources();
+            ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
         }
 
         private void ApplyResources()
