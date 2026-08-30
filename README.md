@@ -8,7 +8,7 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 
 | Parte | Ubicación | Descripción |
 |-------|-----------|-------------|
-| **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, .NET Framework 4.7.2) con arquitectura en capas. Incluye su propio README. |
+| **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, **.NET 10**, `net10.0-windows`) con arquitectura en capas. Incluye su propio README. |
 | **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator, Strategy) y principios SOLID. |
 | **Base de datos — scripts SQL** | [`sql/`](sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. Ver [`sql/README.md`](sql/README.md). |
 | **Diagramas** | [`diagramas/`](docs/diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencia de login. |

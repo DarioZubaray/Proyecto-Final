@@ -170,10 +170,7 @@ namespace TrabajoFinal_DarioZubaray
             foreach (DataGridViewRow row in dgvActivities.Rows)
             {
                 var log = (ActivityLogBE)row.DataBoundItem;
-                if (log.CreatedAt != null)
-                {
-                    row.Cells["colDate"].Value = log.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss");
-                }
+                row.Cells["colDate"].Value = log.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss");
                 row.Cells["colAction"].Value = TranslateAction(log.Action);
             }
 

@@ -1,6 +1,6 @@
 # TrabajoFinal-DarioZubaray (.NET)
 
-Aplicación de escritorio **WinForms** sobre **.NET Framework 4.7.2** con arquitectura en **capas**. Es la parte central del trabajo final de la materia *Proyecto Final*.
+Aplicación de escritorio **WinForms sobre .NET 10** (SDK 10.0.400+, plataforma `net10.0-windows`) con arquitectura en **capas**. Es la parte central del trabajo final de la materia *Proyecto Final*.
 
 ## Arquitectura en capas
 
@@ -268,15 +268,26 @@ Para no sobrevender el cumplimiento, cabe notar algunas decisiones que presentan
 
 ## Cómo ejecutar
 
-1. Abrir la solución `TrabajoFinal-DarioZubaray.sln` (Visual Studio).
+1. Tener instalado el **.NET SDK 10** (o **Visual Studio 2022 17.12+**, que lo incluye, para poder editar el diseñador WinForms).
 2. Configurar la cadena de conexión `cadenaConexion` (proyecto **GUI**, archivo `App.config`) apuntando a una instancia de SQL Server con la base `Trabajo_Final`.
 3. Ejecutar los scripts de [`sql/`](../../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_CreateTables.sql`).
-4. Compilar y ejecutar. Usuarios de prueba: `admin` / `123` (rol Admin), `pepe` / `123` (rol Alumno).
+4. Compilar y ejecutar:
+
+```
+dotnet build TrabajoFinal-DarioZubaray.slnx -c Debug
+dotnet run --project GUI\GUI.csproj
+```
+
+Usuarios de prueba: `admin` / `123` (rol Admin), `pepe` / `123` (rol Alumno).
+
+El **acceso a datos** usa `Microsoft.Data.SqlClient` (SQL Server) y `System.Configuration.ConfigurationManager` para leer `cadenaConexion` desde el `App.config`.
 
 ## Pruebas
 
 Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, el historial de actividad (Decorator y paginación) y la persistencia. Para ejecutarlos:
 
 ```
-dotnet test TrabajoFinal-DarioZubaray.sln
+dotnet test TrabajoFinal-DarioZubaray.slnx
 ```
+
+> **Nota:** `BLL.Tests` corre sin base de datos (usa mocks). `MPP.Tests` son pruebas de integración y requieren una instancia local de SQL Server (`PAPI-RYZEN3\SQLEXPRESS`).
