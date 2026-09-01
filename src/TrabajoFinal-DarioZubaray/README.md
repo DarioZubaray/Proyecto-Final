@@ -27,7 +27,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | **BE** (*Business Entities*) | Entidades del dominio: `UserBE`, `RoleBE`, `PermissionBE`. Contiene además el **DTO** `LoginResultBE` y la implementación del patrón **Composite** de roles. No depende de ninguna otra capa. |
 | **DAL** (*Data Access Layer*) | Acceso a datos de bajo nivel. `AccessDAL` encapsula la conexión y ejecución de sentencias SQL (lectura, escalar y guardado) contra **SQL Server**, usando `SqlConnection`/`SqlCommand` y parámetros. |
 | **MPP** (*Mapper*) | Capa de **mapeo** entre la base de datos y el modelo de negocio: solo transforma un `DataTable` (o similar) devuelto por `DAL` a un objeto de **BE**, y viceversa. `UserMPP`, `RoleMPP` y `ActivityMPP` implementan interfaces (`IUserMPP`, `IRoleMPP`, `IActivityMPP`), lo que permite inyectar mocks en pruebas. |
-| **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
+| **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`, `AppPreferencesBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
 | **GUI** | Interfaz gráfica en WinForms: formularios de login, principal, usuarios, roles, preferencias y cambio de contraseña. El punto de entrada es `Program.cs`. |
 | **BLL.Tests** / **MPP.Tests** | Proyectos de prueba unitaria (MSTest + Moq). Cubren la lógica de `AuthBLL`, `EncryptionBLL`, `CultureHelperBLL`, `UserBLL` y la persistencia de `UserMPP`. |
 
@@ -88,16 +88,17 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `CultureHelperBLL` (static) | Gestión de idioma/cultura (`es`, `en`, `pt-BR`). Define los idiomas soportados y aplica la cultura al hilo actual. |
 | `ServiceLocatorBLL` (static) | **Singleton / Localizador de servicios.** Mantiene una única instancia por servicio de persistencia y crea la lógica de negocio correspondiente. |
 | `SessionManagerBLL` | **Multiton de sesiones.** Mantiene el estado de la sesión por usuario (multiton: una instancia por `userId`). |
+| `AppPreferencesBLL` (static) | Persistencia local de preferencias de la UI (`language`, `theme`) en `%LocalAppData%\TrabajoFinal-DarioZubaray\preferences.json`. Conserva lo "último usado" entre sesiones. |
 
 ### GUI — Interfaz gráfica
 
 | Formulario | Responsabilidad |
 |------------|-----------------|
-| `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). |
+| `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). Al iniciar y al cerrar sesión aplica el idioma y tema "último usado" (`AppPreferencesBLL`). |
 | `MainForm` | Menú principal (MDI). Muestra el usuario/rol en el pie y **oculta o muestra opciones según los permisos** del árbol Composite de la sesión. |
 | `UserManagementForm` / `UserForm` | ABM de usuarios: listado, búsqueda, alta, edición y baja lógica. |
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
-| `PreferencesForm` | Cambio de idioma; actualiza la sesión y refresca los recursos de la UI. |
+| `PreferencesForm` | Cambio de idioma y tema; actualiza la sesión y refresca los recursos de la UI. También persiste lo seleccionado en `AppPreferencesBLL`. |
 | `ChangePasswordForm` | Cambio de contraseña validando la actual. |
 | `ActivityHistoryForm` | **Historial de Actividad** (dentro del menú Archivo): lista paginada de las actividades del usuario autenticado. |
 | `TestComplaintsForm` / `TestReportsForm` | Formularios de ejemplo (quejas/reportes) usados por los permisos `FORM_COMPLAINTS` y `FORM_REPORTS`. |

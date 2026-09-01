@@ -9,6 +9,7 @@ erDiagram
         datetime created_at
         int role_id FK
         string language
+        string theme
     }
     ROLES {
         int id PK
@@ -19,6 +20,7 @@ erDiagram
         string name UK
         string label
         string description
+        bool is_system
     }
     ROLE_PERMISSIONS {
         int role_id FK
@@ -28,9 +30,18 @@ erDiagram
         int parent_role_id FK
         int child_role_id FK
     }
+    ACTIVITY_LOGS {
+        int id PK
+        int user_id FK
+        string action
+        string form_name
+        string description
+        datetime created_at
+    }
 
     USERS }o--|| ROLES : "role_id"
     ROLES ||--o{ ROLE_PERMISSIONS : "permisos"
     PERMISSIONS ||--o{ ROLE_PERMISSIONS : "asignado a"
     ROLES ||--o{ ROLE_HIERARCHY : "padre"
     ROLES ||--o{ ROLE_HIERARCHY : "hijo"
+    USERS ||--o{ ACTIVITY_LOGS : "bitácora"

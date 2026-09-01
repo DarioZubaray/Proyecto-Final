@@ -11,7 +11,7 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 | **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, **.NET 10**, `net10.0-windows`) con arquitectura en capas. Incluye su propio README. |
 | **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator, Strategy) y principios SOLID. |
 | **Base de datos — scripts SQL** | [`sql/`](sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. Ver [`sql/README.md`](sql/README.md). |
-| **Diagramas** | [`diagramas/`](docs/diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencia de login. |
+| **Diagramas** | [`diagramas/`](docs/diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencias de login/logout. |
 | **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
 | **Documentación general (`docs/`)** | [`docs/README.md`](docs/README.md) | Guía de navegación del material de documentación (diagramas y cursada). |
 
@@ -61,10 +61,11 @@ Ejecutar los scripts en orden:
 
 Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato (índice completo en [`docs/README.md`](docs/README.md)):
 
-- `casos-uso.mmd` — casos de uso por actor (Admin, Supervisor, Operador).
+- `casos-uso.mmd` — casos de uso por actor (Admin, Profesor, Alumno).
 - `clases.mmd` — diagrama de clases con el patrón Composite.
 - `er.mmd` — modelo entidad-relación de la base.
-- `secuencia-login.mmd` — secuencia del inicio de sesión (usa Singleton/Multiton y Composite).
+- `secuencia-login.mmd` — secuencia del inicio de sesión (usa Singleton/Multiton, Composite y persistencia de preferencias).
+- `secuencia-logout.mmd` — secuencia del cierre de sesión: conserva el idioma y tema "último usado".
 
 ## Enlaces útiles
 
