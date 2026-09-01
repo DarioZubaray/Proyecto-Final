@@ -29,19 +29,19 @@ namespace BLL
         {
             if (!AreCredentialsValid(userName, password))
             {
-                return CreateLoginFailed(Resources.Auth_RequiredFields);
+                return CreateLoginFailed(Resources.Auth_RequiredFields, ErrorCodesBLL.Auth.RequiredFields);
             }
 
             UserBE user = _userMPP.GetByUserName(userName);
 
             if (user == null)
             {
-                return CreateLoginFailed(Resources.Auth_InvalidCredentials);
+                return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
             }
 
             if (!user.IsActive)
             {
-                return CreateLoginFailed(Resources.Auth_UserBlocked);
+                return CreateLoginFailed(Resources.Auth_UserBlocked, ErrorCodesBLL.Auth.UserBlocked);
             }
 
             return AuthenticateUser(user, password);
@@ -104,18 +104,19 @@ namespace BLL
             if (user.RetriesCount >= MAX_RETRIES)
             {
                 _userMPP.Deactivate(user.Id);
-                return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded);
+                return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded, ErrorCodesBLL.Auth.MaxRetriesExceeded);
             }
 
             _userMPP.UpdateRetries(user.Id, user.RetriesCount);
             int retriesLeft = MAX_RETRIES - user.RetriesCount;
             return CreateLoginFailed(
-                string.Format(Resources.Auth_RetriesLeft, retriesLeft));
+                string.Format(Resources.Auth_RetriesLeft, retriesLeft),
+                ErrorCodesBLL.Auth.RetryAttemptsLeft);
         }
 
-        private LoginResultBE CreateLoginFailed(string message)
+        private LoginResultBE CreateLoginFailed(string message, string errorCode)
         {
-            return new LoginResultBE { Success = false, Message = message };
+            return new LoginResultBE { Success = false, Message = message, ErrorCode = errorCode };
         }
         #endregion
     }

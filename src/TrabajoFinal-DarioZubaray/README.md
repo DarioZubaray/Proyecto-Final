@@ -266,6 +266,48 @@ Para no sobrevender el cumplimiento, cabe notar algunas decisiones que presentan
 - `PermissionBLL` se expone **concreto** (sin interfaz) a través de `ServiceLocatorBLL.CreatePermissionBLL()`, a diferencia del resto de los servicios que se devuelven por su interfaz — una inconsistencia menor con DIP.
 - Las capas **MPP** dependen directamente de la clase concreta `AccessDAL` (DAL); para un desacople total convendría que DAL también expusiera una abstracción.
 
+## Manejo de errores y códigos de error
+
+La aplicación centraliza el **catálogo de códigos de error** en la capa de negocio, de modo que todos los dominios comparten el mismo criterio de codificación, son fáciles de buscar y escalan ordenadamente.
+
+### Catálogo centralizado (`BLL\Helpers\ErrorCodesBLL.cs`)
+
+Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón `ErrorCodesBLL.<Dominio>.<Nombre>`:
+
+| Prefijo | Dominio | Códigos |
+|---------|---------|---------|
+| `DB-` | `Database` | `Unavailable DB-001`, `Configuration DB-002`, `QueryFailed DB-003` |
+| `AUTH-` | `Auth` | `RequiredFields AUTH-001`, `InvalidCredentials AUTH-002`, `UserBlocked AUTH-003`, `MaxRetriesExceeded AUTH-004`, `RetryAttemptsLeft AUTH-005` |
+| `VAL-` | `Validation` | `UsernameRequired VAL-001`, `PasswordRequired VAL-002`, `PasswordsMismatch VAL-003`, `NameRequired VAL-004`, `NoSelection VAL-005`, `LanguageThemeRequired VAL-006` |
+| `BIZ-` | `Business` | `RoleHasUsers BIZ-001`, `InvalidCurrentPassword BIZ-002` |
+| `GEN-` | `General` | `Unhandled GEN-001` |
+
+### Cómo se transportan y muestran
+
+- La capa **BLL** asigna el código en un campo propio del resultado (`LoginResultBE.ErrorCode`), no encadenado al texto traducido. Así la presentación puede formatearlo sin depender del mensaje.
+- La capa **GUI** agrega el código con el formato uniforme **(Código: XXX)** mediante el helper `ErrorFormatter.WithCode(...)` y la clave localizada `Error_CodeFormat`. Los mensajes visibles quedan p. ej. `Usuario o contraseña incorrectos. (Código: AUTH-002)`.
+- Cada mensaje de usuario está **localizado** (`es` / `en` / `pt-BR`) en los `.resx` de **BE**, mientras el código es único e independiente del idioma (ideal para soporte técnico y registros).
+
+### Puntos donde se aplica
+
+| Formulario / Servicio | Código usado |
+|-----------------------|--------------|
+| `LoginForm` / `AuthBLL` | `DB-001`, `AUTH-001` a `AUTH-005` |
+| `ChangePasswordForm` / `UserBLL.ChangePassword` | `VAL-002`, `VAL-003`, `BIZ-002` |
+| `UserForm` | `VAL-001`, `VAL-002` |
+| `UserManagementForm` | `VAL-005` (+ título `Common_Confirm`) |
+| `RoleManagementForm` | `VAL-004`, `VAL-005`, `BIZ-001` |
+| `PreferencesForm` | `VAL-006` |
+
+### Excepciones inesperadas (handler global)
+
+Para que ninguna excepción de las capas inferiores (por ejemplo `SqlException`, `NullReferenceException` de los mappers o `ConfigurationErrorsException` por cadena de conexión ausente) crashee la aplicación sin aviso, `Program.cs` registra **dos** capturas globales:
+
+- `Application.ThreadException` — errores del hilo de UI (WinForms).
+- `AppDomain.CurrentDomain.UnhandledException` — errores no manejados en otros hilos o antes del cierre.
+
+Ambas muestran un mensaje amigable con el código genérico **(Código: GEN-001)** en lugar de cerrar la aplicación silenciosamente o mostrar un diálogo de runtime.
+
 ## Cómo ejecutar
 
 1. Tener instalado el **.NET SDK 10** (o **Visual Studio 2022 17.12+**, que lo incluye, para poder editar el diseñador WinForms).

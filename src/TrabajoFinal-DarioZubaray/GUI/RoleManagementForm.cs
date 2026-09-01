@@ -14,6 +14,7 @@ namespace TrabajoFinal_DarioZubaray
         #region Propiedades
         private readonly IRoleBLL _roleBLL;
         private List<PermissionBE> _allPermissions;
+        private RoleBE _selectedRole;
         #endregion
 
         #region Constructor
@@ -39,6 +40,7 @@ namespace TrabajoFinal_DarioZubaray
             lblAssigned.Text = Resources.RoleManagement_Assigned;
             btnAdd.Text = Resources.RoleManagement_Add;
             btnRemove.Text = Resources.RoleManagement_Remove;
+            btnSave.Text = Resources.RoleManagement_Save;
         }
 
         private void LoadRoles()
@@ -57,13 +59,25 @@ namespace TrabajoFinal_DarioZubaray
 
         private void LoadPermissionLists(int roleId)
         {
-            RoleBE selectedRole = _roleBLL.FindById(roleId);
-            List<int> assignedIds = selectedRole.Permissions.Select(p => p.Id).ToList();
+            _selectedRole = _roleBLL.FindById(roleId);
+            RefreshPermissionLists();
+        }
+
+        private void RefreshPermissionLists()
+        {
+            if (_selectedRole == null)
+            {
+                lbAvailable.DataSource = null;
+                lbAssigned.DataSource = null;
+                return;
+            }
+
+            List<int> assignedIds = _selectedRole.Permissions.Select(p => p.Id).ToList();
 
             List<PermissionBE> available = _allPermissions
                 .Where(p => !assignedIds.Contains(p.Id) && !p.IsSystem)
                 .ToList();
-            List<PermissionBE> assigned = selectedRole.Permissions.ToList();
+            List<PermissionBE> assigned = _selectedRole.Permissions.ToList();
 
             lbAvailable.DataSource = null;
             lbAvailable.DataSource = available;
@@ -110,7 +124,9 @@ namespace TrabajoFinal_DarioZubaray
             string roleName = txtRoleName.Text.Trim();
             if (string.IsNullOrEmpty(roleName))
             {
-                MessageBox.Show(Resources.RoleManagement_NameRequired);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.RoleManagement_NameRequired,
+                    ErrorCodesBLL.Validation.NameRequired));
                 txtRoleName.Focus();
                 return;
             }
@@ -129,7 +145,9 @@ namespace TrabajoFinal_DarioZubaray
             RoleBE role = GetSelectedRole();
             if (role == null)
             {
-                MessageBox.Show(Resources.RoleManagement_SelectRole);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.RoleManagement_SelectRole,
+                    ErrorCodesBLL.Validation.NoSelection));
                 return;
             }
 
@@ -138,7 +156,9 @@ namespace TrabajoFinal_DarioZubaray
             if (userCount > 0)
             {
                 MessageBox.Show(
-                    string.Format("No se puede eliminar el rol '{0}'. Tiene {1} usuario(s) asociado(s).", role.Name, userCount),
+                    ErrorFormatter.WithCode(
+                        string.Format(Resources.RoleManagement_RoleInUse, role.Name, userCount),
+                        ErrorCodesBLL.Business.RoleHasUsers),
                     Resources.RoleManagement_Delete,
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -154,6 +174,7 @@ namespace TrabajoFinal_DarioZubaray
             if (result == DialogResult.Yes)
             {
                 _roleBLL.Delete(role.Id);
+                _selectedRole = null;
                 LoadRoles();
                 lbAvailable.DataSource = null;
                 lbAssigned.DataSource = null;
@@ -162,28 +183,43 @@ namespace TrabajoFinal_DarioZubaray
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            RoleBE role = GetSelectedRole();
             PermissionBE perm = lbAvailable.SelectedItem as PermissionBE;
-            if (role == null || perm == null) return;
+            if (_selectedRole == null || perm == null) return;
 
-            List<int> currentIds = _roleBLL.GetPermissionsByRoleId(role.Id).Select(p => p.Id).ToList();
-            currentIds.Add(perm.Id);
-            _roleBLL.SavePermissions(role.Id, currentIds);
+            if (!_selectedRole.Permissions.Any(p => p.Id == perm.Id))
+            {
+                _selectedRole.Permissions.Add(perm);
+            }
 
-            LoadPermissionLists(role.Id);
+            RefreshPermissionLists();
         }
 
         private void btnRemove_Click(object sender, EventArgs e)
         {
-            RoleBE role = GetSelectedRole();
             PermissionBE perm = lbAssigned.SelectedItem as PermissionBE;
-            if (role == null || perm == null || perm.IsSystem) return;
+            if (_selectedRole == null || perm == null || perm.IsSystem) return;
 
-            List<int> currentIds = _roleBLL.GetPermissionsByRoleId(role.Id).Select(p => p.Id).ToList();
-            currentIds.Remove(perm.Id);
-            _roleBLL.SavePermissions(role.Id, currentIds);
+            _selectedRole.Permissions.RemoveAll(p => p.Id == perm.Id);
 
-            LoadPermissionLists(role.Id);
+            RefreshPermissionLists();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (_selectedRole == null)
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.RoleManagement_NoRole,
+                    ErrorCodesBLL.Validation.NoSelection));
+                return;
+            }
+
+            List<int> assignedIds = _selectedRole.Permissions.Select(p => p.Id).ToList();
+            _roleBLL.SavePermissions(_selectedRole.Id, assignedIds);
+
+            MessageBox.Show(Resources.RoleManagement_Saved);
+            LoadRoles();
+            lbRoles.SelectedItem = _selectedRole;
         }
         #endregion
     }

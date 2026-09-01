@@ -28,6 +28,7 @@ namespace TrabajoFinal_DarioZubaray
             this.lbAssigned = new System.Windows.Forms.ListBox();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.lblAvailable = new System.Windows.Forms.Label();
             this.lblAssigned = new System.Windows.Forms.Label();
             this.panelTop.SuspendLayout();
@@ -94,6 +95,7 @@ namespace TrabajoFinal_DarioZubaray
             this.panelBottom.Controls.Add(this.lbAssigned);
             this.panelBottom.Controls.Add(this.btnAdd);
             this.panelBottom.Controls.Add(this.btnRemove);
+            this.panelBottom.Controls.Add(this.btnSave);
             this.panelBottom.Controls.Add(this.lblAvailable);
             this.panelBottom.Controls.Add(this.lblAssigned);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -128,6 +130,14 @@ namespace TrabajoFinal_DarioZubaray
             this.btnRemove.Text = "<<";
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
+
+            // btnSave
+            this.btnSave.Location = new System.Drawing.Point(310, 180);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(90, 30);
+            this.btnSave.Text = "Guardar";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
 
             // lblAssigned
             this.lblAssigned.AutoSize = true;
@@ -173,6 +183,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.ListBox lbAssigned;
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblAvailable;
         private System.Windows.Forms.Label lblAssigned;
     }

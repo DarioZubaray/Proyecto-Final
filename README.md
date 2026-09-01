@@ -36,6 +36,8 @@ Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Lisko
 
 Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md).
 
+La aplicación también centraliza un **catálogo de códigos de error** por dominio (`ErrorCodesBLL`, prefijos `DB-`, `AUTH-`, `VAL-`, `BIZ-`, `GEN-`) con un **handler global** de excepciones en `Program.cs`. Ver la sección *"Manejo de errores y códigos de error"* en el README del proyecto .NET.
+
 ### Base de datos (`sql/`)
 
 Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, más un respaldo. Detalle completo en [`sql/README.md`](sql/README.md).

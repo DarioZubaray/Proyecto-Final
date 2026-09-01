@@ -77,6 +77,9 @@ namespace TrabajoFinal_DarioZubaray
 
             if (string.IsNullOrEmpty(selectedLanguage) || string.IsNullOrEmpty(selectedTheme))
             {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.Preferences_LanguageThemeRequired,
+                    ErrorCodesBLL.Validation.LanguageThemeRequired));
                 return;
             }
 

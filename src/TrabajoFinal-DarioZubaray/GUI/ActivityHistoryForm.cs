@@ -113,10 +113,11 @@ namespace TrabajoFinal_DarioZubaray
                 AutoSize = true,
                 Padding = new Padding(6)
             };
-            pageBar.ColumnCount = 5;
+            pageBar.ColumnCount = 6;
             pageBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             pageBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             pageBar.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            pageBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             pageBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             pageBar.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
 
@@ -125,6 +126,7 @@ namespace TrabajoFinal_DarioZubaray
             pageBar.Controls.Add(new Panel(), 2, 0);
             pageBar.Controls.Add(lblPageSize, 3, 0);
             pageBar.Controls.Add(cbPageSize, 4, 0);
+            pageBar.Controls.Add(btnNext, 5, 0);
 
             this.Controls.Add(dgvActivities);
             this.Controls.Add(pageBar);

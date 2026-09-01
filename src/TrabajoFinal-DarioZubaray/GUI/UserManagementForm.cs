@@ -61,6 +61,7 @@ namespace TrabajoFinal_DarioZubaray
             dgvUsers.Columns["RetriesCount"].Visible = false;
             dgvUsers.Columns["CreatedAt"].Visible = false;
             dgvUsers.Columns["Language"].Visible = false;
+            dgvUsers.Columns["Theme"].Visible = false;
 
             dgvUsers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsers.MultiSelect = false;
@@ -94,7 +95,9 @@ namespace TrabajoFinal_DarioZubaray
             var user = GetSelectedUser();
             if (user == null)
             {
-                MessageBox.Show(Resources.UserManagement_SelectUser);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserManagement_SelectUser,
+                    ErrorCodesBLL.Validation.NoSelection));
                 return;
             }
 
@@ -113,12 +116,14 @@ namespace TrabajoFinal_DarioZubaray
             var user = GetSelectedUser();
             if (user == null)
             {
-                MessageBox.Show(Resources.UserManagement_SelectUser);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserManagement_SelectUser,
+                    ErrorCodesBLL.Validation.NoSelection));
                 return;
             }
 
             string message = string.Format(Resources.UserManagement_DeleteConfirm, user.UserName);
-            DialogResult result = MessageBox.Show(message, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(message, Resources.Common_Confirm, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {

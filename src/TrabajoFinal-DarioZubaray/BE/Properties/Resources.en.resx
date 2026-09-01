@@ -280,6 +280,15 @@
   <data name="RoleManagement_Remove" xml:space="preserve">
     <value>&lt;&lt;</value>
   </data>
+  <data name="RoleManagement_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="RoleManagement_Saved" xml:space="preserve">
+    <value>Role permissions saved successfully.</value>
+  </data>
+  <data name="RoleManagement_NoRole" xml:space="preserve">
+    <value>Select a role to save its permissions.</value>
+  </data>
   <data name="RoleManagement_NameRequired" xml:space="preserve">
     <value>Role name is required.</value>
   </data>
@@ -339,5 +348,20 @@
   </data>
   <data name="Auth_DbUnavailable" xml:space="preserve">
     <value>Database unavailable. Contact the administrator. (Code: {0})</value>
+  </data>
+  <data name="Error_CodeFormat" xml:space="preserve">
+    <value>(Code: {0})</value>
+  </data>
+  <data name="Common_Confirm" xml:space="preserve">
+    <value>Confirm</value>
+  </data>
+  <data name="RoleManagement_RoleInUse" xml:space="preserve">
+    <value>The role '{0}' cannot be deleted. It has {1} associated user(s).</value>
+  </data>
+  <data name="Preferences_LanguageThemeRequired" xml:space="preserve">
+    <value>You must select a language and a theme.</value>
+  </data>
+  <data name="Global_UnhandledError" xml:space="preserve">
+    <value>An unexpected error occurred. Contact the administrator.</value>
   </data>
 </root>

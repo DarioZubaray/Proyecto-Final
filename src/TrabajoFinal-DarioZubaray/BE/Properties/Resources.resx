@@ -280,6 +280,15 @@
   <data name="RoleManagement_Remove" xml:space="preserve">
     <value>&lt;&lt;</value>
   </data>
+  <data name="RoleManagement_Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="RoleManagement_Saved" xml:space="preserve">
+    <value>Los permisos del rol se guardaron correctamente.</value>
+  </data>
+  <data name="RoleManagement_NoRole" xml:space="preserve">
+    <value>Seleccione un rol para guardar sus permisos.</value>
+  </data>
   <data name="RoleManagement_NameRequired" xml:space="preserve">
     <value>El nombre del rol es obligatorio.</value>
   </data>
@@ -339,5 +348,20 @@
   </data>
   <data name="Auth_DbUnavailable" xml:space="preserve">
     <value>Base de datos no disponible. Contacte al administrador. (Código: {0})</value>
+  </data>
+  <data name="Error_CodeFormat" xml:space="preserve">
+    <value>(Código: {0})</value>
+  </data>
+  <data name="Common_Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="RoleManagement_RoleInUse" xml:space="preserve">
+    <value>No se puede eliminar el rol '{0}'. Tiene {1} usuario(s) asociado(s).</value>
+  </data>
+  <data name="Preferences_LanguageThemeRequired" xml:space="preserve">
+    <value>Debe seleccionar idioma y tema.</value>
+  </data>
+  <data name="Global_UnhandledError" xml:space="preserve">
+    <value>Se produjo un error inesperado. Contacte al administrador.</value>
   </data>
 </root>

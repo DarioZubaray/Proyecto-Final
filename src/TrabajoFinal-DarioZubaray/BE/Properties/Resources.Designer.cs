@@ -727,6 +727,33 @@ namespace BE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Guardar..
+        /// </summary>
+        public static string RoleManagement_Save {
+            get {
+                return ResourceManager.GetString("RoleManagement_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Los permisos del rol se guardaron correctamente..
+        /// </summary>
+        public static string RoleManagement_Saved {
+            get {
+                return ResourceManager.GetString("RoleManagement_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Seleccione un rol para guardar sus permisos..
+        /// </summary>
+        public static string RoleManagement_NoRole {
+            get {
+                return ResourceManager.GetString("RoleManagement_NoRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a El nombre del rol es obligatorio..
         /// </summary>
         public static string RoleManagement_NameRequired {
@@ -903,6 +930,51 @@ namespace BE.Properties {
         public static string Auth_DbUnavailable {
             get {
                 return ResourceManager.GetString("Auth_DbUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a (Código: {0}).
+        /// </summary>
+        public static string Error_CodeFormat {
+            get {
+                return ResourceManager.GetString("Error_CodeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Confirmar.
+        /// </summary>
+        public static string Common_Confirm {
+            get {
+                return ResourceManager.GetString("Common_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se puede eliminar el rol '{0}'. Tiene {1} usuario(s) asociado(s)..
+        /// </summary>
+        public static string RoleManagement_RoleInUse {
+            get {
+                return ResourceManager.GetString("RoleManagement_RoleInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Debe seleccionar idioma y tema..
+        /// </summary>
+        public static string Preferences_LanguageThemeRequired {
+            get {
+                return ResourceManager.GetString("Preferences_LanguageThemeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se produjo un error inesperado. Contacte al administrador..
+        /// </summary>
+        public static string Global_UnhandledError {
+            get {
+                return ResourceManager.GetString("Global_UnhandledError", resourceCulture);
             }
         }
     }

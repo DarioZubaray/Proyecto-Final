@@ -133,7 +133,7 @@ namespace TrabajoFinal_DarioZubaray
             }
             else
             {
-                lblMessage.Text = result.Message;
+                lblMessage.Text = ErrorFormatter.WithCode(result.Message, result.ErrorCode);
                 lblMessage.Visible = true;
             }
         }

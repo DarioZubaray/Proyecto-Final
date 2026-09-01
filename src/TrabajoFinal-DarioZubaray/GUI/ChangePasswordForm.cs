@@ -36,13 +36,17 @@ namespace TrabajoFinal_DarioZubaray
                 || string.IsNullOrEmpty(txtNewPassword.Text)
                 || string.IsNullOrEmpty(txtConfirmPassword.Text))
             {
-                MessageBox.Show(Resources.ChangePassword_RequiredFields);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ChangePassword_RequiredFields,
+                    ErrorCodesBLL.Validation.PasswordRequired));
                 return;
             }
 
             if (txtNewPassword.Text != txtConfirmPassword.Text)
             {
-                MessageBox.Show(Resources.ChangePassword_PasswordsMismatch);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ChangePassword_PasswordsMismatch,
+                    ErrorCodesBLL.Validation.PasswordsMismatch));
                 txtNewPassword.Focus();
                 return;
             }
@@ -52,7 +56,9 @@ namespace TrabajoFinal_DarioZubaray
 
             if (!changed)
             {
-                MessageBox.Show(Resources.ChangePassword_InvalidCurrent);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ChangePassword_InvalidCurrent,
+                    ErrorCodesBLL.Business.InvalidCurrentPassword));
                 txtCurrentPassword.Focus();
                 return;
             }

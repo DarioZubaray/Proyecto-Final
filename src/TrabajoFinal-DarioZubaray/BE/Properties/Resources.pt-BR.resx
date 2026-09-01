@@ -280,6 +280,15 @@
   <data name="RoleManagement_Remove" xml:space="preserve">
     <value>&lt;&lt;</value>
   </data>
+  <data name="RoleManagement_Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="RoleManagement_Saved" xml:space="preserve">
+    <value>As permissões da função foram salvas com sucesso.</value>
+  </data>
+  <data name="RoleManagement_NoRole" xml:space="preserve">
+    <value>Selecione uma função para salvar suas permissões.</value>
+  </data>
   <data name="RoleManagement_NameRequired" xml:space="preserve">
     <value>O nome da função é obrigatório.</value>
   </data>
@@ -339,5 +348,20 @@
   </data>
   <data name="Auth_DbUnavailable" xml:space="preserve">
     <value>Banco de dados indisponível. Contate o administrador. (Código: {0})</value>
+  </data>
+  <data name="Error_CodeFormat" xml:space="preserve">
+    <value>(Código: {0})</value>
+  </data>
+  <data name="Common_Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="RoleManagement_RoleInUse" xml:space="preserve">
+    <value>A função '{0}' não pode ser excluída. Possui {1} usuário(s) associado(s).</value>
+  </data>
+  <data name="Preferences_LanguageThemeRequired" xml:space="preserve">
+    <value>Você deve selecionar idioma e tema.</value>
+  </data>
+  <data name="Global_UnhandledError" xml:space="preserve">
+    <value>Ocorreu um erro inesperado. Contate o administrador.</value>
   </data>
 </root>

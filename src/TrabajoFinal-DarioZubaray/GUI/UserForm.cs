@@ -50,14 +50,18 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (string.IsNullOrEmpty(txtUserName.Text.Trim()))
             {
-                MessageBox.Show(Resources.UserForm_UserNameRequired);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserForm_UserNameRequired,
+                    ErrorCodesBLL.Validation.UsernameRequired));
                 txtUserName.Focus();
                 return false;
             }
 
             if (_isNewUser && string.IsNullOrEmpty(txtPassword.Text))
             {
-                MessageBox.Show(Resources.UserForm_PasswordRequired);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserForm_PasswordRequired,
+                    ErrorCodesBLL.Validation.PasswordRequired));
                 txtPassword.Focus();
                 return false;
             }
