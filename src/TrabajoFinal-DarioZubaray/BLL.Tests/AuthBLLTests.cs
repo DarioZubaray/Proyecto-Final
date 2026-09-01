@@ -1,9 +1,10 @@
 using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MPP;
 
@@ -193,6 +194,27 @@ namespace BLL.Tests
 
             Assert.IsTrue(result);
             _mockUserMPP.Verify(m => m.Save(user), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestConnection_ReturnsTrue()
+        {
+            _mockUserMPP
+                .Setup(m => m.TestConnection())
+                .Returns(true);
+
+            Assert.IsTrue(_authBLL.TestConnection());
+            _mockUserMPP.Verify(m => m.TestConnection(), Times.Once);
+        }
+
+        [TestMethod]
+        public void TestConnection_ReturnsFalse()
+        {
+            _mockUserMPP
+                .Setup(m => m.TestConnection())
+                .Returns(false);
+
+            Assert.IsFalse(_authBLL.TestConnection());
         }
         #endregion
     }

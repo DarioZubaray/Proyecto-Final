@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+
 using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
@@ -184,7 +185,10 @@ namespace TrabajoFinal_DarioZubaray
         private void btnAdd_Click(object sender, EventArgs e)
         {
             PermissionBE perm = lbAvailable.SelectedItem as PermissionBE;
-            if (_selectedRole == null || perm == null) return;
+            if (_selectedRole == null || perm == null)
+            {
+                return;
+            }
 
             if (!_selectedRole.Permissions.Any(p => p.Id == perm.Id))
             {
@@ -197,7 +201,10 @@ namespace TrabajoFinal_DarioZubaray
         private void btnRemove_Click(object sender, EventArgs e)
         {
             PermissionBE perm = lbAssigned.SelectedItem as PermissionBE;
-            if (_selectedRole == null || perm == null || perm.IsSystem) return;
+            if (_selectedRole == null || perm == null || perm.IsSystem)
+            {
+                return;
+            }
 
             _selectedRole.Permissions.RemoveAll(p => p.Id == perm.Id);
 

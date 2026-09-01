@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+
 using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
@@ -72,7 +73,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private UserBE GetSelectedUser()
         {
-            if (dgvUsers.CurrentRow == null) return null;
+            if (dgvUsers.CurrentRow == null)
+            {
+                return null;
+            }
+
             return dgvUsers.CurrentRow.DataBoundItem as UserBE;
         }
         #endregion

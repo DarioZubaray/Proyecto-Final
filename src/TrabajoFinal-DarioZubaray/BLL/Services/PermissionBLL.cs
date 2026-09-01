@@ -13,6 +13,10 @@ namespace BLL.Services
         #endregion
 
         #region Constructor
+        public PermissionBLL() : this(new RoleMPP())
+        {
+        }
+
         public PermissionBLL(IRoleMPP roleMPP)
         {
             _roleMPP = roleMPP;

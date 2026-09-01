@@ -14,9 +14,13 @@ namespace MPP
         #endregion
 
         #region Constructor
-        public UserMPP()
+        public UserMPP() : this(null)
         {
-            _access = new AccessDAL();
+        }
+
+        public UserMPP(string connectionString)
+        {
+            _access = new AccessDAL(connectionString);
         }
         #endregion
 

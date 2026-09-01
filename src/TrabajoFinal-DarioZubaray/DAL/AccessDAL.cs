@@ -13,8 +13,18 @@ namespace DAL
 
         #region Constructor
         public AccessDAL()
+            : this(ConfigurationManager.ConnectionStrings["cadenaConexion"].ConnectionString)
         {
-            _connectionString = ConfigurationManager.ConnectionStrings["cadenaConexion"].ToString();
+        }
+
+        public AccessDAL(string connectionString)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["cadenaConexion"].ConnectionString;
+            }
+
+            _connectionString = connectionString;
         }
         #endregion
 

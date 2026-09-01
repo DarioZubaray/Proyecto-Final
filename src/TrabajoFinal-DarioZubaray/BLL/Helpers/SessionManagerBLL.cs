@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using BE.Composite;
 using BE.Entities;
+using BLL.Services;
 
 namespace BLL.Helpers
 {
@@ -35,12 +36,17 @@ namespace BLL.Helpers
 
         public static SessionManagerBLL CreateSession(UserBE user)
         {
+            return CreateSession(user, null);
+        }
+
+        public static SessionManagerBLL CreateSession(UserBE user, PermissionBLL permissionBLL)
+        {
             if (user == null)
             {
                 return null;
             }
 
-            var permissionBLL = new PermissionBLL();
+            permissionBLL = permissionBLL ?? new PermissionBLL();
             RoleCompositeBE roleTree = permissionBLL.BuildRoleTree(user.RoleId);
 
             var session = new SessionManagerBLL(user, roleTree);

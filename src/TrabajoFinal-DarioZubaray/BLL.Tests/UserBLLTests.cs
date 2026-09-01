@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using BE.Entities;
 using BLL.Helpers;
 using BLL.Services;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MPP;
 
@@ -126,6 +127,79 @@ namespace BLL.Tests
 
             Assert.IsTrue(result);
             _mockUserMPP.Verify(m => m.Delete(user), Times.Once);
+        }
+
+        [TestMethod]
+        public void FindById_DelegatesToMPP()
+        {
+            var user = new UserBE { Id = 5 };
+            var expected = new UserBE { Id = 5, UserName = "found" };
+
+            _mockUserMPP
+                .Setup(m => m.FindById(user))
+                .Returns(expected);
+
+            var result = _userBLL.FindById(user);
+
+            Assert.AreEqual(expected, result);
+            _mockUserMPP.Verify(m => m.FindById(user), Times.Once);
+        }
+
+        [TestMethod]
+        public void FindByUserName_DelegatesToMPP()
+        {
+            var expected = new List<UserBE>
+            {
+                new UserBE { Id = 1, UserName = "testuser" }
+            };
+
+            _mockUserMPP
+                .Setup(m => m.FindByUserName("test"))
+                .Returns(expected);
+
+            var result = _userBLL.FindByUserName("test");
+
+            CollectionAssert.AreEqual(expected, result);
+            _mockUserMPP.Verify(m => m.FindByUserName("test"), Times.Once);
+        }
+
+        [TestMethod]
+        public void UpdateLanguage_DelegatesToMPP()
+        {
+            _mockUserMPP
+                .Setup(m => m.UpdateLanguage(3, "en"))
+                .Returns(true);
+
+            var result = _userBLL.UpdateLanguage(3, "en");
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(m => m.UpdateLanguage(3, "en"), Times.Once);
+        }
+
+        [TestMethod]
+        public void UpdateTheme_DelegatesToMPP()
+        {
+            _mockUserMPP
+                .Setup(m => m.UpdateTheme(3, "Dark"))
+                .Returns(true);
+
+            var result = _userBLL.UpdateTheme(3, "Dark");
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(m => m.UpdateTheme(3, "Dark"), Times.Once);
+        }
+
+        [TestMethod]
+        public void CountByRoleId_DelegatesToMPP()
+        {
+            _mockUserMPP
+                .Setup(m => m.CountByRoleId(2))
+                .Returns(5);
+
+            var result = _userBLL.CountByRoleId(2);
+
+            Assert.AreEqual(5, result);
+            _mockUserMPP.Verify(m => m.CountByRoleId(2), Times.Once);
         }
         #endregion
     }

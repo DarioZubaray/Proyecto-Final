@@ -14,9 +14,13 @@ namespace MPP
         #endregion
 
         #region Constructor
-        public RoleMPP()
+        public RoleMPP() : this(null)
         {
-            _access = new AccessDAL();
+        }
+
+        public RoleMPP(string connectionString)
+        {
+            _access = new AccessDAL(connectionString);
         }
         #endregion
 

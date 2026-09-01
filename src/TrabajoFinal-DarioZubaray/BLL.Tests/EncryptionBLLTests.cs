@@ -1,6 +1,7 @@
 using System;
-using BLL.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using BLL.Helpers;
 
 namespace BLL.Tests
 {

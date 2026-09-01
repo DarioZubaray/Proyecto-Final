@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using BE.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,6 +10,7 @@ namespace MPP.Tests
     {
         private ActivityMPP _activityMPP;
         private int _testUserId;
+        private string _connectionString;
 
         [TestInitialize]
         public void Setup()
@@ -18,9 +18,10 @@ namespace MPP.Tests
             TestDatabaseHelper.EnsureDatabaseExists();
             TestDatabaseHelper.CreateSchema();
             TestDatabaseHelper.SeedTestData();
-            _activityMPP = new ActivityMPP();
+            _connectionString = TestDatabaseHelper.TestConnectionString;
+            _activityMPP = new ActivityMPP(_connectionString);
 
-            UserBE user = new UserMPP().GetByUserName("testuser");
+            UserBE user = new UserMPP(_connectionString).GetByUserName("testuser");
             _testUserId = user != null ? user.Id : 1;
         }
 
