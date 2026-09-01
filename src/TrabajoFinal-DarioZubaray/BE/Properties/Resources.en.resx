@@ -364,4 +364,28 @@
   <data name="Global_UnhandledError" xml:space="preserve">
     <value>An unexpected error occurred. Contact the administrator.</value>
   </data>
+  <data name="Main_MenuHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="Main_MenuAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="About_AppName" xml:space="preserve">
+    <value>Academic Application</value>
+  </data>
+  <data name="About_Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>Copyright © 2026 Darío Zubaray</value>
+  </data>
+  <data name="About_RepositoryLabel" xml:space="preserve">
+    <value>Repository:</value>
+  </data>
+  <data name="About_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>

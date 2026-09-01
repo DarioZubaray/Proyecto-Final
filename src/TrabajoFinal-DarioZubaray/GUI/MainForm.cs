@@ -46,6 +46,8 @@ namespace TrabajoFinal_DarioZubaray
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
             rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
+            ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
+            acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
         }
 
@@ -150,6 +152,16 @@ namespace TrabajoFinal_DarioZubaray
         {
             LogFormAccess("ChangePasswordForm");
             var form = new ChangePasswordForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
+        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("AboutForm");
+            var form = new AboutForm(_user)
             {
                 MdiParent = this
             };

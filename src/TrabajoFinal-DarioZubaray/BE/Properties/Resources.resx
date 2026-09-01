@@ -364,4 +364,28 @@
   <data name="Global_UnhandledError" xml:space="preserve">
     <value>Se produjo un error inesperado. Contacte al administrador.</value>
   </data>
+  <data name="Main_MenuHelp" xml:space="preserve">
+    <value>Ayuda</value>
+  </data>
+  <data name="Main_MenuAbout" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>Acerca de</value>
+  </data>
+  <data name="About_AppName" xml:space="preserve">
+    <value>Aplicativo Académico</value>
+  </data>
+  <data name="About_Version" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>Copyright © 2026 Darío Zubaray</value>
+  </data>
+  <data name="About_RepositoryLabel" xml:space="preserve">
+    <value>Repositorio:</value>
+  </data>
+  <data name="About_CloseButton" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
 </root>

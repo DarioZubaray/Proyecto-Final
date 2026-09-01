@@ -977,5 +977,77 @@ namespace BE.Properties {
                 return ResourceManager.GetString("Global_UnhandledError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ayuda.
+        /// </summary>
+        public static string Main_MenuHelp {
+            get {
+                return ResourceManager.GetString("Main_MenuHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acerca de.
+        /// </summary>
+        public static string Main_MenuAbout {
+            get {
+                return ResourceManager.GetString("Main_MenuAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acerca de.
+        /// </summary>
+        public static string About_Title {
+            get {
+                return ResourceManager.GetString("About_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Aplicativo Académico.
+        /// </summary>
+        public static string About_AppName {
+            get {
+                return ResourceManager.GetString("About_AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Versión.
+        /// </summary>
+        public static string About_Version {
+            get {
+                return ResourceManager.GetString("About_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Copyright © 2026 Darío Zubaray.
+        /// </summary>
+        public static string About_Copyright {
+            get {
+                return ResourceManager.GetString("About_Copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Repositorio:.
+        /// </summary>
+        public static string About_RepositoryLabel {
+            get {
+                return ResourceManager.GetString("About_RepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cerrar.
+        /// </summary>
+        public static string About_CloseButton {
+            get {
+                return ResourceManager.GetString("About_CloseButton", resourceCulture);
+            }
+        }
     }
 }
