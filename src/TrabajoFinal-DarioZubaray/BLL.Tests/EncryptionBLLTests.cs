@@ -45,7 +45,6 @@ namespace BLL.Tests
         [TestMethod]
         public void VerifyPassword_LegacyHash_WorksCorrectly()
         {
-            // Generar un hash SHA256 legacy conocido
             string password = "password123";
             string legacyHash = ComputeSHA256(password);
 

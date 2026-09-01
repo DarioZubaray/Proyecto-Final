@@ -1,10 +1,10 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BLL.Strategy;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BLL.Tests
 {

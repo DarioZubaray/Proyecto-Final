@@ -18,7 +18,6 @@ namespace BLL.Tests
             Assert.AreEqual("en", Thread.CurrentThread.CurrentCulture.Name);
             Assert.AreEqual("en", Thread.CurrentThread.CurrentUICulture.Name);
 
-            // Restaurar español
             CultureHelperBLL.SetCulture("es");
         }
 

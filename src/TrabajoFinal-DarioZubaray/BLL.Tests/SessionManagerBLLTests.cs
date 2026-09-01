@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using BE.Composite;
 using BE.Entities;
 using BLL.Helpers;
 using BLL.Services;
