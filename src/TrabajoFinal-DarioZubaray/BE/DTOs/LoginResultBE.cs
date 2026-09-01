@@ -1,4 +1,6 @@
-namespace BE
+using BE.Entities;
+
+namespace BE.DTOs
 {
     public class LoginResultBE
     {

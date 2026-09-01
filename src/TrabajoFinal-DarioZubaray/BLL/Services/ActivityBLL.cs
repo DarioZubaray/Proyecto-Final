@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 
-using BE;
+using BE.Entities;
+using BLL.Interfaces;
 using MPP;
 
-namespace BLL
+namespace BLL.Services
 {
     public class ActivityBLL : IActivityBLL
     {
@@ -12,7 +13,7 @@ namespace BLL
         #endregion
 
         #region Constructores
-        public ActivityBLL() : this(new MPP.ActivityMPP())
+        public ActivityBLL() : this(new ActivityMPP())
         {
         }
 

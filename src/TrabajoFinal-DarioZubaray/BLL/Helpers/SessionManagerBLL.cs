@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-using BE;
-using MPP;
+using BE.Composite;
+using BE.Entities;
 
-namespace BLL
+namespace BLL.Helpers
 {
     public class SessionManagerBLL
     {

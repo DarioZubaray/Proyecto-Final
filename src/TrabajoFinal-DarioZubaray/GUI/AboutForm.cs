@@ -2,8 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
-
-using BE;
+using BE.Entities;
 using BE.Properties;
 
 namespace TrabajoFinal_DarioZubaray

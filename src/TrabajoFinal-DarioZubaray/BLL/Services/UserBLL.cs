@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 
-using BE;
+using BE.Entities;
+using BLL.Helpers;
+using BLL.Interfaces;
 using MPP;
 
-namespace BLL
+namespace BLL.Services
 {
     public class UserBLL : IUserBLL
     {
@@ -12,10 +14,6 @@ namespace BLL
         #endregion
 
         #region Constructor
-        public UserBLL() : this(new MPP.UserMPP())
-        {
-        }
-
         public UserBLL(IUserMPP userMPP)
         {
             _userMPP = userMPP;

@@ -1,6 +1,7 @@
+using BE.Composite;
 using System.Collections.Generic;
 
-namespace BE
+namespace BE.Entities
 {
     public class RoleBE
     {

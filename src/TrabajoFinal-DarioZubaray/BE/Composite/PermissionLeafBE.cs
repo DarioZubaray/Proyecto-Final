@@ -1,6 +1,7 @@
+using BE.Entities;
 using System.Collections.Generic;
 
-namespace BE
+namespace BE.Composite
 {
     public class PermissionLeafBE : IRoleComponentBE
     {

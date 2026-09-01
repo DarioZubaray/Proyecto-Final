@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
-
-using BE;
 using DAL;
+using BE.Entities;
 
 namespace MPP
 {
@@ -24,10 +23,8 @@ namespace MPP
         #region Métodos Públicos
         public bool Save(ActivityLogBE log)
         {
-            string query = @"INSERT INTO ActivityLogs
-                                (user_id, action, form_name, description, created_at)
-                            VALUES
-                                (@userId, @action, @formName, @description, @createdAt)";
+            string query = @"INSERT INTO ActivityLogs (user_id, action, form_name, description, created_at)
+                            VALUES (@userId, @action, @formName, @description, @createdAt)";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
@@ -43,8 +40,15 @@ namespace MPP
 
         public List<ActivityLogBE> GetByUserPaginated(int userId, int page, int pageSize)
         {
-            if (page < 1) page = 1;
-            if (pageSize < 1) pageSize = 10;
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (pageSize < 1)
+            {
+                pageSize = 10;
+            }
 
             int offset = (page - 1) * pageSize;
 

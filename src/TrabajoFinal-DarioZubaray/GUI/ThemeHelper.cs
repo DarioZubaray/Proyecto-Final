@@ -14,9 +14,7 @@ namespace TrabajoFinal_DarioZubaray
         public const string Light = "Light";
         public const string Dark = "Dark";
         public const string DefaultTheme = System;
-
-        private const string RegistryKeyPath =
-            @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+        private const string RegistryKeyPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
         private const string AppsUseLightThemeValue = "AppsUseLightTheme";
         #endregion
 
@@ -134,7 +132,6 @@ namespace TrabajoFinal_DarioZubaray
 
         private static void ApplyColors(Control control, bool isDark)
         {
-            Color back = isDark ? DarkBack : LightBack;
             Color fore = isDark ? DarkFore : LightFore;
             Color controlBack = isDark ? DarkControl : LightControl;
 
@@ -153,6 +150,7 @@ namespace TrabajoFinal_DarioZubaray
             control.BackColor = (control is TextBox || control is ComboBox || control is CheckBox)
                 ? (isDark ? DarkTextBack : LightTextBack)
                 : controlBack;
+
             control.ForeColor = fore;
         }
 

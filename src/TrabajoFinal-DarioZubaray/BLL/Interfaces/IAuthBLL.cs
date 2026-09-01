@@ -1,6 +1,7 @@
-using BE;
+using BE.DTOs;
+using BE.Entities;
 
-namespace BLL
+namespace BLL.Interfaces
 {
     public interface IAuthBLL
     {

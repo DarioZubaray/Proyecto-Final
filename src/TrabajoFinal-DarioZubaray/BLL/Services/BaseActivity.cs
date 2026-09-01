@@ -1,11 +1,5 @@
-namespace BLL
+namespace BLL.Services
 {
-    /// <summary>
-    /// Componente concreto del patrón Decorator.
-    /// Representa una actividad concreta (acceso a un formulario, inicio o
-    /// cierre de sesión). Ejecutarla no produce efectos secundarios; la
-    /// responsabilidad de registrar queda a cargo de un decorador.
-    /// </summary>
     public class BaseActivity : IActivity
     {
         #region Propiedades

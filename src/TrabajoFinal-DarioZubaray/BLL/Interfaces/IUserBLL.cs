@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using BE.Entities;
 
-using BE;
-
-namespace BLL
+namespace BLL.Interfaces
 {
     public interface IUserBLL
     {

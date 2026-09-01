@@ -1,8 +1,9 @@
 using System;
 using System.Windows.Forms;
-using BE;
+using BE.Entities;
 using BE.Properties;
-using BLL;
+using BLL.Helpers;
+using BLL.Interfaces;
 
 namespace TrabajoFinal_DarioZubaray
 {

@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
-
-using BE;
 using DAL;
+using BE.Entities;
 
 namespace MPP
 {

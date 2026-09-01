@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 
-using BE;
+using BE.Entities;
+using BLL.Interfaces;
 using MPP;
 
-namespace BLL
+namespace BLL.Services
 {
     public class RoleBLL : IRoleBLL
     {

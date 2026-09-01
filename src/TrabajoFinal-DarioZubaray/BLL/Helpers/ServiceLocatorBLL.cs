@@ -1,6 +1,8 @@
+using BLL.Interfaces;
+using BLL.Services;
 using MPP;
 
-namespace BLL
+namespace BLL.Helpers
 {
     public static class ServiceLocatorBLL
     {

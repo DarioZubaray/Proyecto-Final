@@ -1,10 +1,13 @@
 using System;
 
-using BE;
+using BE.DTOs;
+using BE.Entities;
 using BE.Properties;
+using BLL.Helpers;
+using BLL.Interfaces;
 using MPP;
 
-namespace BLL
+namespace BLL.Services
 {
     public class AuthBLL : IAuthBLL
     {
@@ -14,10 +17,6 @@ namespace BLL
         #endregion
 
         #region Constructor
-        public AuthBLL() : this(new MPP.UserMPP())
-        {
-        }
-
         public AuthBLL(IUserMPP userMPP)
         {
             _userMPP = userMPP;
@@ -67,8 +66,7 @@ namespace BLL
 
         private LoginResultBE AuthenticateUser(UserBE user, string password)
         {
-            bool isPasswordValid = EncryptionBLL
-                .VerifyPassword(password, user.PasswordHash);
+            bool isPasswordValid = EncryptionBLL.VerifyPassword(password, user.PasswordHash);
 
             if (isPasswordValid)
             {

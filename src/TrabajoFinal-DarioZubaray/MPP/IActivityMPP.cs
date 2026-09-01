@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-
-using BE;
+using BE.Entities;
 
 namespace MPP
 {

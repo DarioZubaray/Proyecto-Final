@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-
-using BE;
+using BE.Entities;
+using BLL.Helpers;
+using BLL.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MPP;

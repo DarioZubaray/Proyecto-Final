@@ -1,6 +1,6 @@
 using BLL.Strategy;
 
-namespace BLL
+namespace BLL.Helpers
 {
     public static class EncryptionBLL
     {

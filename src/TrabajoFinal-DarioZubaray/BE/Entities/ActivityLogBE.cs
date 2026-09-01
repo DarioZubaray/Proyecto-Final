@@ -1,6 +1,6 @@
 using System;
 
-namespace BE
+namespace BE.Entities
 {
     public class ActivityLogBE
     {

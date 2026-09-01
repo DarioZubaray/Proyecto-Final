@@ -1,7 +1,8 @@
 using System;
-
-using BE;
+using BE.Entities;
 using BE.Properties;
+using BLL.Helpers;
+using BLL.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using MPP;

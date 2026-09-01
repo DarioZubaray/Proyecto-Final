@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-using BE;
+using BE.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MPP.Tests.Setup;
 

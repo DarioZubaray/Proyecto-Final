@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 
-using BE;
+using BE.Composite;
+using BE.Entities;
 using MPP;
 
-namespace BLL
+namespace BLL.Services
 {
     public class PermissionBLL
     {
@@ -12,10 +13,6 @@ namespace BLL
         #endregion
 
         #region Constructor
-        public PermissionBLL() : this(new RoleMPP())
-        {
-        }
-
         public PermissionBLL(IRoleMPP roleMPP)
         {
             _roleMPP = roleMPP;

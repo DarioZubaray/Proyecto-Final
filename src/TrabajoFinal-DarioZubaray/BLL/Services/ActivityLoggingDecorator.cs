@@ -1,13 +1,8 @@
-using BE;
+using BE.Entities;
 using MPP;
 
-namespace BLL
+namespace BLL.Services
 {
-    /// <summary>
-    /// Decorador del patrón Decorator.
-    /// Envuelve una <see cref="IActivity"/> y, al finalizar su ejecución,
-    /// guarda el registro en la base de datos (historial de actividad).
-    /// </summary>
     public class ActivityLoggingDecorator : IActivity
     {
         #region Propiedades

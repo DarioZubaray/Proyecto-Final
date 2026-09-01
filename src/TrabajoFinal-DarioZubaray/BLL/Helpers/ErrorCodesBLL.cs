@@ -1,4 +1,4 @@
-namespace BLL
+namespace BLL.Helpers
 {
     public static class ErrorCodesBLL
     {

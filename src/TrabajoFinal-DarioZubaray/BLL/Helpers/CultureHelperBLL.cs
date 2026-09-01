@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
 
-namespace BLL
+namespace BLL.Helpers
 {
     public static class CultureHelperBLL
     {
