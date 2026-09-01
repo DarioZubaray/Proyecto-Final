@@ -21,8 +21,9 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _authBLL = ServiceLocatorBLL.CreateAuthBLL();
+            CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
             ApplyResources();
-            ThemeHelper.ApplyTheme(this, ThemeHelper.System);
+            ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
             CheckDatabaseConnectionAsync();
         }
         #endregion
@@ -118,14 +119,16 @@ namespace TrabajoFinal_DarioZubaray
             {
                 LogLogin(result.User);
                 SessionManagerBLL.CreateSession(result.User);
+                AppPreferencesBLL.Save(result.User.Language, result.User.Theme);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
+                AppPreferencesBLL.Save(result.User.Language, result.User.Theme);
                 SessionManagerBLL.RemoveSession(result.User.Id);
                 LogLogout(result.User.Id, result.User.UserName);
-                CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
+                CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
                 ApplyResources();
-                ThemeHelper.ApplyTheme(this, ThemeHelper.System);
+                ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
                 this.Show();
                 txtUser.Text = "";
                 txtUser.Focus();
