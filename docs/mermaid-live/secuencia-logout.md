@@ -2,23 +2,27 @@
 sequenceDiagram
     actor User
     participant MF as MainForm
-    participant SM as SessionManagerBLL
+    participant LF as LoginForm
     participant AP as AppPreferencesBLL
+    participant SM as SessionManagerBLL
     participant Act as ActivityBLL
     participant CH as CultureHelperBLL
     participant TH as ThemeHelper
-    participant LF as LoginForm
 
-    User->>MF: Cerrar sesión (menu)
-    MF->>MF: DialogResult = OK#59; Close()
+    User->>MF: Cerrar sesión (menú)
+    MF->>MF: DialogResult = OK
+    MF->>MF: Close()
     MF-->>LF: ShowDialog() retorna
     LF->>AP: Save(user.Language, user.Theme)
-    AP-->>LF: ok (persistido localmente)
+    Note over AP: Persiste en archivo local JSON
     LF->>SM: RemoveSession(userId)
-    SM-->>LF: instancia eliminada del Multiton
+    Note over SM: Elimina instancia del Multiton (memoria)
     LF->>Act: LogLogout(userId, userName)
-    Act-->>LF: ok (bitácora)
+    Note over Act: Guarda registro en ActivityLogs
+    Act-->>LF: ok
     LF->>CH: SetCulture(AP.LastLanguage)
     LF->>TH: ApplyTheme(LF, AP.LastTheme)
-    note over LF: LoginForm se muestra con el idioma y tema "último usado"
+    Note over TH: Repinta controles WinForms
+    LF->>LF: Show() + limpiar campos
+    Note over LF: LoginForm se muestra con idioma<br/>y tema "último usado"
 ```

@@ -1,0 +1,64 @@
+sequenceDiagram
+    actor User
+    participant MF as MainForm
+    participant LF as LoginForm
+    participant AP as AppPreferencesBLL
+    participant SM as SessionManagerBLL
+    participant Act as ActivityBLL
+    participant AMPP as ActivityMPP
+    participant DAL as AccessDAL
+    participant DB as SQL Server
+    participant CH as CultureHelperBLL
+    participant TH as ThemeHelper
+
+    User->>MF: Cerrar sesión (menú)
+    MF->>MF: DialogResult = OK
+    MF->>MF: Close()
+    Note over MF: FormClosing: DialogResult==OK<br/>→ no ejecuta Application.Exit()
+    MF-->>LF: ShowDialog() retorna
+
+    rect rgb(240, 248, 255)
+        Note over AP: Persistencia de preferencias (archivo)
+        LF->>AP: Save(user.Language, user.Theme)
+        AP->>AP: EnsureLoaded() → lee preferences.json
+        AP->>AP: NormalizeLanguage()
+        AP->>AP: File.WriteAllText(preferences.json)
+        AP-->>LF: ok
+    end
+
+    rect rgb(255, 248, 240)
+        Note over SM: Limpieza de sesión (memoria)
+        LF->>SM: RemoveSession(userId)
+        SM->>SM: _instances.Remove(userId)
+        Note over SM: Eliminado del Multiton<br/>(Dictionary en memoria)
+        SM-->>LF: ok
+    end
+
+    rect rgb(240, 255, 240)
+        Note over Act,DB: Registro de actividad
+        LF->>Act: LogLogout(userId, userName)
+        Act->>Act: BaseActivity(userId, "LOGOUT", null, userName)
+        Act->>Act: ActivityLoggingDecorator.Execute()
+        Act->>AMPP: Save(ActivityLogBE)
+        AMPP->>DAL: Save(INSERT INTO ActivityLogs...)
+        DAL->>DB: INSERT INTO ActivityLogs<br/>(user_id, action, form_name,<br/>description, created_at)
+        DB-->>DAL: rows affected
+        DAL-->>AMPP: true
+        AMPP-->>Act: true
+        Act-->>LF: ok
+    end
+
+    rect rgb(248, 240, 255)
+        Note over LF,TH: Restaurar estado del LoginForm
+        LF->>CH: SetCulture(AP.LastLanguage)
+        Note over CH: Thread.CurrentThread.CurrentCulture<br/>= culture
+        LF->>LF: ApplyResources()
+        Note over LF: Refresca labels desde .resx
+        LF->>TH: ApplyTheme(LF, AP.LastTheme)
+        Note over TH: ResolveTheme(): Light/Dark/System<br/>ApplyToControl(): repaint recursivo
+        TH-->>LF: ok
+        LF->>LF: Show()
+        LF->>LF: Limpiar txtUser, txtPass, lblMessage
+        LF->>LF: CheckDatabaseConnectionAsync()
+        Note over LF: LoginForm visible con idioma<br/>y tema "último usado"
+    end

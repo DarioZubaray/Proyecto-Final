@@ -1,0 +1,115 @@
+sequenceDiagram
+    actor User
+    participant LF as LoginForm
+    participant Auth as AuthBLL
+    participant Enc as EncryptionBLL
+    participant UMPP as UserMPP
+    participant DAL as AccessDAL
+    participant DB as SQL Server
+    participant PBLL as PermissionBLL
+    participant RMPP as RoleMPP
+    participant SM as SessionManagerBLL
+    participant CH as CultureHelperBLL
+    participant AP as AppPreferencesBLL
+    participant Act as ActivityBLL
+    participant AMPP as ActivityMPP
+    participant MF as MainForm
+
+    User->>LF: Ingresar credenciales
+    LF->>LF: TryTestConnection()
+    LF->>Auth: Login(username, password)
+
+    rect rgb(240, 248, 255)
+        Note over Auth,DB: Autenticación
+        Auth->>Auth: AreCredentialsValid(username, password)
+        Auth->>UMPP: GetByUserName(userName)
+        UMPP->>DAL: Read(query, params)
+        DAL->>DB: SELECT * FROM Users WHERE user_name = @userName
+        DB-->>DAL: DataTable
+        DAL-->>UMPP: DataTable
+        UMPP-->>UMPP: MapUser(row) → UserBE
+        UMPP-->>Auth: UserBE (o null)
+        alt user == null
+            Auth-->>LF: LoginResultBE{Success=false, AUTH-002}
+        else !user.IsActive
+            Auth-->>LF: LoginResultBE{Success=false, AUTH-003}
+        else credenciales válidas
+            Auth->>Enc: VerifyPassword(password, user.PasswordHash)
+            Enc->>Enc: PasswordHasher.Default.Verify()
+            Note over Enc: Strategy pattern:<br/>BcryptStrategy o LegacySha256Strategy
+            Enc-->>Auth: true
+            Auth->>UMPP: UpdateLastUpdate(userId, now)
+            UMPP->>DAL: Save(UPDATE Users SET last_update=@t WHERE id=@id)
+            DAL->>DB: ExecuteNonQuery
+            DB-->>DAL: ok
+            DAL-->>UMPP: true
+            UMPP-->>Auth: ok
+            Auth->>UMPP: UpdateRetries(userId, 0)
+            UMPP->>DAL: Save(UPDATE Users SET retries_count=0 WHERE id=@id)
+            DAL->>DB: ExecuteNonQuery
+            DB-->>DAL: ok
+            Auth-->>LF: LoginResultBE{Success=true, User}
+        end
+    end
+
+    rect rgb(240, 255, 240)
+        Note over Act,DB: Registro de actividad
+        LF->>Act: LogLogin(userId, userName)
+        Act->>Act: BaseActivity + ActivityLoggingDecorator
+        Act->>AMPP: Save(ActivityLogBE)
+        AMPP->>DAL: Save(INSERT INTO ActivityLogs...)
+        DAL->>DB: ExecuteNonQuery
+        DB-->>DAL: ok
+        DAL-->>AMPP: true
+        AMPP-->>Act: true
+        Act-->>LF: ok
+    end
+
+    rect rgb(255, 248, 240)
+        Note over PBLL,DB: Creación de sesión + Árbol de roles
+        LF->>SM: CreateSession(user)
+        SM->>PBLL: BuildRoleTree(roleId)
+        PBLL->>RMPP: FindById(roleId)
+        RMPP->>DAL: Read(SELECT id, name FROM Roles WHERE id=@id)
+        DAL->>DB: ExecuteQuery
+        DB-->>DAL: DataTable
+        DAL-->>RMPP: RoleBE
+        RMPP->>RMPP: GetPermissionsByRoleId(roleId)
+        RMPP->>DAL: Read(SELECT p.* FROM Permissions p INNER JOIN RolePermissions rp...)
+        DAL->>DB: ExecuteQuery
+        DB-->>DAL: DataTable
+        DAL-->>RMPP: "List<PermissionBE>"
+        RMPP-->>PBLL: RoleBE + Permissions
+        PBLL->>RMPP: GetChildRoleIds(roleId)
+        RMPP->>DAL: Read(SELECT child_role_id FROM RoleHierarchy WHERE parent_role_id=@id)
+        DAL->>DB: ExecuteQuery
+        DB-->>DAL: DataTable
+        DAL-->>RMPP: "List<int>"
+        RMPP-->>PBLL: childRoleIds
+        loop Cada hijo
+            PBLL->>RMPP: FindById(childId)
+            RMPP->>DAL: Read(2 queries: Roles + Permissions)
+            DAL->>DB: ExecuteQuery x2
+            DB-->>DAL: DataTable x2
+            DAL-->>RMPP: RoleBE + Permissions
+            RMPP-->>PBLL: RoleBE hijo
+        end
+        PBLL->>PBLL: role.ToComposite(childRoles)
+        Note over PBLL: Composite pattern:<br/>RoleCompositeBE + PermissionLeafBE
+        PBLL-->>SM: RoleCompositeBE (árbol completo)
+        SM->>SM: _instances[userId] = new SessionManagerBLL
+        SM->>CH: SetCulture(user.Language)
+        SM-->>LF: SessionManager instance
+    end
+
+    rect rgb(248, 240, 255)
+        Note over AP,MF: Preferencias y apertura de MainForm
+        LF->>AP: Save(user.Language, user.Theme)
+        Note over AP: File.WriteAllText(preferences.json)
+        LF->>MF: new MainForm(user)
+        MF->>SM: GetInstance(userId)
+        SM-->>MF: SessionManager
+        MF->>MF: HasPermission("FORM_USER_MGMT")
+        MF->>MF: ApplyTheme / ApplyResources
+        MF-->>User: Mostrar menú según permisos
+    end
