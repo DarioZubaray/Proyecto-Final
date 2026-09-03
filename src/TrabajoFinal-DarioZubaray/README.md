@@ -313,7 +313,7 @@ Ambas muestran un mensaje amigable con el código genérico **(Código: GEN-001)
 
 1. Tener instalado el **.NET SDK 10** (o **Visual Studio 2022 17.12+**, que lo incluye, para poder editar el diseñador WinForms).
 2. Configurar la cadena de conexión `cadenaConexion` (proyecto **GUI**, archivo `App.config`) apuntando a una instancia de SQL Server con la base `Trabajo_Final`.
-3. Ejecutar los scripts de [`sql/`](../../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_CreateTables.sql`).
+3. Ejecutar los scripts de [`sql/`](../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_CreateTables.sql`).
 4. Compilar y ejecutar:
 
 ```

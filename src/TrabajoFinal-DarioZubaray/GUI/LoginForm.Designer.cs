@@ -107,7 +107,6 @@ namespace TrabajoFinal_DarioZubaray
             // 
             // lblMessage
             // 
-            lblMessage.AutoSize = false;
             lblMessage.ForeColor = System.Drawing.Color.IndianRed;
             lblMessage.Location = new System.Drawing.Point(0, 218);
             lblMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
@@ -170,7 +169,7 @@ namespace TrabajoFinal_DarioZubaray
             // 
             lblDeveloper.AutoSize = true;
             lblDeveloper.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            lblDeveloper.Location = new System.Drawing.Point(421, 330);
+            lblDeveloper.Location = new System.Drawing.Point(429, 330);
             lblDeveloper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblDeveloper.Name = "lblDeveloper";
             lblDeveloper.Size = new System.Drawing.Size(154, 13);

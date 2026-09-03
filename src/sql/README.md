@@ -1,4 +1,4 @@
-# Scripts SQL (`sql/`)
+# Scripts SQL (`src/sql/`)
 
 Esta carpeta contiene los scripts para crear, poblar y consultar la base de datos **`Trabajo_Final`** (SQL Server), junto con un respaldo de la base.
 

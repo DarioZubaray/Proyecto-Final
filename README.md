@@ -10,10 +10,11 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 |-------|-----------|-------------|
 | **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, **.NET 10**, `net10.0-windows`) con arquitectura en capas. Incluye su propio README. |
 | **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator, Strategy) y principios SOLID. |
-| **Base de datos — scripts SQL** | [`sql/`](sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. Ver [`sql/README.md`](sql/README.md). |
-| **Diagramas** | [`diagramas/`](docs/diagramas/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencias de login/logout. |
+| **Base de datos — scripts SQL** | [`src/sql/`](src/sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. Ver [`src/sql/README.md`](src/sql/README.md). |
+| **Diagramas (Mermaid Live)** | [`docs/mermaid-live/`](docs/mermaid-live/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencias de login/logout. |
+| **Modelos Enterprise Architect** | [`docs/ea/`](docs/ea/) | Archivos de modelado UML creados con Enterprise Architect. |
 | **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
-| **Documentación general (`docs/`)** | [`docs/README.md`](docs/README.md) | Guía de navegación del material de documentación (diagramas y cursada). |
+| **Documentación general (`docs/`)** | [`docs/README.md`](docs/README.md) | Guía de navegación del material de documentación (diagramas, modelos EA y cursada). |
 
 ### Aplicación .NET (`src/TrabajoFinal-DarioZubaray/`)
 
@@ -38,9 +39,9 @@ Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`s
 
 La aplicación también centraliza un **catálogo de códigos de error** por dominio (`ErrorCodesBLL`, prefijos `DB-`, `AUTH-`, `VAL-`, `BIZ-`, `GEN-`) con un **handler global** de excepciones en `Program.cs`. Ver la sección *"Manejo de errores y códigos de error"* en el README del proyecto .NET.
 
-### Base de datos (`sql/`)
+### Base de datos (`src/sql/`)
 
-Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, más un respaldo. Detalle completo en [`sql/README.md`](sql/README.md).
+Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, más un respaldo. Detalle completo en [`src/sql/README.md`](src/sql/README.md).
 
 Ejecutar los scripts en orden:
 
@@ -57,9 +58,9 @@ Ejecutar los scripts en orden:
 | `dario` | `123` | Admin (todos los permisos) |
 | `pepe`  | `123` | Alumno (solo quejas) |
 
-### Diagramas (`docs/diagramas/`)
+### Diagramas (`docs/mermaid-live/`)
 
-Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato (índice completo en [`docs/README.md`](docs/README.md)):
+Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato, como el [Mermaid Live Editor](https://mermaid.live/) (índice completo en [`docs/README.md`](docs/README.md)):
 
 - `casos-uso.mmd` — casos de uso por actor (Admin, Profesor, Alumno).
 - `clases.mmd` — diagrama de clases con el patrón Composite.
