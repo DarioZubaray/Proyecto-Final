@@ -1,0 +1,38 @@
+```mermaid
+sequenceDiagram
+    actor User
+    participant LF as LoginForm
+    participant Auth as AuthBLL
+    participant SM as SessionManagerBLL
+    participant CH as CultureHelperBLL
+    participant AP as AppPreferencesBLL
+    participant PBLL as PermissionBLL
+    participant RMPP as RoleMPP
+    participant Act as ActivityBLL
+    participant MF as MainForm
+
+    User->>LF: Ingresar credenciales
+    LF->>Auth: Login(username, password)
+    Auth-->>LF: LoginResultBE(user) [language, theme]
+    LF->>Act: LogLogin(userId, userName)
+    Act-->>LF: ok
+    LF->>SM: CreateSession(user)
+    SM->>CH: SetCulture(user.Language)
+    SM->>PBLL: BuildRoleTree(user.RoleId)
+    PBLL->>RMPP: FindById(roleId)
+    RMPP-->>PBLL: RoleBE + Permissions
+    PBLL->>RMPP: GetChildRoleIds(roleId)
+    RMPP-->>PBLL: List childIds
+    loop Cada hijo
+        PBLL->>RMPP: FindById(childId)
+        RMPP-->>PBLL: RoleBE hijo
+    end
+    PBLL-->>SM: RoleCompositeBE (arbol completo)
+    SM-->>LF: SessionManager instance
+    LF->>AP: Save(user.Language, user.Theme)
+    LF->>MF: new MainForm(user)
+    MF->>SM: GetInstance(userId)
+    SM-->>MF: SessionManager
+    MF->>MF: HasPermission("FORM_USER_MGMT") / ApplyTheme / ApplyResources
+    MF-->>User: Mostrar menu segun permisos
+```
