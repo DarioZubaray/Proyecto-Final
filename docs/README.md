@@ -17,8 +17,10 @@ Esta carpeta reúne material de documentación del trabajo final: **diagramas** 
 | [`casos-uso.mmd`](mermaid-live/casos-uso.mmd) | Casos de uso por actor (Admin, Profesor, Alumno). |
 | [`clases.mmd`](mermaid-live/clases.mmd) | Diagrama de clases con el patrón **Composite** de roles/permisos. |
 | [`er.mmd`](mermaid-live/er.mmd) | Modelo entidad-relación de la base de datos. |
-| [`secuencia-login.mmd`](mermaid-live/secuencia-login.mmd) | Secuencia del inicio de sesión (usa Singleton/Multiton, Composite y persistencia de preferencias). |
-| [`secuencia-logout.mmd`](mermaid-live/secuencia-logout.mmd) | Secuencia del cierre de sesión: conserva el idioma y tema "último usado". |
+| [`secuencia-login.mmd`](mermaid-live/secuencia-login.mmd) | Secuencia simple del inicio de sesión (vista de alto nivel). |
+| [`secuencia-login-completo.mmd`](mermaid-live/secuencia-login-completo.mmd) | Secuencia completa del login: AuthBLL → UserMPP → AccessDAL → SQL Server, ActivityBLL → ActivityMPP, PermissionBLL → RoleMPP, SessionManagerBLL, AppPreferencesBLL. |
+| [`secuencia-logout.mmd`](mermaid-live/secuencia-logout.mmd) | Secuencia simple del cierre de sesión (vista de alto nivel). |
+| [`secuencia-logout-completo.mmd`](mermaid-live/secuencia-logout-completo.mmd) | Secuencia completa del logout: AppPreferencesBLL (archivo), SessionManagerBLL (memoria), ActivityBLL → ActivityMPP → AccessDAL → SQL Server, CultureHelperBLL, ThemeHelper. |
 
 Los archivos `.mmd` pueden visualizarse en **GitHub** (renderizado nativo de Mermaid), en el [Mermaid Live Editor](https://mermaid.live/) o con cualquier editor/visitor compatible.
 

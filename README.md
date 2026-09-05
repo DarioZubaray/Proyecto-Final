@@ -65,8 +65,10 @@ Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHu
 - `casos-uso.mmd` — casos de uso por actor (Admin, Profesor, Alumno).
 - `clases.mmd` — diagrama de clases con el patrón Composite.
 - `er.mmd` — modelo entidad-relación de la base.
-- `secuencia-login.mmd` — secuencia del inicio de sesión (usa Singleton/Multiton, Composite y persistencia de preferencias).
-- `secuencia-logout.mmd` — secuencia del cierre de sesión: conserva el idioma y tema "último usado".
+- `secuencia-login.mmd` — secuencia simple del inicio de sesión (vista de alto nivel).
+- `secuencia-login-completo.mmd` — secuencia completa con toda la cadena: AuthBLL → UserMPP → AccessDAL → SQL Server, ActivityBLL, PermissionBLL → RoleMPP, SessionManagerBLL, AppPreferencesBLL.
+- `secuencia-logout.mmd` — secuencia simple del cierre de sesión (vista de alto nivel).
+- `secuencia-logout-completo.mmd` — secuencia completa: AppPreferencesBLL (archivo), SessionManagerBLL (memoria), ActivityBLL → ActivityMPP → AccessDAL → SQL Server, CultureHelperBLL, ThemeHelper.
 
 ## Enlaces útiles
 
