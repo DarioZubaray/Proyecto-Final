@@ -1,9 +1,12 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using BE;
+using BE.DTOs;
+using BE.Entities;
 using BE.Properties;
-using BLL;
+using BLL.Helpers;
+using BLL.Interfaces;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -18,7 +21,10 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _authBLL = ServiceLocatorBLL.CreateAuthBLL();
+            CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
             ApplyResources();
+            ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
+            CheckDatabaseConnectionAsync();
         }
         #endregion
 
@@ -32,10 +38,64 @@ namespace TrabajoFinal_DarioZubaray
             btnLogin.Text = Resources.Login_Button;
             lblDeveloper.Text = Resources.Login_Developer;
             lblMessage.Text = Resources.Login_MessageInvalid;
+            lblDbStatus.Text = Resources.Login_DbChecking;
+            lblDbStatus.ForeColor = System.Drawing.Color.DarkOrange;
+            btnRetry.Text = Resources.Login_RetryButton;
+        }
+
+        private async void CheckDatabaseConnectionAsync()
+        {
+            SetCheckingStatus();
+            bool connected = await Task.Run(() => TryTestConnection());
+            SetDatabaseStatus(connected);
+        }
+
+        private bool TryTestConnection()
+        {
+            try
+            {
+                return _authBLL.TestConnection();
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void SetCheckingStatus()
+        {
+            lblDbStatus.Text = Resources.Login_DbChecking;
+            lblDbStatus.ForeColor = System.Drawing.Color.DarkOrange;
+            btnRetry.Visible = false;
+        }
+
+        private void SetDatabaseStatus(bool connected)
+        {
+            if (connected)
+            {
+                lblDbStatus.Text = Resources.Login_DbConnected;
+                lblDbStatus.ForeColor = System.Drawing.Color.SeaGreen;
+                btnRetry.Visible = false;
+            }
+            else
+            {
+                lblDbStatus.Text = Resources.Login_DbDisconnected;
+                lblDbStatus.ForeColor = System.Drawing.Color.IndianRed;
+                btnRetry.Visible = true;
+            }
         }
         #endregion
 
         #region Eventos
+        private async void btnRetry_Click(object sender, EventArgs e)
+        {
+            btnRetry.Enabled = false;
+            SetCheckingStatus();
+            bool connected = await Task.Run(() => TryTestConnection());
+            SetDatabaseStatus(connected);
+            btnRetry.Enabled = true;
+        }
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;
@@ -47,27 +107,48 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            LoginResultDTO result = _authBLL.Login(username, password);
+            if (!TryTestConnection())
+            {
+                ShowDatabaseUnavailable();
+                return;
+            }
+
+            LoginResultBE result = _authBLL.Login(username, password);
 
             if (result.Success)
             {
-                CultureHelperBLL.SetCulture(result.User.Language);
+                LogLogin(result.User);
+                SessionManagerBLL.CreateSession(result.User);
+                AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
-                CultureHelperBLL.SetCulture(CultureHelperBLL.DefaultLanguage);
+
+                AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
+                SessionManagerBLL.RemoveSession(result.User.Id);
+                LogLogout(result.User.Id, result.User.UserName);
+                CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
                 ApplyResources();
+                ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
                 this.Show();
                 txtUser.Text = "";
                 txtUser.Focus();
                 txtPass.Text = "";
                 lblMessage.Visible = false;
+                CheckDatabaseConnectionAsync();
             }
             else
             {
-                lblMessage.Text = result.Message;
+                lblMessage.Text = ErrorFormatter.WithCode(result.Message, result.ErrorCode);
                 lblMessage.Visible = true;
             }
+        }
+
+        private void ShowDatabaseUnavailable()
+        {
+            lblMessage.Text = string.Format(Resources.Auth_DbUnavailable, ErrorCodesBLL.Database.Unavailable);
+            lblMessage.Visible = true;
+            SetDatabaseStatus(false);
         }
 
         private void txtUser_KeyDown(object sender, KeyEventArgs e)
@@ -85,6 +166,32 @@ namespace TrabajoFinal_DarioZubaray
             {
                 btnLogin.PerformClick();
                 e.SuppressKeyPress = true;
+            }
+        }
+        #endregion
+
+        #region Historial de actividad
+        private void LogLogin(UserBE user)
+        {
+            try
+            {
+                ServiceLocatorBLL.CreateActivityBLL().LogLogin(user.Id, user.UserName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception LogLogin", e.Message);
+            }
+        }
+
+        private void LogLogout(int userId, string userName)
+        {
+            try
+            {
+                ServiceLocatorBLL.CreateActivityBLL().LogLogout(userId, userName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception LogLogin", e.Message);
             }
         }
         #endregion

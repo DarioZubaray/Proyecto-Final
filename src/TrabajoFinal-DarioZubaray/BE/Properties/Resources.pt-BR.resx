@@ -112,6 +112,18 @@
   <data name="Preferences_LanguageLabel" xml:space="preserve">
     <value>Idioma</value>
   </data>
+  <data name="Preferences_ThemeLabel" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="Theme_System" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Escuro</value>
+  </data>
   <data name="Preferences_SaveButton" xml:space="preserve">
     <value>Salvar</value>
   </data>
@@ -123,6 +135,9 @@
   </data>
   <data name="Main_MenuChangePassword" xml:space="preserve">
     <value>Alterar Senha</value>
+  </data>
+  <data name="Main_MenuActivityHistory" xml:space="preserve">
+    <value>Histórico de Atividades</value>
   </data>
   <data name="Main_MenuAdministration" xml:space="preserve">
     <value>Administração</value>
@@ -231,5 +246,146 @@
   </data>
   <data name="ChangePassword_GroupBox" xml:space="preserve">
     <value>Alterar Senha</value>
+  </data>
+  <data name="Main FooterUser" xml:space="preserve">
+    <value>Usuário:</value>
+  </data>
+  <data name="Main FooterRole" xml:space="preserve">
+    <value>Função:</value>
+  </data>
+  <data name="Main_MenuRoles" xml:space="preserve">
+    <value>Funções</value>
+  </data>
+  <data name="RoleManagement_Title" xml:space="preserve">
+    <value>Gerenciamento de Funções</value>
+  </data>
+  <data name="RoleManagement_RoleLabel" xml:space="preserve">
+    <value>Função:</value>
+  </data>
+  <data name="RoleManagement_Create" xml:space="preserve">
+    <value>Criar Função</value>
+  </data>
+  <data name="RoleManagement_Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="RoleManagement_Available" xml:space="preserve">
+    <value>Disponíveis</value>
+  </data>
+  <data name="RoleManagement_Assigned" xml:space="preserve">
+    <value>Atribuídos</value>
+  </data>
+  <data name="RoleManagement_Add" xml:space="preserve">
+    <value>&gt;&gt;</value>
+  </data>
+  <data name="RoleManagement_Remove" xml:space="preserve">
+    <value>&lt;&lt;</value>
+  </data>
+  <data name="RoleManagement_Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="RoleManagement_Saved" xml:space="preserve">
+    <value>As permissões da função foram salvas com sucesso.</value>
+  </data>
+  <data name="RoleManagement_NoRole" xml:space="preserve">
+    <value>Selecione uma função para salvar suas permissões.</value>
+  </data>
+  <data name="RoleManagement_NameRequired" xml:space="preserve">
+    <value>O nome da função é obrigatório.</value>
+  </data>
+  <data name="RoleManagement_SelectRole" xml:space="preserve">
+    <value>Selecione uma função na lista.</value>
+  </data>
+  <data name="RoleManagement_ConfirmDelete" xml:space="preserve">
+    <value>Tem certeza que deseja excluir a função "{0}"?</value>
+  </data>
+  <data name="ActivityHistory_Title" xml:space="preserve">
+    <value>Histórico de Atividades</value>
+  </data>
+  <data name="ActivityHistory_ColumnDate" xml:space="preserve">
+    <value>Data e Hora</value>
+  </data>
+  <data name="ActivityHistory_ColumnAction" xml:space="preserve">
+    <value>Ação</value>
+  </data>
+  <data name="ActivityHistory_ColumnForm" xml:space="preserve">
+    <value>Formulário / Detalhe</value>
+  </data>
+  <data name="ActivityHistory_ColumnDescription" xml:space="preserve">
+    <value>Detalhe</value>
+  </data>
+  <data name="ActivityHistory_Prev" xml:space="preserve">
+    <value>&lt; Anterior</value>
+  </data>
+  <data name="ActivityHistory_Next" xml:space="preserve">
+    <value>Próxima &gt;</value>
+  </data>
+  <data name="ActivityHistory_PageSize" xml:space="preserve">
+    <value>Tamanho da página:</value>
+  </data>
+  <data name="ActivityHistory_PageInfo" xml:space="preserve">
+    <value>Página {0} de {1}</value>
+  </data>
+  <data name="ActivityHistory_ActionLogin" xml:space="preserve">
+    <value>Início de sessão</value>
+  </data>
+  <data name="ActivityHistory_ActionLogout" xml:space="preserve">
+    <value>Fim de sessão</value>
+  </data>
+  <data name="ActivityHistory_ActionFormAccess" xml:space="preserve">
+    <value>Acesso a formulário</value>
+  </data>
+  <data name="Login_DbConnected" xml:space="preserve">
+    <value>Servidor conectado</value>
+  </data>
+  <data name="Login_DbDisconnected" xml:space="preserve">
+    <value>Servidor indisponível</value>
+  </data>
+  <data name="Login_RetryButton" xml:space="preserve">
+    <value>Tentar novamente</value>
+  </data>
+  <data name="Login_DbChecking" xml:space="preserve">
+    <value>Verificando conexão...</value>
+  </data>
+  <data name="Auth_DbUnavailable" xml:space="preserve">
+    <value>Banco de dados indisponível. Contate o administrador. (Código: {0})</value>
+  </data>
+  <data name="Error_CodeFormat" xml:space="preserve">
+    <value>(Código: {0})</value>
+  </data>
+  <data name="Common_Confirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="RoleManagement_RoleInUse" xml:space="preserve">
+    <value>A função '{0}' não pode ser excluída. Possui {1} usuário(s) associado(s).</value>
+  </data>
+  <data name="Preferences_LanguageThemeRequired" xml:space="preserve">
+    <value>Você deve selecionar idioma e tema.</value>
+  </data>
+  <data name="Global_UnhandledError" xml:space="preserve">
+    <value>Ocorreu um erro inesperado. Contate o administrador.</value>
+  </data>
+  <data name="Main_MenuHelp" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="Main_MenuAbout" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="About_Title" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="About_AppName" xml:space="preserve">
+    <value>Aplicativo Acadêmico</value>
+  </data>
+  <data name="About_Version" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>Copyright © 2026 Darío Zubaray</value>
+  </data>
+  <data name="About_RepositoryLabel" xml:space="preserve">
+    <value>Repositório:</value>
+  </data>
+  <data name="About_CloseButton" xml:space="preserve">
+    <value>Fechar</value>
   </data>
 </root>

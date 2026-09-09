@@ -1,7 +1,7 @@
 using System;
 using System.Configuration;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
@@ -13,9 +13,18 @@ namespace DAL
 
         #region Constructor
         public AccessDAL()
+            : this(ConfigurationManager.ConnectionStrings["cadenaConexion"].ConnectionString)
         {
-            _connectionString = ConfigurationManager
-                .ConnectionStrings["cadenaConexion"].ToString();
+        }
+
+        public AccessDAL(string connectionString)
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                connectionString = ConfigurationManager.ConnectionStrings["cadenaConexion"].ConnectionString;
+            }
+
+            _connectionString = connectionString;
         }
         #endregion
 
@@ -86,6 +95,15 @@ namespace DAL
 
                 connection.Open();
                 return command.ExecuteNonQuery() > 0;
+            }
+        }
+
+        public bool TestConnection()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                return true;
             }
         }
         #endregion

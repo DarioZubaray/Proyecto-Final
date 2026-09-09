@@ -1,9 +1,10 @@
 using System;
 using System.Windows.Forms;
 
-using BE;
+using BE.Entities;
 using BE.Properties;
-using BLL;
+using BLL.Helpers;
+using BLL.Interfaces;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -22,6 +23,7 @@ namespace TrabajoFinal_DarioZubaray
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             ApplyResources();
             LoadUsers();
+            ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
@@ -60,7 +62,7 @@ namespace TrabajoFinal_DarioZubaray
             dgvUsers.Columns["RetriesCount"].Visible = false;
             dgvUsers.Columns["CreatedAt"].Visible = false;
             dgvUsers.Columns["Language"].Visible = false;
-            dgvUsers.Columns["Role"].Visible = false;
+            dgvUsers.Columns["Theme"].Visible = false;
 
             dgvUsers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvUsers.MultiSelect = false;
@@ -71,7 +73,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private UserBE GetSelectedUser()
         {
-            if (dgvUsers.CurrentRow == null) return null;
+            if (dgvUsers.CurrentRow == null)
+            {
+                return null;
+            }
+
             return dgvUsers.CurrentRow.DataBoundItem as UserBE;
         }
         #endregion
@@ -79,7 +85,8 @@ namespace TrabajoFinal_DarioZubaray
         #region Eventos
         private void btnNew_Click(object sender, EventArgs e)
         {
-            using (var form = new UserForm())
+            string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
+            using (var form = new UserForm(theme))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -93,11 +100,14 @@ namespace TrabajoFinal_DarioZubaray
             var user = GetSelectedUser();
             if (user == null)
             {
-                MessageBox.Show(Resources.UserManagement_SelectUser);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserManagement_SelectUser,
+                    ErrorCodesBLL.Validation.NoSelection));
                 return;
             }
 
-            using (var form = new UserForm(user))
+            string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
+            using (var form = new UserForm(user, theme))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -111,12 +121,14 @@ namespace TrabajoFinal_DarioZubaray
             var user = GetSelectedUser();
             if (user == null)
             {
-                MessageBox.Show(Resources.UserManagement_SelectUser);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserManagement_SelectUser,
+                    ErrorCodesBLL.Validation.NoSelection));
                 return;
             }
 
             string message = string.Format(Resources.UserManagement_DeleteConfirm, user.UserName);
-            DialogResult result = MessageBox.Show(message, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show(message, Resources.Common_Confirm, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {

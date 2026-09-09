@@ -1,8 +1,10 @@
 using System;
 using System.Windows.Forms;
-using BE;
+
+using BE.Entities;
 using BE.Properties;
-using BLL;
+using BLL.Helpers;
+using BLL.Interfaces;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -17,6 +19,7 @@ namespace TrabajoFinal_DarioZubaray
             _user = user;
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             ApplyResources();
+            ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
         }
 
         private void ApplyResources()
@@ -27,7 +30,6 @@ namespace TrabajoFinal_DarioZubaray
             lblNewPassword.Text = Resources.ChangePassword_NewLabel;
             lblConfirmPassword.Text = Resources.ChangePassword_ConfirmLabel;
             btnChange.Text = Resources.ChangePassword_ChangeButton;
-            btnCancel.Text = Resources.ChangePassword_CancelButton;
         }
 
         private void btnChange_Click(object sender, EventArgs e)
@@ -36,13 +38,17 @@ namespace TrabajoFinal_DarioZubaray
                 || string.IsNullOrEmpty(txtNewPassword.Text)
                 || string.IsNullOrEmpty(txtConfirmPassword.Text))
             {
-                MessageBox.Show(Resources.ChangePassword_RequiredFields);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ChangePassword_RequiredFields,
+                    ErrorCodesBLL.Validation.PasswordRequired));
                 return;
             }
 
             if (txtNewPassword.Text != txtConfirmPassword.Text)
             {
-                MessageBox.Show(Resources.ChangePassword_PasswordsMismatch);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ChangePassword_PasswordsMismatch,
+                    ErrorCodesBLL.Validation.PasswordsMismatch));
                 txtNewPassword.Focus();
                 return;
             }
@@ -52,19 +58,15 @@ namespace TrabajoFinal_DarioZubaray
 
             if (!changed)
             {
-                MessageBox.Show(Resources.ChangePassword_InvalidCurrent);
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ChangePassword_InvalidCurrent,
+                    ErrorCodesBLL.Business.InvalidCurrentPassword));
                 txtCurrentPassword.Focus();
                 return;
             }
 
             MessageBox.Show(Resources.ChangePassword_Success);
             this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
     }

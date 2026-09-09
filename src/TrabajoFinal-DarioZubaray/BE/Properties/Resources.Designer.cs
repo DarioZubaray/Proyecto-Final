@@ -223,6 +223,42 @@ namespace BE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Tema.
+        /// </summary>
+        public static string Preferences_ThemeLabel {
+            get {
+                return ResourceManager.GetString("Preferences_ThemeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Sistema.
+        /// </summary>
+        public static string Theme_System {
+            get {
+                return ResourceManager.GetString("Theme_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Claro.
+        /// </summary>
+        public static string Theme_Light {
+            get {
+                return ResourceManager.GetString("Theme_Light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Oscuro.
+        /// </summary>
+        public static string Theme_Dark {
+            get {
+                return ResourceManager.GetString("Theme_Dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Guardar.
         /// </summary>
         public static string Preferences_SaveButton {
@@ -255,6 +291,15 @@ namespace BE.Properties {
         public static string Main_MenuChangePassword {
             get {
                 return ResourceManager.GetString("Main_MenuChangePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Historial de Actividad.
+        /// </summary>
+        public static string Main_MenuActivityHistory {
+            get {
+                return ResourceManager.GetString("Main_MenuActivityHistory", resourceCulture);
             }
         }
         
@@ -579,6 +624,429 @@ namespace BE.Properties {
         public static string Preferences_GroupBox {
             get {
                 return ResourceManager.GetString("Preferences_GroupBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Usuario:.
+        /// </summary>
+        public static string Main_FooterUser {
+            get {
+                return ResourceManager.GetString("Main FooterUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Rol:.
+        /// </summary>
+        public static string Main_FooterRole {
+            get {
+                return ResourceManager.GetString("Main FooterRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Roles.
+        /// </summary>
+        public static string Main_MenuRoles {
+            get {
+                return ResourceManager.GetString("Main_MenuRoles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Gestión de Roles.
+        /// </summary>
+        public static string RoleManagement_Title {
+            get {
+                return ResourceManager.GetString("RoleManagement_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Rol:.
+        /// </summary>
+        public static string RoleManagement_RoleLabel {
+            get {
+                return ResourceManager.GetString("RoleManagement_RoleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Crear Rol.
+        /// </summary>
+        public static string RoleManagement_Create {
+            get {
+                return ResourceManager.GetString("RoleManagement_Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Eliminar.
+        /// </summary>
+        public static string RoleManagement_Delete {
+            get {
+                return ResourceManager.GetString("RoleManagement_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Disponibles.
+        /// </summary>
+        public static string RoleManagement_Available {
+            get {
+                return ResourceManager.GetString("RoleManagement_Available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Asignados.
+        /// </summary>
+        public static string RoleManagement_Assigned {
+            get {
+                return ResourceManager.GetString("RoleManagement_Assigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &gt;&gt;.
+        /// </summary>
+        public static string RoleManagement_Add {
+            get {
+                return ResourceManager.GetString("RoleManagement_Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &lt;&lt;.
+        /// </summary>
+        public static string RoleManagement_Remove {
+            get {
+                return ResourceManager.GetString("RoleManagement_Remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Guardar..
+        /// </summary>
+        public static string RoleManagement_Save {
+            get {
+                return ResourceManager.GetString("RoleManagement_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Los permisos del rol se guardaron correctamente..
+        /// </summary>
+        public static string RoleManagement_Saved {
+            get {
+                return ResourceManager.GetString("RoleManagement_Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Seleccione un rol para guardar sus permisos..
+        /// </summary>
+        public static string RoleManagement_NoRole {
+            get {
+                return ResourceManager.GetString("RoleManagement_NoRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El nombre del rol es obligatorio..
+        /// </summary>
+        public static string RoleManagement_NameRequired {
+            get {
+                return ResourceManager.GetString("RoleManagement_NameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Seleccione un rol de la lista..
+        /// </summary>
+        public static string RoleManagement_SelectRole {
+            get {
+                return ResourceManager.GetString("RoleManagement_SelectRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a ¿Está seguro que desea eliminar el rol "{0}"?.
+        /// </summary>
+        public static string RoleManagement_ConfirmDelete {
+            get {
+                return ResourceManager.GetString("RoleManagement_ConfirmDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Historial de Actividad.
+        /// </summary>
+        public static string ActivityHistory_Title {
+            get {
+                return ResourceManager.GetString("ActivityHistory_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Fecha y Hora.
+        /// </summary>
+        public static string ActivityHistory_ColumnDate {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acción.
+        /// </summary>
+        public static string ActivityHistory_ColumnAction {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnAction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Formulario / Detalle.
+        /// </summary>
+        public static string ActivityHistory_ColumnForm {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnForm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Detalle.
+        /// </summary>
+        public static string ActivityHistory_ColumnDescription {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ColumnDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &lt; Anterior.
+        /// </summary>
+        public static string ActivityHistory_Prev {
+            get {
+                return ResourceManager.GetString("ActivityHistory_Prev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Siguiente &gt;.
+        /// </summary>
+        public static string ActivityHistory_Next {
+            get {
+                return ResourceManager.GetString("ActivityHistory_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Tamaño de página:.
+        /// </summary>
+        public static string ActivityHistory_PageSize {
+            get {
+                return ResourceManager.GetString("ActivityHistory_PageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Página {0} de {1}.
+        /// </summary>
+        public static string ActivityHistory_PageInfo {
+            get {
+                return ResourceManager.GetString("ActivityHistory_PageInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Inicio de sesión.
+        /// </summary>
+        public static string ActivityHistory_ActionLogin {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ActionLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cierre de sesión.
+        /// </summary>
+        public static string ActivityHistory_ActionLogout {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ActionLogout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acceso a formulario.
+        /// </summary>
+        public static string ActivityHistory_ActionFormAccess {
+            get {
+                return ResourceManager.GetString("ActivityHistory_ActionFormAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Servidor conectado.
+        /// </summary>
+        public static string Login_DbConnected {
+            get {
+                return ResourceManager.GetString("Login_DbConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Servidor no disponible.
+        /// </summary>
+        public static string Login_DbDisconnected {
+            get {
+                return ResourceManager.GetString("Login_DbDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Reintentar.
+        /// </summary>
+        public static string Login_RetryButton {
+            get {
+                return ResourceManager.GetString("Login_RetryButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Verificando conexión....
+        /// </summary>
+        public static string Login_DbChecking {
+            get {
+                return ResourceManager.GetString("Login_DbChecking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Base de datos no disponible. Contacte al administrador. (Código: {0}).
+        /// </summary>
+        public static string Auth_DbUnavailable {
+            get {
+                return ResourceManager.GetString("Auth_DbUnavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a (Código: {0}).
+        /// </summary>
+        public static string Error_CodeFormat {
+            get {
+                return ResourceManager.GetString("Error_CodeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Confirmar.
+        /// </summary>
+        public static string Common_Confirm {
+            get {
+                return ResourceManager.GetString("Common_Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a No se puede eliminar el rol '{0}'. Tiene {1} usuario(s) asociado(s)..
+        /// </summary>
+        public static string RoleManagement_RoleInUse {
+            get {
+                return ResourceManager.GetString("RoleManagement_RoleInUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Debe seleccionar idioma y tema..
+        /// </summary>
+        public static string Preferences_LanguageThemeRequired {
+            get {
+                return ResourceManager.GetString("Preferences_LanguageThemeRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Se produjo un error inesperado. Contacte al administrador..
+        /// </summary>
+        public static string Global_UnhandledError {
+            get {
+                return ResourceManager.GetString("Global_UnhandledError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ayuda.
+        /// </summary>
+        public static string Main_MenuHelp {
+            get {
+                return ResourceManager.GetString("Main_MenuHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acerca de.
+        /// </summary>
+        public static string Main_MenuAbout {
+            get {
+                return ResourceManager.GetString("Main_MenuAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Acerca de.
+        /// </summary>
+        public static string About_Title {
+            get {
+                return ResourceManager.GetString("About_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Aplicativo Académico.
+        /// </summary>
+        public static string About_AppName {
+            get {
+                return ResourceManager.GetString("About_AppName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Versión.
+        /// </summary>
+        public static string About_Version {
+            get {
+                return ResourceManager.GetString("About_Version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Copyright © 2026 Darío Zubaray.
+        /// </summary>
+        public static string About_Copyright {
+            get {
+                return ResourceManager.GetString("About_Copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Repositorio:.
+        /// </summary>
+        public static string About_RepositoryLabel {
+            get {
+                return ResourceManager.GetString("About_RepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cerrar.
+        /// </summary>
+        public static string About_CloseButton {
+            get {
+                return ResourceManager.GetString("About_CloseButton", resourceCulture);
             }
         }
     }

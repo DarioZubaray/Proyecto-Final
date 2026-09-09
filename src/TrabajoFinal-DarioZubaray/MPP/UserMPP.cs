@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-
-using BE;
+using Microsoft.Data.SqlClient;
 using DAL;
+using BE.Entities;
 
 namespace MPP
 {
@@ -15,9 +14,13 @@ namespace MPP
         #endregion
 
         #region Constructor
-        public UserMPP()
+        public UserMPP() : this(null)
         {
-            _access = new AccessDAL();
+        }
+
+        public UserMPP(string connectionString)
+        {
+            _access = new AccessDAL(connectionString);
         }
         #endregion
 
@@ -26,7 +29,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, role_id
+                                   language, theme, role_id
                             FROM Users
                             WHERE user_name = @userName";
 
@@ -110,7 +113,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, role_id
+                                   language, theme, role_id
                             FROM Users
                             WHERE id = @id";
 
@@ -126,7 +129,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, role_id
+                                   language, theme, role_id
                             FROM Users";
 
             return FindMany(query);
@@ -136,7 +139,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, role_id
+                                   language, theme, role_id
                             FROM Users
                             WHERE user_name LIKE @userName";
 
@@ -146,6 +149,20 @@ namespace MPP
             };
 
             return FindMany(query, parameters);
+        }
+        public int CountByRoleId(int roleId)
+        {
+            string query = @"SELECT COUNT(*) FROM Users WHERE role_id = @roleId";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@roleId", roleId)
+            };
+            return _access.ReadScalar(query, parameters);
+        }
+
+        public bool TestConnection()
+        {
+            return _access.TestConnection();
         }
         #endregion
 
@@ -162,6 +179,7 @@ namespace MPP
                 LastUpdate = (DateTime)row["last_update"],
                 CreatedAt = (DateTime)row["created_at"],
                 Language = row["language"].ToString(),
+                Theme = row["theme"] != DBNull.Value ? row["theme"].ToString() : "System",
                 RoleId = row["role_id"] != DBNull.Value ? Convert.ToInt32(row["role_id"]) : 0
             };
         }
@@ -177,6 +195,7 @@ namespace MPP
                 new SqlParameter("@lastUpdate", user.LastUpdate),
                 new SqlParameter("@createdAt", user.CreatedAt),
                 new SqlParameter("@language", user.Language ?? "es"),
+                new SqlParameter("@theme", user.Theme ?? "System"),
                 new SqlParameter("@roleId", user.RoleId)
             };
         }
@@ -185,10 +204,10 @@ namespace MPP
         {
             string query = @"INSERT INTO Users
                                 (user_name, password_hash, is_active,
-                                 retries_count, last_update, created_at, language, role_id)
+                                 retries_count, last_update, created_at, language, theme, role_id)
                             VALUES
                                 (@userName, @passwordHash, @isActive,
-                                 @retriesCount, @lastUpdate, @createdAt, @language, @roleId);
+                                 @retriesCount, @lastUpdate, @createdAt, @language, @theme, @roleId);
                             SELECT SCOPE_IDENTITY();";
 
             SqlParameter[] parameters = CreateUserParameters(user);
@@ -206,6 +225,7 @@ namespace MPP
                                 last_update = @lastUpdate,
                                 created_at = @createdAt,
                                 language = @language,
+                                theme = @theme,
                                 role_id = @roleId
                             WHERE id = @id";
 
@@ -226,6 +246,21 @@ namespace MPP
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@language", language),
+                new SqlParameter("@id", userId)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
+        public bool UpdateTheme(int userId, string theme)
+        {
+            string query = @"UPDATE Users
+                            SET theme = @theme
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@theme", theme),
                 new SqlParameter("@id", userId)
             };
 

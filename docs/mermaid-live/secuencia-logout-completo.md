@@ -1,0 +1,18 @@
+```mermaid
+sequenceDiagram
+    actor User
+    participant LF as :LoginForm
+    participant MF as :MainForm
+    participant AP as :AppPreferencesBLL
+    participant SM as :SessionManagerBLL
+    participant CH as :CultureHelperBLL
+    participant TH as :ThemeHelper
+
+    User->>MF: cerrarSesiónToolStripMenuItem_Click(sender: object, e: EventArgs)
+    MF-->>LF: ok
+    LF->>AP: SavePreferences(language: string, theme: string)
+    LF->>SM: RemoveSession(userId: int)
+    LF->>LF: LogLogout(userId: int, userName: string)
+    LF->>CH: SetCulture(languageCode: string)
+    LF->>TH: ApplyTheme(control: Root, themecode: string)
+```

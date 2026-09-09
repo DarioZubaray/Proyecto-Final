@@ -1,9 +1,10 @@
 using System;
 using System.Windows.Forms;
 
-using BE;
+using BE.Entities;
 using BE.Properties;
-using BLL;
+using BLL.Helpers;
+using BLL.Interfaces;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -13,6 +14,7 @@ namespace TrabajoFinal_DarioZubaray
         private readonly UserBE _user;
         private readonly MainForm _mainForm;
         private readonly IUserBLL _userBLL;
+        private readonly SessionManagerBLL _session;
         #endregion
 
         #region Constructor
@@ -22,8 +24,11 @@ namespace TrabajoFinal_DarioZubaray
             _user = user;
             _mainForm = mainForm;
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
+            _session = SessionManagerBLL.GetInstance(user.Id);
             LoadLanguages();
+            LoadThemes();
             ApplyResources();
+            ApplyTheme();
         }
         #endregion
 
@@ -36,12 +41,32 @@ namespace TrabajoFinal_DarioZubaray
             cbLanguage.SelectedValue = _user.Language ?? CultureHelperBLL.DefaultLanguage;
         }
 
+        private void LoadThemes()
+        {
+            cbTheme.DataSource = ThemeHelper.GetSupportedThemes();
+            cbTheme.DisplayMember = "DisplayName";
+            cbTheme.ValueMember = "Code";
+            cbTheme.SelectedValue = _user.Theme ?? ThemeHelper.DefaultTheme;
+        }
+
         private void ApplyResources()
         {
             this.Text = Resources.Preferences_Title;
             groupBox1.Text = Resources.Preferences_GroupBox;
             lblLanguage.Text = Resources.Preferences_LanguageLabel;
+            lblTheme.Text = Resources.Preferences_ThemeLabel;
             btnSave.Text = Resources.Preferences_SaveButton;
+
+            var themes = ThemeHelper.GetSupportedThemes();
+            cbTheme.DataSource = themes;
+            cbTheme.DisplayMember = "DisplayName";
+            cbTheme.ValueMember = "Code";
+            cbTheme.SelectedValue = _user.Theme ?? ThemeHelper.DefaultTheme;
+        }
+
+        private void ApplyTheme()
+        {
+            ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
@@ -49,20 +74,29 @@ namespace TrabajoFinal_DarioZubaray
         private void btnSave_Click(object sender, EventArgs e)
         {
             string selectedLanguage = cbLanguage.SelectedValue?.ToString();
+            string selectedTheme = cbTheme.SelectedValue?.ToString();
 
-            if (string.IsNullOrEmpty(selectedLanguage))
+            if (string.IsNullOrEmpty(selectedLanguage) || string.IsNullOrEmpty(selectedTheme))
             {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.Preferences_LanguageThemeRequired,
+                    ErrorCodesBLL.Validation.LanguageThemeRequired));
                 return;
             }
 
-            bool saved = _userBLL.UpdateLanguage(_user.Id, selectedLanguage);
+            bool languageSaved = _userBLL.UpdateLanguage(_user.Id, selectedLanguage);
+            bool themeSaved = _userBLL.UpdateTheme(_user.Id, selectedTheme);
 
-            if (saved)
+            if (languageSaved && themeSaved)
             {
-                _user.Language = selectedLanguage;
-                CultureHelperBLL.SetCulture(selectedLanguage);
+                _session.UpdateLanguage(selectedLanguage);
+                _session.UpdateTheme(selectedTheme);
+                AppPreferencesBLL.SavePreferences(selectedLanguage, selectedTheme);
                 _mainForm.ApplyResources();
+                _mainForm.ApplyTheme();
+                ThemeHelper.ApplyThemeToAllOpenForms(selectedTheme);
                 ApplyResources();
+                ApplyTheme();
                 MessageBox.Show(Resources.Preferences_SaveSuccess);
             }
         }
