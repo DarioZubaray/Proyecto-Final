@@ -1,7 +1,7 @@
 use Trabajo_Final;
 
 -- =============================================
--- CREATE: Esquema completo de tablas
+-- CREATE v1.0.0: Esquema completo de tablas
 -- =============================================
 
 -- 1. Roles
@@ -64,3 +64,46 @@ CREATE TABLE [dbo].[ActivityLogs] (
     CONSTRAINT fk_activitylogs_users FOREIGN KEY ([user_id]) REFERENCES [dbo].[Users]([id])
 );
 CREATE INDEX ix_activitylogs_user_created ON [dbo].[ActivityLogs] ([user_id], [created_at] DESC);
+
+-- 7. Tabla de versiones de migración
+CREATE TABLE [dbo].[SchemaVersions] (
+    [Id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Version]     NVARCHAR(20)   NOT NULL,
+    [ScriptName]  NVARCHAR(200)  NOT NULL,
+    [AppliedAt]   DATETIME       NOT NULL DEFAULT GETDATE()
+);
+
+-- 8. Aulas
+CREATE TABLE [dbo].[Aulas] (
+    [Id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Nombre]      NVARCHAR(100)  NOT NULL,
+    [Capacidad]   INT            NOT NULL,
+    [Is_Active]   BIT            NOT NULL DEFAULT 1,
+    [Created_At]  DATETIME       NOT NULL DEFAULT GETDATE(),
+    [Last_Update] DATETIME       NOT NULL DEFAULT GETDATE()
+);
+
+-- 9. Cursos
+CREATE TABLE [dbo].[Cursos] (
+    [Id]            INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Nombre]        NVARCHAR(200)  NOT NULL,
+    [Descripcion]   NVARCHAR(500)  NULL,
+    [Fecha_Inicio]  DATETIME       NOT NULL,
+    [Fecha_Fin]     DATETIME       NOT NULL,
+    [Aula_Id]       INT            NULL,
+    [Is_Active]     BIT            NOT NULL DEFAULT 1,
+    [Created_At]    DATETIME       NOT NULL DEFAULT GETDATE(),
+    [Last_Update]   DATETIME       NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT fk_cursos_aulas FOREIGN KEY ([Aula_Id]) REFERENCES [dbo].[Aulas]([Id])
+);
+
+-- 10. CursoDocentes (N:N)
+CREATE TABLE [dbo].[CursoDocentes] (
+    [Id]          INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [Curso_Id]    INT      NOT NULL,
+    [Docente_Id]  INT      NOT NULL,
+    [Is_Active]   BIT      NOT NULL DEFAULT 1,
+    [Created_At]  DATETIME NOT NULL DEFAULT GETDATE(),
+    CONSTRAINT fk_cursodocentes_cursos   FOREIGN KEY ([Curso_Id])   REFERENCES [dbo].[Cursos]([Id]),
+    CONSTRAINT fk_cursodocentes_users    FOREIGN KEY ([Docente_Id]) REFERENCES [dbo].[Users]([Id])
+);

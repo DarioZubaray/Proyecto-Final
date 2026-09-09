@@ -1,9 +1,14 @@
 use Trabajo_Final;
 
 -- =============================================
--- PURGE: Eliminar todas las tablas (orden por FKs)
+-- PURGE v1.0.0: Eliminar todas las tablas (orden por FKs)
 -- =============================================
 
+IF OBJECT_ID('dbo.CursoDocentes', 'U') IS NOT NULL DROP TABLE dbo.CursoDocentes;
+IF OBJECT_ID('dbo.Cursos', 'U') IS NOT NULL DROP TABLE dbo.Cursos;
+IF OBJECT_ID('dbo.Aulas', 'U') IS NOT NULL DROP TABLE dbo.Aulas;
+IF OBJECT_ID('dbo.SchemaVersions', 'U') IS NOT NULL DROP TABLE dbo.SchemaVersions;
+IF OBJECT_ID('dbo.ActivityLogs', 'U') IS NOT NULL DROP TABLE dbo.ActivityLogs;
 IF OBJECT_ID('dbo.RoleHierarchy', 'U') IS NOT NULL DROP TABLE dbo.RoleHierarchy;
 IF OBJECT_ID('dbo.RolePermissions', 'U') IS NOT NULL DROP TABLE dbo.RolePermissions;
 IF OBJECT_ID('dbo.Permissions', 'U') IS NOT NULL DROP TABLE dbo.Permissions;
