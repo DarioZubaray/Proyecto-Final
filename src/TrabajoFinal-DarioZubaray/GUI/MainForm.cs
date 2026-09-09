@@ -59,6 +59,10 @@ namespace TrabajoFinal_DarioZubaray
                 && _session.HasPermission("FORM_USER_MGMT");
             rolesToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_ROLE_MGMT");
+            aulasToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_CURSO_MGMT");
+            cursosToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_CURSO_MGMT");
         }
 
         private void UpdateFooter()
@@ -143,6 +147,26 @@ namespace TrabajoFinal_DarioZubaray
         {
             LogFormAccess("RoleManagementForm");
             var form = new RoleManagementForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
+        private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("AulaManagementForm");
+            var form = new AulaManagementForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
+        private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("CursoManagementForm");
+            var form = new CursoManagementForm(_user)
             {
                 MdiParent = this
             };

@@ -24,9 +24,9 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Proyecto | Responsabilidad |
 |----------|-----------------|
-| **BE** (*Business Entities*) | Entidades del dominio: `UserBE`, `RoleBE`, `PermissionBE`. Contiene además el **DTO** `LoginResultBE` y la implementación del patrón **Composite** de roles. No depende de ninguna otra capa. |
+| **BE** (*Business Entities*) | Entidades del dominio: `UserBE`, `RoleBE`, `PermissionBE`, `AulaBE`, `CursoBE`. Contiene además el **DTO** `LoginResultBE` y la implementación del patrón **Composite** de roles. No depende de ninguna otra capa. |
 | **DAL** (*Data Access Layer*) | Acceso a datos de bajo nivel. `AccessDAL` encapsula la conexión y ejecución de sentencias SQL (lectura, escalar y guardado) contra **SQL Server**, usando `SqlConnection`/`SqlCommand` y parámetros. |
-| **MPP** (*Mapper*) | Capa de **mapeo** entre la base de datos y el modelo de negocio: solo transforma un `DataTable` (o similar) devuelto por `DAL` a un objeto de **BE**, y viceversa. `UserMPP`, `RoleMPP` y `ActivityMPP` implementan interfaces (`IUserMPP`, `IRoleMPP`, `IActivityMPP`), lo que permite inyectar mocks en pruebas. |
+| **MPP** (*Mapper*) | Capa de **mapeo** entre la base de datos y el modelo de negocio. `UserMPP`, `RoleMPP`, `ActivityMPP`, `AulaMPP` y `CursoMPP` implementan interfaces, lo que permite inyectar mocks en pruebas. |
 | **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`, `AppPreferencesBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
 | **GUI** | Interfaz gráfica en WinForms: formularios de login, principal, usuarios, roles, preferencias y cambio de contraseña. El punto de entrada es `Program.cs`. |
 | **BLL.Tests** / **MPP.Tests** | Proyectos de prueba unitaria (MSTest + Moq). Cubren la lógica de `AuthBLL`, `EncryptionBLL`, `CultureHelperBLL`, `UserBLL` y la persistencia de `UserMPP`. |
@@ -50,6 +50,8 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `PermissionBE` | Entidad *Permiso*. Identifica un formulario/acción concreta (`Name`, `Label`, `Description`, `IsSystem`). `IsSystem` marca permisos que no pueden quitarse. |
 | `LoginResultBE` (DTO) | Resultado del inicio de sesión: `Success`, `Message` y `User` autenticado. |
 | `ActivityLogBE` | Entidad que representa un registro del **Historial de Actividad**: usuario, acción, formulario, detalle y fecha/hora. |
+| `AulaBE` | Entidad *Aula*. Modela un espacio físico: nombre y capacidad. |
+| `CursoBE` | Entidad *Curso*. Modela un curso de idiomas: nombre, descripción, fechas de inicio/fin, aula asignada y lista de docentes. |
 | `IRoleComponentBE` | Interfaz común del **Composite** (componente). Define `Name`, `HasPermission(name)` y `GetAllPermissions()`. |
 | `RoleCompositeBE` | Nodo **compuesto** del árbol: representa un rol que contiene hijos (otros roles y hojas de permiso). Permite agregar/quitar hijos y recorre el árbol para resolver permisos. |
 | `PermissionLeafBE` | **Hoja** del árbol: envuelve un `PermissionBE` concreto. Evalúa `HasPermission` contra su propio nombre. |
@@ -67,6 +69,8 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `IUserMPP` / `UserMPP` | Mapeo de usuarios: transforma filas (`DataRow`) en `UserBE` y viceversa, y persiste las operaciones de login (último acceso, reintentos, desactivación), CRUD, idioma y contraseña. |
 | `IRoleMPP` / `RoleMPP` | Mapeo de roles y permisos: transforma filas en `RoleBE`/`PermissionBE`, CRUD de roles, permisos por rol, jerarquía padre-hijo (`RoleHierarchy`) y asignación de permisos. |
 | `IActivityMPP` / `ActivityMPP` | Mapeo del historial de actividad: transforma filas en `ActivityLogBE`, inserta registros y consulta **paginada** (con `OFFSET`/`FETCH`) filtrando por usuario. |
+| `IAulaMPP` / `AulaMPP` | Mapeo de aulas: CRUD de aulas físicas con búsqueda por nombre. |
+| `ICursoMPP` / `CursoMPP` | Mapeo de cursos: CRUD, asignación de docentes (N:N), validación de traslape de aula y búsqueda por docente. |
 
 ### BLL — Business Logic Layer
 
@@ -77,6 +81,8 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `IRoleBLL` / `RoleBLL` | Lógica de gestión de roles: CRUD, permisos por rol (protegiendo los de sistema) y jerarquía de roles. |
 | `PermissionBLL` | Construye el árbol **Composite** de un rol mediante `BuildRoleTree(roleId)` y consulta permisos sobre el árbol (`HasPermission`). |
 | `IActivityBLL` / `ActivityBLL` | Servicio del **Historial de Actividad**. Registra accesos a formularios y el inicio/cierre de sesión (usando el **Decorator**) y consulta el historial de forma paginada. |
+| `IAulaBLL` / `AulaBLL` | Lógica de gestión de aulas: CRUD y búsqueda. |
+| `ICursoBLL` / `CursoBLL` | Lógica de gestión de cursos: CRUD, validación de traslape de aula al guardar y gestión de docentes asignados. |
 | `IActivity` (componente) | Interfaz componente del patrón **Decorator**: define `Execute()` y los datos de una actividad. |
 | `BaseActivity` | Componente concreto del **Decorator**: representa una actividad concreta (acceso a formulario, login o logout) sin efectos secundarios. |
 | `ActivityLoggingDecorator` | Decorador del **Decorator**: envuelve una `IActivity` y, al finalizar, guarda el registro en la base. |
@@ -98,6 +104,8 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `MainForm` | Menú principal (MDI). Muestra el usuario/rol en el pie y **oculta o muestra opciones según los permisos** del árbol Composite de la sesión. |
 | `UserManagementForm` / `UserForm` | ABM de usuarios: listado, búsqueda, alta, edición y baja lógica. |
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
+| `AulaManagementForm` / `AulaForm` | ABM de aulas: listado, búsqueda, alta, edición y baja lógica. |
+| `CursoManagementForm` / `CursoForm` | ABM de cursos: listado, búsqueda, alta, edición y baja lógica. Incluye selección de docentes (N:N) y validación de disponibilidad de aula. Si no hay aulas creadas, muestra un mensaje inline. |
 | `PreferencesForm` | Cambio de idioma y tema; actualiza la sesión y refresca los recursos de la UI. También persiste lo seleccionado en `AppPreferencesBLL`. |
 | `ChangePasswordForm` | Cambio de contraseña validando la actual. |
 | `ActivityHistoryForm` | **Historial de Actividad** (dentro del menú Archivo): lista paginada de las actividades del usuario autenticado. |

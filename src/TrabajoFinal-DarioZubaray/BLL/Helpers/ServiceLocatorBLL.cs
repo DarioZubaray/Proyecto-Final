@@ -10,6 +10,8 @@ namespace BLL.Helpers
         private static IUserMPP _userMPP;
         private static IRoleMPP _roleMPP;
         private static IActivityMPP _activityMPP;
+        private static IAulaMPP _aulaMPP;
+        private static ICursoMPP _cursoMPP;
         #endregion
 
         #region Métodos
@@ -43,6 +45,26 @@ namespace BLL.Helpers
             return _activityMPP;
         }
 
+        public static IAulaMPP GetAulaMPP()
+        {
+            if (_aulaMPP == null)
+            {
+                _aulaMPP = new AulaMPP();
+            }
+
+            return _aulaMPP;
+        }
+
+        public static ICursoMPP GetCursoMPP()
+        {
+            if (_cursoMPP == null)
+            {
+                _cursoMPP = new CursoMPP();
+            }
+
+            return _cursoMPP;
+        }
+
         public static IAuthBLL CreateAuthBLL()
         {
             return new AuthBLL(GetUserMPP());
@@ -66,6 +88,16 @@ namespace BLL.Helpers
         public static IActivityBLL CreateActivityBLL()
         {
             return new ActivityBLL(GetActivityMPP());
+        }
+
+        public static IAulaBLL CreateAulaBLL()
+        {
+            return new AulaBLL(GetAulaMPP());
+        }
+
+        public static ICursoBLL CreateCursoBLL()
+        {
+            return new CursoBLL(GetCursoMPP());
         }
         #endregion
     }

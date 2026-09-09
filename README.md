@@ -45,10 +45,11 @@ Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, má
 
 Ejecutar los scripts en orden:
 
-1. `00_PurgeDatabase.sql` — elimina la base si existe (reinicialización).
-2. `01_CreateTables.sql` — crea el esquema (tablas, claves, relaciones y jerarquía de roles).
-3. `02_SeedData.sql` — carga datos iniciales (roles, permisos y usuarios de prueba).
-4. `03_Queries.sql` — consultas de ejemplo / verificación.
+1. `00_v1.0.0_PurgeDatabase.sql` — elimina todas las tablas (reinicialización).
+2. `01_v1.0.0_CreateTables.sql` — crea el esquema completo (tablas, claves, relaciones, Aulas, Cursos, SchemaVersions).
+3. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, 24 usuarios, 5 aulas y 5 cursos de idiomas.
+4. `03_v1.0.0_Queries.sql` — consultas de ejemplo / verificación.
+5. `04_v1.1.0_AulasCursos.sql` — (solo si se migra desde v1.0.0) agrega tablas Aulas, Cursos, CursoDocentes.
 
 #### Datos de prueba
 
@@ -56,7 +57,15 @@ Ejecutar los scripts en orden:
 |---------|-----------|-----|
 | `admin` | `123` | Admin (todos los permisos) |
 | `dario` | `123` | Admin (todos los permisos) |
-| `pepe`  | `123` | Alumno (solo quejas) |
+| `coord_maria` | `123` | Coordinador (ABMs) |
+| `coord_carlos` | `123` | Coordinador (ABMs) |
+| `coord_laura` | `123` | Coordinador (ABMs) |
+| `prof_garcia` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_lopez` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_martinez` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_rodriguez` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_fernandez` | `123` | Profesor (cursos, quejas, reportes) |
+| `alumno_perez` a `alumno_soto` | `123` | Alumno (solo quejas) |
 
 ### Diagramas (`docs/mermaid-live/`)
 
