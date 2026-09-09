@@ -13,3 +13,9 @@
 # Build outputs
 *.dll
 *.exe
+
+# Build artifacts
+*.zip
+
+# Entregable binaries (solo mantener entregable/sql/)
+entregable/*
