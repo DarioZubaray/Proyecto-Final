@@ -91,7 +91,7 @@ namespace TrabajoFinal_DarioZubaray
             {
                 _session.UpdateLanguage(selectedLanguage);
                 _session.UpdateTheme(selectedTheme);
-                AppPreferencesBLL.Save(selectedLanguage, selectedTheme);
+                AppPreferencesBLL.SavePreferences(selectedLanguage, selectedTheme);
                 _mainForm.ApplyResources();
                 _mainForm.ApplyTheme();
                 ThemeHelper.ApplyThemeToAllOpenForms(selectedTheme);

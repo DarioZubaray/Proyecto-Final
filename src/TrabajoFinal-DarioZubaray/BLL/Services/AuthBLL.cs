@@ -26,7 +26,7 @@ namespace BLL.Services
         #region Métodos Públicos
         public LoginResultBE Login(string userName, string password)
         {
-            if (!AreCredentialsValid(userName, password))
+            if (!AreCredentialsNotEmptyOrNull(userName, password))
             {
                 return CreateLoginFailed(Resources.Auth_RequiredFields, ErrorCodesBLL.Auth.RequiredFields);
             }
@@ -58,7 +58,7 @@ namespace BLL.Services
         #endregion
 
         #region Métodos Privados
-        private bool AreCredentialsValid(string userName, string password)
+        private bool AreCredentialsNotEmptyOrNull(string userName, string password)
         {
             return !string.IsNullOrEmpty(userName)
                 && !string.IsNullOrEmpty(password);

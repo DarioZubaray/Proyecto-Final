@@ -48,7 +48,7 @@ namespace BLL.Tests
         [TestMethod]
         public void Save_PersistsValuesAcrossReload()
         {
-            AppPreferencesBLL.Save("en", "Dark");
+            AppPreferencesBLL.SavePreferences("en", "Dark");
 
             AppPreferencesBLL.SetFilePath(_filePath);
 
@@ -59,7 +59,7 @@ namespace BLL.Tests
         [TestMethod]
         public void Save_EmptyValues_FallBackToDefaults()
         {
-            AppPreferencesBLL.Save("", null);
+            AppPreferencesBLL.SavePreferences("", null);
 
             Assert.AreEqual("es", AppPreferencesBLL.LastLanguage);
             Assert.AreEqual("System", AppPreferencesBLL.LastTheme);
@@ -68,7 +68,7 @@ namespace BLL.Tests
         [TestMethod]
         public void Save_UnsupportedLanguage_FallsBackToDefault()
         {
-            AppPreferencesBLL.Save("zz", "Light");
+            AppPreferencesBLL.SavePreferences("zz", "Light");
 
             Assert.AreEqual("es", AppPreferencesBLL.LastLanguage);
             Assert.AreEqual("Light", AppPreferencesBLL.LastTheme);

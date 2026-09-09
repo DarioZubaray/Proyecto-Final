@@ -176,9 +176,9 @@ namespace TrabajoFinal_DarioZubaray
                 var activityBLL = ServiceLocatorBLL.CreateActivityBLL();
                 activityBLL.LogFormAccess(_user.Id, formName);
             }
-            catch
+            catch (Exception e)
             {
-                // Loguear el acceso no debe impedir abrir el formulario.
+                Console.WriteLine("Exception LogFormAccess", e.Message);
             }
         }
         #endregion

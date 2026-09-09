@@ -119,11 +119,12 @@ namespace TrabajoFinal_DarioZubaray
             {
                 LogLogin(result.User);
                 SessionManagerBLL.CreateSession(result.User);
-                AppPreferencesBLL.Save(result.User.Language, result.User.Theme);
+                AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
                 this.Hide();
                 MainForm mainForm = new MainForm(result.User);
                 DialogResult dialogResult = mainForm.ShowDialog();
-                AppPreferencesBLL.Save(result.User.Language, result.User.Theme);
+
+                AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
                 SessionManagerBLL.RemoveSession(result.User.Id);
                 LogLogout(result.User.Id, result.User.UserName);
                 CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
@@ -174,12 +175,11 @@ namespace TrabajoFinal_DarioZubaray
         {
             try
             {
-                ServiceLocatorBLL.CreateActivityBLL()
-                    .LogLogin(user.Id, user.UserName);
+                ServiceLocatorBLL.CreateActivityBLL().LogLogin(user.Id, user.UserName);
             }
-            catch
+            catch (Exception e)
             {
-                // Loguear el acceso no debe interrumpir el flujo de login.
+                Console.WriteLine("Exception LogLogin", e.Message);
             }
         }
 
@@ -187,12 +187,11 @@ namespace TrabajoFinal_DarioZubaray
         {
             try
             {
-                ServiceLocatorBLL.CreateActivityBLL()
-                    .LogLogout(userId, userName);
+                ServiceLocatorBLL.CreateActivityBLL().LogLogout(userId, userName);
             }
-            catch
+            catch (Exception e)
             {
-                // Loguear el cierre no debe interrumpir el flujo.
+                Console.WriteLine("Exception LogLogin", e.Message);
             }
         }
         #endregion

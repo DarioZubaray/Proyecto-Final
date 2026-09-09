@@ -46,7 +46,7 @@ namespace BLL.Helpers
             }
         }
 
-        public static void Save(string language, string theme)
+        public static void SavePreferences(string language, string theme)
         {
             EnsureLoaded();
 
