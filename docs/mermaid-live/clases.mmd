@@ -1,106 +1,83 @@
 classDiagram
     class UserBE {
-        +int Id
-        +string UserName
-        +string PasswordHash
-        +bool IsActive
-        +int RetriesCount
-        +DateTime LastUpdate
         +DateTime CreatedAt
-        +int RoleId
+        +int Id
+        +bool IsActive
         +string Language
+        +DateTime LastUpdate
+        +string PasswordHash
+        +int RetriesCount
+        +RoleBE Role
+        +int RoleId
         +string Theme
+        +string UserName
+    }
+
+    class LoginResult {
+        +string Message
+        +bool Success
+        +UserBE User
     }
 
     class RoleBE {
         +int Id
         +string Name
-        +List~PermissionBE~ Permissions
-        +HasPermission(string) bool
-        +ToComposite(List~RoleBE~) RoleCompositeBE
     }
 
-    class PermissionBE {
-        +int Id
-        +string Name
-        +string Label
-        +string Description
-    }
-
-    class IRoleComponentBE {
+    class IUserMPP {
         <<interface>>
-        +string Name
-        +HasPermission(string) bool
-        +GetAllPermissions() List~PermissionBE~
+        +Deactivate(int) bool
+        +GetByUserName(string) UserBE
+        +Save(UserBE) bool
+        +UpdateRetries(int, int) bool
     }
 
-    class RoleCompositeBE {
-        +int Id
-        +string Name
-        -List~IRoleComponentBE~ _children
-        +AddChild(IRoleComponentBE)
-        +RemoveChild(IRoleComponentBE)
-        +GetChildren() List~IRoleComponentBE~
-        +HasPermission(string) bool
-        +GetAllPermissions() List~PermissionBE~
+    class AuthBLL {
+        +IUserMPP _userMPP
+        -AreCredentialsNotEmptyOrNull(string, string) bool
+        -AuthenticateUser(UserBE, string) LoginResultBE
+        -CreateLoginFailed(string, string) LoginResultBE
+        +Login(string, string) LoginResultBE
+        -LoginFailed(UserBE) LoginResultBE
+        -LoginSuccessful(UserBE) LoginResultBE
+        +Logout(UserBE) bool
     }
 
-    class PermissionLeafBE {
-        -PermissionBE _option
-        +string Name
-        +HasPermission(string) bool
-        +GetAllPermissions() List~PermissionBE~
+    class EncryptionBLL {
+        +HashPassword(string) string
+        +VerifyPassword(string, string) bool
     }
 
-    class SessionManagerBLL {
-        <<multiton>>
-        -Dictionary~int, SessionManagerBLL~ _instances
-        +UserBE User
-        +RoleCompositeBE RoleTree
-        +CreateSession(UserBE) SessionManagerBLL
-        +GetInstance(int) SessionManagerBLL
-        +RemoveSession(int)
-        +UpdateLanguage(string)
-        +UpdateTheme(string)
-        +HasPermission(string) bool
+    class UserMPP {
+        +AccessDAL _dal
+        +Deactivate(int) bool
+        -FindOne(string, SqlParameters[]) UserBE
+        +GetByUserName(string) UserBE
+        -MapUser(DataRow) UserBE
+        +Save(UserBE) bool
+        +UpdateRetries(int, int) bool
     }
 
-    class AppPreferencesBLL {
-        <<persistencia local>>
-        +LastLanguage string
-        +LastTheme string
-        +Save(string, string)
+    class AccessDAL {
+        +string _connectionString
+        +Read(string, SqlParameters[]) DataTable
+        +Save(string, SqlParameters[]) DataTable
     }
 
-    class CultureHelperBLL {
-        +DefaultLanguage string
-        +SetCulture(string)
-        +GetSupportedLanguages() List~LanguageItemBLL~
+    class LoginForm {
+        +IAuthBLL _authBLL
+        +btnLogin_Click(object, EventArgs) void
     }
 
-    class ThemeHelper {
-        +System string
-        +Light string
-        +Dark string
-        +DefaultTheme string
-        +ResolveTheme(string) string
-        +ApplyTheme(Control, string)
-        +ApplyThemeToAllOpenForms(string)
+    class ErrorFormatter {
+        +WithCode(string, string) string
     }
 
-    UserBE --> RoleBE : roleId
-    RoleBE "1" --> "*" PermissionBE : permissions
-    RoleBE ..> RoleCompositeBE : ToComposite()
-    IRoleComponentBE <|.. RoleCompositeBE
-    IRoleComponentBE <|.. PermissionLeafBE
-    RoleCompositeBE o-- "*" IRoleComponentBE : children
-    PermissionLeafBE --> PermissionBE : wraps
-
-    SessionManagerBLL o-- UserBE : contiene
-    SessionManagerBLL --> RoleCompositeBE : verifica permisos
-    LoginForm ..> SessionManagerBLL : CreateSession / GetInstance / RemoveSession
-    PreferencesForm ..> SessionManagerBLL : UpdateLanguage / UpdateTheme
-    LoginForm ..> AppPreferencesBLL : Save / LastLanguage / LastTheme
-    PreferencesForm ..> AppPreferencesBLL : Save
-    LoginForm ..> CultureHelperBLL : SetCulture
-    ThemeHelper ..> AppPreferencesBLL : lastTheme usado en LoginForm
+    UserBE --> RoleBE : role
+    AuthBLL --> IUserMPP : _userMPP
+    AuthBLL --> EncryptionBLL : uses
+    UserMPP ..|> IUserMPP : implements
+    UserMPP --> AccessDAL : _dal
+    LoginForm --> AuthBLL : _authBLL
+    LoginForm --> ErrorFormatter : <<use>>
+    LoginResult --> UserBE : User
