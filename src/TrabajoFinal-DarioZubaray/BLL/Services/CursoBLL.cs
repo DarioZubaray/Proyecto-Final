@@ -22,22 +22,45 @@ namespace BLL.Services
         #region Métodos
         public bool Save(CursoBE curso)
         {
-            if (curso.AulaId.HasValue)
-            {
-                bool hayTraslape = _cursoMPP.ExisteTraslapeAula(
-                    curso.AulaId.Value,
-                    curso.FechaInicio,
-                    curso.FechaFin,
-                    curso.Id
-                );
+            bool hayTraslape = _cursoMPP.ExisteTraslapeAula(
+                curso.AulaId,
+                curso.FechaInicio,
+                curso.FechaFin,
+                curso.Id,
+                curso.DiaSemana,
+                curso.HoraInicio,
+                curso.HoraFin
+            );
 
-                if (hayTraslape)
-                {
-                    throw new InvalidOperationException("El aula ya está ocupada en ese horario.");
-                }
+            if (hayTraslape)
+            {
+                throw new InvalidOperationException("El aula ya está ocupada en ese horario.");
             }
 
             return _cursoMPP.Save(curso);
+        }
+
+        public bool SaveDocentes(int cursoId, List<int> docenteIds)
+        {
+            return _cursoMPP.SaveDocentes(cursoId, docenteIds);
+        }
+
+        public bool ValidarTraslapeDocentes(int cursoId, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin, List<int> docenteIds)
+        {
+            if (!diaSemana.HasValue || !horaInicio.HasValue || !horaFin.HasValue)
+            {
+                return false;
+            }
+
+            foreach (int docenteId in docenteIds)
+            {
+                if (_cursoMPP.ExisteTraslapeDocente(docenteId, diaSemana.Value, horaInicio.Value, horaFin.Value, cursoId))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool Delete(CursoBE curso)
@@ -60,14 +83,9 @@ namespace BLL.Services
             return _cursoMPP.FindByName(nombre);
         }
 
-        public bool ExisteTraslapeAula(int aulaId, DateTime fechaInicio, DateTime fechaFin, int cursoIdExcluir)
+        public bool ExisteTraslapeAula(int aulaId, DateTime fechaInicio, DateTime fechaFin, int cursoIdExcluir, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin)
         {
-            return _cursoMPP.ExisteTraslapeAula(aulaId, fechaInicio, fechaFin, cursoIdExcluir);
-        }
-
-        public bool SaveDocentes(int cursoId, List<int> docenteIds)
-        {
-            return _cursoMPP.SaveDocentes(cursoId, docenteIds);
+            return _cursoMPP.ExisteTraslapeAula(aulaId, fechaInicio, fechaFin, cursoIdExcluir, diaSemana, horaInicio, horaFin);
         }
 
         public List<UserBE> GetDocentesByCursoId(int cursoId)
@@ -78,6 +96,11 @@ namespace BLL.Services
         public List<CursoBE> FindByDocenteId(int docenteId)
         {
             return _cursoMPP.FindByDocenteId(docenteId);
+        }
+
+        public List<CursoBE> FindByAlumnoId(int alumnoId)
+        {
+            return _cursoMPP.FindByAlumnoId(alumnoId);
         }
         #endregion
     }

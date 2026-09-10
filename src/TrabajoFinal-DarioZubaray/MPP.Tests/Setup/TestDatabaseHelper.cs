@@ -92,9 +92,14 @@ namespace MPP.Tests.Setup
                 connection.Open();
 
                 string sql = @"
+                    IF OBJECT_ID('dbo.CursoAlumnos', 'U') IS NOT NULL DROP TABLE dbo.CursoAlumnos;
+                    IF OBJECT_ID('dbo.CursoDocentes', 'U') IS NOT NULL DROP TABLE dbo.CursoDocentes;
+                    IF OBJECT_ID('dbo.Cursos', 'U') IS NOT NULL DROP TABLE dbo.Cursos;
+                    IF OBJECT_ID('dbo.Aulas', 'U') IS NOT NULL DROP TABLE dbo.Aulas;
                     IF OBJECT_ID('dbo.ActivityLogs', 'U') IS NOT NULL DROP TABLE dbo.ActivityLogs;
                     IF OBJECT_ID('dbo.RoleHierarchy', 'U') IS NOT NULL DROP TABLE dbo.RoleHierarchy;
                     IF OBJECT_ID('dbo.RolePermissions', 'U') IS NOT NULL DROP TABLE dbo.RolePermissions;
+                    IF OBJECT_ID('dbo.SchemaVersions', 'U') IS NOT NULL DROP TABLE dbo.SchemaVersions;
                     IF OBJECT_ID('dbo.Users', 'U') IS NOT NULL DROP TABLE dbo.Users;
                     IF OBJECT_ID('dbo.Permissions', 'U') IS NOT NULL DROP TABLE dbo.Permissions;
                     IF OBJECT_ID('dbo.Roles', 'U') IS NOT NULL DROP TABLE dbo.Roles;
@@ -153,6 +158,58 @@ namespace MPP.Tests.Setup
                         CONSTRAINT fk_activitylogs_users FOREIGN KEY ([user_id]) REFERENCES [dbo].[Users]([id])
                     );
                     CREATE INDEX ix_activitylogs_user_created ON [dbo].[ActivityLogs] ([user_id], [created_at] DESC);
+
+                    CREATE TABLE [dbo].[Aulas] (
+                        [Id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [Nombre]      NVARCHAR(100)  NOT NULL,
+                        [Capacidad]   INT            NOT NULL,
+                        [Is_Active]   BIT            NOT NULL DEFAULT 1,
+                        [Created_At]  DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [Last_Update] DATETIME       NOT NULL DEFAULT GETDATE()
+                    );
+
+                    CREATE TABLE [dbo].[Cursos] (
+                        [Id]            INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [Nombre]        NVARCHAR(200)  NOT NULL,
+                        [Descripcion]   NVARCHAR(500)  NULL,
+                        [Fecha_Inicio]  DATETIME       NOT NULL,
+                        [Fecha_Fin]     DATETIME       NOT NULL,
+                        [Aula_Id]       INT            NOT NULL,
+                        [dia_semana]    INT            NULL,
+                        [hora_inicio]   TIME           NULL,
+                        [hora_fin]      TIME           NULL,
+                        [Is_Active]     BIT            NOT NULL DEFAULT 1,
+                        [Created_At]    DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [Last_Update]   DATETIME       NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT fk_cursos_aulas FOREIGN KEY ([Aula_Id]) REFERENCES [dbo].[Aulas]([Id])
+                    );
+
+                    CREATE TABLE [dbo].[CursoDocentes] (
+                        [Id]          INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [Curso_Id]    INT      NOT NULL,
+                        [Docente_Id]  INT      NOT NULL,
+                        [Is_Active]   BIT      NOT NULL DEFAULT 1,
+                        [Created_At]  DATETIME NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT fk_cursodocentes_cursos   FOREIGN KEY ([Curso_Id])   REFERENCES [dbo].[Cursos]([Id]),
+                        CONSTRAINT fk_cursodocentes_users    FOREIGN KEY ([Docente_Id]) REFERENCES [dbo].[Users]([Id])
+                    );
+
+                    CREATE TABLE [dbo].[CursoAlumnos] (
+                        [Id]          INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [Curso_Id]    INT      NOT NULL,
+                        [Alumno_Id]   INT      NOT NULL,
+                        [Is_Active]   BIT      NOT NULL DEFAULT 1,
+                        [Created_At]  DATETIME NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT fk_cursoalumnos_cursos FOREIGN KEY ([Curso_Id])  REFERENCES [dbo].[Cursos]([Id]),
+                        CONSTRAINT fk_cursoalumnos_users  FOREIGN KEY ([Alumno_Id]) REFERENCES [dbo].[Users]([Id])
+                    );
+
+                    CREATE TABLE [dbo].[SchemaVersions] (
+                        [Id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [Version]     NVARCHAR(20)   NOT NULL,
+                        [ScriptName]  NVARCHAR(200)  NOT NULL,
+                        [AppliedAt]   DATETIME       NOT NULL DEFAULT GETDATE()
+                    );
                 ";
 
                 var cmd = new SqlCommand(sql, connection);

@@ -11,8 +11,11 @@ namespace BE.Entities
         public string Descripcion { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaFin { get; set; }
-        public int? AulaId { get; set; }
+        public int AulaId { get; set; }
         public string AulaNombre { get; set; }
+        public int? DiaSemana { get; set; }
+        public TimeSpan? HoraInicio { get; set; }
+        public TimeSpan? HoraFin { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
@@ -26,7 +29,8 @@ namespace BE.Entities
         }
 
         public CursoBE(int id, string nombre, string descripcion, DateTime fechaInicio,
-            DateTime fechaFin, int? aulaId, bool isActive, DateTime createdAt, DateTime lastUpdate)
+            DateTime fechaFin, int aulaId, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin,
+            bool isActive, DateTime createdAt, DateTime lastUpdate)
         {
             Id = id;
             Nombre = nombre;
@@ -34,6 +38,9 @@ namespace BE.Entities
             FechaInicio = fechaInicio;
             FechaFin = fechaFin;
             AulaId = aulaId;
+            DiaSemana = diaSemana;
+            HoraInicio = horaInicio;
+            HoraFin = horaFin;
             IsActive = isActive;
             CreatedAt = createdAt;
             LastUpdate = lastUpdate;

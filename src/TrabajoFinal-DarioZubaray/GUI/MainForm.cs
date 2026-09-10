@@ -47,6 +47,9 @@ namespace TrabajoFinal_DarioZubaray
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
             rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
+            académicoToolStripMenuItem.Text = "Académico";
+            cursosToolStripMenuItem.Text = "Cursos";
+            inscripcionesToolStripMenuItem.Text = "Inscripciones";
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
@@ -61,8 +64,13 @@ namespace TrabajoFinal_DarioZubaray
                 && _session.HasPermission("FORM_ROLE_MGMT");
             aulasToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_CURSO_MGMT");
-            cursosToolStripMenuItem.Visible = _session != null
-                && _session.HasPermission("FORM_CURSO_MGMT");
+
+            bool puedeGestionarCursos = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
+            bool puedeVerInscripciones = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
+
+            académicoToolStripMenuItem.Visible = puedeGestionarCursos || puedeVerInscripciones;
+            cursosToolStripMenuItem.Visible = puedeGestionarCursos;
+            inscripcionesToolStripMenuItem.Visible = puedeVerInscripciones;
         }
 
         private void UpdateFooter()
@@ -171,6 +179,28 @@ namespace TrabajoFinal_DarioZubaray
                 MdiParent = this
             };
             form.Show();
+        }
+
+        private void inscripcionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_user.RoleId == 3)
+            {
+                LogFormAccess("InscripcionForm");
+                var form = new InscripcionForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
+            else
+            {
+                LogFormAccess("InscripcionManagementForm");
+                var form = new InscripcionManagementForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)

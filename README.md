@@ -45,11 +45,12 @@ Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, má
 
 Ejecutar los scripts en orden:
 
-1. `00_v1.0.0_PurgeDatabase.sql` — elimina todas las tablas (reinicialización).
-2. `01_v1.0.0_CreateTables.sql` — crea el esquema completo (tablas, claves, relaciones, Aulas, Cursos, SchemaVersions).
-3. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, 24 usuarios, 5 aulas y 5 cursos de idiomas.
-4. `03_v1.0.0_Queries.sql` — consultas de ejemplo / verificación.
-5. `04_v1.1.0_AulasCursos.sql` — (solo si se migra desde v1.0.0) agrega tablas Aulas, Cursos, CursoDocentes.
+1. `00_v0.0.1_PurgeDatabase.sql` — elimina todas las tablas (reinicialización).
+2. `01_v1.0.0_CreateTables.sql` — crea el esquema base (Roles, Permissions, Users, etc.).
+3. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, 24 usuarios.
+4. `03_v1.1.0_AulasCursosInscripciones.sql` — migración v1.1.0: crea Aulas, Cursos, CursoDocentes, CursoAlumnos, permisos y rol Coordinador.
+5. `04_v1.1.0_Rollback.sql` — (opcional) deshace la migración v1.1.0.
+6. `05_v1.1.0_Queries.sql` — consultas de ejemplo / verificación.
 
 #### Datos de prueba
 

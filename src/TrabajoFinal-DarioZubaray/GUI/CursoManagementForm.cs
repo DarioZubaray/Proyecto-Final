@@ -50,6 +50,22 @@ namespace TrabajoFinal_DarioZubaray
             }
         }
 
+        private string GetDiaSemanaNombre(int? dia)
+        {
+            if (!dia.HasValue) return "-";
+            switch (dia.Value)
+            {
+                case 1: return "Lunes";
+                case 2: return "Martes";
+                case 3: return "Miércoles";
+                case 4: return "Jueves";
+                case 5: return "Viernes";
+                case 6: return "Sábado";
+                case 7: return "Domingo";
+                default: return "-";
+            }
+        }
+
         private void LoadCursos()
         {
             dgvCursos.DataSource = null;
@@ -63,6 +79,9 @@ namespace TrabajoFinal_DarioZubaray
                 Aula = c.AulaNombre ?? "Sin asignar",
                 FechaInicio = c.FechaInicio.ToString("dd/MM/yyyy"),
                 FechaFin = c.FechaFin.ToString("dd/MM/yyyy"),
+                DiaSemana = GetDiaSemanaNombre(c.DiaSemana),
+                HoraInicio = c.HoraInicio.HasValue ? c.HoraInicio.Value.ToString(@"hh\:mm") : "-",
+                HoraFin = c.HoraFin.HasValue ? c.HoraFin.Value.ToString(@"hh\:mm") : "-",
                 Docentes = string.Join(", ", c.Docentes.Select(d => d.UserName))
             }).ToList();
 
@@ -83,6 +102,9 @@ namespace TrabajoFinal_DarioZubaray
             dgvCursos.Columns["Aula"].HeaderText = "Aula";
             dgvCursos.Columns["FechaInicio"].HeaderText = "Fecha Inicio";
             dgvCursos.Columns["FechaFin"].HeaderText = "Fecha Fin";
+            dgvCursos.Columns["DiaSemana"].HeaderText = "Día";
+            dgvCursos.Columns["HoraInicio"].HeaderText = "Hora Inicio";
+            dgvCursos.Columns["HoraFin"].HeaderText = "Hora Fin";
             dgvCursos.Columns["Docentes"].HeaderText = "Docentes";
 
             dgvCursos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -107,7 +129,7 @@ namespace TrabajoFinal_DarioZubaray
         private void btnNew_Click(object sender, EventArgs e)
         {
             string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
-            using (var form = new CursoForm(theme))
+            using (var form = new CursoForm(theme, _currentUser))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -133,7 +155,7 @@ namespace TrabajoFinal_DarioZubaray
             }
 
             string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
-            using (var form = new CursoForm(curso, theme))
+            using (var form = new CursoForm(curso, theme, _currentUser))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -192,6 +214,9 @@ namespace TrabajoFinal_DarioZubaray
                 Aula = c.AulaNombre ?? "Sin asignar",
                 FechaInicio = c.FechaInicio.ToString("dd/MM/yyyy"),
                 FechaFin = c.FechaFin.ToString("dd/MM/yyyy"),
+                DiaSemana = GetDiaSemanaNombre(c.DiaSemana),
+                HoraInicio = c.HoraInicio.HasValue ? c.HoraInicio.Value.ToString(@"hh\:mm") : "-",
+                HoraFin = c.HoraFin.HasValue ? c.HoraFin.Value.ToString(@"hh\:mm") : "-",
                 Docentes = string.Join(", ", c.Docentes.Select(d => d.UserName))
             }).ToList();
 

@@ -17,12 +17,13 @@ namespace TrabajoFinal_DarioZubaray
         private readonly IUserBLL _userBLL;
         private readonly CursoBE _curso;
         private readonly bool _isNewCurso;
+        private readonly UserBE _currentUser;
         private List<UserBE> _docentesDisponibles;
         private List<UserBE> _docentesAsignados;
         #endregion
 
         #region Constructor
-        public CursoForm(string theme)
+        public CursoForm(string theme, UserBE user = null)
         {
             InitializeComponent();
             _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
@@ -30,14 +31,16 @@ namespace TrabajoFinal_DarioZubaray
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             _isNewCurso = true;
             _curso = new CursoBE();
+            _currentUser = user;
             _docentesDisponibles = new List<UserBE>();
             _docentesAsignados = new List<UserBE>();
             LoadAulas();
             LoadDocentes();
+            ConfigureButtons();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
 
-        public CursoForm(CursoBE curso, string theme)
+        public CursoForm(CursoBE curso, string theme, UserBE user = null)
         {
             InitializeComponent();
             _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
@@ -45,15 +48,58 @@ namespace TrabajoFinal_DarioZubaray
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
             _isNewCurso = false;
             _curso = curso;
+            _currentUser = user;
             _docentesAsignados = new List<UserBE>(curso.Docentes ?? new List<UserBE>());
             LoadAulas();
             LoadDocentes();
             LoadCursoData();
+            ConfigureButtons();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
         #region Métodos
+        private bool ParseHorario(MaskedTextBox masked, out TimeSpan hora)
+        {
+            hora = TimeSpan.Zero;
+
+            if (!masked.MaskFull)
+            {
+                MessageBox.Show("Debe completar el horario.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                masked.Focus();
+                return false;
+            }
+
+            string texto = masked.Text.Replace("_", "").Trim();
+            string[] partes = texto.Split(':');
+
+            if (partes.Length != 2
+                || !int.TryParse(partes[0], out int horas)
+                || !int.TryParse(partes[1], out int minutos))
+            {
+                MessageBox.Show("Formato de horario inválido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                masked.Focus();
+                return false;
+            }
+
+            if (horas < 0 || horas > 23)
+            {
+                MessageBox.Show("Las horas deben estar entre 00 y 23.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                masked.Focus();
+                return false;
+            }
+
+            if (minutos != 0 && minutos != 15 && minutos != 30 && minutos != 45)
+            {
+                MessageBox.Show("Los minutos deben ser 00, 15, 30 o 45.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                masked.Focus();
+                return false;
+            }
+
+            hora = new TimeSpan(horas, minutos, 0);
+            return true;
+        }
+
         private bool ValidateInputs()
         {
             if (string.IsNullOrEmpty(txtNombre.Text.Trim()))
@@ -67,6 +113,26 @@ namespace TrabajoFinal_DarioZubaray
             {
                 MessageBox.Show("La fecha de inicio debe ser anterior a la fecha de fin.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dtpFechaInicio.Focus();
+                return false;
+            }
+
+            if (!ParseHorario(mtbHoraInicio, out TimeSpan horaInicio))
+                return false;
+
+            if (!ParseHorario(mtbHoraFin, out TimeSpan horaFin))
+                return false;
+
+            if (horaInicio >= horaFin)
+            {
+                MessageBox.Show("La hora de inicio debe ser anterior a la hora de fin.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                mtbHoraInicio.Focus();
+                return false;
+            }
+
+            if (cbAula.SelectedValue == null)
+            {
+                MessageBox.Show("Debe seleccionar un aula.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbAula.Focus();
                 return false;
             }
 
@@ -85,7 +151,14 @@ namespace TrabajoFinal_DarioZubaray
             _curso.Descripcion = txtDescripcion.Text.Trim();
             _curso.FechaInicio = dtpFechaInicio.Value;
             _curso.FechaFin = dtpFechaFin.Value;
-            _curso.AulaId = cbAula.SelectedValue != null ? (int?)cbAula.SelectedValue : null;
+            _curso.AulaId = (int)cbAula.SelectedValue;
+            _curso.DiaSemana = (int)_curso.FechaInicio.DayOfWeek == 0 ? 7 : (int)_curso.FechaInicio.DayOfWeek;
+
+            ParseHorario(mtbHoraInicio, out TimeSpan hInicio);
+            ParseHorario(mtbHoraFin, out TimeSpan hFin);
+            _curso.HoraInicio = hInicio;
+            _curso.HoraFin = hFin;
+
             _curso.IsActive = true;
 
             if (_isNewCurso)
@@ -109,18 +182,28 @@ namespace TrabajoFinal_DarioZubaray
             return result;
         }
 
+        private bool ValidateDocentesTraslape()
+        {
+            if (_docentesAsignados.Count == 0)
+            {
+                return false;
+            }
+
+            List<int> docenteIds = _docentesAsignados.Select(d => d.Id).ToList();
+            return _cursoBLL.ValidarTraslapeDocentes(_curso.Id, _curso.DiaSemana, _curso.HoraInicio, _curso.HoraFin, docenteIds);
+        }
+
         private void LoadAulas()
         {
             List<AulaBE> aulas = _aulaBLL.FindAll();
 
-            var aulaItems = new List<object>();
-            aulaItems.Add(new { Id = (int?)null, Nombre = "-- Sin asignar --" });
-            aulaItems.AddRange(aulas.Select(a => new { Id = (int?)a.Id, a.Nombre }));
-
-            cbAula.DataSource = aulaItems;
             cbAula.DisplayMember = "Nombre";
             cbAula.ValueMember = "Id";
-            cbAula.SelectedIndex = 0;
+            cbAula.DataSource = aulas;
+            if (cbAula.Items.Count > 0)
+            {
+                cbAula.SelectedIndex = 0;
+            }
         }
 
         private void LoadDocentes()
@@ -154,13 +237,51 @@ namespace TrabajoFinal_DarioZubaray
             dtpFechaInicio.Value = _curso.FechaInicio;
             dtpFechaFin.Value = _curso.FechaFin;
 
-            if (_curso.AulaId.HasValue)
+            cbAula.SelectedValue = _curso.AulaId;
+
+            if (_curso.HoraInicio.HasValue)
             {
-                cbAula.SelectedValue = _curso.AulaId;
+                mtbHoraInicio.Text = _curso.HoraInicio.Value.ToString(@"hh\:mm");
             }
-            else
+
+            if (_curso.HoraFin.HasValue)
             {
-                cbAula.SelectedIndex = 0;
+                mtbHoraFin.Text = _curso.HoraFin.Value.ToString(@"hh\:mm");
+            }
+        }
+
+        private void ConfigureButtons()
+        {
+            bool isAdmin = _currentUser != null && _currentUser.RoleId == 1;
+            btnInactivar.Visible = isAdmin && !_isNewCurso;
+        }
+
+        private void btnInactivar_Click(object sender, EventArgs e)
+        {
+            if (_curso == null || _curso.Id == 0)
+            {
+                return;
+            }
+
+            string message = $"¿Está seguro que desea inactivar el curso '{_curso.Nombre}'?";
+            DialogResult result = MessageBox.Show(message, "Confirmar inactivación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                try
+                {
+                    bool deleted = _cursoBLL.Delete(_curso);
+                    if (deleted)
+                    {
+                        MessageBox.Show("Curso inactivado exitosamente.");
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al inactivar el curso: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
         #endregion
@@ -174,6 +295,12 @@ namespace TrabajoFinal_DarioZubaray
             }
 
             MapCursoFromUI();
+
+            if (ValidateDocentesTraslape())
+            {
+                MessageBox.Show("Uno o más docentes tienen un curso asignado en el mismo día y horario.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             try
             {

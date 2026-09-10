@@ -12,6 +12,7 @@ namespace BLL.Helpers
         private static IActivityMPP _activityMPP;
         private static IAulaMPP _aulaMPP;
         private static ICursoMPP _cursoMPP;
+        private static IInscripcionMPP _inscripcionMPP;
         #endregion
 
         #region Métodos
@@ -65,6 +66,16 @@ namespace BLL.Helpers
             return _cursoMPP;
         }
 
+        public static IInscripcionMPP GetInscripcionMPP()
+        {
+            if (_inscripcionMPP == null)
+            {
+                _inscripcionMPP = new InscripcionMPP();
+            }
+
+            return _inscripcionMPP;
+        }
+
         public static IAuthBLL CreateAuthBLL()
         {
             return new AuthBLL(GetUserMPP());
@@ -98,6 +109,11 @@ namespace BLL.Helpers
         public static ICursoBLL CreateCursoBLL()
         {
             return new CursoBLL(GetCursoMPP());
+        }
+
+        public static IInscripcionBLL CreateInscripcionBLL()
+        {
+            return new InscripcionBLL(GetInscripcionMPP(), CreateCursoBLL());
         }
         #endregion
     }
