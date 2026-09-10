@@ -58,7 +58,7 @@ namespace MPP
                                     a.nombre AS aula_nombre
                             FROM Cursos c
                             LEFT JOIN Aulas a ON a.id = c.aula_id
-                            WHERE c.id = @id AND c.is_active = 1";
+                            WHERE c.id = @id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
@@ -96,6 +96,25 @@ namespace MPP
             return cursos;
         }
 
+        public List<CursoBE> FindAllIncludingInactive()
+        {
+            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
+                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+                                    c.is_active, c.created_at, c.last_update,
+                                    a.nombre AS aula_nombre
+                            FROM Cursos c
+                            LEFT JOIN Aulas a ON a.id = c.aula_id
+                            WHERE c.fecha_fin >= CAST(GETDATE() AS DATE)
+                            ORDER BY c.is_active DESC, c.id";
+
+            var cursos = FindMany(query);
+            foreach (var curso in cursos)
+            {
+                curso.Docentes = GetDocentesByCursoId(curso.Id);
+            }
+            return cursos;
+        }
+
         public List<CursoBE> FindByName(string nombre)
         {
             string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
@@ -104,8 +123,8 @@ namespace MPP
                                     a.nombre AS aula_nombre
                             FROM Cursos c
                             LEFT JOIN Aulas a ON a.id = c.aula_id
-                            WHERE c.is_active = 1 AND c.nombre LIKE @nombre
-                            ORDER BY c.id";
+                            WHERE c.nombre LIKE @nombre
+                            ORDER BY c.is_active DESC, c.id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {

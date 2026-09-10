@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BE.Entities;
+using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
 
@@ -23,12 +24,24 @@ namespace TrabajoFinal_DarioZubaray
             _currentUser = user;
             _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
             _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
+            ApplyResources();
             CheckAulas();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
         #region Métodos
+        private void ApplyResources()
+        {
+            this.Text = Resources.CursoManagementForm_Title;
+            lblSearch.Text = Resources.CursoManagementForm_SearchLabel;
+            btnSearch.Text = Resources.CursoManagementForm_SearchButton;
+            btnNew.Text = Resources.CursoManagementForm_NewButton;
+            btnEdit.Text = Resources.CursoManagementForm_EditButton;
+            btnDelete.Text = Resources.CursoManagementForm_DeleteButton;
+            lblNoAulas.Text = Resources.CursoManagementForm_NoAulasMessage;
+        }
+
         private void CheckAulas()
         {
             int aulasCount = _aulaBLL.Count();
@@ -55,13 +68,13 @@ namespace TrabajoFinal_DarioZubaray
             if (!dia.HasValue) return "-";
             switch (dia.Value)
             {
-                case 1: return "Lunes";
-                case 2: return "Martes";
-                case 3: return "Miércoles";
-                case 4: return "Jueves";
-                case 5: return "Viernes";
-                case 6: return "Sábado";
-                case 7: return "Domingo";
+                case 1: return Resources.Day_Monday;
+                case 2: return Resources.Day_Tuesday;
+                case 3: return Resources.Day_Wednesday;
+                case 4: return Resources.Day_Thursday;
+                case 5: return Resources.Day_Friday;
+                case 6: return Resources.Day_Saturday;
+                case 7: return Resources.Day_Sunday;
                 default: return "-";
             }
         }
@@ -69,14 +82,15 @@ namespace TrabajoFinal_DarioZubaray
         private void LoadCursos()
         {
             dgvCursos.DataSource = null;
-            var cursos = _cursoBLL.FindAll();
+            var cursos = _cursoBLL.FindAllIncludingInactive();
 
             var cursosGrid = cursos.Select(c => new
             {
                 c.Id,
                 c.Nombre,
                 c.Descripcion,
-                Aula = c.AulaNombre ?? "Sin asignar",
+                Aula = c.AulaNombre ?? Resources.CursoManagementForm_NoClassroom,
+                Estado = c.IsActive ? Resources.CursoManagementForm_StatusActive : Resources.CursoManagementForm_StatusInactive,
                 FechaInicio = c.FechaInicio.ToString("dd/MM/yyyy"),
                 FechaFin = c.FechaFin.ToString("dd/MM/yyyy"),
                 DiaSemana = GetDiaSemanaNombre(c.DiaSemana),
@@ -96,16 +110,22 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            dgvCursos.Columns["Id"].HeaderText = "ID";
-            dgvCursos.Columns["Nombre"].HeaderText = "Nombre";
-            dgvCursos.Columns["Descripcion"].HeaderText = "Descripción";
-            dgvCursos.Columns["Aula"].HeaderText = "Aula";
-            dgvCursos.Columns["FechaInicio"].HeaderText = "Fecha Inicio";
-            dgvCursos.Columns["FechaFin"].HeaderText = "Fecha Fin";
-            dgvCursos.Columns["DiaSemana"].HeaderText = "Día";
-            dgvCursos.Columns["HoraInicio"].HeaderText = "Hora Inicio";
-            dgvCursos.Columns["HoraFin"].HeaderText = "Hora Fin";
-            dgvCursos.Columns["Docentes"].HeaderText = "Docentes";
+            dgvCursos.Columns["Id"].HeaderText = Resources.CursoManagementForm_ColId;
+            dgvCursos.Columns["Nombre"].HeaderText = Resources.CursoManagementForm_ColName;
+            dgvCursos.Columns["Descripcion"].HeaderText = Resources.CursoManagementForm_ColDescription;
+            dgvCursos.Columns["Aula"].HeaderText = Resources.CursoManagementForm_ColClassroom;
+            dgvCursos.Columns["Estado"].HeaderText = Resources.CursoManagementForm_ColStatus;
+            dgvCursos.Columns["FechaInicio"].HeaderText = Resources.CursoManagementForm_ColStartDate;
+            dgvCursos.Columns["FechaFin"].HeaderText = Resources.CursoManagementForm_ColEndDate;
+            dgvCursos.Columns["DiaSemana"].HeaderText = Resources.CursoManagementForm_ColDay;
+            dgvCursos.Columns["HoraInicio"].HeaderText = Resources.CursoManagementForm_ColStartTime;
+            dgvCursos.Columns["HoraFin"].HeaderText = Resources.CursoManagementForm_ColEndTime;
+            dgvCursos.Columns["Docentes"].HeaderText = Resources.CursoManagementForm_ColTeachers;
+
+            foreach (DataGridViewColumn column in dgvCursos.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.Automatic;
+            }
 
             dgvCursos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvCursos.MultiSelect = false;
@@ -143,14 +163,14 @@ namespace TrabajoFinal_DarioZubaray
             int cursoId = GetSelectedCursoId();
             if (cursoId == 0)
             {
-                MessageBox.Show("Seleccione un curso para editar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.CursoManagementForm_SelectToEdit, Resources.InscripcionForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             var curso = _cursoBLL.FindById(cursoId);
             if (curso == null)
             {
-                MessageBox.Show("No se pudo cargar el curso.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.CursoManagementForm_CourseLoadError, Resources.InscripcionForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -169,26 +189,26 @@ namespace TrabajoFinal_DarioZubaray
             int cursoId = GetSelectedCursoId();
             if (cursoId == 0)
             {
-                MessageBox.Show("Seleccione un curso para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.CursoManagementForm_SelectToDelete, Resources.InscripcionForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             var curso = _cursoBLL.FindById(cursoId);
             if (curso == null)
             {
-                MessageBox.Show("No se pudo cargar el curso.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.CursoManagementForm_CourseLoadError, Resources.InscripcionForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string message = $"¿Está seguro que desea eliminar el curso '{curso.Nombre}'?";
-            DialogResult result = MessageBox.Show(message, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string message = string.Format(Resources.CursoManagementForm_ConfirmDeleteMessage, curso.Nombre);
+            DialogResult result = MessageBox.Show(message, Resources.CursoManagementForm_ConfirmDeleteTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
                 bool deleted = _cursoBLL.Delete(curso);
                 if (deleted)
                 {
-                    MessageBox.Show("Curso eliminado exitosamente.");
+                    MessageBox.Show(Resources.CursoManagementForm_DeleteSuccess);
                     LoadCursos();
                 }
             }
@@ -211,7 +231,8 @@ namespace TrabajoFinal_DarioZubaray
                 c.Id,
                 c.Nombre,
                 c.Descripcion,
-                Aula = c.AulaNombre ?? "Sin asignar",
+                Aula = c.AulaNombre ?? Resources.CursoManagementForm_NoClassroom,
+                Estado = c.IsActive ? Resources.CursoManagementForm_StatusActive : Resources.CursoManagementForm_StatusInactive,
                 FechaInicio = c.FechaInicio.ToString("dd/MM/yyyy"),
                 FechaFin = c.FechaFin.ToString("dd/MM/yyyy"),
                 DiaSemana = GetDiaSemanaNombre(c.DiaSemana),

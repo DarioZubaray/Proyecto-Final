@@ -10,6 +10,7 @@ namespace MPP
         bool Delete(CursoBE curso);
         CursoBE FindById(int id);
         List<CursoBE> FindAll();
+        List<CursoBE> FindAllIncludingInactive();
         List<CursoBE> FindByName(string nombre);
         bool ExisteTraslapeAula(int aulaId, DateTime fechaInicio, DateTime fechaFin, int cursoIdExcluir, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin);
         bool SaveDocentes(int cursoId, List<int> docenteIds);

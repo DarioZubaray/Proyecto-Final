@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BE.Entities;
+using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
 
@@ -34,6 +35,7 @@ namespace TrabajoFinal_DarioZubaray
             _currentUser = user;
             _docentesDisponibles = new List<UserBE>();
             _docentesAsignados = new List<UserBE>();
+            ApplyResources();
             LoadAulas();
             LoadDocentes();
             ConfigureButtons();
@@ -50,6 +52,7 @@ namespace TrabajoFinal_DarioZubaray
             _curso = curso;
             _currentUser = user;
             _docentesAsignados = new List<UserBE>(curso.Docentes ?? new List<UserBE>());
+            ApplyResources();
             LoadAulas();
             LoadDocentes();
             LoadCursoData();
@@ -59,13 +62,32 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region Métodos
+        private void ApplyResources()
+        {
+            this.Text = _isNewCurso ? Resources.CursoForm_NewTitle : Resources.CursoForm_EditTitle;
+            lblNombre.Text = Resources.CursoForm_NameLabel;
+            lblDescripcion.Text = Resources.CursoForm_DescriptionLabel;
+            lblFechaInicio.Text = Resources.CursoForm_StartDateLabel;
+            lblFechaFin.Text = Resources.CursoForm_EndDateLabel;
+            lblHoraInicio.Text = Resources.CursoForm_StartTimeLabel;
+            lblHoraFin.Text = Resources.CursoForm_EndTimeLabel;
+            lblAula.Text = Resources.CursoForm_ClassroomLabel;
+            lblDocentes.Text = Resources.CursoForm_TeachersSection;
+            lblDisponibles.Text = Resources.CursoForm_AvailableTeachersLabel;
+            lblAsignados.Text = Resources.CursoForm_AssignedTeachersLabel;
+            btnSave.Text = Resources.CursoForm_Save;
+            btnCancel.Text = Resources.CursoForm_Cancel;
+            btnAddDocente.Text = Resources.CursoForm_Add;
+            btnRemoveDocente.Text = Resources.CursoForm_Remove;
+        }
+
         private bool ParseHorario(MaskedTextBox masked, out TimeSpan hora)
         {
             hora = TimeSpan.Zero;
 
             if (!masked.MaskFull)
             {
-                MessageBox.Show("Debe completar el horario.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_TimeIncomplete, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
@@ -77,21 +99,21 @@ namespace TrabajoFinal_DarioZubaray
                 || !int.TryParse(partes[0], out int horas)
                 || !int.TryParse(partes[1], out int minutos))
             {
-                MessageBox.Show("Formato de horario inválido.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_TimeInvalidFormat, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
 
             if (horas < 0 || horas > 23)
             {
-                MessageBox.Show("Las horas deben estar entre 00 y 23.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_HoursRange, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
 
             if (minutos != 0 && minutos != 15 && minutos != 30 && minutos != 45)
             {
-                MessageBox.Show("Los minutos deben ser 00, 15, 30 o 45.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_MinutesInvalid, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
@@ -104,14 +126,14 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (string.IsNullOrEmpty(txtNombre.Text.Trim()))
             {
-                MessageBox.Show("El nombre es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_NameRequired, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtNombre.Focus();
                 return false;
             }
 
             if (dtpFechaInicio.Value >= dtpFechaFin.Value)
             {
-                MessageBox.Show("La fecha de inicio debe ser anterior a la fecha de fin.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_DatesInvalid, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 dtpFechaInicio.Focus();
                 return false;
             }
@@ -124,21 +146,21 @@ namespace TrabajoFinal_DarioZubaray
 
             if (horaInicio >= horaFin)
             {
-                MessageBox.Show("La hora de inicio debe ser anterior a la hora de fin.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_TimeRangeInvalid, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 mtbHoraInicio.Focus();
                 return false;
             }
 
             if (cbAula.SelectedValue == null)
             {
-                MessageBox.Show("Debe seleccionar un aula.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_ClassroomRequired, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 cbAula.Focus();
                 return false;
             }
 
             if (_docentesAsignados.Count == 0)
             {
-                MessageBox.Show("Debe asignar al menos un docente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_TeacherRequired, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
@@ -254,6 +276,15 @@ namespace TrabajoFinal_DarioZubaray
         {
             bool isAdmin = _currentUser != null && _currentUser.RoleId == 1;
             btnInactivar.Visible = isAdmin && !_isNewCurso;
+
+            if (btnInactivar.Visible && !_curso.IsActive)
+            {
+                btnInactivar.Text = Resources.CursoForm_Deactivate;
+            }
+            else
+            {
+                btnInactivar.Text = Resources.CursoForm_Activate;
+            }
         }
 
         private void btnInactivar_Click(object sender, EventArgs e)
@@ -263,24 +294,42 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            string message = $"¿Está seguro que desea inactivar el curso '{_curso.Nombre}'?";
-            DialogResult result = MessageBox.Show(message, "Confirmar inactivación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            bool estaActivo = _curso.IsActive;
+            string titulo = estaActivo ? Resources.CursoForm_DeactivateTitle : Resources.CursoForm_ActivateTitle;
+            string confirmMessage = estaActivo
+                ? string.Format(Resources.CursoForm_DeactivateConfirm, _curso.Nombre)
+                : string.Format(Resources.CursoForm_ActivateConfirm, _curso.Nombre);
+
+            DialogResult result = MessageBox.Show(confirmMessage, titulo, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
                 try
                 {
-                    bool deleted = _cursoBLL.Delete(_curso);
-                    if (deleted)
+                    bool success;
+                    if (estaActivo)
                     {
-                        MessageBox.Show("Curso inactivado exitosamente.");
+                        success = _cursoBLL.Delete(_curso);
+                    }
+                    else
+                    {
+                        _curso.IsActive = true;
+                        success = _cursoBLL.Save(_curso);
+                    }
+
+                    if (success)
+                    {
+                        string mensajeExito = estaActivo ? Resources.CursoForm_DeactivatedSuccess : Resources.CursoForm_ReactivatedSuccess;
+                        MessageBox.Show(mensajeExito);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error al inactivar el curso: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string errorKey = estaActivo ? Resources.CursoForm_DeactivateError : Resources.CursoForm_ActivateError;
+                    string mensajeError = string.Format(errorKey, ex.Message);
+                    MessageBox.Show(mensajeError, Resources.CursoForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -298,7 +347,7 @@ namespace TrabajoFinal_DarioZubaray
 
             if (ValidateDocentesTraslape())
             {
-                MessageBox.Show("Uno o más docentes tienen un curso asignado en el mismo día y horario.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CursoForm_TeacherOverlap, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -306,18 +355,20 @@ namespace TrabajoFinal_DarioZubaray
             {
                 if (SaveCurso())
                 {
-                    MessageBox.Show(_isNewCurso ? "Curso creado exitosamente." : "Curso modificado exitosamente.");
+                    string mensaje = _isNewCurso ? Resources.CursoForm_CreatedSuccess : Resources.CursoForm_UpdatedSuccess;
+                    MessageBox.Show(mensaje);
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show(ex.Message, "Error de validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar el curso: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string mensajeError = string.Format(Resources.CursoForm_SaveError, ex.Message);
+                MessageBox.Show(mensajeError, Resources.CursoForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

@@ -78,6 +78,11 @@ namespace BLL.Services
             return _cursoMPP.FindAll();
         }
 
+        public List<CursoBE> FindAllIncludingInactive()
+        {
+            return _cursoMPP.FindAllIncludingInactive();
+        }
+
         public List<CursoBE> FindByName(string nombre)
         {
             return _cursoMPP.FindByName(nombre);

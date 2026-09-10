@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BE.Entities;
+using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
 
@@ -21,24 +22,32 @@ namespace TrabajoFinal_DarioZubaray
             InitializeComponent();
             _currentUser = user;
             _inscripcionBLL = ServiceLocatorBLL.CreateInscripcionBLL();
+            ApplyResources();
             LoadInscripciones();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
         #region Métodos
+        private void ApplyResources()
+        {
+            this.Text = Resources.InscripcionManagementForm_Title;
+            lblSearch.Text = Resources.InscripcionManagementForm_SearchLabel;
+            btnSearch.Text = Resources.InscripcionManagementForm_SearchButton;
+        }
+
         private string GetDiaSemanaNombre(int? dia)
         {
             if (!dia.HasValue) return "-";
             switch (dia.Value)
             {
-                case 1: return "Lunes";
-                case 2: return "Martes";
-                case 3: return "Miércoles";
-                case 4: return "Jueves";
-                case 5: return "Viernes";
-                case 6: return "Sábado";
-                case 7: return "Domingo";
+                case 1: return Resources.Day_Monday;
+                case 2: return Resources.Day_Tuesday;
+                case 3: return Resources.Day_Wednesday;
+                case 4: return Resources.Day_Thursday;
+                case 5: return Resources.Day_Friday;
+                case 6: return Resources.Day_Saturday;
+                case 7: return Resources.Day_Sunday;
                 default: return "-";
             }
         }
@@ -55,7 +64,7 @@ namespace TrabajoFinal_DarioZubaray
                 DiaSemana = GetDiaSemanaNombre(i.DiaSemana),
                 HoraInicio = i.HoraInicio.HasValue ? i.HoraInicio.Value.ToString(@"hh\:mm") : "-",
                 HoraFin = i.HoraFin.HasValue ? i.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Aula = i.AulaNombre ?? "Sin asignar",
+                Aula = i.AulaNombre ?? Resources.InscripcionForm_NoAssignment,
                 Fecha = i.CreatedAt.ToString("dd/MM/yyyy HH:mm")
             }).ToList();
 
@@ -67,13 +76,13 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (dgvInscripciones.Columns.Count == 0) return;
 
-            dgvInscripciones.Columns["Alumno"].HeaderText = "Alumno";
-            dgvInscripciones.Columns["Curso"].HeaderText = "Curso";
-            dgvInscripciones.Columns["DiaSemana"].HeaderText = "Día";
-            dgvInscripciones.Columns["HoraInicio"].HeaderText = "Hora Inicio";
-            dgvInscripciones.Columns["HoraFin"].HeaderText = "Hora Fin";
-            dgvInscripciones.Columns["Aula"].HeaderText = "Aula";
-            dgvInscripciones.Columns["Fecha"].HeaderText = "Fecha Inscripción";
+            dgvInscripciones.Columns["Alumno"].HeaderText = Resources.InscripcionManagementForm_ColStudent;
+            dgvInscripciones.Columns["Curso"].HeaderText = Resources.InscripcionManagementForm_ColCourse;
+            dgvInscripciones.Columns["DiaSemana"].HeaderText = Resources.InscripcionManagementForm_ColDay;
+            dgvInscripciones.Columns["HoraInicio"].HeaderText = Resources.InscripcionManagementForm_ColStartTime;
+            dgvInscripciones.Columns["HoraFin"].HeaderText = Resources.InscripcionManagementForm_ColEndTime;
+            dgvInscripciones.Columns["Aula"].HeaderText = Resources.InscripcionManagementForm_ColClassroom;
+            dgvInscripciones.Columns["Fecha"].HeaderText = Resources.InscripcionManagementForm_ColEnrollDate;
 
             dgvInscripciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvInscripciones.MultiSelect = false;
@@ -113,7 +122,7 @@ namespace TrabajoFinal_DarioZubaray
                 DiaSemana = GetDiaSemanaNombre(i.DiaSemana),
                 HoraInicio = i.HoraInicio.HasValue ? i.HoraInicio.Value.ToString(@"hh\:mm") : "-",
                 HoraFin = i.HoraFin.HasValue ? i.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Aula = i.AulaNombre ?? "Sin asignar",
+                Aula = i.AulaNombre ?? Resources.InscripcionForm_NoAssignment,
                 Fecha = i.CreatedAt.ToString("dd/MM/yyyy HH:mm")
             }).ToList();
 

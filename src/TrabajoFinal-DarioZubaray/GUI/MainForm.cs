@@ -47,9 +47,9 @@ namespace TrabajoFinal_DarioZubaray
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
             rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
-            académicoToolStripMenuItem.Text = "Académico";
-            cursosToolStripMenuItem.Text = "Cursos";
-            inscripcionesToolStripMenuItem.Text = "Inscripciones";
+            académicoToolStripMenuItem.Text = Resources.Main_MenuAcademic;
+            cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
+            inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
