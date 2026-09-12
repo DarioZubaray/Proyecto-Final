@@ -1739,5 +1739,101 @@ namespace BE.Properties {
                 return ResourceManager.GetString("CursoManagementForm_DeleteSuccess", resourceCulture);
             }
         }
+        
+        public static string Main_MenuAttendance {
+            get {
+                return ResourceManager.GetString("Main_MenuAttendance", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_Title {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_CourseLabel {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_CourseLabel", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_DateLabel {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_DateLabel", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_SearchButton {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_SaveButton {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_SaveButton", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_ColStudent {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_ColStudent", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_ColPresent {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_ColPresent", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_NoCourses {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_NoCourses", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_NoStudents {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_NoStudents", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_SaveSuccess {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_SaveSuccess", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_SaveError {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_SaveError", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_ErrorTitle {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_SelectCourse {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_SelectCourse", resourceCulture);
+            }
+        }
+        
+        public static string AsistenciaForm_Unauthorized {
+            get {
+                return ResourceManager.GetString("AsistenciaForm_Unauthorized", resourceCulture);
+            }
+        }
     }
 }

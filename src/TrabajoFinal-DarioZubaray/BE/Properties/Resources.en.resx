@@ -733,4 +733,52 @@
   <data name="CursoManagementForm_DeleteSuccess" xml:space="preserve">
     <value>Course deleted successfully.</value>
   </data>
+  <data name="Main_MenuAttendance" xml:space="preserve">
+    <value>Attendance</value>
+  </data>
+  <data name="AsistenciaForm_Title" xml:space="preserve">
+    <value>Register Attendance</value>
+  </data>
+  <data name="AsistenciaForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="AsistenciaForm_DateLabel" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="AsistenciaForm_SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="AsistenciaForm_SaveButton" xml:space="preserve">
+    <value>Save Attendance</value>
+  </data>
+  <data name="AsistenciaForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="AsistenciaForm_ColPresent" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="AsistenciaForm_NoCourses" xml:space="preserve">
+    <value>No courses assigned.</value>
+  </data>
+  <data name="AsistenciaForm_NoStudents" xml:space="preserve">
+    <value>No students enrolled in this course.</value>
+  </data>
+  <data name="AsistenciaForm_SaveSuccess" xml:space="preserve">
+    <value>Attendance saved successfully.</value>
+  </data>
+  <data name="AsistenciaForm_SaveError" xml:space="preserve">
+    <value>Error saving attendance: {0}</value>
+  </data>
+  <data name="AsistenciaForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="AsistenciaForm_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="AsistenciaForm_SelectCourse" xml:space="preserve">
+    <value>You must select a course.</value>
+  </data>
+  <data name="AsistenciaForm_Unauthorized" xml:space="preserve">
+    <value>You do not have permission to register attendance for this course.</value>
+  </data>
 </root>

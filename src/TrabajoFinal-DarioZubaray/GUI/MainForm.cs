@@ -50,6 +50,7 @@ namespace TrabajoFinal_DarioZubaray
             académicoToolStripMenuItem.Text = Resources.Main_MenuAcademic;
             cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
             inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
+            asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
@@ -67,10 +68,12 @@ namespace TrabajoFinal_DarioZubaray
 
             bool puedeGestionarCursos = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
             bool puedeVerInscripciones = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
+            bool puedeRegistrarAsistencia = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
 
-            académicoToolStripMenuItem.Visible = puedeGestionarCursos || puedeVerInscripciones;
+            académicoToolStripMenuItem.Visible = puedeGestionarCursos || puedeVerInscripciones || puedeRegistrarAsistencia;
             cursosToolStripMenuItem.Visible = puedeGestionarCursos;
             inscripcionesToolStripMenuItem.Visible = puedeVerInscripciones;
+            asistenciaToolStripMenuItem.Visible = puedeRegistrarAsistencia;
         }
 
         private void UpdateFooter()
@@ -201,6 +204,16 @@ namespace TrabajoFinal_DarioZubaray
                 };
                 form.Show();
             }
+        }
+
+        private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("AsistenciaForm");
+            var form = new AsistenciaForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)

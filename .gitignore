@@ -19,3 +19,6 @@
 
 # Entregable binaries (solo mantener entregable/sql/)
 entregable/*
+
+# Docs
+docs/ea/proyecto final.ldb

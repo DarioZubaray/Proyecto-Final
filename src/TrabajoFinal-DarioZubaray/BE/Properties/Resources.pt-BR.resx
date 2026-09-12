@@ -733,4 +733,52 @@
   <data name="CursoManagementForm_DeleteSuccess" xml:space="preserve">
     <value>Curso excluído com sucesso.</value>
   </data>
+  <data name="Main_MenuAttendance" xml:space="preserve">
+    <value>Presença</value>
+  </data>
+  <data name="AsistenciaForm_Title" xml:space="preserve">
+    <value>Registrar Presença</value>
+  </data>
+  <data name="AsistenciaForm_CourseLabel" xml:space="preserve">
+    <value>Curso:</value>
+  </data>
+  <data name="AsistenciaForm_DateLabel" xml:space="preserve">
+    <value>Data:</value>
+  </data>
+  <data name="AsistenciaForm_SearchButton" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="AsistenciaForm_SaveButton" xml:space="preserve">
+    <value>Salvar Presença</value>
+  </data>
+  <data name="AsistenciaForm_ColStudent" xml:space="preserve">
+    <value>Aluno</value>
+  </data>
+  <data name="AsistenciaForm_ColPresent" xml:space="preserve">
+    <value>Presente</value>
+  </data>
+  <data name="AsistenciaForm_NoCourses" xml:space="preserve">
+    <value>Nenhum curso atribuído.</value>
+  </data>
+  <data name="AsistenciaForm_NoStudents" xml:space="preserve">
+    <value>Nenhum aluno matriculado neste curso.</value>
+  </data>
+  <data name="AsistenciaForm_SaveSuccess" xml:space="preserve">
+    <value>Presença salva com sucesso.</value>
+  </data>
+  <data name="AsistenciaForm_SaveError" xml:space="preserve">
+    <value>Erro ao salvar presença: {0}</value>
+  </data>
+  <data name="AsistenciaForm_ValidationTitle" xml:space="preserve">
+    <value>Validação</value>
+  </data>
+  <data name="AsistenciaForm_ErrorTitle" xml:space="preserve">
+    <value>Erro</value>
+  </data>
+  <data name="AsistenciaForm_SelectCourse" xml:space="preserve">
+    <value>Deve selecionar um curso.</value>
+  </data>
+  <data name="AsistenciaForm_Unauthorized" xml:space="preserve">
+    <value>Você não tem permissão para registrar presença neste curso.</value>
+  </data>
 </root>
