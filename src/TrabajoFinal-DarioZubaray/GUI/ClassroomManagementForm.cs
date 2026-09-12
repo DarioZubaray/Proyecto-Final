@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 
 using BE.Entities;
+using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
 
@@ -20,12 +21,23 @@ namespace TrabajoFinal_DarioZubaray
             InitializeComponent();
             _currentUser = user;
             _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
+            ApplyResources();
             LoadClassrooms();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
         #region Métodos
+        private void ApplyResources()
+        {
+            this.Text = Resources.ClassroomManagementForm_Title;
+            lblSearch.Text = Resources.ClassroomManagementForm_SearchLabel;
+            btnSearch.Text = Resources.ClassroomManagementForm_SearchButton;
+            btnNew.Text = Resources.ClassroomManagementForm_NewButton;
+            btnEdit.Text = Resources.ClassroomManagementForm_EditButton;
+            btnDelete.Text = Resources.ClassroomManagementForm_DeleteButton;
+        }
+
         private void LoadClassrooms()
         {
             dgvClassrooms.DataSource = null;
@@ -41,8 +53,8 @@ namespace TrabajoFinal_DarioZubaray
             }
 
             dgvClassrooms.Columns["Id"].HeaderText = "ID";
-            dgvClassrooms.Columns["Name"].HeaderText = "Nombre";
-            dgvClassrooms.Columns["Capacity"].HeaderText = "Capacidad";
+            dgvClassrooms.Columns["Name"].HeaderText = Resources.ClassroomManagementForm_ColName;
+            dgvClassrooms.Columns["Capacity"].HeaderText = Resources.ClassroomManagementForm_ColCapacity;
 
             dgvClassrooms.Columns["IsActive"].Visible = false;
             dgvClassrooms.Columns["CreatedAt"].Visible = false;
@@ -84,7 +96,7 @@ namespace TrabajoFinal_DarioZubaray
             var classroom = GetSelectedClassroom();
             if (classroom == null)
             {
-                MessageBox.Show("Seleccione un aula para editar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.ClassroomManagementForm_SelectToEdit, Resources.ClassroomManagementForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -103,19 +115,19 @@ namespace TrabajoFinal_DarioZubaray
             var classroom = GetSelectedClassroom();
             if (classroom == null)
             {
-                MessageBox.Show("Seleccione un aula para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.ClassroomManagementForm_SelectToDelete, Resources.ClassroomManagementForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string message = $"¿Está seguro que desea eliminar el aula '{classroom.Name}'?";
-            DialogResult result = MessageBox.Show(message, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string message = string.Format(Resources.ClassroomManagementForm_ConfirmDeleteMessage, classroom.Name);
+            DialogResult result = MessageBox.Show(message, Resources.ClassroomManagementForm_ConfirmDeleteTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
                 bool deleted = _classroomBLL.Delete(classroom);
                 if (deleted)
                 {
-                    MessageBox.Show("Aula eliminada exitosamente.");
+                    MessageBox.Show(Resources.ClassroomManagementForm_DeleteSuccess);
                     LoadClassrooms();
                 }
             }

@@ -1,8 +1,6 @@
-using BLL.Interfaces;
-
-namespace BLL.Services
+namespace BE.Entities
 {
-    public class BaseActivity : IActivityLogEntryBLL
+    public class ActivityLogEntryBE : IActivityLogEntryBE
     {
         #region Propiedades
         public int UserId { get; private set; }
@@ -12,7 +10,7 @@ namespace BLL.Services
         #endregion
 
         #region Constructor
-        public BaseActivity(int userId, string action, string formName = null, string description = null)
+        public ActivityLogEntryBE(int userId, string action, string formName = null, string description = null)
         {
             UserId = userId;
             Action = action;

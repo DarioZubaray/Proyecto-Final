@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 
 using BE.Entities;
+using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
 
@@ -22,6 +23,7 @@ namespace TrabajoFinal_DarioZubaray
             _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
             _isNewClassroom = true;
             _classroom = new ClassroomBE();
+            ApplyResources();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
 
@@ -31,24 +33,34 @@ namespace TrabajoFinal_DarioZubaray
             _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
             _isNewClassroom = false;
             _classroom = classroom;
+            ApplyResources();
             LoadClassroomData();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
         #region Métodos
+        private void ApplyResources()
+        {
+            this.Text = _isNewClassroom ? Resources.ClassroomForm_NewTitle : Resources.ClassroomForm_EditTitle;
+            lblName.Text = Resources.ClassroomForm_NameLabel;
+            lblCapacity.Text = Resources.ClassroomForm_CapacityLabel;
+            btnSave.Text = Resources.ClassroomForm_SaveButton;
+            btnCancel.Text = Resources.ClassroomForm_CancelButton;
+        }
+
         private bool ValidateInputs()
         {
             if (string.IsNullOrEmpty(txtName.Text.Trim()))
             {
-                MessageBox.Show("El nombre es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.ClassroomForm_NameRequired, Resources.ClassroomForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtName.Focus();
                 return false;
             }
 
             if (nudCapacity.Value <= 0)
             {
-                MessageBox.Show("La capacidad debe ser mayor a 0.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.ClassroomForm_CapacityInvalid, Resources.ClassroomForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 nudCapacity.Focus();
                 return false;
             }
@@ -94,7 +106,7 @@ namespace TrabajoFinal_DarioZubaray
 
             if (SaveClassroom())
             {
-                MessageBox.Show(_isNewClassroom ? "Aula creada exitosamente." : "Aula modificada exitosamente.");
+                MessageBox.Show(_isNewClassroom ? Resources.ClassroomForm_CreatedSuccess : Resources.ClassroomForm_UpdatedSuccess);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

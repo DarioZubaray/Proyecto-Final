@@ -1,6 +1,6 @@
-namespace BLL.Interfaces
+namespace BE.Entities
 {
-    public interface IActivityLogEntryBLL
+    public interface IActivityLogEntryBE
     {
         int UserId { get; }
         string Action { get; }

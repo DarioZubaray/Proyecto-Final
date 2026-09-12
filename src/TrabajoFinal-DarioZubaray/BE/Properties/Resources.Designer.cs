@@ -1835,5 +1835,172 @@ namespace BE.Properties {
                 return ResourceManager.GetString("AttendanceForm_Unauthorized", resourceCulture);
             }
         }
+        public static string Main_MenuClassrooms {
+            get {
+                return ResourceManager.GetString("Main_MenuClassrooms", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_Title {
+            get {
+                return ResourceManager.GetString("ClassroomForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_NewTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_NewTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_EditTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_EditTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_NameLabel {
+            get {
+                return ResourceManager.GetString("ClassroomForm_NameLabel", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CapacityLabel {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CapacityLabel", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_SaveButton {
+            get {
+                return ResourceManager.GetString("ClassroomForm_SaveButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CancelButton {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CancelButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_NameRequired {
+            get {
+                return ResourceManager.GetString("ClassroomForm_NameRequired", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CapacityInvalid {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CapacityInvalid", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CreatedSuccess {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CreatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_UpdatedSuccess {
+            get {
+                return ResourceManager.GetString("ClassroomForm_UpdatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_ErrorTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_Title {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SearchLabel {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SearchLabel", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SearchButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_NewButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_NewButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_EditButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_EditButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_DeleteButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_DeleteButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ColName {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ColName", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ColCapacity {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ColCapacity", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SelectToEdit {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SelectToEdit", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SelectToDelete {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SelectToDelete", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ConfirmDeleteTitle {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ConfirmDeleteTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ConfirmDeleteMessage {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ConfirmDeleteMessage", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_InfoTitle {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_InfoTitle", resourceCulture);
+            }
+        }
     }
 }

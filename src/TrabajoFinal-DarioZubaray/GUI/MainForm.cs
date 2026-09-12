@@ -51,6 +51,7 @@ namespace TrabajoFinal_DarioZubaray
             cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
             inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
             asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
+            aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
