@@ -18,235 +18,235 @@ namespace TrabajoFinal_DarioZubaray
 
         private void InitializeComponent()
         {
-            lblNombre = new System.Windows.Forms.Label();
-            txtNombre = new System.Windows.Forms.TextBox();
-            lblDescripcion = new System.Windows.Forms.Label();
-            txtDescripcion = new System.Windows.Forms.TextBox();
-            lblFechaInicio = new System.Windows.Forms.Label();
-            dtpFechaInicio = new System.Windows.Forms.DateTimePicker();
-            lblFechaFin = new System.Windows.Forms.Label();
-            dtpFechaFin = new System.Windows.Forms.DateTimePicker();
-            lblAula = new System.Windows.Forms.Label();
-            cbAula = new System.Windows.Forms.ComboBox();
-            lblHoraInicio = new System.Windows.Forms.Label();
-            mtbHoraInicio = new System.Windows.Forms.MaskedTextBox();
-            lblHoraFin = new System.Windows.Forms.Label();
-            mtbHoraFin = new System.Windows.Forms.MaskedTextBox();
-            lblDocentes = new System.Windows.Forms.Label();
-            lstDocentesDisponibles = new System.Windows.Forms.ListBox();
-            lstDocentesAsignados = new System.Windows.Forms.ListBox();
-            btnAddDocente = new System.Windows.Forms.Button();
-            btnRemoveDocente = new System.Windows.Forms.Button();
-            lblDisponibles = new System.Windows.Forms.Label();
-            lblAsignados = new System.Windows.Forms.Label();
+            lblName = new System.Windows.Forms.Label();
+            txtName = new System.Windows.Forms.TextBox();
+            lblDescription = new System.Windows.Forms.Label();
+            txtDescription = new System.Windows.Forms.TextBox();
+            lblStartDate = new System.Windows.Forms.Label();
+            dtpStartDate = new System.Windows.Forms.DateTimePicker();
+            lblEndDate = new System.Windows.Forms.Label();
+            dtpEndDate = new System.Windows.Forms.DateTimePicker();
+            lblClassroom = new System.Windows.Forms.Label();
+            cbClassroom = new System.Windows.Forms.ComboBox();
+            lblStartTime = new System.Windows.Forms.Label();
+            mtbStartTime = new System.Windows.Forms.MaskedTextBox();
+            lblEndTime = new System.Windows.Forms.Label();
+            mtbEndTime = new System.Windows.Forms.MaskedTextBox();
+            lblTeachers = new System.Windows.Forms.Label();
+            lstAvailableTeachers = new System.Windows.Forms.ListBox();
+            lstAssignedTeachers = new System.Windows.Forms.ListBox();
+            btnAddTeacher = new System.Windows.Forms.Button();
+            btnRemoveTeacher = new System.Windows.Forms.Button();
+            lblAvailable = new System.Windows.Forms.Label();
+            lblAssigned = new System.Windows.Forms.Label();
             btnSave = new System.Windows.Forms.Button();
             btnCancel = new System.Windows.Forms.Button();
-            btnInactivar = new System.Windows.Forms.Button();
+            btnToggleActive = new System.Windows.Forms.Button();
             SuspendLayout();
             // 
-            // lblNombre
+            // lblName
             // 
-            lblNombre.AutoSize = true;
-            lblNombre.Location = new System.Drawing.Point(14, 17);
-            lblNombre.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblNombre.Name = "lblNombre";
-            lblNombre.Size = new System.Drawing.Size(54, 15);
-            lblNombre.TabIndex = 0;
-            lblNombre.Text = "Nombre:";
+            lblName.AutoSize = true;
+            lblName.Location = new System.Drawing.Point(14, 17);
+            lblName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblName.Name = "lblName";
+            lblName.Size = new System.Drawing.Size(54, 15);
+            lblName.TabIndex = 0;
+            lblName.Text = "Nombre:";
             // 
-            // txtNombre
+            // txtName
             // 
-            txtNombre.Location = new System.Drawing.Point(152, 14);
-            txtNombre.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            txtNombre.MaxLength = 200;
-            txtNombre.Name = "txtNombre";
-            txtNombre.Size = new System.Drawing.Size(349, 23);
-            txtNombre.TabIndex = 1;
+            txtName.Location = new System.Drawing.Point(152, 14);
+            txtName.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtName.MaxLength = 200;
+            txtName.Name = "txtName";
+            txtName.Size = new System.Drawing.Size(349, 23);
+            txtName.TabIndex = 1;
             // 
-            // lblDescripcion
+            // lblDescription
             // 
-            lblDescripcion.AutoSize = true;
-            lblDescripcion.Location = new System.Drawing.Point(14, 52);
-            lblDescripcion.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblDescripcion.Name = "lblDescripcion";
-            lblDescripcion.Size = new System.Drawing.Size(72, 15);
-            lblDescripcion.TabIndex = 2;
-            lblDescripcion.Text = "Descripción:";
+            lblDescription.AutoSize = true;
+            lblDescription.Location = new System.Drawing.Point(14, 52);
+            lblDescription.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblDescription.Name = "lblDescription";
+            lblDescription.Size = new System.Drawing.Size(72, 15);
+            lblDescription.TabIndex = 2;
+            lblDescription.Text = "Descripción:";
             // 
-            // txtDescripcion
+            // txtDescription
             // 
-            txtDescripcion.Location = new System.Drawing.Point(152, 48);
-            txtDescripcion.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            txtDescripcion.MaxLength = 500;
-            txtDescripcion.Multiline = true;
-            txtDescripcion.Name = "txtDescripcion";
-            txtDescripcion.Size = new System.Drawing.Size(349, 57);
-            txtDescripcion.TabIndex = 3;
+            txtDescription.Location = new System.Drawing.Point(152, 48);
+            txtDescription.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtDescription.MaxLength = 500;
+            txtDescription.Multiline = true;
+            txtDescription.Name = "txtDescription";
+            txtDescription.Size = new System.Drawing.Size(349, 57);
+            txtDescription.TabIndex = 3;
             // 
-            // lblFechaInicio
+            // lblStartDate
             // 
-            lblFechaInicio.AutoSize = true;
-            lblFechaInicio.Location = new System.Drawing.Point(14, 121);
-            lblFechaInicio.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblFechaInicio.Name = "lblFechaInicio";
-            lblFechaInicio.Size = new System.Drawing.Size(73, 15);
-            lblFechaInicio.TabIndex = 4;
-            lblFechaInicio.Text = "Fecha Inicio:";
+            lblStartDate.AutoSize = true;
+            lblStartDate.Location = new System.Drawing.Point(14, 121);
+            lblStartDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblStartDate.Name = "lblStartDate";
+            lblStartDate.Size = new System.Drawing.Size(73, 15);
+            lblStartDate.TabIndex = 4;
+            lblStartDate.Text = "Fecha Inicio:";
             // 
-            // dtpFechaInicio
+            // dtpStartDate
             // 
-            dtpFechaInicio.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            dtpFechaInicio.Location = new System.Drawing.Point(152, 118);
-            dtpFechaInicio.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            dtpFechaInicio.Name = "dtpFechaInicio";
-            dtpFechaInicio.Size = new System.Drawing.Size(174, 23);
-            dtpFechaInicio.TabIndex = 5;
+            dtpStartDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            dtpStartDate.Location = new System.Drawing.Point(152, 118);
+            dtpStartDate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dtpStartDate.Name = "dtpStartDate";
+            dtpStartDate.Size = new System.Drawing.Size(174, 23);
+            dtpStartDate.TabIndex = 5;
             // 
-            // lblFechaFin
+            // lblEndDate
             // 
-            lblFechaFin.AutoSize = true;
-            lblFechaFin.Location = new System.Drawing.Point(14, 156);
-            lblFechaFin.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblFechaFin.Name = "lblFechaFin";
-            lblFechaFin.Size = new System.Drawing.Size(60, 15);
-            lblFechaFin.TabIndex = 6;
-            lblFechaFin.Text = "Fecha Fin:";
+            lblEndDate.AutoSize = true;
+            lblEndDate.Location = new System.Drawing.Point(14, 156);
+            lblEndDate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblEndDate.Name = "lblEndDate";
+            lblEndDate.Size = new System.Drawing.Size(60, 15);
+            lblEndDate.TabIndex = 6;
+            lblEndDate.Text = "Fecha Fin:";
             // 
-            // dtpFechaFin
+            // dtpEndDate
             // 
-            dtpFechaFin.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            dtpFechaFin.Location = new System.Drawing.Point(152, 152);
-            dtpFechaFin.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            dtpFechaFin.Name = "dtpFechaFin";
-            dtpFechaFin.Size = new System.Drawing.Size(174, 23);
-            dtpFechaFin.TabIndex = 7;
+            dtpEndDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            dtpEndDate.Location = new System.Drawing.Point(152, 152);
+            dtpEndDate.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dtpEndDate.Name = "dtpEndDate";
+            dtpEndDate.Size = new System.Drawing.Size(174, 23);
+            dtpEndDate.TabIndex = 7;
             // 
-            // lblAula
+            // lblClassroom
             // 
-            lblAula.AutoSize = true;
-            lblAula.Location = new System.Drawing.Point(14, 190);
-            lblAula.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblAula.Name = "lblAula";
-            lblAula.Size = new System.Drawing.Size(34, 15);
-            lblAula.TabIndex = 8;
-            lblAula.Text = "Aula:";
+            lblClassroom.AutoSize = true;
+            lblClassroom.Location = new System.Drawing.Point(14, 190);
+            lblClassroom.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblClassroom.Name = "lblClassroom";
+            lblClassroom.Size = new System.Drawing.Size(34, 15);
+            lblClassroom.TabIndex = 8;
+            lblClassroom.Text = "Aula:";
             // 
-            // cbAula
+            // cbClassroom
             // 
-            cbAula.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            cbAula.Location = new System.Drawing.Point(152, 187);
-            cbAula.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            cbAula.Name = "cbAula";
-            cbAula.Size = new System.Drawing.Size(233, 23);
-            cbAula.TabIndex = 9;
+            cbClassroom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            cbClassroom.Location = new System.Drawing.Point(152, 187);
+            cbClassroom.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbClassroom.Name = "cbClassroom";
+            cbClassroom.Size = new System.Drawing.Size(233, 23);
+            cbClassroom.TabIndex = 9;
             // 
-            // lblHoraInicio
+            // lblStartTime
             // 
-            lblHoraInicio.AutoSize = true;
-            lblHoraInicio.Location = new System.Drawing.Point(14, 229);
-            lblHoraInicio.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblHoraInicio.Name = "lblHoraInicio";
-            lblHoraInicio.Size = new System.Drawing.Size(68, 15);
-            lblHoraInicio.TabIndex = 12;
-            lblHoraInicio.Text = "Hora Inicio:";
+            lblStartTime.AutoSize = true;
+            lblStartTime.Location = new System.Drawing.Point(14, 229);
+            lblStartTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblStartTime.Name = "lblStartTime";
+            lblStartTime.Size = new System.Drawing.Size(68, 15);
+            lblStartTime.TabIndex = 12;
+            lblStartTime.Text = "Hora Inicio:";
             // 
-            // mtbHoraInicio
+            // mtbStartTime
             // 
-            mtbHoraInicio.Location = new System.Drawing.Point(152, 225);
-            mtbHoraInicio.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            mtbHoraInicio.Mask = "00:00";
-            mtbHoraInicio.Name = "mtbHoraInicio";
-            mtbHoraInicio.Size = new System.Drawing.Size(69, 23);
-            mtbHoraInicio.TabIndex = 13;
+            mtbStartTime.Location = new System.Drawing.Point(152, 225);
+            mtbStartTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            mtbStartTime.Mask = "00:00";
+            mtbStartTime.Name = "mtbStartTime";
+            mtbStartTime.Size = new System.Drawing.Size(69, 23);
+            mtbStartTime.TabIndex = 13;
             // 
-            // lblHoraFin
+            // lblEndTime
             // 
-            lblHoraFin.AutoSize = true;
-            lblHoraFin.Location = new System.Drawing.Point(14, 263);
-            lblHoraFin.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblHoraFin.Name = "lblHoraFin";
-            lblHoraFin.Size = new System.Drawing.Size(55, 15);
-            lblHoraFin.TabIndex = 14;
-            lblHoraFin.Text = "Hora Fin:";
+            lblEndTime.AutoSize = true;
+            lblEndTime.Location = new System.Drawing.Point(14, 263);
+            lblEndTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblEndTime.Name = "lblEndTime";
+            lblEndTime.Size = new System.Drawing.Size(55, 15);
+            lblEndTime.TabIndex = 14;
+            lblEndTime.Text = "Hora Fin:";
             // 
-            // mtbHoraFin
+            // mtbEndTime
             // 
-            mtbHoraFin.Location = new System.Drawing.Point(152, 260);
-            mtbHoraFin.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            mtbHoraFin.Mask = "00:00";
-            mtbHoraFin.Name = "mtbHoraFin";
-            mtbHoraFin.Size = new System.Drawing.Size(69, 23);
-            mtbHoraFin.TabIndex = 15;
+            mtbEndTime.Location = new System.Drawing.Point(152, 260);
+            mtbEndTime.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            mtbEndTime.Mask = "00:00";
+            mtbEndTime.Name = "mtbEndTime";
+            mtbEndTime.Size = new System.Drawing.Size(69, 23);
+            mtbEndTime.TabIndex = 15;
             // 
-            // lblDocentes
+            // lblTeachers
             // 
-            lblDocentes.AutoSize = true;
-            lblDocentes.Location = new System.Drawing.Point(14, 304);
-            lblDocentes.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblDocentes.Name = "lblDocentes";
-            lblDocentes.Size = new System.Drawing.Size(59, 15);
-            lblDocentes.TabIndex = 16;
-            lblDocentes.Text = "Docentes:";
+            lblTeachers.AutoSize = true;
+            lblTeachers.Location = new System.Drawing.Point(14, 304);
+            lblTeachers.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblTeachers.Name = "lblTeachers";
+            lblTeachers.Size = new System.Drawing.Size(59, 15);
+            lblTeachers.TabIndex = 16;
+            lblTeachers.Text = "Docentes:";
             // 
-            // lstDocentesDisponibles
+            // lstAvailableTeachers
             // 
-            lstDocentesDisponibles.FormattingEnabled = true;
-            lstDocentesDisponibles.Location = new System.Drawing.Point(152, 327);
-            lstDocentesDisponibles.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            lstDocentesDisponibles.Name = "lstDocentesDisponibles";
-            lstDocentesDisponibles.Size = new System.Drawing.Size(174, 109);
-            lstDocentesDisponibles.TabIndex = 18;
+            lstAvailableTeachers.FormattingEnabled = true;
+            lstAvailableTeachers.Location = new System.Drawing.Point(152, 327);
+            lstAvailableTeachers.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lstAvailableTeachers.Name = "lstAvailableTeachers";
+            lstAvailableTeachers.Size = new System.Drawing.Size(174, 109);
+            lstAvailableTeachers.TabIndex = 18;
             // 
-            // lstDocentesAsignados
+            // lstAssignedTeachers
             // 
-            lstDocentesAsignados.FormattingEnabled = true;
-            lstDocentesAsignados.Location = new System.Drawing.Point(467, 327);
-            lstDocentesAsignados.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            lstDocentesAsignados.Name = "lstDocentesAsignados";
-            lstDocentesAsignados.Size = new System.Drawing.Size(174, 109);
-            lstDocentesAsignados.TabIndex = 22;
+            lstAssignedTeachers.FormattingEnabled = true;
+            lstAssignedTeachers.Location = new System.Drawing.Point(467, 327);
+            lstAssignedTeachers.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            lstAssignedTeachers.Name = "lstAssignedTeachers";
+            lstAssignedTeachers.Size = new System.Drawing.Size(174, 109);
+            lstAssignedTeachers.TabIndex = 22;
             // 
-            // btnAddDocente
+            // btnAddTeacher
             // 
-            btnAddDocente.Location = new System.Drawing.Point(338, 361);
-            btnAddDocente.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnAddDocente.Name = "btnAddDocente";
-            btnAddDocente.Size = new System.Drawing.Size(35, 27);
-            btnAddDocente.TabIndex = 19;
-            btnAddDocente.Text = ">";
-            btnAddDocente.UseVisualStyleBackColor = true;
-            btnAddDocente.Click += btnAddDocente_Click;
+            btnAddTeacher.Location = new System.Drawing.Point(338, 361);
+            btnAddTeacher.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnAddTeacher.Name = "btnAddTeacher";
+            btnAddTeacher.Size = new System.Drawing.Size(35, 27);
+            btnAddTeacher.TabIndex = 19;
+            btnAddTeacher.Text = ">";
+            btnAddTeacher.UseVisualStyleBackColor = true;
+            btnAddTeacher.Click += btnAddTeacher_Click;
             // 
-            // btnRemoveDocente
+            // btnRemoveTeacher
             // 
-            btnRemoveDocente.Location = new System.Drawing.Point(338, 396);
-            btnRemoveDocente.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnRemoveDocente.Name = "btnRemoveDocente";
-            btnRemoveDocente.Size = new System.Drawing.Size(35, 27);
-            btnRemoveDocente.TabIndex = 20;
-            btnRemoveDocente.Text = "<";
-            btnRemoveDocente.UseVisualStyleBackColor = true;
-            btnRemoveDocente.Click += btnRemoveDocente_Click;
+            btnRemoveTeacher.Location = new System.Drawing.Point(338, 396);
+            btnRemoveTeacher.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnRemoveTeacher.Name = "btnRemoveTeacher";
+            btnRemoveTeacher.Size = new System.Drawing.Size(35, 27);
+            btnRemoveTeacher.TabIndex = 20;
+            btnRemoveTeacher.Text = "<";
+            btnRemoveTeacher.UseVisualStyleBackColor = true;
+            btnRemoveTeacher.Click += btnRemoveTeacher_Click;
             // 
-            // lblDisponibles
+            // lblAvailable
             // 
-            lblDisponibles.AutoSize = true;
-            lblDisponibles.Location = new System.Drawing.Point(14, 327);
-            lblDisponibles.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblDisponibles.Name = "lblDisponibles";
-            lblDisponibles.Size = new System.Drawing.Size(71, 15);
-            lblDisponibles.TabIndex = 17;
-            lblDisponibles.Text = "Disponibles:";
+            lblAvailable.AutoSize = true;
+            lblAvailable.Location = new System.Drawing.Point(14, 327);
+            lblAvailable.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblAvailable.Name = "lblAvailable";
+            lblAvailable.Size = new System.Drawing.Size(71, 15);
+            lblAvailable.TabIndex = 17;
+            lblAvailable.Text = "Disponibles:";
             // 
-            // lblAsignados
+            // lblAssigned
             // 
-            lblAsignados.AutoSize = true;
-            lblAsignados.Location = new System.Drawing.Point(385, 327);
-            lblAsignados.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            lblAsignados.Name = "lblAsignados";
-            lblAsignados.Size = new System.Drawing.Size(65, 15);
-            lblAsignados.TabIndex = 21;
-            lblAsignados.Text = "Asignados:";
+            lblAssigned.AutoSize = true;
+            lblAssigned.Location = new System.Drawing.Point(385, 327);
+            lblAssigned.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblAssigned.Name = "lblAssigned";
+            lblAssigned.Size = new System.Drawing.Size(65, 15);
+            lblAssigned.TabIndex = 21;
+            lblAssigned.Text = "Asignados:";
             // 
             // btnSave
             // 
@@ -270,56 +270,56 @@ namespace TrabajoFinal_DarioZubaray
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
-            // btnInactivar
+            // btnToggleActive
             // 
-            btnInactivar.BackColor = System.Drawing.Color.FromArgb(220, 53, 69);
-            btnInactivar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btnInactivar.ForeColor = System.Drawing.Color.White;
-            btnInactivar.Location = new System.Drawing.Point(14, 454);
-            btnInactivar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            btnInactivar.Name = "btnInactivar";
-            btnInactivar.Size = new System.Drawing.Size(105, 27);
-            btnInactivar.TabIndex = 25;
-            btnInactivar.Text = "Inactivar";
-            btnInactivar.UseVisualStyleBackColor = false;
-            btnInactivar.Click += btnInactivar_Click;
+            btnToggleActive.BackColor = System.Drawing.Color.FromArgb(220, 53, 69);
+            btnToggleActive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnToggleActive.ForeColor = System.Drawing.Color.White;
+            btnToggleActive.Location = new System.Drawing.Point(14, 454);
+            btnToggleActive.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnToggleActive.Name = "btnToggleActive";
+            btnToggleActive.Size = new System.Drawing.Size(105, 27);
+            btnToggleActive.TabIndex = 25;
+            btnToggleActive.Text = "Inactivar";
+            btnToggleActive.UseVisualStyleBackColor = false;
+            btnToggleActive.Click += btnToggleActive_Click;
             // 
-            // CursoForm
+            // CourseForm
             // 
             AcceptButton = btnSave;
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             CancelButton = btnCancel;
             ClientSize = new System.Drawing.Size(658, 497);
-            Controls.Add(lblNombre);
-            Controls.Add(txtNombre);
-            Controls.Add(lblDescripcion);
-            Controls.Add(txtDescripcion);
-            Controls.Add(lblFechaInicio);
-            Controls.Add(dtpFechaInicio);
-            Controls.Add(lblFechaFin);
-            Controls.Add(dtpFechaFin);
-            Controls.Add(lblAula);
-            Controls.Add(cbAula);
-            Controls.Add(lblHoraInicio);
-            Controls.Add(mtbHoraInicio);
-            Controls.Add(lblHoraFin);
-            Controls.Add(mtbHoraFin);
-            Controls.Add(lblDocentes);
-            Controls.Add(lblDisponibles);
-            Controls.Add(lstDocentesDisponibles);
-            Controls.Add(btnAddDocente);
-            Controls.Add(btnRemoveDocente);
-            Controls.Add(lblAsignados);
-            Controls.Add(lstDocentesAsignados);
+            Controls.Add(lblName);
+            Controls.Add(txtName);
+            Controls.Add(lblDescription);
+            Controls.Add(txtDescription);
+            Controls.Add(lblStartDate);
+            Controls.Add(dtpStartDate);
+            Controls.Add(lblEndDate);
+            Controls.Add(dtpEndDate);
+            Controls.Add(lblClassroom);
+            Controls.Add(cbClassroom);
+            Controls.Add(lblStartTime);
+            Controls.Add(mtbStartTime);
+            Controls.Add(lblEndTime);
+            Controls.Add(mtbEndTime);
+            Controls.Add(lblTeachers);
+            Controls.Add(lblAvailable);
+            Controls.Add(lstAvailableTeachers);
+            Controls.Add(btnAddTeacher);
+            Controls.Add(btnRemoveTeacher);
+            Controls.Add(lblAssigned);
+            Controls.Add(lstAssignedTeachers);
             Controls.Add(btnSave);
             Controls.Add(btnCancel);
-            Controls.Add(btnInactivar);
+            Controls.Add(btnToggleActive);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "CursoForm";
+            Name = "CourseForm";
             StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             Text = "Curso";
             ResumeLayout(false);
@@ -329,29 +329,29 @@ namespace TrabajoFinal_DarioZubaray
 
         #endregion
 
-        private System.Windows.Forms.Label lblNombre;
-        private System.Windows.Forms.TextBox txtNombre;
-        private System.Windows.Forms.Label lblDescripcion;
-        private System.Windows.Forms.TextBox txtDescripcion;
-        private System.Windows.Forms.Label lblFechaInicio;
-        private System.Windows.Forms.DateTimePicker dtpFechaInicio;
-        private System.Windows.Forms.Label lblFechaFin;
-        private System.Windows.Forms.DateTimePicker dtpFechaFin;
-        private System.Windows.Forms.Label lblAula;
-        private System.Windows.Forms.ComboBox cbAula;
-        private System.Windows.Forms.Label lblHoraInicio;
-        private System.Windows.Forms.MaskedTextBox mtbHoraInicio;
-        private System.Windows.Forms.Label lblHoraFin;
-        private System.Windows.Forms.MaskedTextBox mtbHoraFin;
-        private System.Windows.Forms.Label lblDocentes;
-        private System.Windows.Forms.ListBox lstDocentesDisponibles;
-        private System.Windows.Forms.ListBox lstDocentesAsignados;
-        private System.Windows.Forms.Button btnAddDocente;
-        private System.Windows.Forms.Button btnRemoveDocente;
-        private System.Windows.Forms.Label lblDisponibles;
-        private System.Windows.Forms.Label lblAsignados;
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Label lblDescription;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Label lblStartDate;
+        private System.Windows.Forms.DateTimePicker dtpStartDate;
+        private System.Windows.Forms.Label lblEndDate;
+        private System.Windows.Forms.DateTimePicker dtpEndDate;
+        private System.Windows.Forms.Label lblClassroom;
+        private System.Windows.Forms.ComboBox cbClassroom;
+        private System.Windows.Forms.Label lblStartTime;
+        private System.Windows.Forms.MaskedTextBox mtbStartTime;
+        private System.Windows.Forms.Label lblEndTime;
+        private System.Windows.Forms.MaskedTextBox mtbEndTime;
+        private System.Windows.Forms.Label lblTeachers;
+        private System.Windows.Forms.ListBox lstAvailableTeachers;
+        private System.Windows.Forms.ListBox lstAssignedTeachers;
+        private System.Windows.Forms.Button btnAddTeacher;
+        private System.Windows.Forms.Button btnRemoveTeacher;
+        private System.Windows.Forms.Label lblAvailable;
+        private System.Windows.Forms.Label lblAssigned;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnInactivar;
+        private System.Windows.Forms.Button btnToggleActive;
     }
 }

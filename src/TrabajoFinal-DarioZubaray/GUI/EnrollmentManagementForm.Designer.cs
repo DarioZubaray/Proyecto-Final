@@ -22,9 +22,9 @@ namespace TrabajoFinal_DarioZubaray
             this.lblSearch = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
-            this.dgvInscripciones = new System.Windows.Forms.DataGridView();
+            this.dgvEnrollments = new System.Windows.Forms.DataGridView();
             this.panelTop.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInscripciones)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEnrollments)).BeginInit();
             this.SuspendLayout();
             //
             // panelTop
@@ -65,31 +65,31 @@ namespace TrabajoFinal_DarioZubaray
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             //
-            // dgvInscripciones
+            // dgvEnrollments
             //
-            this.dgvInscripciones.AllowUserToAddRows = false;
-            this.dgvInscripciones.AllowUserToDeleteRows = false;
-            this.dgvInscripciones.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvInscripciones.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvInscripciones.Location = new System.Drawing.Point(0, 40);
-            this.dgvInscripciones.Name = "dgvInscripciones";
-            this.dgvInscripciones.ReadOnly = true;
-            this.dgvInscripciones.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvInscripciones.Size = new System.Drawing.Size(850, 460);
-            this.dgvInscripciones.TabIndex = 1;
+            this.dgvEnrollments.AllowUserToAddRows = false;
+            this.dgvEnrollments.AllowUserToDeleteRows = false;
+            this.dgvEnrollments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvEnrollments.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEnrollments.Location = new System.Drawing.Point(0, 40);
+            this.dgvEnrollments.Name = "dgvEnrollments";
+            this.dgvEnrollments.ReadOnly = true;
+            this.dgvEnrollments.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvEnrollments.Size = new System.Drawing.Size(850, 460);
+            this.dgvEnrollments.TabIndex = 1;
             //
             // InscripcionManagementForm
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 500);
-            this.Controls.Add(this.dgvInscripciones);
+            this.Controls.Add(this.dgvEnrollments);
             this.Controls.Add(this.panelTop);
             this.Name = "InscripcionManagementForm";
             this.Text = "Gestión de Inscripciones";
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvInscripciones)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEnrollments)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -100,6 +100,6 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Label lblSearch;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Button btnSearch;
-        private System.Windows.Forms.DataGridView dgvInscripciones;
+        private System.Windows.Forms.DataGridView dgvEnrollments;
     }
 }

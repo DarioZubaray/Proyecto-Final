@@ -18,7 +18,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void InitializeComponent()
         {
-            this.dgvAulas = new System.Windows.Forms.DataGridView();
+            this.dgvClassrooms = new System.Windows.Forms.DataGridView();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -27,7 +27,7 @@ namespace TrabajoFinal_DarioZubaray
             this.btnSearch = new System.Windows.Forms.Button();
             this.panelTop = new System.Windows.Forms.Panel();
             this.panelButtons = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAulas)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClassrooms)).BeginInit();
             this.panelTop.SuspendLayout();
             this.panelButtons.SuspendLayout();
             this.SuspendLayout();
@@ -111,30 +111,30 @@ namespace TrabajoFinal_DarioZubaray
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // dgvAulas
+            // dgvClassrooms
             // 
-            this.dgvAulas.AllowUserToAddRows = false;
-            this.dgvAulas.AllowUserToDeleteRows = false;
-            this.dgvAulas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAulas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvAulas.Location = new System.Drawing.Point(0, 40);
-            this.dgvAulas.Name = "dgvAulas";
-            this.dgvAulas.ReadOnly = true;
-            this.dgvAulas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvAulas.Size = new System.Drawing.Size(750, 320);
-            this.dgvAulas.TabIndex = 2;
+            this.dgvClassrooms.AllowUserToAddRows = false;
+            this.dgvClassrooms.AllowUserToDeleteRows = false;
+            this.dgvClassrooms.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvClassrooms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvClassrooms.Location = new System.Drawing.Point(0, 40);
+            this.dgvClassrooms.Name = "dgvClassrooms";
+            this.dgvClassrooms.ReadOnly = true;
+            this.dgvClassrooms.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvClassrooms.Size = new System.Drawing.Size(750, 320);
+            this.dgvClassrooms.TabIndex = 2;
             // 
-            // AulaManagementForm
+            // ClassroomManagementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(750, 400);
-            this.Controls.Add(this.dgvAulas);
+            this.Controls.Add(this.dgvClassrooms);
             this.Controls.Add(this.panelButtons);
             this.Controls.Add(this.panelTop);
-            this.Name = "AulaManagementForm";
+            this.Name = "ClassroomManagementForm";
             this.Text = "Gestión de Aulas";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAulas)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClassrooms)).EndInit();
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
             this.panelButtons.ResumeLayout(false);
@@ -144,7 +144,7 @@ namespace TrabajoFinal_DarioZubaray
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dgvAulas;
+        private System.Windows.Forms.DataGridView dgvClassrooms;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;

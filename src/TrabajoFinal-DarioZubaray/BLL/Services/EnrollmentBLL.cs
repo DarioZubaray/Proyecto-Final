@@ -10,110 +10,110 @@ namespace BLL.Services
     public class EnrollmentBLL : IEnrollmentBLL
     {
         #region Propiedades
-        private readonly IEnrollmentMPP _inscripcionMPP;
-        private readonly ICourseBLL _cursoBLL;
+        private readonly IEnrollmentMPP _enrollmentMPP;
+        private readonly ICourseBLL _courseBLL;
         #endregion
 
         #region Constructor
-        public EnrollmentBLL(IEnrollmentMPP inscripcionMPP, ICourseBLL cursoBLL)
+        public EnrollmentBLL(IEnrollmentMPP enrollmentMPP, ICourseBLL courseBLL)
         {
-            _inscripcionMPP = inscripcionMPP;
-            _cursoBLL = cursoBLL;
+            _enrollmentMPP = enrollmentMPP;
+            _courseBLL = courseBLL;
         }
         #endregion
 
         #region Métodos
-        public bool Inscribir(int cursoId, int alumnoId)
+        public bool Enroll(int courseId, int studentId)
         {
-            if (_inscripcionMPP.ExisteInscripcionActiva(cursoId, alumnoId))
+            if (_enrollmentMPP.ExistsActiveEnrollment(courseId, studentId))
             {
                 throw new InvalidOperationException("Ya está inscripto en este curso.");
             }
 
-            CourseBE cursoNuevo = _cursoBLL.FindById(cursoId);
-            if (cursoNuevo == null)
+            CourseBE newCourse = _courseBLL.FindById(courseId);
+            if (newCourse == null)
             {
                 throw new InvalidOperationException("El curso seleccionado no existe.");
             }
 
-            if (!cursoNuevo.DiaSemana.HasValue || !cursoNuevo.HoraInicio.HasValue || !cursoNuevo.HoraFin.HasValue)
+            if (!newCourse.DayOfWeek.HasValue || !newCourse.StartTime.HasValue || !newCourse.EndTime.HasValue)
             {
                 throw new InvalidOperationException("El curso seleccionado no tiene horario definido.");
             }
 
-            List<EnrollmentBE> inscripcionesActuales = _inscripcionMPP.FindByAlumnoId(alumnoId);
+            List<EnrollmentBE> currentEnrollments = _enrollmentMPP.FindByStudentId(studentId);
 
-            foreach (var inscripcion in inscripcionesActuales)
+            foreach (var enrollment in currentEnrollments)
             {
-                if (inscripcion.CursoId == cursoId)
+                if (enrollment.CourseId == courseId)
                 {
                     continue;
                 }
 
-                if (inscripcion.DiaSemana.HasValue && inscripcion.HoraInicio.HasValue && inscripcion.HoraFin.HasValue)
+                if (enrollment.DayOfWeek.HasValue && enrollment.StartTime.HasValue && enrollment.EndTime.HasValue)
                 {
-                    if (inscripcion.DiaSemana.Value != cursoNuevo.DiaSemana.Value)
+                    if (enrollment.DayOfWeek.Value != newCourse.DayOfWeek.Value)
                     {
                         continue;
                     }
 
-                    bool traslape = ExisteTraslapeHorario(
-                        alumnoId,
-                        cursoNuevo.DiaSemana.Value,
-                        cursoNuevo.HoraInicio.Value,
-                        cursoNuevo.HoraFin.Value,
-                        cursoId
+                    bool overlap = ExistsScheduleOverlap(
+                        studentId,
+                        newCourse.DayOfWeek.Value,
+                        newCourse.StartTime.Value,
+                        newCourse.EndTime.Value,
+                        courseId
                     );
 
-                    if (traslape)
+                    if (overlap)
                     {
                         throw new InvalidOperationException(
-                            $"Tiene traslape de horario con el curso '{inscripcion.CursoNombre}' ({GetDiaSemanaNombre(inscripcion.DiaSemana.Value)} {inscripcion.HoraInicio.Value:hh\\:mm} - {inscripcion.HoraFin.Value:hh\\:mm}).");
+                            $"Tiene traslape de horario con el curso '{enrollment.CourseName}' ({GetDayOfWeekName(enrollment.DayOfWeek.Value)} {enrollment.StartTime.Value:hh\\:mm} - {enrollment.EndTime.Value:hh\\:mm}).");
                     }
                 }
             }
 
-            return _inscripcionMPP.Inscribir(cursoId, alumnoId);
+            return _enrollmentMPP.Enroll(courseId, studentId);
         }
 
-        public bool Desinscribir(int cursoId, int alumnoId)
+        public bool Unenroll(int courseId, int studentId)
         {
-            return _inscripcionMPP.Desinscribir(cursoId, alumnoId);
+            return _enrollmentMPP.Unenroll(courseId, studentId);
         }
 
         public EnrollmentBE FindById(int id)
         {
-            return _inscripcionMPP.FindById(id);
+            return _enrollmentMPP.FindById(id);
         }
 
-        public List<EnrollmentBE> FindByAlumnoId(int alumnoId)
+        public List<EnrollmentBE> FindByStudentId(int studentId)
         {
-            return _inscripcionMPP.FindByAlumnoId(alumnoId);
+            return _enrollmentMPP.FindByStudentId(studentId);
         }
 
         public List<EnrollmentBE> FindAll()
         {
-            return _inscripcionMPP.FindAll();
+            return _enrollmentMPP.FindAll();
         }
 
-        public int CountAlumnosByCursoId(int cursoId)
+        public int CountStudentsByCourseId(int courseId)
         {
-            return _inscripcionMPP.CountAlumnosByCursoId(cursoId);
+            return _enrollmentMPP.CountStudentsByCourseId(courseId);
         }
 
-        public bool ExisteInscripcionActiva(int cursoId, int alumnoId)
+        public bool ExistsActiveEnrollment(int courseId, int studentId)
         {
-            return _inscripcionMPP.ExisteInscripcionActiva(cursoId, alumnoId);
+            return _enrollmentMPP.ExistsActiveEnrollment(courseId, studentId);
         }
 
-        public bool ExisteTraslapeHorario(int alumnoId, int diaSemana, TimeSpan horaInicio, TimeSpan horaFin, int cursoIdExcluir)
+        public bool ExistsScheduleOverlap(int studentId, int dayOfWeek, TimeSpan startTime, TimeSpan endTime, int courseIdToExclude)
         {
-            return _inscripcionMPP.ExisteTraslapeHorario(alumnoId, diaSemana, horaInicio, horaFin, cursoIdExcluir);
+            return _enrollmentMPP.ExistsScheduleOverlap(studentId, dayOfWeek, startTime, endTime, courseIdToExclude);
         }
 
-        private string GetDiaSemanaNombre(int dia)
+        private string GetDayOfWeekName(int day)
         {
-            switch (dia)
+            switch (day)
             {
                 case 1: return "Lunes";
                 case 2: return "Martes";
@@ -122,7 +122,7 @@ namespace BLL.Services
                 case 5: return "Viernes";
                 case 6: return "Sábado";
                 case 7: return "Domingo";
-                default: return $"Día {dia}";
+                default: return $"Día {day}";
             }
         }
         #endregion

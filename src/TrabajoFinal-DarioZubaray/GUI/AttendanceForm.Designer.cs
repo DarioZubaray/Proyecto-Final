@@ -19,120 +19,120 @@ namespace TrabajoFinal_DarioZubaray
         private void InitializeComponent()
         {
             this.panelTop = new System.Windows.Forms.Panel();
-            this.lblCurso = new System.Windows.Forms.Label();
-            this.cboCurso = new System.Windows.Forms.ComboBox();
-            this.lblFecha = new System.Windows.Forms.Label();
-            this.dtpFecha = new System.Windows.Forms.DateTimePicker();
-            this.btnBuscar = new System.Windows.Forms.Button();
-            this.dgvAsistencia = new System.Windows.Forms.DataGridView();
+            this.lblCourse = new System.Windows.Forms.Label();
+            this.cboCourse = new System.Windows.Forms.ComboBox();
+            this.lblDate = new System.Windows.Forms.Label();
+            this.dtpDate = new System.Windows.Forms.DateTimePicker();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.dgvAttendance = new System.Windows.Forms.DataGridView();
             this.panelBottom = new System.Windows.Forms.Panel();
-            this.btnGuardar = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             this.panelTop.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAsistencia)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAttendance)).BeginInit();
             this.panelBottom.SuspendLayout();
             this.SuspendLayout();
             //
             // panelTop
             //
-            this.panelTop.Controls.Add(this.lblCurso);
-            this.panelTop.Controls.Add(this.cboCurso);
-            this.panelTop.Controls.Add(this.lblFecha);
-            this.panelTop.Controls.Add(this.dtpFecha);
-            this.panelTop.Controls.Add(this.btnBuscar);
+            this.panelTop.Controls.Add(this.lblCourse);
+            this.panelTop.Controls.Add(this.cboCourse);
+            this.panelTop.Controls.Add(this.lblDate);
+            this.panelTop.Controls.Add(this.dtpDate);
+            this.panelTop.Controls.Add(this.btnSearch);
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
             this.panelTop.Size = new System.Drawing.Size(850, 50);
             this.panelTop.TabIndex = 0;
             //
-            // lblCurso
+            // lblCourse
             //
-            this.lblCurso.AutoSize = true;
-            this.lblCurso.Location = new System.Drawing.Point(12, 17);
-            this.lblCurso.Name = "lblCurso";
-            this.lblCurso.Size = new System.Drawing.Size(40, 13);
-            this.lblCurso.TabIndex = 0;
-            this.lblCurso.Text = "Curso:";
+            this.lblCourse.AutoSize = true;
+            this.lblCourse.Location = new System.Drawing.Point(12, 17);
+            this.lblCourse.Name = "lblCourse";
+            this.lblCourse.Size = new System.Drawing.Size(40, 13);
+            this.lblCourse.TabIndex = 0;
+            this.lblCourse.Text = "Curso:";
             //
-            // cboCurso
+            // cboCourse
             //
-            this.cboCurso.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCurso.Location = new System.Drawing.Point(60, 14);
-            this.cboCurso.Name = "cboCurso";
-            this.cboCurso.Size = new System.Drawing.Size(250, 21);
-            this.cboCurso.TabIndex = 1;
+            this.cboCourse.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCourse.Location = new System.Drawing.Point(60, 14);
+            this.cboCourse.Name = "cboCourse";
+            this.cboCourse.Size = new System.Drawing.Size(250, 21);
+            this.cboCourse.TabIndex = 1;
             //
-            // lblFecha
+            // lblDate
             //
-            this.lblFecha.AutoSize = true;
-            this.lblFecha.Location = new System.Drawing.Point(330, 17);
-            this.lblFecha.Name = "lblFecha";
-            this.lblFecha.Size = new System.Drawing.Size(40, 13);
-            this.lblFecha.TabIndex = 2;
-            this.lblFecha.Text = "Fecha:";
+            this.lblDate.AutoSize = true;
+            this.lblDate.Location = new System.Drawing.Point(330, 17);
+            this.lblDate.Name = "lblDate";
+            this.lblDate.Size = new System.Drawing.Size(40, 13);
+            this.lblDate.TabIndex = 2;
+            this.lblDate.Text = "Fecha:";
             //
-            // dtpFecha
+            // dtpDate
             //
-            this.dtpFecha.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpFecha.Location = new System.Drawing.Point(375, 14);
-            this.dtpFecha.Name = "dtpFecha";
-            this.dtpFecha.Size = new System.Drawing.Size(120, 20);
-            this.dtpFecha.TabIndex = 3;
+            this.dtpDate.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpDate.Location = new System.Drawing.Point(375, 14);
+            this.dtpDate.Name = "dtpDate";
+            this.dtpDate.Size = new System.Drawing.Size(120, 20);
+            this.dtpDate.TabIndex = 3;
             //
-            // btnBuscar
+            // btnSearch
             //
-            this.btnBuscar.Location = new System.Drawing.Point(510, 12);
-            this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(75, 23);
-            this.btnBuscar.TabIndex = 4;
-            this.btnBuscar.Text = "Buscar";
-            this.btnBuscar.UseVisualStyleBackColor = true;
-            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            this.btnSearch.Location = new System.Drawing.Point(510, 12);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnSearch.TabIndex = 4;
+            this.btnSearch.Text = "Buscar";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             //
-            // dgvAsistencia
+            // dgvAttendance
             //
-            this.dgvAsistencia.AllowUserToAddRows = false;
-            this.dgvAsistencia.AllowUserToDeleteRows = false;
-            this.dgvAsistencia.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvAsistencia.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvAsistencia.Location = new System.Drawing.Point(0, 50);
-            this.dgvAsistencia.Name = "dgvAsistencia";
-            this.dgvAsistencia.Size = new System.Drawing.Size(850, 400);
-            this.dgvAsistencia.TabIndex = 1;
+            this.dgvAttendance.AllowUserToAddRows = false;
+            this.dgvAttendance.AllowUserToDeleteRows = false;
+            this.dgvAttendance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAttendance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvAttendance.Location = new System.Drawing.Point(0, 50);
+            this.dgvAttendance.Name = "dgvAttendance";
+            this.dgvAttendance.Size = new System.Drawing.Size(850, 400);
+            this.dgvAttendance.TabIndex = 1;
             //
             // panelBottom
             //
-            this.panelBottom.Controls.Add(this.btnGuardar);
+            this.panelBottom.Controls.Add(this.btnSave);
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelBottom.Location = new System.Drawing.Point(0, 450);
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(850, 50);
             this.panelBottom.TabIndex = 2;
             //
-            // btnGuardar
+            // btnSave
             //
-            this.btnGuardar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGuardar.Location = new System.Drawing.Point(730, 12);
-            this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(110, 23);
-            this.btnGuardar.TabIndex = 0;
-            this.btnGuardar.Text = "Guardar Asistencia";
-            this.btnGuardar.UseVisualStyleBackColor = true;
-            this.btnGuardar.Click += new System.EventHandler(this.btnGuardar_Click);
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSave.Location = new System.Drawing.Point(730, 12);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(110, 23);
+            this.btnSave.TabIndex = 0;
+            this.btnSave.Text = "Guardar Asistencia";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             //
-            // AsistenciaForm
+            // AttendanceForm
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 500);
-            this.Controls.Add(this.dgvAsistencia);
+            this.Controls.Add(this.dgvAttendance);
             this.Controls.Add(this.panelBottom);
             this.Controls.Add(this.panelTop);
-            this.Name = "AsistenciaForm";
+            this.Name = "AttendanceForm";
             this.Text = "Registrar Asistencia";
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAsistencia)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAttendance)).EndInit();
             this.panelBottom.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -141,13 +141,13 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         private System.Windows.Forms.Panel panelTop;
-        private System.Windows.Forms.Label lblCurso;
-        private System.Windows.Forms.ComboBox cboCurso;
-        private System.Windows.Forms.Label lblFecha;
-        private System.Windows.Forms.DateTimePicker dtpFecha;
-        private System.Windows.Forms.Button btnBuscar;
-        private System.Windows.Forms.DataGridView dgvAsistencia;
+        private System.Windows.Forms.Label lblCourse;
+        private System.Windows.Forms.ComboBox cboCourse;
+        private System.Windows.Forms.Label lblDate;
+        private System.Windows.Forms.DateTimePicker dtpDate;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.DataGridView dgvAttendance;
         private System.Windows.Forms.Panel panelBottom;
-        private System.Windows.Forms.Button btnGuardar;
+        private System.Windows.Forms.Button btnSave;
     }
 }

@@ -10,30 +10,30 @@ namespace BLL.Services
     public class AttendanceBLL : IAttendanceBLL
     {
         #region Propiedades
-        private readonly IAttendanceMPP _asistenciaMPP;
+        private readonly IAttendanceMPP _attendanceMPP;
         #endregion
 
         #region Constructor
-        public AttendanceBLL(IAttendanceMPP asistenciaMPP)
+        public AttendanceBLL(IAttendanceMPP attendanceMPP)
         {
-            _asistenciaMPP = asistenciaMPP;
+            _attendanceMPP = attendanceMPP;
         }
         #endregion
 
         #region Métodos
-        public bool RegistrarAsistenciaBulk(int cursoId, DateTime fecha, List<AttendanceBE> registros)
+        public bool RegisterAttendanceBulk(int courseId, DateTime date, List<AttendanceBE> records)
         {
-            return _asistenciaMPP.RegistrarAsistenciaBulk(cursoId, fecha, registros);
+            return _attendanceMPP.RegisterAttendanceBulk(courseId, date, records);
         }
 
-        public List<AttendanceBE> FindByCursoIdAndFecha(int cursoId, DateTime fecha)
+        public List<AttendanceBE> FindByCourseIdAndDate(int courseId, DateTime date)
         {
-            return _asistenciaMPP.FindByCursoIdAndFecha(cursoId, fecha);
+            return _attendanceMPP.FindByCourseIdAndDate(courseId, date);
         }
 
-        public bool EsDocenteDelCurso(int cursoId, int docenteId)
+        public bool IsTeacherOfCourse(int courseId, int teacherId)
         {
-            return _asistenciaMPP.EsDocenteDelCurso(cursoId, docenteId);
+            return _attendanceMPP.IsTeacherOfCourse(courseId, teacherId);
         }
         #endregion
     }

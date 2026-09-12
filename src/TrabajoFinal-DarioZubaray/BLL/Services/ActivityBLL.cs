@@ -27,20 +27,20 @@ namespace BLL.Services
         #region Registro de actividades (Decorator)
         public void LogFormAccess(int userId, string formName, string description = null)
         {
-            IActivity activity = new BaseActivity(userId, ActivityActions.FormAccess, formName, description);
-            new ActivityLoggingDecorator(activity, _activityMPP).Execute();
+            IActivityLogEntryBLL activity = new BaseActivity(userId, ActivityActions.FormAccess, formName, description);
+            new ActivityLoggingDecoratorBLL(activity, _activityMPP).Execute();
         }
 
         public void LogLogin(int userId, string description = null)
         {
-            IActivity activity = new BaseActivity(userId, ActivityActions.Login, null, description);
-            new ActivityLoggingDecorator(activity, _activityMPP).Execute();
+            IActivityLogEntryBLL activity = new BaseActivity(userId, ActivityActions.Login, null, description);
+            new ActivityLoggingDecoratorBLL(activity, _activityMPP).Execute();
         }
 
         public void LogLogout(int userId, string description = null)
         {
-            IActivity activity = new BaseActivity(userId, ActivityActions.Logout, null, description);
-            new ActivityLoggingDecorator(activity, _activityMPP).Execute();
+            IActivityLogEntryBLL activity = new BaseActivity(userId, ActivityActions.Logout, null, description);
+            new ActivityLoggingDecoratorBLL(activity, _activityMPP).Execute();
         }
         #endregion
 

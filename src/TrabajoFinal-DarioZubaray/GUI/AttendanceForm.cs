@@ -14,10 +14,10 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _currentUser;
-        private readonly IAttendanceBLL _asistenciaBLL;
-        private readonly ICourseBLL _cursoBLL;
-        private readonly IEnrollmentBLL _inscripcionBLL;
-        private List<CourseBE> _cursosDelDocente;
+        private readonly IAttendanceBLL _attendanceBLL;
+        private readonly ICourseBLL _courseBLL;
+        private readonly IEnrollmentBLL _enrollmentBLL;
+        private List<CourseBE> _teacherCourses;
         #endregion
 
         #region Constructores
@@ -25,190 +25,190 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _currentUser = user;
-            _asistenciaBLL = ServiceLocatorBLL.CreateAsistenciaBLL();
-            _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
-            _inscripcionBLL = ServiceLocatorBLL.CreateInscripcionBLL();
+            _attendanceBLL = ServiceLocatorBLL.CreateAttendanceBLL();
+            _courseBLL = ServiceLocatorBLL.CreateCourseBLL();
+            _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL();
             ApplyResources();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
-            LoadCursos();
+            LoadCourses();
         }
         #endregion
 
         #region Métodos
         private void ApplyResources()
         {
-            this.Text = Resources.AsistenciaForm_Title;
-            lblCurso.Text = Resources.AsistenciaForm_CourseLabel;
-            lblFecha.Text = Resources.AsistenciaForm_DateLabel;
-            btnBuscar.Text = Resources.AsistenciaForm_SearchButton;
-            btnGuardar.Text = Resources.AsistenciaForm_SaveButton;
+            this.Text = Resources.AttendanceForm_Title;
+            lblCourse.Text = Resources.AttendanceForm_CourseLabel;
+            lblDate.Text = Resources.AttendanceForm_DateLabel;
+            btnSearch.Text = Resources.AttendanceForm_SearchButton;
+            btnSave.Text = Resources.AttendanceForm_SaveButton;
         }
 
-        private void LoadCursos()
+        private void LoadCourses()
         {
-            _cursosDelDocente = _cursoBLL.FindByDocenteId(_currentUser.Id);
+            _teacherCourses = _courseBLL.FindByTeacherId(_currentUser.Id);
 
-            cboCurso.DataSource = null;
-            cboCurso.DataSource = _cursosDelDocente;
-            cboCurso.DisplayMember = "Nombre";
-            cboCurso.ValueMember = "Id";
+            cboCourse.DataSource = null;
+            cboCourse.DataSource = _teacherCourses;
+            cboCourse.DisplayMember = "Name";
+            cboCourse.ValueMember = "Id";
 
-            if (_cursosDelDocente.Count == 0)
+            if (_teacherCourses.Count == 0)
             {
-                btnBuscar.Enabled = false;
-                btnGuardar.Enabled = false;
-                MessageBox.Show(Resources.AsistenciaForm_NoCourses,
-                    Resources.AsistenciaForm_ValidationTitle,
+                btnSearch.Enabled = false;
+                btnSave.Enabled = false;
+                MessageBox.Show(Resources.AttendanceForm_NoCourses,
+                    Resources.AttendanceForm_ValidationTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void LoadAlumnos()
+        private void LoadStudents()
         {
-            if (cboCurso.SelectedValue == null) return;
+            if (cboCourse.SelectedValue == null) return;
 
-            int cursoId = (int)cboCurso.SelectedValue;
-            DateTime fecha = dtpFecha.Value.Date;
+            int courseId = (int)cboCourse.SelectedValue;
+            DateTime date = dtpDate.Value.Date;
 
-            dgvAsistencia.DataSource = null;
-            dgvAsistencia.Columns.Clear();
+            dgvAttendance.DataSource = null;
+            dgvAttendance.Columns.Clear();
 
-            List<EnrollmentBE> inscripciones = _inscripcionBLL.FindAll()
-                .Where(i => i.CursoId == cursoId && i.IsActive)
+            List<EnrollmentBE> enrollments = _enrollmentBLL.FindAll()
+                .Where(i => i.CourseId == courseId && i.IsActive)
                 .ToList();
 
-            if (inscripciones.Count == 0)
+            if (enrollments.Count == 0)
             {
-                MessageBox.Show(Resources.AsistenciaForm_NoStudents,
-                    Resources.AsistenciaForm_ValidationTitle,
+                MessageBox.Show(Resources.AttendanceForm_NoStudents,
+                    Resources.AttendanceForm_ValidationTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            List<AttendanceBE> asistenciaExistente = _asistenciaBLL.FindByCursoIdAndFecha(cursoId, fecha);
-            Dictionary<int, bool> mapaAsistencia = asistenciaExistente.ToDictionary(a => a.AlumnoId, a => a.Presente);
+            List<AttendanceBE> existingAttendance = _attendanceBLL.FindByCourseIdAndDate(courseId, date);
+            Dictionary<int, bool> attendanceMap = existingAttendance.ToDictionary(a => a.StudentId, a => a.IsPresent);
 
             System.Data.DataTable dt = new System.Data.DataTable();
-            dt.Columns.Add("AlumnoId", typeof(int));
-            dt.Columns.Add("Alumno", typeof(string));
-            dt.Columns.Add("Presente", typeof(bool));
+            dt.Columns.Add("StudentId", typeof(int));
+            dt.Columns.Add("Student", typeof(string));
+            dt.Columns.Add("IsPresent", typeof(bool));
 
-            foreach (var inscripcion in inscripciones)
+            foreach (var enrollment in enrollments)
             {
-                bool presente = mapaAsistencia.ContainsKey(inscripcion.AlumnoId) && mapaAsistencia[inscripcion.AlumnoId];
-                dt.Rows.Add(inscripcion.AlumnoId, inscripcion.AlumnoNombre, presente);
+                bool isPresent = attendanceMap.ContainsKey(enrollment.StudentId) && attendanceMap[enrollment.StudentId];
+                dt.Rows.Add(enrollment.StudentId, enrollment.StudentName, isPresent);
             }
 
-            dgvAsistencia.DataSource = dt;
+            dgvAttendance.DataSource = dt;
             ConfigureGrid();
         }
 
         private void ConfigureGrid()
         {
-            if (dgvAsistencia.Columns.Count == 0) return;
+            if (dgvAttendance.Columns.Count == 0) return;
 
-            dgvAsistencia.Columns["AlumnoId"].Visible = false;
-            dgvAsistencia.Columns["Alumno"].HeaderText = Resources.AsistenciaForm_ColStudent;
-            dgvAsistencia.Columns["Alumno"].ReadOnly = true;
-            dgvAsistencia.Columns["Alumno"].Width = 400;
+            dgvAttendance.Columns["StudentId"].Visible = false;
+            dgvAttendance.Columns["Student"].HeaderText = Resources.AttendanceForm_ColStudent;
+            dgvAttendance.Columns["Student"].ReadOnly = true;
+            dgvAttendance.Columns["Student"].Width = 400;
 
-            dgvAsistencia.Columns["Presente"].HeaderText = Resources.AsistenciaForm_ColPresent;
-            dgvAsistencia.Columns["Presente"].ReadOnly = false;
-            dgvAsistencia.Columns["Presente"].Width = 100;
-            dgvAsistencia.Columns["Presente"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dgvAsistencia.Columns["Presente"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvAttendance.Columns["IsPresent"].HeaderText = Resources.AttendanceForm_ColPresent;
+            dgvAttendance.Columns["IsPresent"].ReadOnly = false;
+            dgvAttendance.Columns["IsPresent"].Width = 100;
+            dgvAttendance.Columns["IsPresent"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvAttendance.Columns["IsPresent"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dgvAsistencia.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvAsistencia.MultiSelect = false;
-            dgvAsistencia.AllowUserToAddRows = false;
-            dgvAsistencia.AllowUserToDeleteRows = false;
-            dgvAsistencia.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dgvAttendance.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvAttendance.MultiSelect = false;
+            dgvAttendance.AllowUserToAddRows = false;
+            dgvAttendance.AllowUserToDeleteRows = false;
+            dgvAttendance.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
         }
         #endregion
 
         #region Eventos
-        private void btnBuscar_Click(object sender, EventArgs e)
+        private void btnSearch_Click(object sender, EventArgs e)
         {
-            if (cboCurso.SelectedValue == null)
+            if (cboCourse.SelectedValue == null)
             {
-                MessageBox.Show(Resources.AsistenciaForm_SelectCourse,
-                    Resources.AsistenciaForm_ValidationTitle,
+                MessageBox.Show(Resources.AttendanceForm_SelectCourse,
+                    Resources.AttendanceForm_ValidationTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            int cursoId = (int)cboCurso.SelectedValue;
+            int courseId = (int)cboCourse.SelectedValue;
 
-            if (!_asistenciaBLL.EsDocenteDelCurso(cursoId, _currentUser.Id))
+            if (!_attendanceBLL.IsTeacherOfCourse(courseId, _currentUser.Id))
             {
-                MessageBox.Show(Resources.AsistenciaForm_Unauthorized,
-                    Resources.AsistenciaForm_ErrorTitle,
+                MessageBox.Show(Resources.AttendanceForm_Unauthorized,
+                    Resources.AttendanceForm_ErrorTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            LoadAlumnos();
+            LoadStudents();
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private void btnSave_Click(object sender, EventArgs e)
         {
             try
             {
-                if (cboCurso.SelectedValue == null)
+                if (cboCourse.SelectedValue == null)
                 {
-                    MessageBox.Show(Resources.AsistenciaForm_SelectCourse,
-                        Resources.AsistenciaForm_ValidationTitle,
+                    MessageBox.Show(Resources.AttendanceForm_SelectCourse,
+                        Resources.AttendanceForm_ValidationTitle,
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (dgvAsistencia.Rows.Count == 0)
+                if (dgvAttendance.Rows.Count == 0)
                 {
-                    MessageBox.Show(Resources.AsistenciaForm_NoStudents,
-                        Resources.AsistenciaForm_ValidationTitle,
+                    MessageBox.Show(Resources.AttendanceForm_NoStudents,
+                        Resources.AttendanceForm_ValidationTitle,
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                int cursoId = (int)cboCurso.SelectedValue;
-                DateTime fecha = dtpFecha.Value.Date;
+                int courseId = (int)cboCourse.SelectedValue;
+                DateTime date = dtpDate.Value.Date;
 
-                if (!_asistenciaBLL.EsDocenteDelCurso(cursoId, _currentUser.Id))
+                if (!_attendanceBLL.IsTeacherOfCourse(courseId, _currentUser.Id))
                 {
-                    MessageBox.Show(Resources.AsistenciaForm_Unauthorized,
-                        Resources.AsistenciaForm_ErrorTitle,
+                    MessageBox.Show(Resources.AttendanceForm_Unauthorized,
+                        Resources.AttendanceForm_ErrorTitle,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                List<AttendanceBE> registros = new List<AttendanceBE>();
+                List<AttendanceBE> records = new List<AttendanceBE>();
 
-                foreach (DataGridViewRow row in dgvAsistencia.Rows)
+                foreach (DataGridViewRow row in dgvAttendance.Rows)
                 {
-                    if (row.Cells["AlumnoId"].Value == null) continue;
+                    if (row.Cells["StudentId"].Value == null) continue;
 
-                    int alumnoId = Convert.ToInt32(row.Cells["AlumnoId"].Value);
-                    bool presente = Convert.ToBoolean(row.Cells["Presente"].Value);
+                    int studentId = Convert.ToInt32(row.Cells["StudentId"].Value);
+                    bool isPresent = Convert.ToBoolean(row.Cells["IsPresent"].Value);
 
-                    registros.Add(new AttendanceBE
+                    records.Add(new AttendanceBE
                     {
-                        CursoId = cursoId,
-                        AlumnoId = alumnoId,
-                        Fecha = fecha,
-                        Presente = presente
+                        CourseId = courseId,
+                        StudentId = studentId,
+                        Date = date,
+                        IsPresent = isPresent
                     });
                 }
 
-                _asistenciaBLL.RegistrarAsistenciaBulk(cursoId, fecha, registros);
+                _attendanceBLL.RegisterAttendanceBulk(courseId, date, records);
 
-                MessageBox.Show(Resources.AsistenciaForm_SaveSuccess,
-                    Resources.AsistenciaForm_Title,
+                MessageBox.Show(Resources.AttendanceForm_SaveSuccess,
+                    Resources.AttendanceForm_Title,
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(Resources.AsistenciaForm_SaveError, ex.Message),
-                    Resources.AsistenciaForm_ErrorTitle,
+                MessageBox.Show(string.Format(Resources.AttendanceForm_SaveError, ex.Message),
+                    Resources.AttendanceForm_ErrorTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

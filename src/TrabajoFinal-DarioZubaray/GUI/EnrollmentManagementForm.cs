@@ -13,7 +13,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _currentUser;
-        private readonly IEnrollmentBLL _inscripcionBLL;
+        private readonly IEnrollmentBLL _enrollmentBLL;
         #endregion
 
         #region Constructores
@@ -21,9 +21,9 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _currentUser = user;
-            _inscripcionBLL = ServiceLocatorBLL.CreateInscripcionBLL();
+            _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL();
             ApplyResources();
-            LoadInscripciones();
+            LoadEnrollments();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
@@ -31,12 +31,12 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private void ApplyResources()
         {
-            this.Text = Resources.InscripcionManagementForm_Title;
-            lblSearch.Text = Resources.InscripcionManagementForm_SearchLabel;
-            btnSearch.Text = Resources.InscripcionManagementForm_SearchButton;
+            this.Text = Resources.EnrollmentManagementForm_Title;
+            lblSearch.Text = Resources.EnrollmentManagementForm_SearchLabel;
+            btnSearch.Text = Resources.EnrollmentManagementForm_SearchButton;
         }
 
-        private string GetDiaSemanaNombre(int? dia)
+        private string GetDayOfWeekName(int? dia)
         {
             if (!dia.HasValue) return "-";
             switch (dia.Value)
@@ -52,50 +52,50 @@ namespace TrabajoFinal_DarioZubaray
             }
         }
 
-        private void LoadInscripciones()
+        private void LoadEnrollments()
         {
-            dgvInscripciones.DataSource = null;
-            var inscripciones = _inscripcionBLL.FindAll();
+            dgvEnrollments.DataSource = null;
+            var enrollments = _enrollmentBLL.FindAll();
 
-            var inscripcionesGrid = inscripciones.Select(i => new
+            var inscripcionesGrid = enrollments.Select(i => new
             {
-                Alumno = i.AlumnoNombre,
-                Curso = i.CursoNombre,
-                DiaSemana = GetDiaSemanaNombre(i.DiaSemana),
-                HoraInicio = i.HoraInicio.HasValue ? i.HoraInicio.Value.ToString(@"hh\:mm") : "-",
-                HoraFin = i.HoraFin.HasValue ? i.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Aula = i.AulaNombre ?? Resources.InscripcionForm_NoAssignment,
+                Alumno = i.StudentName,
+                Curso = i.CourseName,
+                DiaSemana = GetDayOfWeekName(i.DayOfWeek),
+                HoraInicio = i.StartTime.HasValue ? i.StartTime.Value.ToString(@"hh\:mm") : "-",
+                HoraFin = i.EndTime.HasValue ? i.EndTime.Value.ToString(@"hh\:mm") : "-",
+                Aula = i.ClassroomName ?? Resources.EnrollmentForm_NoAssignment,
                 Fecha = i.CreatedAt.ToString("dd/MM/yyyy HH:mm")
             }).ToList();
 
-            dgvInscripciones.DataSource = inscripcionesGrid;
+            dgvEnrollments.DataSource = inscripcionesGrid;
             ConfigureGrid();
         }
 
         private void ConfigureGrid()
         {
-            if (dgvInscripciones.Columns.Count == 0) return;
+            if (dgvEnrollments.Columns.Count == 0) return;
 
-            dgvInscripciones.Columns["Alumno"].HeaderText = Resources.InscripcionManagementForm_ColStudent;
-            dgvInscripciones.Columns["Curso"].HeaderText = Resources.InscripcionManagementForm_ColCourse;
-            dgvInscripciones.Columns["DiaSemana"].HeaderText = Resources.InscripcionManagementForm_ColDay;
-            dgvInscripciones.Columns["HoraInicio"].HeaderText = Resources.InscripcionManagementForm_ColStartTime;
-            dgvInscripciones.Columns["HoraFin"].HeaderText = Resources.InscripcionManagementForm_ColEndTime;
-            dgvInscripciones.Columns["Aula"].HeaderText = Resources.InscripcionManagementForm_ColClassroom;
-            dgvInscripciones.Columns["Fecha"].HeaderText = Resources.InscripcionManagementForm_ColEnrollDate;
+            dgvEnrollments.Columns["Alumno"].HeaderText = Resources.EnrollmentManagementForm_ColStudent;
+            dgvEnrollments.Columns["Curso"].HeaderText = Resources.EnrollmentManagementForm_ColCourse;
+            dgvEnrollments.Columns["DiaSemana"].HeaderText = Resources.EnrollmentManagementForm_ColDay;
+            dgvEnrollments.Columns["HoraInicio"].HeaderText = Resources.EnrollmentManagementForm_ColStartTime;
+            dgvEnrollments.Columns["HoraFin"].HeaderText = Resources.EnrollmentManagementForm_ColEndTime;
+            dgvEnrollments.Columns["Aula"].HeaderText = Resources.EnrollmentManagementForm_ColClassroom;
+            dgvEnrollments.Columns["Fecha"].HeaderText = Resources.EnrollmentManagementForm_ColEnrollDate;
 
-            dgvInscripciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvInscripciones.MultiSelect = false;
-            dgvInscripciones.ReadOnly = true;
-            dgvInscripciones.AllowUserToAddRows = false;
-            dgvInscripciones.AllowUserToDeleteRows = false;
+            dgvEnrollments.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvEnrollments.MultiSelect = false;
+            dgvEnrollments.ReadOnly = true;
+            dgvEnrollments.AllowUserToAddRows = false;
+            dgvEnrollments.AllowUserToDeleteRows = false;
         }
         #endregion
 
         #region Eventos
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            LoadInscripciones();
+            LoadEnrollments();
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -103,30 +103,30 @@ namespace TrabajoFinal_DarioZubaray
             string searchText = txtSearch.Text.Trim();
             if (string.IsNullOrEmpty(searchText))
             {
-                LoadInscripciones();
+                LoadEnrollments();
                 return;
             }
 
-            dgvInscripciones.DataSource = null;
-            var inscripciones = _inscripcionBLL.FindAll();
+            dgvEnrollments.DataSource = null;
+            var enrollments = _enrollmentBLL.FindAll();
 
-            var inscripcionesFiltradas = inscripciones
-                .Where(i => i.AlumnoNombre.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
-                         || i.CursoNombre.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
+            var inscripcionesFiltradas = enrollments
+                .Where(i => i.StudentName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0
+                         || i.CourseName.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) >= 0)
                 .ToList();
 
             var inscripcionesGrid = inscripcionesFiltradas.Select(i => new
             {
-                Alumno = i.AlumnoNombre,
-                Curso = i.CursoNombre,
-                DiaSemana = GetDiaSemanaNombre(i.DiaSemana),
-                HoraInicio = i.HoraInicio.HasValue ? i.HoraInicio.Value.ToString(@"hh\:mm") : "-",
-                HoraFin = i.HoraFin.HasValue ? i.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Aula = i.AulaNombre ?? Resources.InscripcionForm_NoAssignment,
+                Alumno = i.StudentName,
+                Curso = i.CourseName,
+                DiaSemana = GetDayOfWeekName(i.DayOfWeek),
+                HoraInicio = i.StartTime.HasValue ? i.StartTime.Value.ToString(@"hh\:mm") : "-",
+                HoraFin = i.EndTime.HasValue ? i.EndTime.Value.ToString(@"hh\:mm") : "-",
+                Aula = i.ClassroomName ?? Resources.EnrollmentForm_NoAssignment,
                 Fecha = i.CreatedAt.ToString("dd/MM/yyyy HH:mm")
             }).ToList();
 
-            dgvInscripciones.DataSource = inscripcionesGrid;
+            dgvEnrollments.DataSource = inscripcionesGrid;
             ConfigureGrid();
         }
 

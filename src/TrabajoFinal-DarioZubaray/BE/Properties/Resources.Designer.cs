@@ -1068,249 +1068,249 @@ namespace BE.Properties {
             }
         }
         
-        public static string CursoForm_NewTitle {
+        public static string CourseForm_NewTitle {
             get {
-                return ResourceManager.GetString("CursoForm_NewTitle", resourceCulture);
+                return ResourceManager.GetString("CourseForm_NewTitle", resourceCulture);
             }
         }
         
-        public static string CursoForm_EditTitle {
+        public static string CourseForm_EditTitle {
             get {
-                return ResourceManager.GetString("CursoForm_EditTitle", resourceCulture);
+                return ResourceManager.GetString("CourseForm_EditTitle", resourceCulture);
             }
         }
         
-        public static string CursoForm_NameLabel {
+        public static string CourseForm_NameLabel {
             get {
-                return ResourceManager.GetString("CursoForm_NameLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_NameLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_DescriptionLabel {
+        public static string CourseForm_DescriptionLabel {
             get {
-                return ResourceManager.GetString("CursoForm_DescriptionLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_DescriptionLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_StartDateLabel {
+        public static string CourseForm_StartDateLabel {
             get {
-                return ResourceManager.GetString("CursoForm_StartDateLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_StartDateLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_EndDateLabel {
+        public static string CourseForm_EndDateLabel {
             get {
-                return ResourceManager.GetString("CursoForm_EndDateLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_EndDateLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_StartTimeLabel {
+        public static string CourseForm_StartTimeLabel {
             get {
-                return ResourceManager.GetString("CursoForm_StartTimeLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_StartTimeLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_EndTimeLabel {
+        public static string CourseForm_EndTimeLabel {
             get {
-                return ResourceManager.GetString("CursoForm_EndTimeLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_EndTimeLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_ClassroomLabel {
+        public static string CourseForm_ClassroomLabel {
             get {
-                return ResourceManager.GetString("CursoForm_ClassroomLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ClassroomLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_AvailableTeachersLabel {
+        public static string CourseForm_AvailableTeachersLabel {
             get {
-                return ResourceManager.GetString("CursoForm_AvailableTeachersLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_AvailableTeachersLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_AssignedTeachersLabel {
+        public static string CourseForm_AssignedTeachersLabel {
             get {
-                return ResourceManager.GetString("CursoForm_AssignedTeachersLabel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_AssignedTeachersLabel", resourceCulture);
             }
         }
         
-        public static string CursoForm_TeachersSection {
+        public static string CourseForm_TeachersSection {
             get {
-                return ResourceManager.GetString("CursoForm_TeachersSection", resourceCulture);
+                return ResourceManager.GetString("CourseForm_TeachersSection", resourceCulture);
             }
         }
         
-        public static string CursoForm_Save {
+        public static string CourseForm_Save {
             get {
-                return ResourceManager.GetString("CursoForm_Save", resourceCulture);
+                return ResourceManager.GetString("CourseForm_Save", resourceCulture);
             }
         }
         
-        public static string CursoForm_Cancel {
+        public static string CourseForm_Cancel {
             get {
-                return ResourceManager.GetString("CursoForm_Cancel", resourceCulture);
+                return ResourceManager.GetString("CourseForm_Cancel", resourceCulture);
             }
         }
         
-        public static string CursoForm_Activate {
+        public static string CourseForm_Activate {
             get {
-                return ResourceManager.GetString("CursoForm_Activate", resourceCulture);
+                return ResourceManager.GetString("CourseForm_Activate", resourceCulture);
             }
         }
         
-        public static string CursoForm_Deactivate {
+        public static string CourseForm_Deactivate {
             get {
-                return ResourceManager.GetString("CursoForm_Deactivate", resourceCulture);
+                return ResourceManager.GetString("CourseForm_Deactivate", resourceCulture);
             }
         }
         
-        public static string CursoForm_Add {
+        public static string CourseForm_Add {
             get {
-                return ResourceManager.GetString("CursoForm_Add", resourceCulture);
+                return ResourceManager.GetString("CourseForm_Add", resourceCulture);
             }
         }
         
-        public static string CursoForm_Remove {
+        public static string CourseForm_Remove {
             get {
-                return ResourceManager.GetString("CursoForm_Remove", resourceCulture);
+                return ResourceManager.GetString("CourseForm_Remove", resourceCulture);
             }
         }
         
-        public static string CursoForm_TimeIncomplete {
+        public static string CourseForm_TimeIncomplete {
             get {
-                return ResourceManager.GetString("CursoForm_TimeIncomplete", resourceCulture);
+                return ResourceManager.GetString("CourseForm_TimeIncomplete", resourceCulture);
             }
         }
         
-        public static string CursoForm_TimeInvalidFormat {
+        public static string CourseForm_TimeInvalidFormat {
             get {
-                return ResourceManager.GetString("CursoForm_TimeInvalidFormat", resourceCulture);
+                return ResourceManager.GetString("CourseForm_TimeInvalidFormat", resourceCulture);
             }
         }
         
-        public static string CursoForm_HoursRange {
+        public static string CourseForm_HoursRange {
             get {
-                return ResourceManager.GetString("CursoForm_HoursRange", resourceCulture);
+                return ResourceManager.GetString("CourseForm_HoursRange", resourceCulture);
             }
         }
         
-        public static string CursoForm_MinutesInvalid {
+        public static string CourseForm_MinutesInvalid {
             get {
-                return ResourceManager.GetString("CursoForm_MinutesInvalid", resourceCulture);
+                return ResourceManager.GetString("CourseForm_MinutesInvalid", resourceCulture);
             }
         }
         
-        public static string CursoForm_NameRequired {
+        public static string CourseForm_NameRequired {
             get {
-                return ResourceManager.GetString("CursoForm_NameRequired", resourceCulture);
+                return ResourceManager.GetString("CourseForm_NameRequired", resourceCulture);
             }
         }
         
-        public static string CursoForm_DatesInvalid {
+        public static string CourseForm_DatesInvalid {
             get {
-                return ResourceManager.GetString("CursoForm_DatesInvalid", resourceCulture);
+                return ResourceManager.GetString("CourseForm_DatesInvalid", resourceCulture);
             }
         }
         
-        public static string CursoForm_TimeRangeInvalid {
+        public static string CourseForm_TimeRangeInvalid {
             get {
-                return ResourceManager.GetString("CursoForm_TimeRangeInvalid", resourceCulture);
+                return ResourceManager.GetString("CourseForm_TimeRangeInvalid", resourceCulture);
             }
         }
         
-        public static string CursoForm_ClassroomRequired {
+        public static string CourseForm_ClassroomRequired {
             get {
-                return ResourceManager.GetString("CursoForm_ClassroomRequired", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ClassroomRequired", resourceCulture);
             }
         }
         
-        public static string CursoForm_TeacherRequired {
+        public static string CourseForm_TeacherRequired {
             get {
-                return ResourceManager.GetString("CursoForm_TeacherRequired", resourceCulture);
+                return ResourceManager.GetString("CourseForm_TeacherRequired", resourceCulture);
             }
         }
         
-        public static string CursoForm_TeacherOverlap {
+        public static string CourseForm_TeacherOverlap {
             get {
-                return ResourceManager.GetString("CursoForm_TeacherOverlap", resourceCulture);
+                return ResourceManager.GetString("CourseForm_TeacherOverlap", resourceCulture);
             }
         }
         
-        public static string CursoForm_CreatedSuccess {
+        public static string CourseForm_CreatedSuccess {
             get {
-                return ResourceManager.GetString("CursoForm_CreatedSuccess", resourceCulture);
+                return ResourceManager.GetString("CourseForm_CreatedSuccess", resourceCulture);
             }
         }
         
-        public static string CursoForm_UpdatedSuccess {
+        public static string CourseForm_UpdatedSuccess {
             get {
-                return ResourceManager.GetString("CursoForm_UpdatedSuccess", resourceCulture);
+                return ResourceManager.GetString("CourseForm_UpdatedSuccess", resourceCulture);
             }
         }
         
-        public static string CursoForm_SaveError {
+        public static string CourseForm_SaveError {
             get {
-                return ResourceManager.GetString("CursoForm_SaveError", resourceCulture);
+                return ResourceManager.GetString("CourseForm_SaveError", resourceCulture);
             }
         }
         
-        public static string CursoForm_DeactivateTitle {
+        public static string CourseForm_DeactivateTitle {
             get {
-                return ResourceManager.GetString("CursoForm_DeactivateTitle", resourceCulture);
+                return ResourceManager.GetString("CourseForm_DeactivateTitle", resourceCulture);
             }
         }
         
-        public static string CursoForm_ActivateTitle {
+        public static string CourseForm_ActivateTitle {
             get {
-                return ResourceManager.GetString("CursoForm_ActivateTitle", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ActivateTitle", resourceCulture);
             }
         }
         
-        public static string CursoForm_DeactivateConfirm {
+        public static string CourseForm_DeactivateConfirm {
             get {
-                return ResourceManager.GetString("CursoForm_DeactivateConfirm", resourceCulture);
+                return ResourceManager.GetString("CourseForm_DeactivateConfirm", resourceCulture);
             }
         }
         
-        public static string CursoForm_ActivateConfirm {
+        public static string CourseForm_ActivateConfirm {
             get {
-                return ResourceManager.GetString("CursoForm_ActivateConfirm", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ActivateConfirm", resourceCulture);
             }
         }
         
-        public static string CursoForm_DeactivatedSuccess {
+        public static string CourseForm_DeactivatedSuccess {
             get {
-                return ResourceManager.GetString("CursoForm_DeactivatedSuccess", resourceCulture);
+                return ResourceManager.GetString("CourseForm_DeactivatedSuccess", resourceCulture);
             }
         }
         
-        public static string CursoForm_ReactivatedSuccess {
+        public static string CourseForm_ReactivatedSuccess {
             get {
-                return ResourceManager.GetString("CursoForm_ReactivatedSuccess", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ReactivatedSuccess", resourceCulture);
             }
         }
         
-        public static string CursoForm_DeactivateError {
+        public static string CourseForm_DeactivateError {
             get {
-                return ResourceManager.GetString("CursoForm_DeactivateError", resourceCulture);
+                return ResourceManager.GetString("CourseForm_DeactivateError", resourceCulture);
             }
         }
         
-        public static string CursoForm_ActivateError {
+        public static string CourseForm_ActivateError {
             get {
-                return ResourceManager.GetString("CursoForm_ActivateError", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ActivateError", resourceCulture);
             }
         }
         
-        public static string CursoForm_ValidationTitle {
+        public static string CourseForm_ValidationTitle {
             get {
-                return ResourceManager.GetString("CursoForm_ValidationTitle", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ValidationTitle", resourceCulture);
             }
         }
         
-        public static string CursoForm_ErrorTitle {
+        public static string CourseForm_ErrorTitle {
             get {
-                return ResourceManager.GetString("CursoForm_ErrorTitle", resourceCulture);
+                return ResourceManager.GetString("CourseForm_ErrorTitle", resourceCulture);
             }
         }
         
@@ -1356,387 +1356,387 @@ namespace BE.Properties {
             }
         }
         
-        public static string InscripcionForm_Title {
+        public static string EnrollmentForm_Title {
             get {
-                return ResourceManager.GetString("InscripcionForm_Title", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_Title", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_AvailableCoursesLabel {
+        public static string EnrollmentForm_AvailableCoursesLabel {
             get {
-                return ResourceManager.GetString("InscripcionForm_AvailableCoursesLabel", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_AvailableCoursesLabel", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_MyEnrollmentsLabel {
+        public static string EnrollmentForm_MyEnrollmentsLabel {
             get {
-                return ResourceManager.GetString("InscripcionForm_MyEnrollmentsLabel", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_MyEnrollmentsLabel", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_EnrollButton {
+        public static string EnrollmentForm_EnrollButton {
             get {
-                return ResourceManager.GetString("InscripcionForm_EnrollButton", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_EnrollButton", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_UnenrollButton {
+        public static string EnrollmentForm_UnenrollButton {
             get {
-                return ResourceManager.GetString("InscripcionForm_UnenrollButton", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_UnenrollButton", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColId {
+        public static string EnrollmentForm_ColId {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColId", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColId", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColCourse {
+        public static string EnrollmentForm_ColCourse {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColCourse", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColCourse", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColClassroom {
+        public static string EnrollmentForm_ColClassroom {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColClassroom", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColClassroom", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColDay {
+        public static string EnrollmentForm_ColDay {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColDay", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColDay", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColStartTime {
+        public static string EnrollmentForm_ColStartTime {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColStartTime", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColStartTime", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColEndTime {
+        public static string EnrollmentForm_ColEndTime {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColEndTime", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColEndTime", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ColTeachers {
+        public static string EnrollmentForm_ColTeachers {
             get {
-                return ResourceManager.GetString("InscripcionForm_ColTeachers", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ColTeachers", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_SelectCourseToEnroll {
+        public static string EnrollmentForm_SelectCourseToEnroll {
             get {
-                return ResourceManager.GetString("InscripcionForm_SelectCourseToEnroll", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_SelectCourseToEnroll", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ConfirmEnrollTitle {
+        public static string EnrollmentForm_ConfirmEnrollTitle {
             get {
-                return ResourceManager.GetString("InscripcionForm_ConfirmEnrollTitle", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ConfirmEnrollTitle", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ConfirmEnrollMessage {
+        public static string EnrollmentForm_ConfirmEnrollMessage {
             get {
-                return ResourceManager.GetString("InscripcionForm_ConfirmEnrollMessage", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ConfirmEnrollMessage", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_EnrollSuccess {
+        public static string EnrollmentForm_EnrollSuccess {
             get {
-                return ResourceManager.GetString("InscripcionForm_EnrollSuccess", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_EnrollSuccess", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_EnrollError {
+        public static string EnrollmentForm_EnrollError {
             get {
-                return ResourceManager.GetString("InscripcionForm_EnrollError", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_EnrollError", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_SelectEnrollmentToUnenroll {
+        public static string EnrollmentForm_SelectEnrollmentToUnenroll {
             get {
-                return ResourceManager.GetString("InscripcionForm_SelectEnrollmentToUnenroll", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_SelectEnrollmentToUnenroll", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ConfirmUnenrollTitle {
+        public static string EnrollmentForm_ConfirmUnenrollTitle {
             get {
-                return ResourceManager.GetString("InscripcionForm_ConfirmUnenrollTitle", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ConfirmUnenrollTitle", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ConfirmUnenrollMessage {
+        public static string EnrollmentForm_ConfirmUnenrollMessage {
             get {
-                return ResourceManager.GetString("InscripcionForm_ConfirmUnenrollMessage", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ConfirmUnenrollMessage", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_UnenrollSuccess {
+        public static string EnrollmentForm_UnenrollSuccess {
             get {
-                return ResourceManager.GetString("InscripcionForm_UnenrollSuccess", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_UnenrollSuccess", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_UnenrollError {
+        public static string EnrollmentForm_UnenrollError {
             get {
-                return ResourceManager.GetString("InscripcionForm_UnenrollError", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_UnenrollError", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_SuccessTitle {
+        public static string EnrollmentForm_SuccessTitle {
             get {
-                return ResourceManager.GetString("InscripcionForm_SuccessTitle", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_SuccessTitle", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ValidationTitle {
+        public static string EnrollmentForm_ValidationTitle {
             get {
-                return ResourceManager.GetString("InscripcionForm_ValidationTitle", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ValidationTitle", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_ErrorTitle {
+        public static string EnrollmentForm_ErrorTitle {
             get {
-                return ResourceManager.GetString("InscripcionForm_ErrorTitle", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_ErrorTitle", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_InfoTitle {
+        public static string EnrollmentForm_InfoTitle {
             get {
-                return ResourceManager.GetString("InscripcionForm_InfoTitle", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_InfoTitle", resourceCulture);
             }
         }
         
-        public static string InscripcionForm_NoAssignment {
+        public static string EnrollmentForm_NoAssignment {
             get {
-                return ResourceManager.GetString("InscripcionForm_NoAssignment", resourceCulture);
+                return ResourceManager.GetString("EnrollmentForm_NoAssignment", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_Title {
+        public static string EnrollmentManagementForm_Title {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_Title", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_Title", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_SearchLabel {
+        public static string EnrollmentManagementForm_SearchLabel {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_SearchLabel", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_SearchLabel", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_SearchButton {
+        public static string EnrollmentManagementForm_SearchButton {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_SearchButton", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_SearchButton", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColStudent {
+        public static string EnrollmentManagementForm_ColStudent {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColStudent", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColStudent", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColCourse {
+        public static string EnrollmentManagementForm_ColCourse {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColCourse", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColCourse", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColDay {
+        public static string EnrollmentManagementForm_ColDay {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColDay", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColDay", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColStartTime {
+        public static string EnrollmentManagementForm_ColStartTime {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColStartTime", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColStartTime", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColEndTime {
+        public static string EnrollmentManagementForm_ColEndTime {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColEndTime", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColEndTime", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColClassroom {
+        public static string EnrollmentManagementForm_ColClassroom {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColClassroom", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColClassroom", resourceCulture);
             }
         }
         
-        public static string InscripcionManagementForm_ColEnrollDate {
+        public static string EnrollmentManagementForm_ColEnrollDate {
             get {
-                return ResourceManager.GetString("InscripcionManagementForm_ColEnrollDate", resourceCulture);
+                return ResourceManager.GetString("EnrollmentManagementForm_ColEnrollDate", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_Title {
+        public static string CourseManagementForm_Title {
             get {
-                return ResourceManager.GetString("CursoManagementForm_Title", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_Title", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_SearchLabel {
+        public static string CourseManagementForm_SearchLabel {
             get {
-                return ResourceManager.GetString("CursoManagementForm_SearchLabel", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_SearchLabel", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_SearchButton {
+        public static string CourseManagementForm_SearchButton {
             get {
-                return ResourceManager.GetString("CursoManagementForm_SearchButton", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_SearchButton", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_NewButton {
+        public static string CourseManagementForm_NewButton {
             get {
-                return ResourceManager.GetString("CursoManagementForm_NewButton", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_NewButton", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_EditButton {
+        public static string CourseManagementForm_EditButton {
             get {
-                return ResourceManager.GetString("CursoManagementForm_EditButton", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_EditButton", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_DeleteButton {
+        public static string CourseManagementForm_DeleteButton {
             get {
-                return ResourceManager.GetString("CursoManagementForm_DeleteButton", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_DeleteButton", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColId {
+        public static string CourseManagementForm_ColId {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColId", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColId", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColName {
+        public static string CourseManagementForm_ColName {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColName", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColName", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColDescription {
+        public static string CourseManagementForm_ColDescription {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColDescription", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColDescription", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColClassroom {
+        public static string CourseManagementForm_ColClassroom {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColClassroom", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColClassroom", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColStatus {
+        public static string CourseManagementForm_ColStatus {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColStatus", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColStatus", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColStartDate {
+        public static string CourseManagementForm_ColStartDate {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColStartDate", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColStartDate", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColEndDate {
+        public static string CourseManagementForm_ColEndDate {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColEndDate", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColEndDate", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColDay {
+        public static string CourseManagementForm_ColDay {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColDay", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColDay", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColStartTime {
+        public static string CourseManagementForm_ColStartTime {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColStartTime", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColStartTime", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColEndTime {
+        public static string CourseManagementForm_ColEndTime {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColEndTime", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColEndTime", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ColTeachers {
+        public static string CourseManagementForm_ColTeachers {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ColTeachers", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ColTeachers", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_StatusActive {
+        public static string CourseManagementForm_StatusActive {
             get {
-                return ResourceManager.GetString("CursoManagementForm_StatusActive", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_StatusActive", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_StatusInactive {
+        public static string CourseManagementForm_StatusInactive {
             get {
-                return ResourceManager.GetString("CursoManagementForm_StatusInactive", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_StatusInactive", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_NoClassroom {
+        public static string CourseManagementForm_NoClassroom {
             get {
-                return ResourceManager.GetString("CursoManagementForm_NoClassroom", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_NoClassroom", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_NoAulasMessage {
+        public static string CourseManagementForm_NoAulasMessage {
             get {
-                return ResourceManager.GetString("CursoManagementForm_NoAulasMessage", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_NoAulasMessage", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_SelectToEdit {
+        public static string CourseManagementForm_SelectToEdit {
             get {
-                return ResourceManager.GetString("CursoManagementForm_SelectToEdit", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_SelectToEdit", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_SelectToDelete {
+        public static string CourseManagementForm_SelectToDelete {
             get {
-                return ResourceManager.GetString("CursoManagementForm_SelectToDelete", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_SelectToDelete", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_CourseLoadError {
+        public static string CourseManagementForm_CourseLoadError {
             get {
-                return ResourceManager.GetString("CursoManagementForm_CourseLoadError", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_CourseLoadError", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ConfirmDeleteTitle {
+        public static string CourseManagementForm_ConfirmDeleteTitle {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ConfirmDeleteTitle", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ConfirmDeleteTitle", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_ConfirmDeleteMessage {
+        public static string CourseManagementForm_ConfirmDeleteMessage {
             get {
-                return ResourceManager.GetString("CursoManagementForm_ConfirmDeleteMessage", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_ConfirmDeleteMessage", resourceCulture);
             }
         }
         
-        public static string CursoManagementForm_DeleteSuccess {
+        public static string CourseManagementForm_DeleteSuccess {
             get {
-                return ResourceManager.GetString("CursoManagementForm_DeleteSuccess", resourceCulture);
+                return ResourceManager.GetString("CourseManagementForm_DeleteSuccess", resourceCulture);
             }
         }
         
@@ -1746,93 +1746,93 @@ namespace BE.Properties {
             }
         }
         
-        public static string AsistenciaForm_Title {
+        public static string AttendanceForm_Title {
             get {
-                return ResourceManager.GetString("AsistenciaForm_Title", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_Title", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_CourseLabel {
+        public static string AttendanceForm_CourseLabel {
             get {
-                return ResourceManager.GetString("AsistenciaForm_CourseLabel", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_CourseLabel", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_DateLabel {
+        public static string AttendanceForm_DateLabel {
             get {
-                return ResourceManager.GetString("AsistenciaForm_DateLabel", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_DateLabel", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_SearchButton {
+        public static string AttendanceForm_SearchButton {
             get {
-                return ResourceManager.GetString("AsistenciaForm_SearchButton", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_SearchButton", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_SaveButton {
+        public static string AttendanceForm_SaveButton {
             get {
-                return ResourceManager.GetString("AsistenciaForm_SaveButton", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_SaveButton", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_ColStudent {
+        public static string AttendanceForm_ColStudent {
             get {
-                return ResourceManager.GetString("AsistenciaForm_ColStudent", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_ColStudent", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_ColPresent {
+        public static string AttendanceForm_ColPresent {
             get {
-                return ResourceManager.GetString("AsistenciaForm_ColPresent", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_ColPresent", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_NoCourses {
+        public static string AttendanceForm_NoCourses {
             get {
-                return ResourceManager.GetString("AsistenciaForm_NoCourses", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_NoCourses", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_NoStudents {
+        public static string AttendanceForm_NoStudents {
             get {
-                return ResourceManager.GetString("AsistenciaForm_NoStudents", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_NoStudents", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_SaveSuccess {
+        public static string AttendanceForm_SaveSuccess {
             get {
-                return ResourceManager.GetString("AsistenciaForm_SaveSuccess", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_SaveSuccess", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_SaveError {
+        public static string AttendanceForm_SaveError {
             get {
-                return ResourceManager.GetString("AsistenciaForm_SaveError", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_SaveError", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_ValidationTitle {
+        public static string AttendanceForm_ValidationTitle {
             get {
-                return ResourceManager.GetString("AsistenciaForm_ValidationTitle", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_ValidationTitle", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_ErrorTitle {
+        public static string AttendanceForm_ErrorTitle {
             get {
-                return ResourceManager.GetString("AsistenciaForm_ErrorTitle", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_ErrorTitle", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_SelectCourse {
+        public static string AttendanceForm_SelectCourse {
             get {
-                return ResourceManager.GetString("AsistenciaForm_SelectCourse", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_SelectCourse", resourceCulture);
             }
         }
         
-        public static string AsistenciaForm_Unauthorized {
+        public static string AttendanceForm_Unauthorized {
             get {
-                return ResourceManager.GetString("AsistenciaForm_Unauthorized", resourceCulture);
+                return ResourceManager.GetString("AttendanceForm_Unauthorized", resourceCulture);
             }
         }
     }

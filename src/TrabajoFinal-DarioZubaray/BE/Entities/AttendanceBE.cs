@@ -6,14 +6,14 @@ namespace BE.Entities
     {
         #region Propiedades
         public int Id { get; set; }
-        public int CursoId { get; set; }
-        public int AlumnoId { get; set; }
-        public DateTime Fecha { get; set; }
-        public bool Presente { get; set; }
+        public int CourseId { get; set; }
+        public int StudentId { get; set; }
+        public DateTime Date { get; set; }
+        public bool IsPresent { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public string AlumnoNombre { get; set; }
-        public string CursoNombre { get; set; }
+        public string StudentName { get; set; }
+        public string CourseName { get; set; }
         #endregion
 
         #region Constructor

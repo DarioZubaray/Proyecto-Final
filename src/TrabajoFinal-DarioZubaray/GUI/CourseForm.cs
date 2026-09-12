@@ -13,49 +13,49 @@ namespace TrabajoFinal_DarioZubaray
     public partial class CourseForm : Form
     {
         #region Propiedades
-        private readonly ICourseBLL _cursoBLL;
-        private readonly IClassroomBLL _aulaBLL;
+        private readonly ICourseBLL _courseBLL;
+        private readonly IClassroomBLL _classroomBLL;
         private readonly IUserBLL _userBLL;
-        private readonly CourseBE _curso;
-        private readonly bool _isNewCurso;
+        private readonly CourseBE _course;
+        private readonly bool _isNewCourse;
         private readonly UserBE _currentUser;
-        private List<UserBE> _docentesDisponibles;
-        private List<UserBE> _docentesAsignados;
+        private List<UserBE> _availableTeachers;
+        private List<UserBE> _assignedTeachers;
         #endregion
 
         #region Constructor
         public CourseForm(string theme, UserBE user = null)
         {
             InitializeComponent();
-            _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
-            _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
+            _courseBLL = ServiceLocatorBLL.CreateCourseBLL();
+            _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
-            _isNewCurso = true;
-            _curso = new CourseBE();
+            _isNewCourse = true;
+            _course = new CourseBE();
             _currentUser = user;
-            _docentesDisponibles = new List<UserBE>();
-            _docentesAsignados = new List<UserBE>();
+            _availableTeachers = new List<UserBE>();
+            _assignedTeachers = new List<UserBE>();
             ApplyResources();
-            LoadAulas();
-            LoadDocentes();
+            LoadClassrooms();
+            LoadTeachers();
             ConfigureButtons();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
 
-        public CourseForm(CourseBE curso, string theme, UserBE user = null)
+        public CourseForm(CourseBE course, string theme, UserBE user = null)
         {
             InitializeComponent();
-            _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
-            _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
+            _courseBLL = ServiceLocatorBLL.CreateCourseBLL();
+            _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
             _userBLL = ServiceLocatorBLL.CreateUserBLL();
-            _isNewCurso = false;
-            _curso = curso;
+            _isNewCourse = false;
+            _course = course;
             _currentUser = user;
-            _docentesAsignados = new List<UserBE>(curso.Docentes ?? new List<UserBE>());
+            _assignedTeachers = new List<UserBE>(course.Teachers ?? new List<UserBE>());
             ApplyResources();
-            LoadAulas();
-            LoadDocentes();
-            LoadCursoData();
+            LoadClassrooms();
+            LoadTeachers();
+            LoadCourseData();
             ConfigureButtons();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
@@ -64,21 +64,21 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private void ApplyResources()
         {
-            this.Text = _isNewCurso ? Resources.CursoForm_NewTitle : Resources.CursoForm_EditTitle;
-            lblNombre.Text = Resources.CursoForm_NameLabel;
-            lblDescripcion.Text = Resources.CursoForm_DescriptionLabel;
-            lblFechaInicio.Text = Resources.CursoForm_StartDateLabel;
-            lblFechaFin.Text = Resources.CursoForm_EndDateLabel;
-            lblHoraInicio.Text = Resources.CursoForm_StartTimeLabel;
-            lblHoraFin.Text = Resources.CursoForm_EndTimeLabel;
-            lblAula.Text = Resources.CursoForm_ClassroomLabel;
-            lblDocentes.Text = Resources.CursoForm_TeachersSection;
-            lblDisponibles.Text = Resources.CursoForm_AvailableTeachersLabel;
-            lblAsignados.Text = Resources.CursoForm_AssignedTeachersLabel;
-            btnSave.Text = Resources.CursoForm_Save;
-            btnCancel.Text = Resources.CursoForm_Cancel;
-            btnAddDocente.Text = Resources.CursoForm_Add;
-            btnRemoveDocente.Text = Resources.CursoForm_Remove;
+            this.Text = _isNewCourse ? Resources.CourseForm_NewTitle : Resources.CourseForm_EditTitle;
+            lblName.Text = Resources.CourseForm_NameLabel;
+            lblDescription.Text = Resources.CourseForm_DescriptionLabel;
+            lblStartDate.Text = Resources.CourseForm_StartDateLabel;
+            lblEndDate.Text = Resources.CourseForm_EndDateLabel;
+            lblStartTime.Text = Resources.CourseForm_StartTimeLabel;
+            lblEndTime.Text = Resources.CourseForm_EndTimeLabel;
+            lblClassroom.Text = Resources.CourseForm_ClassroomLabel;
+            lblTeachers.Text = Resources.CourseForm_TeachersSection;
+            lblAvailable.Text = Resources.CourseForm_AvailableTeachersLabel;
+            lblAssigned.Text = Resources.CourseForm_AssignedTeachersLabel;
+            btnSave.Text = Resources.CourseForm_Save;
+            btnCancel.Text = Resources.CourseForm_Cancel;
+            btnAddTeacher.Text = Resources.CourseForm_Add;
+            btnRemoveTeacher.Text = Resources.CourseForm_Remove;
         }
 
         private bool ParseHorario(MaskedTextBox masked, out TimeSpan hora)
@@ -87,7 +87,7 @@ namespace TrabajoFinal_DarioZubaray
 
             if (!masked.MaskFull)
             {
-                MessageBox.Show(Resources.CursoForm_TimeIncomplete, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CourseForm_TimeIncomplete, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
@@ -99,21 +99,21 @@ namespace TrabajoFinal_DarioZubaray
                 || !int.TryParse(partes[0], out int horas)
                 || !int.TryParse(partes[1], out int minutos))
             {
-                MessageBox.Show(Resources.CursoForm_TimeInvalidFormat, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CourseForm_TimeInvalidFormat, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
 
             if (horas < 0 || horas > 23)
             {
-                MessageBox.Show(Resources.CursoForm_HoursRange, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CourseForm_HoursRange, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
 
             if (minutos != 0 && minutos != 15 && minutos != 30 && minutos != 45)
             {
-                MessageBox.Show(Resources.CursoForm_MinutesInvalid, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CourseForm_MinutesInvalid, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 masked.Focus();
                 return false;
             }
@@ -124,181 +124,181 @@ namespace TrabajoFinal_DarioZubaray
 
         private bool ValidateInputs()
         {
-            if (string.IsNullOrEmpty(txtNombre.Text.Trim()))
+            if (string.IsNullOrEmpty(txtName.Text.Trim()))
             {
-                MessageBox.Show(Resources.CursoForm_NameRequired, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtNombre.Focus();
+                MessageBox.Show(Resources.CourseForm_NameRequired, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtName.Focus();
                 return false;
             }
 
-            if (dtpFechaInicio.Value >= dtpFechaFin.Value)
+            if (dtpStartDate.Value >= dtpEndDate.Value)
             {
-                MessageBox.Show(Resources.CursoForm_DatesInvalid, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                dtpFechaInicio.Focus();
+                MessageBox.Show(Resources.CourseForm_DatesInvalid, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dtpStartDate.Focus();
                 return false;
             }
 
-            if (!ParseHorario(mtbHoraInicio, out TimeSpan horaInicio))
+            if (!ParseHorario(mtbStartTime, out TimeSpan horaInicio))
                 return false;
 
-            if (!ParseHorario(mtbHoraFin, out TimeSpan horaFin))
+            if (!ParseHorario(mtbEndTime, out TimeSpan horaFin))
                 return false;
 
             if (horaInicio >= horaFin)
             {
-                MessageBox.Show(Resources.CursoForm_TimeRangeInvalid, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                mtbHoraInicio.Focus();
+                MessageBox.Show(Resources.CourseForm_TimeRangeInvalid, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                mtbStartTime.Focus();
                 return false;
             }
 
-            if (cbAula.SelectedValue == null)
+            if (cbClassroom.SelectedValue == null)
             {
-                MessageBox.Show(Resources.CursoForm_ClassroomRequired, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                cbAula.Focus();
+                MessageBox.Show(Resources.CourseForm_ClassroomRequired, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                cbClassroom.Focus();
                 return false;
             }
 
-            if (_docentesAsignados.Count == 0)
+            if (_assignedTeachers.Count == 0)
             {
-                MessageBox.Show(Resources.CursoForm_TeacherRequired, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CourseForm_TeacherRequired, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
             return true;
         }
 
-        private void MapCursoFromUI()
+        private void MapCourseFromUI()
         {
-            _curso.Nombre = txtNombre.Text.Trim();
-            _curso.Descripcion = txtDescripcion.Text.Trim();
-            _curso.FechaInicio = dtpFechaInicio.Value;
-            _curso.FechaFin = dtpFechaFin.Value;
-            _curso.AulaId = (int)cbAula.SelectedValue;
-            _curso.DiaSemana = (int)_curso.FechaInicio.DayOfWeek == 0 ? 7 : (int)_curso.FechaInicio.DayOfWeek;
+            _course.Name = txtName.Text.Trim();
+            _course.Description = txtDescription.Text.Trim();
+            _course.StartDate = dtpStartDate.Value;
+            _course.EndDate = dtpEndDate.Value;
+            _course.ClassroomId = (int)cbClassroom.SelectedValue;
+            _course.DayOfWeek = (int)_course.StartDate.DayOfWeek == 0 ? 7 : (int)_course.StartDate.DayOfWeek;
 
-            ParseHorario(mtbHoraInicio, out TimeSpan hInicio);
-            ParseHorario(mtbHoraFin, out TimeSpan hFin);
-            _curso.HoraInicio = hInicio;
-            _curso.HoraFin = hFin;
+            ParseHorario(mtbStartTime, out TimeSpan hInicio);
+            ParseHorario(mtbEndTime, out TimeSpan hFin);
+            _course.StartTime = hInicio;
+            _course.EndTime = hFin;
 
-            _curso.IsActive = true;
+            _course.IsActive = true;
 
-            if (_isNewCurso)
+            if (_isNewCourse)
             {
-                _curso.CreatedAt = DateTime.Now;
+                _course.CreatedAt = DateTime.Now;
             }
 
-            _curso.LastUpdate = DateTime.Now;
+            _course.LastUpdate = DateTime.Now;
         }
 
-        private bool SaveCurso()
+        private bool SaveCourse()
         {
-            bool result = _cursoBLL.Save(_curso);
+            bool result = _courseBLL.Save(_course);
 
             if (result)
             {
-                List<int> docenteIds = _docentesAsignados.Select(d => d.Id).ToList();
-                _cursoBLL.SaveDocentes(_curso.Id, docenteIds);
+                List<int> teacherIds = _assignedTeachers.Select(d => d.Id).ToList();
+                _courseBLL.SaveTeachers(_course.Id, teacherIds);
             }
 
             return result;
         }
 
-        private bool ValidateDocentesTraslape()
+        private bool ValidateTeacherOverlap()
         {
-            if (_docentesAsignados.Count == 0)
+            if (_assignedTeachers.Count == 0)
             {
                 return false;
             }
 
-            List<int> docenteIds = _docentesAsignados.Select(d => d.Id).ToList();
-            return _cursoBLL.ValidarTraslapeDocentes(_curso.Id, _curso.DiaSemana, _curso.HoraInicio, _curso.HoraFin, docenteIds);
+            List<int> teacherIds = _assignedTeachers.Select(d => d.Id).ToList();
+            return _courseBLL.ValidateTeacherOverlap(_course.Id, _course.DayOfWeek, _course.StartTime, _course.EndTime, teacherIds);
         }
 
-        private void LoadAulas()
+        private void LoadClassrooms()
         {
-            List<ClassroomBE> aulas = _aulaBLL.FindAll();
+            List<ClassroomBE> classrooms = _classroomBLL.FindAll();
 
-            cbAula.DisplayMember = "Nombre";
-            cbAula.ValueMember = "Id";
-            cbAula.DataSource = aulas;
-            if (cbAula.Items.Count > 0)
+            cbClassroom.DisplayMember = "Name";
+            cbClassroom.ValueMember = "Id";
+            cbClassroom.DataSource = classrooms;
+            if (cbClassroom.Items.Count > 0)
             {
-                cbAula.SelectedIndex = 0;
+                cbClassroom.SelectedIndex = 0;
             }
         }
 
-        private void LoadDocentes()
+        private void LoadTeachers()
         {
             List<UserBE> allUsers = _userBLL.FindAll();
-            _docentesDisponibles = allUsers.Where(u => u.IsActive && u.RoleId == 2).ToList();
+            _availableTeachers = allUsers.Where(u => u.IsActive && u.RoleId == 2).ToList();
 
-            RefreshDocentesLists();
+            RefreshTeacherLists();
         }
 
-        private void RefreshDocentesLists()
+        private void RefreshTeacherLists()
         {
-            var docentesAsignadosIds = _docentesAsignados.Select(d => d.Id).ToHashSet();
-            var disponibles = _docentesDisponibles.Where(d => !docentesAsignadosIds.Contains(d.Id)).ToList();
+            var assignedTeacherIds = _assignedTeachers.Select(d => d.Id).ToHashSet();
+            var available = _availableTeachers.Where(d => !assignedTeacherIds.Contains(d.Id)).ToList();
 
-            lstDocentesDisponibles.DataSource = null;
-            lstDocentesDisponibles.DataSource = disponibles;
-            lstDocentesDisponibles.DisplayMember = "UserName";
-            lstDocentesDisponibles.ValueMember = "Id";
+            lstAvailableTeachers.DataSource = null;
+            lstAvailableTeachers.DataSource = available;
+            lstAvailableTeachers.DisplayMember = "UserName";
+            lstAvailableTeachers.ValueMember = "Id";
 
-            lstDocentesAsignados.DataSource = null;
-            lstDocentesAsignados.DataSource = _docentesAsignados;
-            lstDocentesAsignados.DisplayMember = "UserName";
-            lstDocentesAsignados.ValueMember = "Id";
+            lstAssignedTeachers.DataSource = null;
+            lstAssignedTeachers.DataSource = _assignedTeachers;
+            lstAssignedTeachers.DisplayMember = "UserName";
+            lstAssignedTeachers.ValueMember = "Id";
         }
 
-        private void LoadCursoData()
+        private void LoadCourseData()
         {
-            txtNombre.Text = _curso.Nombre;
-            txtDescripcion.Text = _curso.Descripcion;
-            dtpFechaInicio.Value = _curso.FechaInicio;
-            dtpFechaFin.Value = _curso.FechaFin;
+            txtName.Text = _course.Name;
+            txtDescription.Text = _course.Description;
+            dtpStartDate.Value = _course.StartDate;
+            dtpEndDate.Value = _course.EndDate;
 
-            cbAula.SelectedValue = _curso.AulaId;
+            cbClassroom.SelectedValue = _course.ClassroomId;
 
-            if (_curso.HoraInicio.HasValue)
+            if (_course.StartTime.HasValue)
             {
-                mtbHoraInicio.Text = _curso.HoraInicio.Value.ToString(@"hh\:mm");
+                mtbStartTime.Text = _course.StartTime.Value.ToString(@"hh\:mm");
             }
 
-            if (_curso.HoraFin.HasValue)
+            if (_course.EndTime.HasValue)
             {
-                mtbHoraFin.Text = _curso.HoraFin.Value.ToString(@"hh\:mm");
+                mtbEndTime.Text = _course.EndTime.Value.ToString(@"hh\:mm");
             }
         }
 
         private void ConfigureButtons()
         {
             bool isAdmin = _currentUser != null && _currentUser.RoleId == 1;
-            btnInactivar.Visible = isAdmin && !_isNewCurso;
+            btnToggleActive.Visible = isAdmin && !_isNewCourse;
 
-            if (btnInactivar.Visible && !_curso.IsActive)
+            if (btnToggleActive.Visible && !_course.IsActive)
             {
-                btnInactivar.Text = Resources.CursoForm_Deactivate;
+                btnToggleActive.Text = Resources.CourseForm_Deactivate;
             }
             else
             {
-                btnInactivar.Text = Resources.CursoForm_Activate;
+                btnToggleActive.Text = Resources.CourseForm_Activate;
             }
         }
 
-        private void btnInactivar_Click(object sender, EventArgs e)
+        private void btnToggleActive_Click(object sender, EventArgs e)
         {
-            if (_curso == null || _curso.Id == 0)
+            if (_course == null || _course.Id == 0)
             {
                 return;
             }
 
-            bool estaActivo = _curso.IsActive;
-            string titulo = estaActivo ? Resources.CursoForm_DeactivateTitle : Resources.CursoForm_ActivateTitle;
-            string confirmMessage = estaActivo
-                ? string.Format(Resources.CursoForm_DeactivateConfirm, _curso.Nombre)
-                : string.Format(Resources.CursoForm_ActivateConfirm, _curso.Nombre);
+            bool isActive = _course.IsActive;
+            string titulo = isActive ? Resources.CourseForm_DeactivateTitle : Resources.CourseForm_ActivateTitle;
+            string confirmMessage = isActive
+                ? string.Format(Resources.CourseForm_DeactivateConfirm, _course.Name)
+                : string.Format(Resources.CourseForm_ActivateConfirm, _course.Name);
 
             DialogResult result = MessageBox.Show(confirmMessage, titulo, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -307,19 +307,19 @@ namespace TrabajoFinal_DarioZubaray
                 try
                 {
                     bool success;
-                    if (estaActivo)
+                    if (isActive)
                     {
-                        success = _cursoBLL.Delete(_curso);
+                        success = _courseBLL.Delete(_course);
                     }
                     else
                     {
-                        _curso.IsActive = true;
-                        success = _cursoBLL.Save(_curso);
+                        _course.IsActive = true;
+                        success = _courseBLL.Save(_course);
                     }
 
                     if (success)
                     {
-                        string mensajeExito = estaActivo ? Resources.CursoForm_DeactivatedSuccess : Resources.CursoForm_ReactivatedSuccess;
+                        string mensajeExito = isActive ? Resources.CourseForm_DeactivatedSuccess : Resources.CourseForm_ReactivatedSuccess;
                         MessageBox.Show(mensajeExito);
                         this.DialogResult = DialogResult.OK;
                         this.Close();
@@ -327,9 +327,9 @@ namespace TrabajoFinal_DarioZubaray
                 }
                 catch (Exception ex)
                 {
-                    string errorKey = estaActivo ? Resources.CursoForm_DeactivateError : Resources.CursoForm_ActivateError;
+                    string errorKey = isActive ? Resources.CourseForm_DeactivateError : Resources.CourseForm_ActivateError;
                     string mensajeError = string.Format(errorKey, ex.Message);
-                    MessageBox.Show(mensajeError, Resources.CursoForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(mensajeError, Resources.CourseForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -343,19 +343,19 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            MapCursoFromUI();
+            MapCourseFromUI();
 
-            if (ValidateDocentesTraslape())
+            if (ValidateTeacherOverlap())
             {
-                MessageBox.Show(Resources.CursoForm_TeacherOverlap, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Resources.CourseForm_TeacherOverlap, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             try
             {
-                if (SaveCurso())
+                if (SaveCourse())
                 {
-                    string mensaje = _isNewCurso ? Resources.CursoForm_CreatedSuccess : Resources.CursoForm_UpdatedSuccess;
+                    string mensaje = _isNewCourse ? Resources.CourseForm_CreatedSuccess : Resources.CourseForm_UpdatedSuccess;
                     MessageBox.Show(mensaje);
                     this.DialogResult = DialogResult.OK;
                     this.Close();
@@ -363,12 +363,12 @@ namespace TrabajoFinal_DarioZubaray
             }
             catch (InvalidOperationException ex)
             {
-                MessageBox.Show(ex.Message, Resources.CursoForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(ex.Message, Resources.CourseForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                string mensajeError = string.Format(Resources.CursoForm_SaveError, ex.Message);
-                MessageBox.Show(mensajeError, Resources.CursoForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string mensajeError = string.Format(Resources.CourseForm_SaveError, ex.Message);
+                MessageBox.Show(mensajeError, Resources.CourseForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -378,33 +378,33 @@ namespace TrabajoFinal_DarioZubaray
             this.Close();
         }
 
-        private void btnAddDocente_Click(object sender, EventArgs e)
+        private void btnAddTeacher_Click(object sender, EventArgs e)
         {
-            if (lstDocentesDisponibles.SelectedItem == null)
+            if (lstAvailableTeachers.SelectedItem == null)
             {
                 return;
             }
 
-            var docente = lstDocentesDisponibles.SelectedItem as UserBE;
-            if (docente != null)
+            var teacher = lstAvailableTeachers.SelectedItem as UserBE;
+            if (teacher != null)
             {
-                _docentesAsignados.Add(docente);
-                RefreshDocentesLists();
+                _assignedTeachers.Add(teacher);
+                RefreshTeacherLists();
             }
         }
 
-        private void btnRemoveDocente_Click(object sender, EventArgs e)
+        private void btnRemoveTeacher_Click(object sender, EventArgs e)
         {
-            if (lstDocentesAsignados.SelectedItem == null)
+            if (lstAssignedTeachers.SelectedItem == null)
             {
                 return;
             }
 
-            var docente = lstDocentesAsignados.SelectedItem as UserBE;
-            if (docente != null)
+            var teacher = lstAssignedTeachers.SelectedItem as UserBE;
+            if (teacher != null)
             {
-                _docentesAsignados.Remove(docente);
-                RefreshDocentesLists();
+                _assignedTeachers.Remove(teacher);
+                RefreshTeacherLists();
             }
         }
         #endregion

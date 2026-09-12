@@ -7,13 +7,13 @@ namespace MPP.Interfaces
 {
     public interface IEnrollmentMPP
     {
-        bool Inscribir(int cursoId, int alumnoId);
-        bool Desinscribir(int cursoId, int alumnoId);
+        bool Enroll(int courseId, int studentId);
+        bool Unenroll(int courseId, int studentId);
         EnrollmentBE FindById(int id);
-        List<EnrollmentBE> FindByAlumnoId(int alumnoId);
+        List<EnrollmentBE> FindByStudentId(int studentId);
         List<EnrollmentBE> FindAll();
-        int CountAlumnosByCursoId(int cursoId);
-        bool ExisteInscripcionActiva(int cursoId, int alumnoId);
-        bool ExisteTraslapeHorario(int alumnoId, int diaSemana, TimeSpan horaInicio, TimeSpan horaFin, int cursoIdExcluir);
+        int CountStudentsByCourseId(int courseId);
+        bool ExistsActiveEnrollment(int courseId, int studentId);
+        bool ExistsScheduleOverlap(int studentId, int dayOfWeek, TimeSpan startTime, TimeSpan endTime, int courseIdToExclude);
     }
 }

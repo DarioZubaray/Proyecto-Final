@@ -66,14 +66,14 @@ namespace TrabajoFinal_DarioZubaray
             aulasToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_CURSO_MGMT");
 
-            bool puedeGestionarCursos = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
-            bool puedeVerInscripciones = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
-            bool puedeRegistrarAsistencia = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
+            bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
+            bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
+            bool canRegisterAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
 
-            académicoToolStripMenuItem.Visible = puedeGestionarCursos || puedeVerInscripciones || puedeRegistrarAsistencia;
-            cursosToolStripMenuItem.Visible = puedeGestionarCursos;
-            inscripcionesToolStripMenuItem.Visible = puedeVerInscripciones;
-            asistenciaToolStripMenuItem.Visible = puedeRegistrarAsistencia;
+            académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance;
+            cursosToolStripMenuItem.Visible = canManageCourses;
+            inscripcionesToolStripMenuItem.Visible = canViewEnrollments;
+            asistenciaToolStripMenuItem.Visible = canRegisterAttendance;
         }
 
         private void UpdateFooter()
@@ -166,7 +166,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("AulaManagementForm");
+            LogFormAccess("ClassroomManagementForm");
             var form = new ClassroomManagementForm(_user)
             {
                 MdiParent = this
@@ -176,7 +176,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("CursoManagementForm");
+            LogFormAccess("CourseManagementForm");
             var form = new CourseManagementForm(_user)
             {
                 MdiParent = this
@@ -188,7 +188,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (_user.RoleId == 3)
             {
-                LogFormAccess("InscripcionForm");
+                LogFormAccess("EnrollmentForm");
                 var form = new EnrollmentForm(_user)
                 {
                     MdiParent = this
@@ -197,7 +197,7 @@ namespace TrabajoFinal_DarioZubaray
             }
             else
             {
-                LogFormAccess("InscripcionManagementForm");
+                LogFormAccess("EnrollmentManagementForm");
                 var form = new EnrollmentManagementForm(_user)
                 {
                     MdiParent = this
@@ -208,7 +208,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("AsistenciaForm");
+            LogFormAccess("AttendanceForm");
             var form = new AttendanceForm(_user)
             {
                 MdiParent = this

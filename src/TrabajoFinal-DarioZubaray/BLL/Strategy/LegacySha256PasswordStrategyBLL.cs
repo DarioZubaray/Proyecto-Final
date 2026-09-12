@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BLL.Strategy
 {
-    public class LegacySha256PasswordStrategy : IPasswordStrategy
+    public class LegacySha256PasswordStrategyBLL : IPasswordStrategyBLL
     {
         public bool Matches(string storedHash)
         {

@@ -27,22 +27,22 @@ namespace MPP
         #endregion
 
         #region Métodos Públicos
-        public bool Inscribir(int cursoId, int alumnoId)
+        public bool Enroll(int courseId, int studentId)
         {
             string query = @"INSERT INTO CursoAlumnos (curso_id, alumno_id, is_active, created_at)
                             VALUES (@cursoId, @alumnoId, 1, @createdAt)";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId),
-                new SqlParameter("@alumnoId", alumnoId),
+                new SqlParameter("@cursoId", courseId),
+                new SqlParameter("@alumnoId", studentId),
                 new SqlParameter("@createdAt", DateTime.Now)
             };
 
             return _access.Save(query, parameters);
         }
 
-        public bool Desinscribir(int cursoId, int alumnoId)
+        public bool Unenroll(int courseId, int studentId)
         {
             string query = @"UPDATE CursoAlumnos
                             SET is_active = 0
@@ -50,8 +50,8 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId),
-                new SqlParameter("@alumnoId", alumnoId)
+                new SqlParameter("@cursoId", courseId),
+                new SqlParameter("@alumnoId", studentId)
             };
 
             return _access.Save(query, parameters);
@@ -81,10 +81,10 @@ namespace MPP
                 return null;
             }
 
-            return MapInscripcion(table.Rows[0]);
+            return MapEnrollment(table.Rows[0]);
         }
 
-        public List<EnrollmentBE> FindByAlumnoId(int alumnoId)
+        public List<EnrollmentBE> FindByStudentId(int studentId)
         {
             string query = @"SELECT ca.id, ca.curso_id, ca.alumno_id, ca.is_active, ca.created_at,
                                     c.nombre AS curso_nombre, c.dia_semana, c.hora_inicio, c.hora_fin,
@@ -99,7 +99,7 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@alumnoId", alumnoId)
+                new SqlParameter("@alumnoId", studentId)
             };
 
             return FindMany(query, parameters);
@@ -121,7 +121,7 @@ namespace MPP
             return FindMany(query);
         }
 
-        public int CountAlumnosByCursoId(int cursoId)
+        public int CountStudentsByCourseId(int courseId)
         {
             string query = @"SELECT COUNT(*)
                             FROM CursoAlumnos
@@ -129,13 +129,13 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId)
+                new SqlParameter("@cursoId", courseId)
             };
 
             return _access.ReadScalar(query, parameters);
         }
 
-        public bool ExisteInscripcionActiva(int cursoId, int alumnoId)
+        public bool ExistsActiveEnrollment(int courseId, int studentId)
         {
             string query = @"SELECT COUNT(*)
                             FROM CursoAlumnos
@@ -143,14 +143,14 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId),
-                new SqlParameter("@alumnoId", alumnoId)
+                new SqlParameter("@cursoId", courseId),
+                new SqlParameter("@alumnoId", studentId)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
         }
 
-        public bool ExisteTraslapeHorario(int alumnoId, int diaSemana, TimeSpan horaInicio, TimeSpan horaFin, int cursoIdExcluir)
+        public bool ExistsScheduleOverlap(int studentId, int dayOfWeek, TimeSpan startTime, TimeSpan endTime, int courseIdToExclude)
         {
             string query = @"SELECT COUNT(*)
                             FROM CursoAlumnos ca
@@ -165,11 +165,11 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@alumnoId", alumnoId),
-                new SqlParameter("@diaSemana", diaSemana),
-                new SqlParameter("@horaInicio", horaInicio),
-                new SqlParameter("@horaFin", horaFin),
-                new SqlParameter("@cursoIdExcluir", cursoIdExcluir)
+                new SqlParameter("@alumnoId", studentId),
+                new SqlParameter("@diaSemana", dayOfWeek),
+                new SqlParameter("@horaInicio", startTime),
+                new SqlParameter("@horaFin", endTime),
+                new SqlParameter("@cursoIdExcluir", courseIdToExclude)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
@@ -177,48 +177,48 @@ namespace MPP
         #endregion
 
         #region Métodos Privados
-        private EnrollmentBE MapInscripcion(DataRow row)
+        private EnrollmentBE MapEnrollment(DataRow row)
         {
             return new EnrollmentBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                CursoId = Convert.ToInt32(row["curso_id"]),
-                AlumnoId = Convert.ToInt32(row["alumno_id"]),
+                CourseId = Convert.ToInt32(row["curso_id"]),
+                StudentId = Convert.ToInt32(row["alumno_id"]),
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 CreatedAt = (DateTime)row["created_at"],
-                CursoNombre = row["curso_nombre"].ToString(),
-                AlumnoNombre = row["alumno_nombre"].ToString(),
-                DiaSemana = row["dia_semana"] != DBNull.Value ? Convert.ToInt32(row["dia_semana"]) : (int?)null,
-                HoraInicio = row["hora_inicio"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_inicio"].ToString()) : (TimeSpan?)null,
-                HoraFin = row["hora_fin"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_fin"].ToString()) : (TimeSpan?)null,
-                AulaNombre = row["aula_nombre"] != DBNull.Value ? row["aula_nombre"].ToString() : null
+                CourseName = row["curso_nombre"].ToString(),
+                StudentName = row["alumno_nombre"].ToString(),
+                DayOfWeek = row["dia_semana"] != DBNull.Value ? Convert.ToInt32(row["dia_semana"]) : (int?)null,
+                StartTime = row["hora_inicio"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_inicio"].ToString()) : (TimeSpan?)null,
+                EndTime = row["hora_fin"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_fin"].ToString()) : (TimeSpan?)null,
+                ClassroomName = row["aula_nombre"] != DBNull.Value ? row["aula_nombre"].ToString() : null
             };
         }
 
         private List<EnrollmentBE> FindMany(string query)
         {
-            List<EnrollmentBE> inscripciones = new List<EnrollmentBE>();
+            List<EnrollmentBE> enrollments = new List<EnrollmentBE>();
             DataTable table = _access.Read(query);
 
             foreach (DataRow row in table.Rows)
             {
-                inscripciones.Add(MapInscripcion(row));
+                enrollments.Add(MapEnrollment(row));
             }
 
-            return inscripciones;
+            return enrollments;
         }
 
         private List<EnrollmentBE> FindMany(string query, SqlParameter[] parameters)
         {
-            List<EnrollmentBE> inscripciones = new List<EnrollmentBE>();
+            List<EnrollmentBE> enrollments = new List<EnrollmentBE>();
             DataTable table = _access.Read(query, parameters);
 
             foreach (DataRow row in table.Rows)
             {
-                inscripciones.Add(MapInscripcion(row));
+                enrollments.Add(MapEnrollment(row));
             }
 
-            return inscripciones;
+            return enrollments;
         }
         #endregion
     }

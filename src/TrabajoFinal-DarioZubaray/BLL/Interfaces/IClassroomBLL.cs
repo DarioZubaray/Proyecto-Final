@@ -6,11 +6,11 @@ namespace BLL.Interfaces
 {
     public interface IClassroomBLL
     {
-        bool Save(ClassroomBE aula);
-        bool Delete(ClassroomBE aula);
+        bool Save(ClassroomBE classroom);
+        bool Delete(ClassroomBE classroom);
         ClassroomBE FindById(int id);
         List<ClassroomBE> FindAll();
-        List<ClassroomBE> FindByName(string nombre);
+        List<ClassroomBE> FindByName(string name);
         int Count();
     }
 }

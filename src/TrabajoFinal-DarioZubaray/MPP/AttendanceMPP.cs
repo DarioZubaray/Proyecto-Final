@@ -27,9 +27,9 @@ namespace MPP
         #endregion
 
         #region Métodos Públicos
-        public bool RegistrarAsistenciaBulk(int cursoId, DateTime fecha, List<AttendanceBE> registros)
+        public bool RegisterAttendanceBulk(int courseId, DateTime date, List<AttendanceBE> records)
         {
-            foreach (var registro in registros)
+            foreach (var record in records)
             {
                 string query = @"IF EXISTS (SELECT 1 FROM ClasesAlumnos WHERE curso_id = @cursoId AND alumno_id = @alumnoId AND fecha = @fecha)
                                     UPDATE ClasesAlumnos SET presente = @presente WHERE curso_id = @cursoId AND alumno_id = @alumnoId AND fecha = @fecha
@@ -39,10 +39,10 @@ namespace MPP
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@cursoId", cursoId),
-                    new SqlParameter("@alumnoId", registro.AlumnoId),
-                    new SqlParameter("@fecha", fecha.Date),
-                    new SqlParameter("@presente", registro.Presente),
+                    new SqlParameter("@cursoId", courseId),
+                    new SqlParameter("@alumnoId", record.StudentId),
+                    new SqlParameter("@fecha", date.Date),
+                    new SqlParameter("@presente", record.IsPresent),
                     new SqlParameter("@createdAt", DateTime.Now)
                 };
 
@@ -52,7 +52,7 @@ namespace MPP
             return true;
         }
 
-        public List<AttendanceBE> FindByCursoIdAndFecha(int cursoId, DateTime fecha)
+        public List<AttendanceBE> FindByCourseIdAndDate(int courseId, DateTime date)
         {
             string query = @"SELECT ca.id, ca.curso_id, ca.alumno_id, ca.fecha, ca.presente, ca.created_at,
                                     u.user_name AS alumno_nombre,
@@ -65,14 +65,14 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId),
-                new SqlParameter("@fecha", fecha.Date)
+                new SqlParameter("@cursoId", courseId),
+                new SqlParameter("@fecha", date.Date)
             };
 
             return FindMany(query, parameters);
         }
 
-        public bool EsDocenteDelCurso(int cursoId, int docenteId)
+        public bool IsTeacherOfCourse(int courseId, int teacherId)
         {
             string query = @"SELECT COUNT(*)
                             FROM CursoDocentes
@@ -80,8 +80,8 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId),
-                new SqlParameter("@docenteId", docenteId)
+                new SqlParameter("@cursoId", courseId),
+                new SqlParameter("@docenteId", teacherId)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
@@ -89,32 +89,32 @@ namespace MPP
         #endregion
 
         #region Métodos Privados
-        private AttendanceBE MapAsistencia(DataRow row)
+        private AttendanceBE MapAttendance(DataRow row)
         {
             return new AttendanceBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                CursoId = Convert.ToInt32(row["curso_id"]),
-                AlumnoId = Convert.ToInt32(row["alumno_id"]),
-                Fecha = (DateTime)row["fecha"],
-                Presente = Convert.ToBoolean(row["presente"]),
+                CourseId = Convert.ToInt32(row["curso_id"]),
+                StudentId = Convert.ToInt32(row["alumno_id"]),
+                Date = (DateTime)row["fecha"],
+                IsPresent = Convert.ToBoolean(row["presente"]),
                 CreatedAt = (DateTime)row["created_at"],
-                AlumnoNombre = row["alumno_nombre"].ToString(),
-                CursoNombre = row["curso_nombre"].ToString()
+                StudentName = row["alumno_nombre"].ToString(),
+                CourseName = row["curso_nombre"].ToString()
             };
         }
 
         private List<AttendanceBE> FindMany(string query, SqlParameter[] parameters)
         {
-            List<AttendanceBE> asistencias = new List<AttendanceBE>();
+            List<AttendanceBE> attendances = new List<AttendanceBE>();
             DataTable table = _access.Read(query, parameters);
 
             foreach (DataRow row in table.Rows)
             {
-                asistencias.Add(MapAsistencia(row));
+                attendances.Add(MapAttendance(row));
             }
 
-            return asistencias;
+            return attendances;
         }
         #endregion
     }

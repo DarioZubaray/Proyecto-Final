@@ -1,6 +1,6 @@
 namespace BLL.Strategy
 {
-    public interface IPasswordStrategy
+    public interface IPasswordStrategyBLL
     {
         bool Matches(string storedHash);
 

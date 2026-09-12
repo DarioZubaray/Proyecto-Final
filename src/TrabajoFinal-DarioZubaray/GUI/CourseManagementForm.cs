@@ -13,8 +13,8 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _currentUser;
-        private readonly ICourseBLL _cursoBLL;
-        private readonly IClassroomBLL _aulaBLL;
+        private readonly ICourseBLL _courseBLL;
+        private readonly IClassroomBLL _classroomBLL;
         #endregion
 
         #region Constructores
@@ -22,10 +22,10 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _currentUser = user;
-            _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
-            _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
+            _courseBLL = ServiceLocatorBLL.CreateCourseBLL();
+            _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
             ApplyResources();
-            CheckAulas();
+            CheckClassrooms();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
@@ -33,40 +33,40 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private void ApplyResources()
         {
-            this.Text = Resources.CursoManagementForm_Title;
-            lblSearch.Text = Resources.CursoManagementForm_SearchLabel;
-            btnSearch.Text = Resources.CursoManagementForm_SearchButton;
-            btnNew.Text = Resources.CursoManagementForm_NewButton;
-            btnEdit.Text = Resources.CursoManagementForm_EditButton;
-            btnDelete.Text = Resources.CursoManagementForm_DeleteButton;
-            lblNoAulas.Text = Resources.CursoManagementForm_NoAulasMessage;
+            this.Text = Resources.CourseManagementForm_Title;
+            lblSearch.Text = Resources.CourseManagementForm_SearchLabel;
+            btnSearch.Text = Resources.CourseManagementForm_SearchButton;
+            btnNew.Text = Resources.CourseManagementForm_NewButton;
+            btnEdit.Text = Resources.CourseManagementForm_EditButton;
+            btnDelete.Text = Resources.CourseManagementForm_DeleteButton;
+            lblNoClassrooms.Text = Resources.CourseManagementForm_NoAulasMessage;
         }
 
-        private void CheckAulas()
+        private void CheckClassrooms()
         {
-            int aulasCount = _aulaBLL.Count();
+            int classroomCount = _classroomBLL.Count();
 
-            if (aulasCount == 0)
+            if (classroomCount == 0)
             {
-                dgvCursos.Visible = false;
+                dgvCourses.Visible = false;
                 panelButtons.Visible = false;
                 panelTop.Visible = false;
-                lblNoAulas.Visible = true;
+                lblNoClassrooms.Visible = true;
             }
             else
             {
-                dgvCursos.Visible = true;
+                dgvCourses.Visible = true;
                 panelButtons.Visible = true;
                 panelTop.Visible = true;
-                lblNoAulas.Visible = false;
-                LoadCursos();
+                lblNoClassrooms.Visible = false;
+                LoadCourses();
             }
         }
 
-        private string GetDiaSemanaNombre(int? dia)
+        private string GetDayOfWeekName(int? day)
         {
-            if (!dia.HasValue) return "-";
-            switch (dia.Value)
+            if (!day.HasValue) return "-";
+            switch (day.Value)
             {
                 case 1: return Resources.Day_Monday;
                 case 2: return Resources.Day_Tuesday;
@@ -79,69 +79,69 @@ namespace TrabajoFinal_DarioZubaray
             }
         }
 
-        private void LoadCursos()
+        private void LoadCourses()
         {
-            dgvCursos.DataSource = null;
-            var cursos = _cursoBLL.FindAllIncludingInactive();
+            dgvCourses.DataSource = null;
+            var courses = _courseBLL.FindAllIncludingInactive();
 
-            var cursosGrid = cursos.Select(c => new
+            var coursesGrid = courses.Select(c => new
             {
                 c.Id,
-                c.Nombre,
-                c.Descripcion,
-                Aula = c.AulaNombre ?? Resources.CursoManagementForm_NoClassroom,
-                Estado = c.IsActive ? Resources.CursoManagementForm_StatusActive : Resources.CursoManagementForm_StatusInactive,
-                FechaInicio = c.FechaInicio.ToString("dd/MM/yyyy"),
-                FechaFin = c.FechaFin.ToString("dd/MM/yyyy"),
-                DiaSemana = GetDiaSemanaNombre(c.DiaSemana),
-                HoraInicio = c.HoraInicio.HasValue ? c.HoraInicio.Value.ToString(@"hh\:mm") : "-",
-                HoraFin = c.HoraFin.HasValue ? c.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Docentes = string.Join(", ", c.Docentes.Select(d => d.UserName))
+                Name = c.Name,
+                Description = c.Description,
+                Classroom = c.ClassroomName ?? Resources.CourseManagementForm_NoClassroom,
+                Status = c.IsActive ? Resources.CourseManagementForm_StatusActive : Resources.CourseManagementForm_StatusInactive,
+                StartDate = c.StartDate.ToString("dd/MM/yyyy"),
+                EndDate = c.EndDate.ToString("dd/MM/yyyy"),
+                DayOfWeek = GetDayOfWeekName(c.DayOfWeek),
+                StartTime = c.StartTime.HasValue ? c.StartTime.Value.ToString(@"hh\:mm") : "-",
+                EndTime = c.EndTime.HasValue ? c.EndTime.Value.ToString(@"hh\:mm") : "-",
+                Teachers = string.Join(", ", c.Teachers.Select(d => d.UserName))
             }).ToList();
 
-            dgvCursos.DataSource = cursosGrid;
+            dgvCourses.DataSource = coursesGrid;
             ConfigureGrid();
         }
 
         private void ConfigureGrid()
         {
-            if (dgvCursos.Columns.Count == 0)
+            if (dgvCourses.Columns.Count == 0)
             {
                 return;
             }
 
-            dgvCursos.Columns["Id"].HeaderText = Resources.CursoManagementForm_ColId;
-            dgvCursos.Columns["Nombre"].HeaderText = Resources.CursoManagementForm_ColName;
-            dgvCursos.Columns["Descripcion"].HeaderText = Resources.CursoManagementForm_ColDescription;
-            dgvCursos.Columns["Aula"].HeaderText = Resources.CursoManagementForm_ColClassroom;
-            dgvCursos.Columns["Estado"].HeaderText = Resources.CursoManagementForm_ColStatus;
-            dgvCursos.Columns["FechaInicio"].HeaderText = Resources.CursoManagementForm_ColStartDate;
-            dgvCursos.Columns["FechaFin"].HeaderText = Resources.CursoManagementForm_ColEndDate;
-            dgvCursos.Columns["DiaSemana"].HeaderText = Resources.CursoManagementForm_ColDay;
-            dgvCursos.Columns["HoraInicio"].HeaderText = Resources.CursoManagementForm_ColStartTime;
-            dgvCursos.Columns["HoraFin"].HeaderText = Resources.CursoManagementForm_ColEndTime;
-            dgvCursos.Columns["Docentes"].HeaderText = Resources.CursoManagementForm_ColTeachers;
+            dgvCourses.Columns["Id"].HeaderText = Resources.CourseManagementForm_ColId;
+            dgvCourses.Columns["Name"].HeaderText = Resources.CourseManagementForm_ColName;
+            dgvCourses.Columns["Description"].HeaderText = Resources.CourseManagementForm_ColDescription;
+            dgvCourses.Columns["Classroom"].HeaderText = Resources.CourseManagementForm_ColClassroom;
+            dgvCourses.Columns["Status"].HeaderText = Resources.CourseManagementForm_ColStatus;
+            dgvCourses.Columns["StartDate"].HeaderText = Resources.CourseManagementForm_ColStartDate;
+            dgvCourses.Columns["EndDate"].HeaderText = Resources.CourseManagementForm_ColEndDate;
+            dgvCourses.Columns["DayOfWeek"].HeaderText = Resources.CourseManagementForm_ColDay;
+            dgvCourses.Columns["StartTime"].HeaderText = Resources.CourseManagementForm_ColStartTime;
+            dgvCourses.Columns["EndTime"].HeaderText = Resources.CourseManagementForm_ColEndTime;
+            dgvCourses.Columns["Teachers"].HeaderText = Resources.CourseManagementForm_ColTeachers;
 
-            foreach (DataGridViewColumn column in dgvCursos.Columns)
+            foreach (DataGridViewColumn column in dgvCourses.Columns)
             {
                 column.SortMode = DataGridViewColumnSortMode.Automatic;
             }
 
-            dgvCursos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCursos.MultiSelect = false;
-            dgvCursos.ReadOnly = true;
-            dgvCursos.AllowUserToAddRows = false;
-            dgvCursos.AllowUserToDeleteRows = false;
+            dgvCourses.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvCourses.MultiSelect = false;
+            dgvCourses.ReadOnly = true;
+            dgvCourses.AllowUserToAddRows = false;
+            dgvCourses.AllowUserToDeleteRows = false;
         }
 
-        private int GetSelectedCursoId()
+        private int GetSelectedCourseId()
         {
-            if (dgvCursos.CurrentRow == null)
+            if (dgvCourses.CurrentRow == null)
             {
                 return 0;
             }
 
-            return Convert.ToInt32(dgvCursos.CurrentRow.Cells["Id"].Value);
+            return Convert.ToInt32(dgvCourses.CurrentRow.Cells["Id"].Value);
         }
         #endregion
 
@@ -153,63 +153,63 @@ namespace TrabajoFinal_DarioZubaray
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    LoadCursos();
+                    LoadCourses();
                 }
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            int cursoId = GetSelectedCursoId();
-            if (cursoId == 0)
+            int courseId = GetSelectedCourseId();
+            if (courseId == 0)
             {
-                MessageBox.Show(Resources.CursoManagementForm_SelectToEdit, Resources.InscripcionForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.CourseManagementForm_SelectToEdit, Resources.EnrollmentForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            var curso = _cursoBLL.FindById(cursoId);
-            if (curso == null)
+            var course = _courseBLL.FindById(courseId);
+            if (course == null)
             {
-                MessageBox.Show(Resources.CursoManagementForm_CourseLoadError, Resources.InscripcionForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.CourseManagementForm_CourseLoadError, Resources.EnrollmentForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
-            using (var form = new CourseForm(curso, theme, _currentUser))
+            using (var form = new CourseForm(course, theme, _currentUser))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    LoadCursos();
+                    LoadCourses();
                 }
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            int cursoId = GetSelectedCursoId();
-            if (cursoId == 0)
+            int courseId = GetSelectedCourseId();
+            if (courseId == 0)
             {
-                MessageBox.Show(Resources.CursoManagementForm_SelectToDelete, Resources.InscripcionForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.CourseManagementForm_SelectToDelete, Resources.EnrollmentForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            var curso = _cursoBLL.FindById(cursoId);
-            if (curso == null)
+            var course = _courseBLL.FindById(courseId);
+            if (course == null)
             {
-                MessageBox.Show(Resources.CursoManagementForm_CourseLoadError, Resources.InscripcionForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Resources.CourseManagementForm_CourseLoadError, Resources.EnrollmentForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            string message = string.Format(Resources.CursoManagementForm_ConfirmDeleteMessage, curso.Nombre);
-            DialogResult result = MessageBox.Show(message, Resources.CursoManagementForm_ConfirmDeleteTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string message = string.Format(Resources.CourseManagementForm_ConfirmDeleteMessage, course.Name);
+            DialogResult result = MessageBox.Show(message, Resources.CourseManagementForm_ConfirmDeleteTitle, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                bool deleted = _cursoBLL.Delete(curso);
+                bool deleted = _courseBLL.Delete(course);
                 if (deleted)
                 {
-                    MessageBox.Show(Resources.CursoManagementForm_DeleteSuccess);
-                    LoadCursos();
+                    MessageBox.Show(Resources.CourseManagementForm_DeleteSuccess);
+                    LoadCourses();
                 }
             }
         }
@@ -219,29 +219,29 @@ namespace TrabajoFinal_DarioZubaray
             string searchText = txtSearch.Text.Trim();
             if (string.IsNullOrEmpty(searchText))
             {
-                LoadCursos();
+                LoadCourses();
                 return;
             }
 
-            dgvCursos.DataSource = null;
-            var cursos = _cursoBLL.FindByName(searchText);
+            dgvCourses.DataSource = null;
+            var courses = _courseBLL.FindByName(searchText);
 
-            var cursosGrid = cursos.Select(c => new
+            var coursesGrid = courses.Select(c => new
             {
                 c.Id,
-                c.Nombre,
-                c.Descripcion,
-                Aula = c.AulaNombre ?? Resources.CursoManagementForm_NoClassroom,
-                Estado = c.IsActive ? Resources.CursoManagementForm_StatusActive : Resources.CursoManagementForm_StatusInactive,
-                FechaInicio = c.FechaInicio.ToString("dd/MM/yyyy"),
-                FechaFin = c.FechaFin.ToString("dd/MM/yyyy"),
-                DiaSemana = GetDiaSemanaNombre(c.DiaSemana),
-                HoraInicio = c.HoraInicio.HasValue ? c.HoraInicio.Value.ToString(@"hh\:mm") : "-",
-                HoraFin = c.HoraFin.HasValue ? c.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Docentes = string.Join(", ", c.Docentes.Select(d => d.UserName))
+                Name = c.Name,
+                Description = c.Description,
+                Classroom = c.ClassroomName ?? Resources.CourseManagementForm_NoClassroom,
+                Status = c.IsActive ? Resources.CourseManagementForm_StatusActive : Resources.CourseManagementForm_StatusInactive,
+                StartDate = c.StartDate.ToString("dd/MM/yyyy"),
+                EndDate = c.EndDate.ToString("dd/MM/yyyy"),
+                DayOfWeek = GetDayOfWeekName(c.DayOfWeek),
+                StartTime = c.StartTime.HasValue ? c.StartTime.Value.ToString(@"hh\:mm") : "-",
+                EndTime = c.EndTime.HasValue ? c.EndTime.Value.ToString(@"hh\:mm") : "-",
+                Teachers = string.Join(", ", c.Teachers.Select(d => d.UserName))
             }).ToList();
 
-            dgvCursos.DataSource = cursosGrid;
+            dgvCourses.DataSource = coursesGrid;
             ConfigureGrid();
         }
 

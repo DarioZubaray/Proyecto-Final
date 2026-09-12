@@ -11,10 +11,10 @@ namespace BLL.Helpers
         private static IUserMPP _userMPP;
         private static IRoleMPP _roleMPP;
         private static IActivityMPP _activityMPP;
-        private static IClassroomMPP _aulaMPP;
-        private static ICourseMPP _cursoMPP;
-        private static IEnrollmentMPP _inscripcionMPP;
-        private static IAttendanceMPP _asistenciaMPP;
+        private static IClassroomMPP _classroomMPP;
+        private static ICourseMPP _courseMPP;
+        private static IEnrollmentMPP _enrollmentMPP;
+        private static IAttendanceMPP _attendanceMPP;
         #endregion
 
         #region Métodos
@@ -48,34 +48,34 @@ namespace BLL.Helpers
             return _activityMPP;
         }
 
-        public static IClassroomMPP GetAulaMPP()
+        public static IClassroomMPP GetClassroomMPP()
         {
-            if (_aulaMPP == null)
+            if (_classroomMPP == null)
             {
-                _aulaMPP = new ClassroomMPP();
+                _classroomMPP = new ClassroomMPP();
             }
 
-            return _aulaMPP;
+            return _classroomMPP;
         }
 
-        public static ICourseMPP GetCursoMPP()
+        public static ICourseMPP GetCourseMPP()
         {
-            if (_cursoMPP == null)
+            if (_courseMPP == null)
             {
-                _cursoMPP = new CourseMPP();
+                _courseMPP = new CourseMPP();
             }
 
-            return _cursoMPP;
+            return _courseMPP;
         }
 
-        public static IEnrollmentMPP GetInscripcionMPP()
+        public static IEnrollmentMPP GetEnrollmentMPP()
         {
-            if (_inscripcionMPP == null)
+            if (_enrollmentMPP == null)
             {
-                _inscripcionMPP = new EnrollmentMPP();
+                _enrollmentMPP = new EnrollmentMPP();
             }
 
-            return _inscripcionMPP;
+            return _enrollmentMPP;
         }
 
         public static IAuthBLL CreateAuthBLL()
@@ -98,39 +98,39 @@ namespace BLL.Helpers
             return new RoleBLL(GetRoleMPP());
         }
 
-        public static IActivityBLL CreateActivityBLL()
+        public static Interfaces.IActivityBLL CreateActivityBLL()
         {
             return new ActivityBLL(GetActivityMPP());
         }
 
-        public static IClassroomBLL CreateAulaBLL()
+        public static IClassroomBLL CreateClassroomBLL()
         {
-            return new ClassroomBE(GetAulaMPP());
+            return new ClassroomBLL(GetClassroomMPP());
         }
 
-        public static ICourseBLL CreateCursoBLL()
+        public static ICourseBLL CreateCourseBLL()
         {
-            return new CourseBLL(GetCursoMPP());
+            return new CourseBLL(GetCourseMPP());
         }
 
-        public static IEnrollmentBLL CreateInscripcionBLL()
+        public static IEnrollmentBLL CreateEnrollmentBLL()
         {
-            return new EnrollmentBLL(GetInscripcionMPP(), CreateCursoBLL());
+            return new EnrollmentBLL(GetEnrollmentMPP(), CreateCourseBLL());
         }
 
-        public static IAttendanceMPP GetAsistenciaMPP()
+        public static IAttendanceMPP GetAttendanceMPP()
         {
-            if (_asistenciaMPP == null)
+            if (_attendanceMPP == null)
             {
-                _asistenciaMPP = new AttendanceMPP();
+                _attendanceMPP = new AttendanceMPP();
             }
 
-            return _asistenciaMPP;
+            return _attendanceMPP;
         }
 
-        public static IAttendanceBLL CreateAsistenciaBLL()
+        public static IAttendanceBLL CreateAttendanceBLL()
         {
-            return new AttendanceBLL(GetAsistenciaMPP());
+            return new AttendanceBLL(GetAttendanceMPP());
         }
         #endregion
     }

@@ -1,6 +1,6 @@
-namespace BLL.Services
+namespace BLL.Interfaces
 {
-    public interface IActivity
+    public interface IActivityLogEntryBLL
     {
         int UserId { get; }
         string Action { get; }

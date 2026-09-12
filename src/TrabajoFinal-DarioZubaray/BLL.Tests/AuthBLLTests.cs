@@ -6,7 +6,7 @@ using BE.Properties;
 using BLL.Helpers;
 using BLL.Services;
 using Moq;
-using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Tests
 {

@@ -27,17 +27,17 @@ namespace MPP
         #endregion
 
         #region Métodos Públicos
-        public bool Save(CourseBE curso)
+        public bool Save(CourseBE course)
         {
-            if (curso.Id == 0)
+            if (course.Id == 0)
             {
-                return Insert(curso);
+                return Insert(course);
             }
 
-            return Update(curso);
+            return Update(course);
         }
 
-        public bool Delete(CourseBE curso)
+        public bool Delete(CourseBE course)
         {
             string query = @"UPDATE Cursos
                             SET is_active = 0, last_update = @lastUpdate
@@ -45,7 +45,7 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@id", curso.Id),
+                new SqlParameter("@id", course.Id),
                 new SqlParameter("@lastUpdate", DateTime.Now)
             };
 
@@ -74,9 +74,9 @@ namespace MPP
                 return null;
             }
 
-            CourseBE curso = MapCurso(table.Rows[0]);
-            curso.Docentes = GetDocentesByCursoId(id);
-            return curso;
+            CourseBE course = MapCourse(table.Rows[0]);
+            course.Teachers = GetTeachersByCourseId(id);
+            return course;
         }
 
         public List<CourseBE> FindAll()
@@ -90,12 +90,12 @@ namespace MPP
                             WHERE c.is_active = 1
                             ORDER BY c.id";
 
-            var cursos = FindMany(query);
-            foreach (var curso in cursos)
+            var courses = FindMany(query);
+            foreach (var course in courses)
             {
-                curso.Docentes = GetDocentesByCursoId(curso.Id);
+                course.Teachers = GetTeachersByCourseId(course.Id);
             }
-            return cursos;
+            return courses;
         }
 
         public List<CourseBE> FindAllIncludingInactive()
@@ -109,15 +109,15 @@ namespace MPP
                             WHERE c.fecha_fin >= CAST(GETDATE() AS DATE)
                             ORDER BY c.is_active DESC, c.id";
 
-            var cursos = FindMany(query);
-            foreach (var curso in cursos)
+            var courses = FindMany(query);
+            foreach (var course in courses)
             {
-                curso.Docentes = GetDocentesByCursoId(curso.Id);
+                course.Teachers = GetTeachersByCourseId(course.Id);
             }
-            return cursos;
+            return courses;
         }
 
-        public List<CourseBE> FindByName(string nombre)
+        public List<CourseBE> FindByName(string name)
         {
             string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
                                     c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
@@ -130,18 +130,18 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@nombre", "%" + nombre + "%")
+                new SqlParameter("@nombre", "%" + name + "%")
             };
 
-            var cursos = FindMany(query, parameters);
-            foreach (var curso in cursos)
+            var courses = FindMany(query, parameters);
+            foreach (var course in courses)
             {
-                curso.Docentes = GetDocentesByCursoId(curso.Id);
+                course.Teachers = GetTeachersByCourseId(course.Id);
             }
-            return cursos;
+            return courses;
         }
 
-        public bool ExisteTraslapeAula(int aulaId, DateTime fechaInicio, DateTime fechaFin, int cursoIdExcluir, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin)
+        public bool ExistsClassroomOverlap(int classroomId, DateTime startDate, DateTime endDate, int courseIdToExclude, int? dayOfWeek, TimeSpan? startTime, TimeSpan? endTime)
         {
             string query = @"SELECT COUNT(*)
                             FROM Cursos
@@ -166,19 +166,19 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@aulaId", aulaId),
-                new SqlParameter("@fechaInicio", fechaInicio),
-                new SqlParameter("@fechaFin", fechaFin),
-                new SqlParameter("@cursoIdExcluir", cursoIdExcluir),
-                new SqlParameter("@diaSemana", (object)diaSemana ?? DBNull.Value),
-                new SqlParameter("@horaInicio", horaInicio.HasValue ? (object)horaInicio.Value : DBNull.Value),
-                new SqlParameter("@horaFin", horaFin.HasValue ? (object)horaFin.Value : DBNull.Value)
+                new SqlParameter("@aulaId", classroomId),
+                new SqlParameter("@fechaInicio", startDate),
+                new SqlParameter("@fechaFin", endDate),
+                new SqlParameter("@cursoIdExcluir", courseIdToExclude),
+                new SqlParameter("@diaSemana", (object)dayOfWeek ?? DBNull.Value),
+                new SqlParameter("@horaInicio", startTime.HasValue ? (object)startTime.Value : DBNull.Value),
+                new SqlParameter("@horaFin", endTime.HasValue ? (object)endTime.Value : DBNull.Value)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
         }
 
-        public bool SaveDocentes(int cursoId, List<int> docenteIds)
+        public bool SaveTeachers(int courseId, List<int> teacherIds)
         {
             string deleteQuery = @"UPDATE CursoDocentes
                                   SET is_active = 0
@@ -186,19 +186,19 @@ namespace MPP
 
             SqlParameter[] deleteParams = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId)
+                new SqlParameter("@cursoId", courseId)
             };
 
             _access.Save(deleteQuery, deleteParams);
 
-            foreach (int docenteId in docenteIds)
+            foreach (int teacherId in teacherIds)
             {
                 string insertQuery = @"INSERT INTO CursoDocentes (curso_id, docente_id, is_active, created_at)
                                       VALUES (@cursoId, @docenteId, 1, @createdAt)";
                 SqlParameter[] insertParams = new SqlParameter[]
                 {
-                    new SqlParameter("@cursoId", cursoId),
-                    new SqlParameter("@docenteId", docenteId),
+                    new SqlParameter("@cursoId", courseId),
+                    new SqlParameter("@docenteId", teacherId),
                     new SqlParameter("@createdAt", DateTime.Now)
                 };
                 _access.Save(insertQuery, insertParams);
@@ -207,7 +207,7 @@ namespace MPP
             return true;
         }
 
-        public List<UserBE> GetDocentesByCursoId(int cursoId)
+        public List<UserBE> GetTeachersByCourseId(int courseId)
         {
             string query = @"SELECT u.id, u.user_name, u.password_hash, u.is_active,
                                     u.retries_count, u.last_update, u.created_at,
@@ -218,21 +218,21 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", cursoId)
+                new SqlParameter("@cursoId", courseId)
             };
 
-            List<UserBE> docentes = new List<UserBE>();
+            List<UserBE> teachers = new List<UserBE>();
             DataTable table = _access.Read(query, parameters);
 
             foreach (DataRow row in table.Rows)
             {
-                docentes.Add(MapUser(row));
+                teachers.Add(MapUser(row));
             }
 
-            return docentes;
+            return teachers;
         }
 
-        public List<CourseBE> FindByDocenteId(int docenteId)
+        public List<CourseBE> FindByTeacherId(int teacherId)
         {
             string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
                                     c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
@@ -246,13 +246,13 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@docenteId", docenteId)
+                new SqlParameter("@docenteId", teacherId)
             };
 
             return FindMany(query, parameters);
         }
 
-        public List<CourseBE> FindByAlumnoId(int alumnoId)
+        public List<CourseBE> FindByStudentId(int studentId)
         {
             string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
                                     c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
@@ -266,13 +266,13 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@alumnoId", alumnoId)
+                new SqlParameter("@alumnoId", studentId)
             };
 
             return FindMany(query, parameters);
         }
 
-        public bool ExisteTraslapeDocente(int docenteId, int diaSemana, TimeSpan horaInicio, TimeSpan horaFin, int cursoIdExcluir)
+        public bool ExistsTeacherOverlap(int teacherId, int dayOfWeek, TimeSpan startTime, TimeSpan endTime, int courseIdToExclude)
         {
             string query = @"SELECT COUNT(*)
                             FROM CursoDocentes cd
@@ -287,11 +287,11 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@docenteId", docenteId),
-                new SqlParameter("@diaSemana", diaSemana),
-                new SqlParameter("@horaInicio", horaInicio),
-                new SqlParameter("@horaFin", horaFin),
-                new SqlParameter("@cursoIdExcluir", cursoIdExcluir)
+                new SqlParameter("@docenteId", teacherId),
+                new SqlParameter("@diaSemana", dayOfWeek),
+                new SqlParameter("@horaInicio", startTime),
+                new SqlParameter("@horaFin", endTime),
+                new SqlParameter("@cursoIdExcluir", courseIdToExclude)
             };
 
             DataTable table = _access.Read(query, parameters);
@@ -300,20 +300,20 @@ namespace MPP
         #endregion
 
         #region Métodos Privados
-        private CourseBE MapCurso(DataRow row)
+        private CourseBE MapCourse(DataRow row)
         {
             return new CourseBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                Nombre = row["nombre"].ToString(),
-                Descripcion = row["descripcion"] != DBNull.Value ? row["descripcion"].ToString() : null,
-                FechaInicio = (DateTime)row["fecha_inicio"],
-                FechaFin = (DateTime)row["fecha_fin"],
-                AulaId = row["aula_id"] != DBNull.Value ? Convert.ToInt32(row["aula_id"]) : 0,
-                AulaNombre = row["aula_nombre"] != DBNull.Value ? row["aula_nombre"].ToString() : null,
-                DiaSemana = row["dia_semana"] != DBNull.Value ? Convert.ToInt32(row["dia_semana"]) : (int?)null,
-                HoraInicio = row["hora_inicio"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_inicio"].ToString()) : (TimeSpan?)null,
-                HoraFin = row["hora_fin"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_fin"].ToString()) : (TimeSpan?)null,
+                Name = row["nombre"].ToString(),
+                Description = row["descripcion"] != DBNull.Value ? row["descripcion"].ToString() : null,
+                StartDate = (DateTime)row["fecha_inicio"],
+                EndDate = (DateTime)row["fecha_fin"],
+                ClassroomId = row["aula_id"] != DBNull.Value ? Convert.ToInt32(row["aula_id"]) : 0,
+                ClassroomName = row["aula_nombre"] != DBNull.Value ? row["aula_nombre"].ToString() : null,
+                DayOfWeek = row["dia_semana"] != DBNull.Value ? Convert.ToInt32(row["dia_semana"]) : (int?)null,
+                StartTime = row["hora_inicio"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_inicio"].ToString()) : (TimeSpan?)null,
+                EndTime = row["hora_fin"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_fin"].ToString()) : (TimeSpan?)null,
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 CreatedAt = (DateTime)row["created_at"],
                 LastUpdate = (DateTime)row["last_update"]
@@ -337,24 +337,24 @@ namespace MPP
             };
         }
 
-        private SqlParameter[] CreateCursoParameters(CourseBE curso)
+        private SqlParameter[] CreateCourseParameters(CourseBE course)
         {
             return new SqlParameter[]
             {
-                new SqlParameter("@nombre", curso.Nombre),
-                new SqlParameter("@descripcion", (object)curso.Descripcion ?? DBNull.Value),
-                new SqlParameter("@fechaInicio", curso.FechaInicio),
-                new SqlParameter("@fechaFin", curso.FechaFin),
-                new SqlParameter("@aulaId", curso.AulaId),
-                new SqlParameter("@diaSemana", (object)curso.DiaSemana ?? DBNull.Value),
-                new SqlParameter("@horaInicio", curso.HoraInicio.HasValue ? (object)curso.HoraInicio.Value : DBNull.Value),
-                new SqlParameter("@horaFin", curso.HoraFin.HasValue ? (object)curso.HoraFin.Value : DBNull.Value),
-                new SqlParameter("@isActive", curso.IsActive),
-                new SqlParameter("@lastUpdate", curso.LastUpdate)
+                new SqlParameter("@nombre", course.Name),
+                new SqlParameter("@descripcion", (object)course.Description ?? DBNull.Value),
+                new SqlParameter("@fechaInicio", course.StartDate),
+                new SqlParameter("@fechaFin", course.EndDate),
+                new SqlParameter("@aulaId", course.ClassroomId),
+                new SqlParameter("@diaSemana", (object)course.DayOfWeek ?? DBNull.Value),
+                new SqlParameter("@horaInicio", course.StartTime.HasValue ? (object)course.StartTime.Value : DBNull.Value),
+                new SqlParameter("@horaFin", course.EndTime.HasValue ? (object)course.EndTime.Value : DBNull.Value),
+                new SqlParameter("@isActive", course.IsActive),
+                new SqlParameter("@lastUpdate", course.LastUpdate)
             };
         }
 
-        private bool Insert(CourseBE curso)
+        private bool Insert(CourseBE course)
         {
             string query = @"INSERT INTO Cursos (nombre, descripcion, fecha_inicio, fecha_fin, aula_id,
                                     dia_semana, hora_inicio, hora_fin, is_active, created_at, last_update)
@@ -362,21 +362,21 @@ namespace MPP
                                     @diaSemana, @horaInicio, @horaFin, @isActive, @createdAt, @lastUpdate);
                             SELECT SCOPE_IDENTITY();";
 
-            SqlParameter[] parameters = CreateCursoParameters(curso);
+            SqlParameter[] parameters = CreateCourseParameters(course);
             var allParameters = new SqlParameter[parameters.Length + 1];
             parameters.CopyTo(allParameters, 0);
-            allParameters[parameters.Length] = new SqlParameter("@createdAt", curso.CreatedAt);
+            allParameters[parameters.Length] = new SqlParameter("@createdAt", course.CreatedAt);
 
             var newId = _access.ReadScalar(query, allParameters);
             if (newId > 0)
             {
-                curso.Id = newId;
+                course.Id = newId;
                 return true;
             }
             return false;
         }
 
-        private bool Update(CourseBE curso)
+        private bool Update(CourseBE course)
         {
             string query = @"UPDATE Cursos
                             SET nombre = @nombre,
@@ -391,38 +391,38 @@ namespace MPP
                                 last_update = @lastUpdate
                             WHERE id = @id";
 
-            SqlParameter[] parameters = CreateCursoParameters(curso);
+            SqlParameter[] parameters = CreateCourseParameters(course);
             var allParameters = new SqlParameter[parameters.Length + 1];
             parameters.CopyTo(allParameters, 0);
-            allParameters[parameters.Length] = new SqlParameter("@id", curso.Id);
+            allParameters[parameters.Length] = new SqlParameter("@id", course.Id);
 
             return _access.Save(query, allParameters);
         }
 
         private List<CourseBE> FindMany(string query)
         {
-            List<CourseBE> cursos = new List<CourseBE>();
+            List<CourseBE> courses = new List<CourseBE>();
             DataTable table = _access.Read(query);
 
             foreach (DataRow row in table.Rows)
             {
-                cursos.Add(MapCurso(row));
+                courses.Add(MapCourse(row));
             }
 
-            return cursos;
+            return courses;
         }
 
         private List<CourseBE> FindMany(string query, SqlParameter[] parameters)
         {
-            List<CourseBE> cursos = new List<CourseBE>();
+            List<CourseBE> courses = new List<CourseBE>();
             DataTable table = _access.Read(query, parameters);
 
             foreach (DataRow row in table.Rows)
             {
-                cursos.Add(MapCurso(row));
+                courses.Add(MapCourse(row));
             }
 
-            return cursos;
+            return courses;
         }
         #endregion
     }

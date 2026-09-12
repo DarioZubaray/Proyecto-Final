@@ -1,17 +1,18 @@
 using BE.Entities;
+using BLL.Interfaces;
 using MPP.Interfaces;
 
 namespace BLL.Services
 {
-    public class ActivityLoggingDecorator : IActivity
+    public class ActivityLoggingDecoratorBLL : IActivityLogEntryBLL
     {
         #region Propiedades
-        private readonly IActivity _activity;
+        private readonly IActivityLogEntryBLL _activity;
         private readonly IActivityMPP _activityMPP;
         #endregion
 
         #region Constructor
-        public ActivityLoggingDecorator(IActivity activity, IActivityMPP activityMPP)
+        public ActivityLoggingDecoratorBLL(IActivityLogEntryBLL activity, IActivityMPP activityMPP)
         {
             _activity = activity;
             _activityMPP = activityMPP;

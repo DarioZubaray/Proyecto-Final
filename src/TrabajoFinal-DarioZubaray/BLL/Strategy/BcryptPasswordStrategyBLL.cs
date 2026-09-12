@@ -2,7 +2,7 @@ using System;
 
 namespace BLL.Strategy
 {
-    public class BcryptPasswordStrategy : IPasswordStrategy
+    public class BcryptPasswordStrategyBLL : IPasswordStrategyBLL
     {
         public bool Matches(string storedHash)
         {

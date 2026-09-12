@@ -1,6 +1,8 @@
+using BLL.Interfaces;
+
 namespace BLL.Services
 {
-    public class BaseActivity : IActivity
+    public class BaseActivity : IActivityLogEntryBLL
     {
         #region Propiedades
         public int UserId { get; private set; }

@@ -10,28 +10,28 @@ namespace TrabajoFinal_DarioZubaray
     public partial class ClassroomForm : Form
     {
         #region Propiedades
-        private readonly IClassroomBLL _aulaBLL;
-        private readonly ClassroomBE _aula;
-        private readonly bool _isNewAula;
+        private readonly IClassroomBLL _classroomBLL;
+        private readonly ClassroomBE _classroom;
+        private readonly bool _isNewClassroom;
         #endregion
 
         #region Constructor
         public ClassroomForm(string theme)
         {
             InitializeComponent();
-            _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
-            _isNewAula = true;
-            _aula = new ClassroomBE();
+            _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
+            _isNewClassroom = true;
+            _classroom = new ClassroomBE();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
 
-        public ClassroomForm(ClassroomBE aula, string theme)
+        public ClassroomForm(ClassroomBE classroom, string theme)
         {
             InitializeComponent();
-            _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
-            _isNewAula = false;
-            _aula = aula;
-            LoadAulaData();
+            _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
+            _isNewClassroom = false;
+            _classroom = classroom;
+            LoadClassroomData();
             ThemeHelper.ApplyTheme(this, theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
@@ -39,46 +39,46 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private bool ValidateInputs()
         {
-            if (string.IsNullOrEmpty(txtNombre.Text.Trim()))
+            if (string.IsNullOrEmpty(txtName.Text.Trim()))
             {
                 MessageBox.Show("El nombre es obligatorio.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtNombre.Focus();
+                txtName.Focus();
                 return false;
             }
 
-            if (nudCapacidad.Value <= 0)
+            if (nudCapacity.Value <= 0)
             {
                 MessageBox.Show("La capacidad debe ser mayor a 0.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                nudCapacidad.Focus();
+                nudCapacity.Focus();
                 return false;
             }
 
             return true;
         }
 
-        private void MapAulaFromUI()
+        private void MapClassroomFromUI()
         {
-            _aula.Nombre = txtNombre.Text.Trim();
-            _aula.Capacidad = (int)nudCapacidad.Value;
-            _aula.IsActive = true;
+            _classroom.Name = txtName.Text.Trim();
+            _classroom.Capacity = (int)nudCapacity.Value;
+            _classroom.IsActive = true;
 
-            if (_isNewAula)
+            if (_isNewClassroom)
             {
-                _aula.CreatedAt = DateTime.Now;
+                _classroom.CreatedAt = DateTime.Now;
             }
 
-            _aula.LastUpdate = DateTime.Now;
+            _classroom.LastUpdate = DateTime.Now;
         }
 
-        private bool SaveAula()
+        private bool SaveClassroom()
         {
-            return _aulaBLL.Save(_aula);
+            return _classroomBLL.Save(_classroom);
         }
 
-        private void LoadAulaData()
+        private void LoadClassroomData()
         {
-            txtNombre.Text = _aula.Nombre;
-            nudCapacidad.Value = _aula.Capacidad;
+            txtName.Text = _classroom.Name;
+            nudCapacity.Value = _classroom.Capacity;
         }
         #endregion
 
@@ -90,11 +90,11 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
-            MapAulaFromUI();
+            MapClassroomFromUI();
 
-            if (SaveAula())
+            if (SaveClassroom())
             {
-                MessageBox.Show(_isNewAula ? "Aula creada exitosamente." : "Aula modificada exitosamente.");
+                MessageBox.Show(_isNewClassroom ? "Aula creada exitosamente." : "Aula modificada exitosamente.");
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

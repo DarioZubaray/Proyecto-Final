@@ -18,50 +18,50 @@ namespace TrabajoFinal_DarioZubaray
 
         private void InitializeComponent()
         {
-            this.lblNombre = new System.Windows.Forms.Label();
-            this.txtNombre = new System.Windows.Forms.TextBox();
-            this.lblCapacidad = new System.Windows.Forms.Label();
-            this.nudCapacidad = new System.Windows.Forms.NumericUpDown();
+            this.lblName = new System.Windows.Forms.Label();
+            this.txtName = new System.Windows.Forms.TextBox();
+            this.lblCapacity = new System.Windows.Forms.Label();
+            this.nudCapacity = new System.Windows.Forms.NumericUpDown();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.nudCapacidad)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCapacity)).BeginInit();
             this.SuspendLayout();
             // 
-            // lblNombre
+            // lblName
             // 
-            this.lblNombre.AutoSize = true;
-            this.lblNombre.Location = new System.Drawing.Point(12, 15);
-            this.lblNombre.Name = "lblNombre";
-            this.lblNombre.Size = new System.Drawing.Size(47, 13);
-            this.lblNombre.TabIndex = 0;
-            this.lblNombre.Text = "Nombre:";
+            this.lblName.AutoSize = true;
+            this.lblName.Location = new System.Drawing.Point(12, 15);
+            this.lblName.Name = "lblName";
+            this.lblName.Size = new System.Drawing.Size(47, 13);
+            this.lblName.TabIndex = 0;
+            this.lblName.Text = "Nombre:";
             // 
-            // txtNombre
+            // txtName
             // 
-            this.txtNombre.Location = new System.Drawing.Point(120, 12);
-            this.txtNombre.MaxLength = 100;
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(250, 20);
-            this.txtNombre.TabIndex = 1;
+            this.txtName.Location = new System.Drawing.Point(120, 12);
+            this.txtName.MaxLength = 100;
+            this.txtName.Name = "txtName";
+            this.txtName.Size = new System.Drawing.Size(250, 20);
+            this.txtName.TabIndex = 1;
             // 
-            // lblCapacidad
+            // lblCapacity
             // 
-            this.lblCapacidad.AutoSize = true;
-            this.lblCapacidad.Location = new System.Drawing.Point(12, 45);
-            this.lblCapacidad.Name = "lblCapacidad";
-            this.lblCapacidad.Size = new System.Drawing.Size(58, 13);
-            this.lblCapacidad.TabIndex = 2;
-            this.lblCapacidad.Text = "Capacidad:";
+            this.lblCapacity.AutoSize = true;
+            this.lblCapacity.Location = new System.Drawing.Point(12, 45);
+            this.lblCapacity.Name = "lblCapacity";
+            this.lblCapacity.Size = new System.Drawing.Size(58, 13);
+            this.lblCapacity.TabIndex = 2;
+            this.lblCapacity.Text = "Capacidad:";
             // 
-            // nudCapacidad
+            // nudCapacity
             // 
-            this.nudCapacidad.Location = new System.Drawing.Point(120, 43);
-            this.nudCapacidad.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            this.nudCapacidad.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            this.nudCapacidad.Name = "nudCapacidad";
-            this.nudCapacidad.Size = new System.Drawing.Size(120, 20);
-            this.nudCapacidad.TabIndex = 3;
-            this.nudCapacidad.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudCapacity.Location = new System.Drawing.Point(120, 43);
+            this.nudCapacity.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            this.nudCapacity.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudCapacity.Name = "nudCapacity";
+            this.nudCapacity.Size = new System.Drawing.Size(120, 20);
+            this.nudCapacity.TabIndex = 3;
+            this.nudCapacity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // btnSave
             // 
@@ -90,10 +90,10 @@ namespace TrabajoFinal_DarioZubaray
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(394, 116);
-            this.Controls.Add(this.lblNombre);
-            this.Controls.Add(this.txtNombre);
-            this.Controls.Add(this.lblCapacidad);
-            this.Controls.Add(this.nudCapacidad);
+            this.Controls.Add(this.lblName);
+            this.Controls.Add(this.txtName);
+            this.Controls.Add(this.lblCapacity);
+            this.Controls.Add(this.nudCapacity);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnCancel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -102,7 +102,7 @@ namespace TrabajoFinal_DarioZubaray
             this.Name = "AulaForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Aula";
-            ((System.ComponentModel.ISupportInitialize)(this.nudCapacidad)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCapacity)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,10 +110,10 @@ namespace TrabajoFinal_DarioZubaray
 
         #endregion
 
-        private System.Windows.Forms.Label lblNombre;
-        private System.Windows.Forms.TextBox txtNombre;
-        private System.Windows.Forms.Label lblCapacidad;
-        private System.Windows.Forms.NumericUpDown nudCapacidad;
+        private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Label lblCapacity;
+        private System.Windows.Forms.NumericUpDown nudCapacity;
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnCancel;
     }

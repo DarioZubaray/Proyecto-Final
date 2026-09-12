@@ -6,8 +6,8 @@ namespace BE.Entities
     {
         #region Propiedades
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public int Capacidad { get; set; }
+        public string Name { get; set; }
+        public int Capacity { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
@@ -16,11 +16,11 @@ namespace BE.Entities
         #region Constructor
         public ClassroomBE() { }
 
-        public ClassroomBE(int id, string nombre, int capacidad, bool isActive, DateTime createdAt, DateTime lastUpdate)
+        public ClassroomBE(int id, string name, int capacity, bool isActive, DateTime createdAt, DateTime lastUpdate)
         {
             Id = id;
-            Nombre = nombre;
-            Capacidad = capacidad;
+            Name = name;
+            Capacity = capacity;
             IsActive = isActive;
             CreatedAt = createdAt;
             LastUpdate = lastUpdate;
@@ -30,7 +30,7 @@ namespace BE.Entities
         #region Métodos
         public override string ToString()
         {
-            return Nombre;
+            return Name;
         }
         #endregion
     }

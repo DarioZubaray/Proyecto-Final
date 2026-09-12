@@ -7,51 +7,51 @@ namespace BE.Entities
     {
         #region Propiedades
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Descripcion { get; set; }
-        public DateTime FechaInicio { get; set; }
-        public DateTime FechaFin { get; set; }
-        public int AulaId { get; set; }
-        public string AulaNombre { get; set; }
-        public int? DiaSemana { get; set; }
-        public TimeSpan? HoraInicio { get; set; }
-        public TimeSpan? HoraFin { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public int ClassroomId { get; set; }
+        public string ClassroomName { get; set; }
+        public int? DayOfWeek { get; set; }
+        public TimeSpan? StartTime { get; set; }
+        public TimeSpan? EndTime { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
-        public List<UserBE> Docentes { get; set; }
+        public List<UserBE> Teachers { get; set; }
         #endregion
 
         #region Constructor
         public CourseBE()
         {
-            Docentes = new List<UserBE>();
+            Teachers = new List<UserBE>();
         }
 
-        public CourseBE(int id, string nombre, string descripcion, DateTime fechaInicio,
-            DateTime fechaFin, int aulaId, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin,
+        public CourseBE(int id, string name, string description, DateTime startDate,
+            DateTime endDate, int classroomId, int? dayOfWeek, TimeSpan? startTime, TimeSpan? endTime,
             bool isActive, DateTime createdAt, DateTime lastUpdate)
         {
             Id = id;
-            Nombre = nombre;
-            Descripcion = descripcion;
-            FechaInicio = fechaInicio;
-            FechaFin = fechaFin;
-            AulaId = aulaId;
-            DiaSemana = diaSemana;
-            HoraInicio = horaInicio;
-            HoraFin = horaFin;
+            Name = name;
+            Description = description;
+            StartDate = startDate;
+            EndDate = endDate;
+            ClassroomId = classroomId;
+            DayOfWeek = dayOfWeek;
+            StartTime = startTime;
+            EndTime = endTime;
             IsActive = isActive;
             CreatedAt = createdAt;
             LastUpdate = lastUpdate;
-            Docentes = new List<UserBE>();
+            Teachers = new List<UserBE>();
         }
         #endregion
 
         #region Métodos
         public override string ToString()
         {
-            return Nombre;
+            return Name;
         }
         #endregion
     }

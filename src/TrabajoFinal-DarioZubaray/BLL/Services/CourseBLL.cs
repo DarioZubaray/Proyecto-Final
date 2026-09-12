@@ -10,52 +10,52 @@ namespace BLL.Services
     public class CourseBLL : ICourseBLL
     {
         #region Propiedades
-        private readonly ICourseMPP _cursoMPP;
+        private readonly ICourseMPP _courseMPP;
         #endregion
 
         #region Constructor
-        public CourseBLL(ICourseMPP cursoMPP)
+        public CourseBLL(ICourseMPP courseMPP)
         {
-            _cursoMPP = cursoMPP;
+            _courseMPP = courseMPP;
         }
         #endregion
 
         #region Métodos
-        public bool Save(CourseBE curso)
+        public bool Save(CourseBE course)
         {
-            bool hayTraslape = _cursoMPP.ExisteTraslapeAula(
-                curso.AulaId,
-                curso.FechaInicio,
-                curso.FechaFin,
-                curso.Id,
-                curso.DiaSemana,
-                curso.HoraInicio,
-                curso.HoraFin
+            bool hasOverlap = _courseMPP.ExistsClassroomOverlap(
+                course.ClassroomId,
+                course.StartDate,
+                course.EndDate,
+                course.Id,
+                course.DayOfWeek,
+                course.StartTime,
+                course.EndTime
             );
 
-            if (hayTraslape)
+            if (hasOverlap)
             {
                 throw new InvalidOperationException("El aula ya está ocupada en ese horario.");
             }
 
-            return _cursoMPP.Save(curso);
+            return _courseMPP.Save(course);
         }
 
-        public bool SaveDocentes(int cursoId, List<int> docenteIds)
+        public bool SaveTeachers(int courseId, List<int> teacherIds)
         {
-            return _cursoMPP.SaveDocentes(cursoId, docenteIds);
+            return _courseMPP.SaveTeachers(courseId, teacherIds);
         }
 
-        public bool ValidarTraslapeDocentes(int cursoId, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin, List<int> docenteIds)
+        public bool ValidateTeacherOverlap(int courseId, int? dayOfWeek, TimeSpan? startTime, TimeSpan? endTime, List<int> teacherIds)
         {
-            if (!diaSemana.HasValue || !horaInicio.HasValue || !horaFin.HasValue)
+            if (!dayOfWeek.HasValue || !startTime.HasValue || !endTime.HasValue)
             {
                 return false;
             }
 
-            foreach (int docenteId in docenteIds)
+            foreach (int teacherId in teacherIds)
             {
-                if (_cursoMPP.ExisteTraslapeDocente(docenteId, diaSemana.Value, horaInicio.Value, horaFin.Value, cursoId))
+                if (_courseMPP.ExistsTeacherOverlap(teacherId, dayOfWeek.Value, startTime.Value, endTime.Value, courseId))
                 {
                     return true;
                 }
@@ -64,49 +64,49 @@ namespace BLL.Services
             return false;
         }
 
-        public bool Delete(CourseBE curso)
+        public bool Delete(CourseBE course)
         {
-            return _cursoMPP.Delete(curso);
+            return _courseMPP.Delete(course);
         }
 
         public CourseBE FindById(int id)
         {
-            return _cursoMPP.FindById(id);
+            return _courseMPP.FindById(id);
         }
 
         public List<CourseBE> FindAll()
         {
-            return _cursoMPP.FindAll();
+            return _courseMPP.FindAll();
         }
 
         public List<CourseBE> FindAllIncludingInactive()
         {
-            return _cursoMPP.FindAllIncludingInactive();
+            return _courseMPP.FindAllIncludingInactive();
         }
 
-        public List<CourseBE> FindByName(string nombre)
+        public List<CourseBE> FindByName(string name)
         {
-            return _cursoMPP.FindByName(nombre);
+            return _courseMPP.FindByName(name);
         }
 
-        public bool ExisteTraslapeAula(int aulaId, DateTime fechaInicio, DateTime fechaFin, int cursoIdExcluir, int? diaSemana, TimeSpan? horaInicio, TimeSpan? horaFin)
+        public bool ExistsClassroomOverlap(int classroomId, DateTime startDate, DateTime endDate, int courseIdToExclude, int? dayOfWeek, TimeSpan? startTime, TimeSpan? endTime)
         {
-            return _cursoMPP.ExisteTraslapeAula(aulaId, fechaInicio, fechaFin, cursoIdExcluir, diaSemana, horaInicio, horaFin);
+            return _courseMPP.ExistsClassroomOverlap(classroomId, startDate, endDate, courseIdToExclude, dayOfWeek, startTime, endTime);
         }
 
-        public List<UserBE> GetDocentesByCursoId(int cursoId)
+        public List<UserBE> GetTeachersByCourseId(int courseId)
         {
-            return _cursoMPP.GetDocentesByCursoId(cursoId);
+            return _courseMPP.GetTeachersByCourseId(courseId);
         }
 
-        public List<CourseBE> FindByDocenteId(int docenteId)
+        public List<CourseBE> FindByTeacherId(int teacherId)
         {
-            return _cursoMPP.FindByDocenteId(docenteId);
+            return _courseMPP.FindByTeacherId(teacherId);
         }
 
-        public List<CourseBE> FindByAlumnoId(int alumnoId)
+        public List<CourseBE> FindByStudentId(int studentId)
         {
-            return _cursoMPP.FindByAlumnoId(alumnoId);
+            return _courseMPP.FindByStudentId(studentId);
         }
         #endregion
     }

@@ -27,17 +27,17 @@ namespace MPP
         #endregion
 
         #region Métodos Públicos
-        public bool Save(ClassroomBE aula)
+        public bool Save(ClassroomBE classroom)
         {
-            if (aula.Id == 0)
+            if (classroom.Id == 0)
             {
-                return Insert(aula);
+                return Insert(classroom);
             }
 
-            return Update(aula);
+            return Update(classroom);
         }
 
-        public bool Delete(ClassroomBE aula)
+        public bool Delete(ClassroomBE classroom)
         {
             string query = @"UPDATE Aulas
                             SET is_active = 0, last_update = @lastUpdate
@@ -45,7 +45,7 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@id", aula.Id),
+                new SqlParameter("@id", classroom.Id),
                 new SqlParameter("@lastUpdate", DateTime.Now)
             };
 
@@ -70,7 +70,7 @@ namespace MPP
                 return null;
             }
 
-            return MapAula(table.Rows[0]);
+            return MapClassroom(table.Rows[0]);
         }
 
         public List<ClassroomBE> FindAll()
@@ -83,7 +83,7 @@ namespace MPP
             return FindMany(query);
         }
 
-        public List<ClassroomBE> FindByName(string nombre)
+        public List<ClassroomBE> FindByName(string name)
         {
             string query = @"SELECT id, nombre, capacidad, is_active, created_at, last_update
                             FROM Aulas
@@ -92,7 +92,7 @@ namespace MPP
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@nombre", "%" + nombre + "%")
+                new SqlParameter("@nombre", "%" + name + "%")
             };
 
             return FindMany(query, parameters);
@@ -106,46 +106,46 @@ namespace MPP
         #endregion
 
         #region Métodos Privados
-        private ClassroomBE MapAula(DataRow row)
+        private ClassroomBE MapClassroom(DataRow row)
         {
             return new ClassroomBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                Nombre = row["nombre"].ToString(),
-                Capacidad = Convert.ToInt32(row["capacidad"]),
+                Name = row["nombre"].ToString(),
+                Capacity = Convert.ToInt32(row["capacidad"]),
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 CreatedAt = (DateTime)row["created_at"],
                 LastUpdate = (DateTime)row["last_update"]
             };
         }
 
-        private SqlParameter[] CreateAulaParameters(ClassroomBE aula)
+        private SqlParameter[] CreateClassroomParameters(ClassroomBE classroom)
         {
             return new SqlParameter[]
             {
-                new SqlParameter("@nombre", aula.Nombre),
-                new SqlParameter("@capacidad", aula.Capacidad),
-                new SqlParameter("@isActive", aula.IsActive),
-                new SqlParameter("@lastUpdate", aula.LastUpdate)
+                new SqlParameter("@nombre", classroom.Name),
+                new SqlParameter("@capacidad", classroom.Capacity),
+                new SqlParameter("@isActive", classroom.IsActive),
+                new SqlParameter("@lastUpdate", classroom.LastUpdate)
             };
         }
 
-        private bool Insert(ClassroomBE aula)
+        private bool Insert(ClassroomBE classroom)
         {
             string query = @"INSERT INTO Aulas (nombre, capacidad, is_active, created_at, last_update)
                             VALUES (@nombre, @capacidad, @isActive, @createdAt, @lastUpdate);
                             SELECT SCOPE_IDENTITY();";
 
-            SqlParameter[] parameters = CreateAulaParameters(aula);
+            SqlParameter[] parameters = CreateClassroomParameters(classroom);
             var allParameters = new SqlParameter[parameters.Length + 1];
             parameters.CopyTo(allParameters, 0);
-            allParameters[parameters.Length] = new SqlParameter("@createdAt", aula.CreatedAt);
+            allParameters[parameters.Length] = new SqlParameter("@createdAt", classroom.CreatedAt);
 
             var newId = _access.ReadScalar(query, allParameters);
             return newId > 0;
         }
 
-        private bool Update(ClassroomBE aula)
+        private bool Update(ClassroomBE classroom)
         {
             string query = @"UPDATE Aulas
                             SET nombre = @nombre,
@@ -154,38 +154,38 @@ namespace MPP
                                 last_update = @lastUpdate
                             WHERE id = @id";
 
-            SqlParameter[] parameters = CreateAulaParameters(aula);
+            SqlParameter[] parameters = CreateClassroomParameters(classroom);
             var allParameters = new SqlParameter[parameters.Length + 1];
             parameters.CopyTo(allParameters, 0);
-            allParameters[parameters.Length] = new SqlParameter("@id", aula.Id);
+            allParameters[parameters.Length] = new SqlParameter("@id", classroom.Id);
 
             return _access.Save(query, allParameters);
         }
 
         private List<ClassroomBE> FindMany(string query)
         {
-            List<ClassroomBE> aulas = new List<ClassroomBE>();
+            List<ClassroomBE> classrooms = new List<ClassroomBE>();
             DataTable table = _access.Read(query);
 
             foreach (DataRow row in table.Rows)
             {
-                aulas.Add(MapAula(row));
+                classrooms.Add(MapClassroom(row));
             }
 
-            return aulas;
+            return classrooms;
         }
 
         private List<ClassroomBE> FindMany(string query, SqlParameter[] parameters)
         {
-            List<ClassroomBE> aulas = new List<ClassroomBE>();
+            List<ClassroomBE> classrooms = new List<ClassroomBE>();
             DataTable table = _access.Read(query, parameters);
 
             foreach (DataRow row in table.Rows)
             {
-                aulas.Add(MapAula(row));
+                classrooms.Add(MapClassroom(row));
             }
 
-            return aulas;
+            return classrooms;
         }
         #endregion
     }

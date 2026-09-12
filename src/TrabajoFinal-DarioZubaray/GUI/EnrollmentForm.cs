@@ -14,8 +14,8 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _currentUser;
-        private readonly ICourseBLL _cursoBLL;
-        private readonly IEnrollmentBLL _inscripcionBLL;
+        private readonly ICourseBLL _courseBLL;
+        private readonly IEnrollmentBLL _enrollmentBLL;
         #endregion
 
         #region Constructor
@@ -23,8 +23,8 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _currentUser = user;
-            _cursoBLL = ServiceLocatorBLL.CreateCursoBLL();
-            _inscripcionBLL = ServiceLocatorBLL.CreateInscripcionBLL();
+            _courseBLL = ServiceLocatorBLL.CreateCourseBLL();
+            _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL();
             ApplyResources();
             LoadData();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
@@ -34,14 +34,14 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private void ApplyResources()
         {
-            this.Text = Resources.InscripcionForm_Title;
-            lblCursosDisponibles.Text = Resources.InscripcionForm_AvailableCoursesLabel;
-            lblMisInscripciones.Text = Resources.InscripcionForm_MyEnrollmentsLabel;
-            btnInscribirse.Text = Resources.InscripcionForm_EnrollButton;
-            btnDesinscribirse.Text = Resources.InscripcionForm_UnenrollButton;
+            this.Text = Resources.EnrollmentForm_Title;
+            lblAvailableCourses.Text = Resources.EnrollmentForm_AvailableCoursesLabel;
+            lblMyEnrollments.Text = Resources.EnrollmentForm_MyEnrollmentsLabel;
+            btnEnroll.Text = Resources.EnrollmentForm_EnrollButton;
+            btnUnenroll.Text = Resources.EnrollmentForm_UnenrollButton;
         }
 
-        private string GetDiaSemanaNombre(int? dia)
+        private string GetDayOfWeekName(int? dia)
         {
             if (!dia.HasValue) return "-";
             switch (dia.Value)
@@ -59,107 +59,107 @@ namespace TrabajoFinal_DarioZubaray
 
         private void LoadData()
         {
-            LoadCursosDisponibles();
-            LoadMisInscripciones();
+            LoadAvailableCourses();
+            LoadMyEnrollments();
         }
 
-        private void LoadCursosDisponibles()
+        private void LoadAvailableCourses()
         {
-            var todosCursos = _cursoBLL.FindAll();
-            var misInscripciones = _inscripcionBLL.FindByAlumnoId(_currentUser.Id);
-            var cursosInscriptosIds = misInscripciones.Select(i => i.CursoId).ToHashSet();
+            var allCourses = _courseBLL.FindAll();
+            var myEnrollments = _enrollmentBLL.FindByStudentId(_currentUser.Id);
+            var enrolledCourseIds = myEnrollments.Select(i => i.CourseId).ToHashSet();
 
-            var cursosDisponibles = todosCursos
-                .Where(c => !cursosInscriptosIds.Contains(c.Id))
+            var availableCourses = allCourses
+                .Where(c => !enrolledCourseIds.Contains(c.Id))
                 .ToList();
 
-            var cursosGrid = cursosDisponibles.Select(c => new
+            var coursesGrid = availableCourses.Select(c => new
             {
                 c.Id,
-                c.Nombre,
-                Aula = c.AulaNombre ?? Resources.InscripcionForm_NoAssignment,
-                DiaSemana = GetDiaSemanaNombre(c.DiaSemana),
-                HoraInicio = c.HoraInicio.HasValue ? c.HoraInicio.Value.ToString(@"hh\:mm") : "-",
-                HoraFin = c.HoraFin.HasValue ? c.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Docentes = string.Join(", ", c.Docentes.Select(d => d.UserName))
+                Name = c.Name,
+                Classroom = c.ClassroomName ?? Resources.EnrollmentForm_NoAssignment,
+                DayOfWeek = GetDayOfWeekName(c.DayOfWeek),
+                StartTime = c.StartTime.HasValue ? c.StartTime.Value.ToString(@"hh\:mm") : "-",
+                EndTime = c.EndTime.HasValue ? c.EndTime.Value.ToString(@"hh\:mm") : "-",
+                Teachers = string.Join(", ", c.Teachers.Select(d => d.UserName))
             }).ToList();
 
-            dgvCursosDisponibles.DataSource = cursosGrid;
-            ConfigureCursosGrid();
+            dgvAvailableCourses.DataSource = coursesGrid;
+            ConfigureCoursesGrid();
         }
 
-        private void LoadMisInscripciones()
+        private void LoadMyEnrollments()
         {
-            var inscripciones = _inscripcionBLL.FindByAlumnoId(_currentUser.Id);
+            var enrollments = _enrollmentBLL.FindByStudentId(_currentUser.Id);
 
-            var inscripcionesGrid = inscripciones.Select(i => new
+            var enrollmentsGrid = enrollments.Select(i => new
             {
-                i.CursoId,
-                Curso = i.CursoNombre,
-                DiaSemana = GetDiaSemanaNombre(i.DiaSemana),
-                HoraInicio = i.HoraInicio.HasValue ? i.HoraInicio.Value.ToString(@"hh\:mm") : "-",
-                HoraFin = i.HoraFin.HasValue ? i.HoraFin.Value.ToString(@"hh\:mm") : "-",
-                Aula = i.AulaNombre ?? Resources.InscripcionForm_NoAssignment
+                i.CourseId,
+                Course = i.CourseName,
+                DayOfWeek = GetDayOfWeekName(i.DayOfWeek),
+                StartTime = i.StartTime.HasValue ? i.StartTime.Value.ToString(@"hh\:mm") : "-",
+                EndTime = i.EndTime.HasValue ? i.EndTime.Value.ToString(@"hh\:mm") : "-",
+                Classroom = i.ClassroomName ?? Resources.EnrollmentForm_NoAssignment
             }).ToList();
 
-            dgvMisInscripciones.DataSource = inscripcionesGrid;
-            ConfigureInscripcionesGrid();
+            dgvMyEnrollments.DataSource = enrollmentsGrid;
+            ConfigureEnrollmentsGrid();
         }
 
-        private void ConfigureCursosGrid()
+        private void ConfigureCoursesGrid()
         {
-            if (dgvCursosDisponibles.Columns.Count == 0) return;
+            if (dgvAvailableCourses.Columns.Count == 0) return;
 
-            dgvCursosDisponibles.Columns["Id"].HeaderText = Resources.InscripcionForm_ColId;
-            dgvCursosDisponibles.Columns["Nombre"].HeaderText = Resources.InscripcionForm_ColCourse;
-            dgvCursosDisponibles.Columns["Aula"].HeaderText = Resources.InscripcionForm_ColClassroom;
-            dgvCursosDisponibles.Columns["DiaSemana"].HeaderText = Resources.InscripcionForm_ColDay;
-            dgvCursosDisponibles.Columns["HoraInicio"].HeaderText = Resources.InscripcionForm_ColStartTime;
-            dgvCursosDisponibles.Columns["HoraFin"].HeaderText = Resources.InscripcionForm_ColEndTime;
-            dgvCursosDisponibles.Columns["Docentes"].HeaderText = Resources.InscripcionForm_ColTeachers;
+            dgvAvailableCourses.Columns["Id"].HeaderText = Resources.EnrollmentForm_ColId;
+            dgvAvailableCourses.Columns["Name"].HeaderText = Resources.EnrollmentForm_ColCourse;
+            dgvAvailableCourses.Columns["Classroom"].HeaderText = Resources.EnrollmentForm_ColClassroom;
+            dgvAvailableCourses.Columns["DayOfWeek"].HeaderText = Resources.EnrollmentForm_ColDay;
+            dgvAvailableCourses.Columns["StartTime"].HeaderText = Resources.EnrollmentForm_ColStartTime;
+            dgvAvailableCourses.Columns["EndTime"].HeaderText = Resources.EnrollmentForm_ColEndTime;
+            dgvAvailableCourses.Columns["Teachers"].HeaderText = Resources.EnrollmentForm_ColTeachers;
 
-            dgvCursosDisponibles.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvCursosDisponibles.MultiSelect = false;
-            dgvCursosDisponibles.ReadOnly = true;
-            dgvCursosDisponibles.AllowUserToAddRows = false;
-            dgvCursosDisponibles.AllowUserToDeleteRows = false;
+            dgvAvailableCourses.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvAvailableCourses.MultiSelect = false;
+            dgvAvailableCourses.ReadOnly = true;
+            dgvAvailableCourses.AllowUserToAddRows = false;
+            dgvAvailableCourses.AllowUserToDeleteRows = false;
         }
 
-        private void ConfigureInscripcionesGrid()
+        private void ConfigureEnrollmentsGrid()
         {
-            if (dgvMisInscripciones.Columns.Count == 0) return;
+            if (dgvMyEnrollments.Columns.Count == 0) return;
 
-            dgvMisInscripciones.Columns["CursoId"].HeaderText = Resources.InscripcionForm_ColId;
-            dgvMisInscripciones.Columns["Curso"].HeaderText = Resources.InscripcionForm_ColCourse;
-            dgvMisInscripciones.Columns["DiaSemana"].HeaderText = Resources.InscripcionForm_ColDay;
-            dgvMisInscripciones.Columns["HoraInicio"].HeaderText = Resources.InscripcionForm_ColStartTime;
-            dgvMisInscripciones.Columns["HoraFin"].HeaderText = Resources.InscripcionForm_ColEndTime;
-            dgvMisInscripciones.Columns["Aula"].HeaderText = Resources.InscripcionForm_ColClassroom;
+            dgvMyEnrollments.Columns["CourseId"].HeaderText = Resources.EnrollmentForm_ColId;
+            dgvMyEnrollments.Columns["Course"].HeaderText = Resources.EnrollmentForm_ColCourse;
+            dgvMyEnrollments.Columns["DayOfWeek"].HeaderText = Resources.EnrollmentForm_ColDay;
+            dgvMyEnrollments.Columns["StartTime"].HeaderText = Resources.EnrollmentForm_ColStartTime;
+            dgvMyEnrollments.Columns["EndTime"].HeaderText = Resources.EnrollmentForm_ColEndTime;
+            dgvMyEnrollments.Columns["Classroom"].HeaderText = Resources.EnrollmentForm_ColClassroom;
 
-            dgvMisInscripciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvMisInscripciones.MultiSelect = false;
-            dgvMisInscripciones.ReadOnly = true;
-            dgvMisInscripciones.AllowUserToAddRows = false;
-            dgvMisInscripciones.AllowUserToDeleteRows = false;
+            dgvMyEnrollments.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvMyEnrollments.MultiSelect = false;
+            dgvMyEnrollments.ReadOnly = true;
+            dgvMyEnrollments.AllowUserToAddRows = false;
+            dgvMyEnrollments.AllowUserToDeleteRows = false;
         }
         #endregion
 
         #region Eventos
-        private void btnInscribirse_Click(object sender, EventArgs e)
+        private void btnEnroll_Click(object sender, EventArgs e)
         {
-            if (dgvCursosDisponibles.CurrentRow == null)
+            if (dgvAvailableCourses.CurrentRow == null)
             {
-                MessageBox.Show(Resources.InscripcionForm_SelectCourseToEnroll, Resources.InscripcionForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.EnrollmentForm_SelectCourseToEnroll, Resources.EnrollmentForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int cursoId = Convert.ToInt32(dgvCursosDisponibles.CurrentRow.Cells["Id"].Value);
-            string cursoNombre = dgvCursosDisponibles.CurrentRow.Cells["Nombre"].Value.ToString();
+            int courseId = Convert.ToInt32(dgvAvailableCourses.CurrentRow.Cells["Id"].Value);
+            string courseName = dgvAvailableCourses.CurrentRow.Cells["Name"].Value.ToString();
 
-            string confirmMessage = string.Format(Resources.InscripcionForm_ConfirmEnrollMessage, cursoNombre);
+            string confirmMessage = string.Format(Resources.EnrollmentForm_ConfirmEnrollMessage, courseName);
             DialogResult result = MessageBox.Show(
                 confirmMessage,
-                Resources.InscripcionForm_ConfirmEnrollTitle,
+                Resources.EnrollmentForm_ConfirmEnrollTitle,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -167,37 +167,37 @@ namespace TrabajoFinal_DarioZubaray
             {
                 try
                 {
-                    _inscripcionBLL.Inscribir(cursoId, _currentUser.Id);
-                    MessageBox.Show(Resources.InscripcionForm_EnrollSuccess, Resources.InscripcionForm_SuccessTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _enrollmentBLL.Enroll(courseId, _currentUser.Id);
+                    MessageBox.Show(Resources.EnrollmentForm_EnrollSuccess, Resources.EnrollmentForm_SuccessTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
                 catch (InvalidOperationException ex)
                 {
-                    MessageBox.Show(ex.Message, Resources.InscripcionForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(ex.Message, Resources.EnrollmentForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 catch (Exception ex)
                 {
-                    string errorMsg = string.Format(Resources.InscripcionForm_EnrollError, ex.Message);
-                    MessageBox.Show(errorMsg, Resources.InscripcionForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string errorMsg = string.Format(Resources.EnrollmentForm_EnrollError, ex.Message);
+                    MessageBox.Show(errorMsg, Resources.EnrollmentForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private void btnDesinscribirse_Click(object sender, EventArgs e)
+        private void btnUnenroll_Click(object sender, EventArgs e)
         {
-            if (dgvMisInscripciones.CurrentRow == null)
+            if (dgvMyEnrollments.CurrentRow == null)
             {
-                MessageBox.Show(Resources.InscripcionForm_SelectEnrollmentToUnenroll, Resources.InscripcionForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Resources.EnrollmentForm_SelectEnrollmentToUnenroll, Resources.EnrollmentForm_InfoTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            int cursoId = Convert.ToInt32(dgvMisInscripciones.CurrentRow.Cells["CursoId"].Value);
-            string cursoNombre = dgvMisInscripciones.CurrentRow.Cells["Curso"].Value.ToString();
+            int courseId = Convert.ToInt32(dgvMyEnrollments.CurrentRow.Cells["CourseId"].Value);
+            string courseName = dgvMyEnrollments.CurrentRow.Cells["Course"].Value.ToString();
 
-            string confirmMessage = string.Format(Resources.InscripcionForm_ConfirmUnenrollMessage, cursoNombre);
+            string confirmMessage = string.Format(Resources.EnrollmentForm_ConfirmUnenrollMessage, courseName);
             DialogResult result = MessageBox.Show(
                 confirmMessage,
-                Resources.InscripcionForm_ConfirmUnenrollTitle,
+                Resources.EnrollmentForm_ConfirmUnenrollTitle,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
 
@@ -205,14 +205,14 @@ namespace TrabajoFinal_DarioZubaray
             {
                 try
                 {
-                    _inscripcionBLL.Desinscribir(cursoId, _currentUser.Id);
-                    MessageBox.Show(Resources.InscripcionForm_UnenrollSuccess, Resources.InscripcionForm_SuccessTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    _enrollmentBLL.Unenroll(courseId, _currentUser.Id);
+                    MessageBox.Show(Resources.EnrollmentForm_UnenrollSuccess, Resources.EnrollmentForm_SuccessTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadData();
                 }
                 catch (Exception ex)
                 {
-                    string errorMsg = string.Format(Resources.InscripcionForm_UnenrollError, ex.Message);
-                    MessageBox.Show(errorMsg, Resources.InscripcionForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string errorMsg = string.Format(Resources.EnrollmentForm_UnenrollError, ex.Message);
+                    MessageBox.Show(errorMsg, Resources.EnrollmentForm_ErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

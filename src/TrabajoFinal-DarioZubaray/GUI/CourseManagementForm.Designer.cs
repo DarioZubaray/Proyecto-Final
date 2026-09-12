@@ -18,7 +18,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void InitializeComponent()
         {
-            this.dgvCursos = new System.Windows.Forms.DataGridView();
+            this.dgvCourses = new System.Windows.Forms.DataGridView();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -27,8 +27,8 @@ namespace TrabajoFinal_DarioZubaray
             this.btnSearch = new System.Windows.Forms.Button();
             this.panelTop = new System.Windows.Forms.Panel();
             this.panelButtons = new System.Windows.Forms.Panel();
-            this.lblNoAulas = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCursos)).BeginInit();
+            this.lblNoClassrooms = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCourses)).BeginInit();
             this.panelTop.SuspendLayout();
             this.panelButtons.SuspendLayout();
             this.SuspendLayout();
@@ -112,44 +112,44 @@ namespace TrabajoFinal_DarioZubaray
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
-            // dgvCursos
+            // dgvCourses
             // 
-            this.dgvCursos.AllowUserToAddRows = false;
-            this.dgvCursos.AllowUserToDeleteRows = false;
-            this.dgvCursos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCursos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvCursos.Location = new System.Drawing.Point(0, 40);
-            this.dgvCursos.Name = "dgvCursos";
-            this.dgvCursos.ReadOnly = true;
-            this.dgvCursos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCursos.Size = new System.Drawing.Size(850, 420);
-            this.dgvCursos.TabIndex = 2;
+            this.dgvCourses.AllowUserToAddRows = false;
+            this.dgvCourses.AllowUserToDeleteRows = false;
+            this.dgvCourses.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCourses.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvCourses.Location = new System.Drawing.Point(0, 40);
+            this.dgvCourses.Name = "dgvCourses";
+            this.dgvCourses.ReadOnly = true;
+            this.dgvCourses.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCourses.Size = new System.Drawing.Size(850, 420);
+            this.dgvCourses.TabIndex = 2;
             // 
-            // lblNoAulas
+            // lblNoClassrooms
             // 
-            this.lblNoAulas.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblNoAulas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.lblNoAulas.ForeColor = System.Drawing.Color.Gray;
-            this.lblNoAulas.Location = new System.Drawing.Point(0, 40);
-            this.lblNoAulas.Name = "lblNoAulas";
-            this.lblNoAulas.Size = new System.Drawing.Size(850, 420);
-            this.lblNoAulas.TabIndex = 3;
-            this.lblNoAulas.Text = "No hay aulas creadas. Cree un aula primero para poder gestionar cursos.";
-            this.lblNoAulas.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblNoAulas.Visible = false;
+            this.lblNoClassrooms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblNoClassrooms.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.lblNoClassrooms.ForeColor = System.Drawing.Color.Gray;
+            this.lblNoClassrooms.Location = new System.Drawing.Point(0, 40);
+            this.lblNoClassrooms.Name = "lblNoClassrooms";
+            this.lblNoClassrooms.Size = new System.Drawing.Size(850, 420);
+            this.lblNoClassrooms.TabIndex = 3;
+            this.lblNoClassrooms.Text = "No hay aulas creadas. Cree un aula primero para poder gestionar cursos.";
+            this.lblNoClassrooms.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblNoClassrooms.Visible = false;
             // 
             // CursoManagementForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(850, 500);
-            this.Controls.Add(this.lblNoAulas);
-            this.Controls.Add(this.dgvCursos);
+            this.Controls.Add(this.lblNoClassrooms);
+            this.Controls.Add(this.dgvCourses);
             this.Controls.Add(this.panelButtons);
             this.Controls.Add(this.panelTop);
             this.Name = "CursoManagementForm";
             this.Text = "Gestión de Cursos";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCursos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCourses)).EndInit();
             this.panelTop.ResumeLayout(false);
             this.panelTop.PerformLayout();
             this.panelButtons.ResumeLayout(false);
@@ -159,7 +159,7 @@ namespace TrabajoFinal_DarioZubaray
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dgvCursos;
+        private System.Windows.Forms.DataGridView dgvCourses;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnEdit;
         private System.Windows.Forms.Button btnDelete;
@@ -168,6 +168,6 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelButtons;
-        private System.Windows.Forms.Label lblNoAulas;
+        private System.Windows.Forms.Label lblNoClassrooms;
     }
 }

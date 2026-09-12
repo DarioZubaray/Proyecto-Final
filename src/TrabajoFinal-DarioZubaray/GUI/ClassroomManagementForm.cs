@@ -11,7 +11,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private readonly UserBE _currentUser;
-        private readonly IClassroomBLL _aulaBLL;
+        private readonly IClassroomBLL _classroomBLL;
         #endregion
 
         #region Constructores
@@ -19,50 +19,50 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _currentUser = user;
-            _aulaBLL = ServiceLocatorBLL.CreateAulaBLL();
-            LoadAulas();
+            _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL();
+            LoadClassrooms();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
         #endregion
 
         #region Métodos
-        private void LoadAulas()
+        private void LoadClassrooms()
         {
-            dgvAulas.DataSource = null;
-            dgvAulas.DataSource = _aulaBLL.FindAll();
+            dgvClassrooms.DataSource = null;
+            dgvClassrooms.DataSource = _classroomBLL.FindAll();
             ConfigureGrid();
         }
 
         private void ConfigureGrid()
         {
-            if (dgvAulas.Columns.Count == 0)
+            if (dgvClassrooms.Columns.Count == 0)
             {
                 return;
             }
 
-            dgvAulas.Columns["Id"].HeaderText = "ID";
-            dgvAulas.Columns["Nombre"].HeaderText = "Nombre";
-            dgvAulas.Columns["Capacidad"].HeaderText = "Capacidad";
+            dgvClassrooms.Columns["Id"].HeaderText = "ID";
+            dgvClassrooms.Columns["Name"].HeaderText = "Nombre";
+            dgvClassrooms.Columns["Capacity"].HeaderText = "Capacidad";
 
-            dgvAulas.Columns["IsActive"].Visible = false;
-            dgvAulas.Columns["CreatedAt"].Visible = false;
-            dgvAulas.Columns["LastUpdate"].Visible = false;
+            dgvClassrooms.Columns["IsActive"].Visible = false;
+            dgvClassrooms.Columns["CreatedAt"].Visible = false;
+            dgvClassrooms.Columns["LastUpdate"].Visible = false;
 
-            dgvAulas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvAulas.MultiSelect = false;
-            dgvAulas.ReadOnly = true;
-            dgvAulas.AllowUserToAddRows = false;
-            dgvAulas.AllowUserToDeleteRows = false;
+            dgvClassrooms.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvClassrooms.MultiSelect = false;
+            dgvClassrooms.ReadOnly = true;
+            dgvClassrooms.AllowUserToAddRows = false;
+            dgvClassrooms.AllowUserToDeleteRows = false;
         }
 
-        private ClassroomBE GetSelectedAula()
+        private ClassroomBE GetSelectedClassroom()
         {
-            if (dgvAulas.CurrentRow == null)
+            if (dgvClassrooms.CurrentRow == null)
             {
                 return null;
             }
 
-            return dgvAulas.CurrentRow.DataBoundItem as ClassroomBE;
+            return dgvClassrooms.CurrentRow.DataBoundItem as ClassroomBE;
         }
         #endregion
 
@@ -74,49 +74,49 @@ namespace TrabajoFinal_DarioZubaray
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    LoadAulas();
+                    LoadClassrooms();
                 }
             }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            var aula = GetSelectedAula();
-            if (aula == null)
+            var classroom = GetSelectedClassroom();
+            if (classroom == null)
             {
                 MessageBox.Show("Seleccione un aula para editar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
-            using (var form = new ClassroomForm(aula, theme))
+            using (var form = new ClassroomForm(classroom, theme))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    LoadAulas();
+                    LoadClassrooms();
                 }
             }
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            var aula = GetSelectedAula();
-            if (aula == null)
+            var classroom = GetSelectedClassroom();
+            if (classroom == null)
             {
                 MessageBox.Show("Seleccione un aula para eliminar.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string message = $"¿Está seguro que desea eliminar el aula '{aula.Nombre}'?";
+            string message = $"¿Está seguro que desea eliminar el aula '{classroom.Name}'?";
             DialogResult result = MessageBox.Show(message, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
-                bool deleted = _aulaBLL.Delete(aula);
+                bool deleted = _classroomBLL.Delete(classroom);
                 if (deleted)
                 {
                     MessageBox.Show("Aula eliminada exitosamente.");
-                    LoadAulas();
+                    LoadClassrooms();
                 }
             }
         }
@@ -126,12 +126,12 @@ namespace TrabajoFinal_DarioZubaray
             string searchText = txtSearch.Text.Trim();
             if (string.IsNullOrEmpty(searchText))
             {
-                LoadAulas();
+                LoadClassrooms();
                 return;
             }
 
-            dgvAulas.DataSource = null;
-            dgvAulas.DataSource = _aulaBLL.FindByName(searchText);
+            dgvClassrooms.DataSource = null;
+            dgvClassrooms.DataSource = _classroomBLL.FindByName(searchText);
             ConfigureGrid();
         }
 

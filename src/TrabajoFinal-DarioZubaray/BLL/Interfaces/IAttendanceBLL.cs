@@ -7,8 +7,8 @@ namespace BLL.Interfaces
 {
     public interface IAttendanceBLL
     {
-        bool RegistrarAsistenciaBulk(int cursoId, DateTime fecha, List<AttendanceBE> registros);
-        List<AttendanceBE> FindByCursoIdAndFecha(int cursoId, DateTime fecha);
-        bool EsDocenteDelCurso(int cursoId, int docenteId);
+        bool RegisterAttendanceBulk(int courseId, DateTime date, List<AttendanceBE> records);
+        List<AttendanceBE> FindByCourseIdAndDate(int courseId, DateTime date);
+        bool IsTeacherOfCourse(int courseId, int teacherId);
     }
 }
