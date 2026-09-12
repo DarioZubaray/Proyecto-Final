@@ -5,7 +5,7 @@ using BE.Composite;
 using BE.Entities;
 using BLL.Services;
 using Moq;
-using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Tests
 {

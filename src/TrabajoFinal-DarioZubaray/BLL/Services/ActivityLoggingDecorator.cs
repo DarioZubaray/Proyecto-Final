@@ -1,5 +1,5 @@
 using BE.Entities;
-using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Services
 {

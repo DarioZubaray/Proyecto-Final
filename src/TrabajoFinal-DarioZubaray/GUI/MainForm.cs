@@ -167,7 +167,7 @@ namespace TrabajoFinal_DarioZubaray
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LogFormAccess("AulaManagementForm");
-            var form = new AulaManagementForm(_user)
+            var form = new ClassroomManagementForm(_user)
             {
                 MdiParent = this
             };
@@ -177,7 +177,7 @@ namespace TrabajoFinal_DarioZubaray
         private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LogFormAccess("CursoManagementForm");
-            var form = new CursoManagementForm(_user)
+            var form = new CourseManagementForm(_user)
             {
                 MdiParent = this
             };
@@ -189,7 +189,7 @@ namespace TrabajoFinal_DarioZubaray
             if (_user.RoleId == 3)
             {
                 LogFormAccess("InscripcionForm");
-                var form = new InscripcionForm(_user)
+                var form = new EnrollmentForm(_user)
                 {
                     MdiParent = this
                 };
@@ -198,7 +198,7 @@ namespace TrabajoFinal_DarioZubaray
             else
             {
                 LogFormAccess("InscripcionManagementForm");
-                var form = new InscripcionManagementForm(_user)
+                var form = new EnrollmentManagementForm(_user)
                 {
                     MdiParent = this
                 };
@@ -209,7 +209,7 @@ namespace TrabajoFinal_DarioZubaray
         private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LogFormAccess("AsistenciaForm");
-            var form = new AsistenciaForm(_user)
+            var form = new AttendanceForm(_user)
             {
                 MdiParent = this
             };
