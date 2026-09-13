@@ -29,13 +29,13 @@ namespace MPP
         #region Métodos Públicos
         public bool Enroll(int courseId, int studentId)
         {
-            string query = @"INSERT INTO CursoAlumnos (curso_id, alumno_id, is_active, created_at)
-                            VALUES (@cursoId, @alumnoId, 1, @createdAt)";
+            string query = @"INSERT INTO course_students (course_id, student_id, is_active, created_at)
+                            VALUES (@courseId, @studentId, 1, @createdAt)";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId),
-                new SqlParameter("@alumnoId", studentId),
+                new SqlParameter("@courseId", courseId),
+                new SqlParameter("@studentId", studentId),
                 new SqlParameter("@createdAt", DateTime.Now)
             };
 
@@ -44,14 +44,14 @@ namespace MPP
 
         public bool Unenroll(int courseId, int studentId)
         {
-            string query = @"UPDATE CursoAlumnos
+            string query = @"UPDATE course_students
                             SET is_active = 0
-                            WHERE curso_id = @cursoId AND alumno_id = @alumnoId AND is_active = 1";
+                            WHERE course_id = @courseId AND student_id = @studentId AND is_active = 1";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId),
-                new SqlParameter("@alumnoId", studentId)
+                new SqlParameter("@courseId", courseId),
+                new SqlParameter("@studentId", studentId)
             };
 
             return _access.Save(query, parameters);
@@ -59,15 +59,15 @@ namespace MPP
 
         public EnrollmentBE FindById(int id)
         {
-            string query = @"SELECT ca.id, ca.curso_id, ca.alumno_id, ca.is_active, ca.created_at,
-                                    c.nombre AS curso_nombre, c.dia_semana, c.hora_inicio, c.hora_fin,
-                                    a.nombre AS aula_nombre,
-                                    u.user_name AS alumno_nombre
-                            FROM CursoAlumnos ca
-                            INNER JOIN Cursos c ON c.id = ca.curso_id
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            INNER JOIN Users u ON u.id = ca.alumno_id
-                            WHERE ca.id = @id";
+            string query = @"SELECT cs.id, cs.course_id, cs.student_id, cs.is_active, cs.created_at,
+                                    c.name AS course_name, c.day_of_week, c.start_time, c.end_time,
+                                    cl.name AS classroom_name,
+                                    u.user_name AS student_name
+                            FROM course_students cs
+                            INNER JOIN courses c ON c.id = cs.course_id
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            INNER JOIN Users u ON u.id = cs.student_id
+                            WHERE cs.id = @id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
@@ -86,20 +86,20 @@ namespace MPP
 
         public List<EnrollmentBE> FindByStudentId(int studentId)
         {
-            string query = @"SELECT ca.id, ca.curso_id, ca.alumno_id, ca.is_active, ca.created_at,
-                                    c.nombre AS curso_nombre, c.dia_semana, c.hora_inicio, c.hora_fin,
-                                    a.nombre AS aula_nombre,
-                                    u.user_name AS alumno_nombre
-                            FROM CursoAlumnos ca
-                            INNER JOIN Cursos c ON c.id = ca.curso_id
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            INNER JOIN Users u ON u.id = ca.alumno_id
-                            WHERE ca.alumno_id = @alumnoId AND ca.is_active = 1 AND c.is_active = 1
+            string query = @"SELECT cs.id, cs.course_id, cs.student_id, cs.is_active, cs.created_at,
+                                    c.name AS course_name, c.day_of_week, c.start_time, c.end_time,
+                                    cl.name AS classroom_name,
+                                    u.user_name AS student_name
+                            FROM course_students cs
+                            INNER JOIN courses c ON c.id = cs.course_id
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            INNER JOIN Users u ON u.id = cs.student_id
+                            WHERE cs.student_id = @studentId AND cs.is_active = 1 AND c.is_active = 1
                             ORDER BY c.id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@alumnoId", studentId)
+                new SqlParameter("@studentId", studentId)
             };
 
             return FindMany(query, parameters);
@@ -107,16 +107,16 @@ namespace MPP
 
         public List<EnrollmentBE> FindAll()
         {
-            string query = @"SELECT ca.id, ca.curso_id, ca.alumno_id, ca.is_active, ca.created_at,
-                                    c.nombre AS curso_nombre, c.dia_semana, c.hora_inicio, c.hora_fin,
-                                    a.nombre AS aula_nombre,
-                                    u.user_name AS alumno_nombre
-                            FROM CursoAlumnos ca
-                            INNER JOIN Cursos c ON c.id = ca.curso_id
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            INNER JOIN Users u ON u.id = ca.alumno_id
-                            WHERE ca.is_active = 1 AND c.is_active = 1
-                            ORDER BY u.user_name, c.nombre";
+            string query = @"SELECT cs.id, cs.course_id, cs.student_id, cs.is_active, cs.created_at,
+                                    c.name AS course_name, c.day_of_week, c.start_time, c.end_time,
+                                    cl.name AS classroom_name,
+                                    u.user_name AS student_name
+                            FROM course_students cs
+                            INNER JOIN courses c ON c.id = cs.course_id
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            INNER JOIN Users u ON u.id = cs.student_id
+                            WHERE cs.is_active = 1 AND c.is_active = 1
+                            ORDER BY u.user_name, c.name";
 
             return FindMany(query);
         }
@@ -124,12 +124,12 @@ namespace MPP
         public int CountStudentsByCourseId(int courseId)
         {
             string query = @"SELECT COUNT(*)
-                            FROM CursoAlumnos
-                            WHERE curso_id = @cursoId AND is_active = 1";
+                            FROM course_students
+                            WHERE course_id = @courseId AND is_active = 1";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId)
+                new SqlParameter("@courseId", courseId)
             };
 
             return _access.ReadScalar(query, parameters);
@@ -138,13 +138,13 @@ namespace MPP
         public bool ExistsActiveEnrollment(int courseId, int studentId)
         {
             string query = @"SELECT COUNT(*)
-                            FROM CursoAlumnos
-                            WHERE curso_id = @cursoId AND alumno_id = @alumnoId AND is_active = 1";
+                            FROM course_students
+                            WHERE course_id = @courseId AND student_id = @studentId AND is_active = 1";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId),
-                new SqlParameter("@alumnoId", studentId)
+                new SqlParameter("@courseId", courseId),
+                new SqlParameter("@studentId", studentId)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
@@ -153,23 +153,23 @@ namespace MPP
         public bool ExistsScheduleOverlap(int studentId, int dayOfWeek, TimeSpan startTime, TimeSpan endTime, int courseIdToExclude)
         {
             string query = @"SELECT COUNT(*)
-                            FROM CursoAlumnos ca
-                            INNER JOIN Cursos c ON c.id = ca.curso_id
-                            WHERE ca.alumno_id = @alumnoId
-                              AND ca.is_active = 1
+                            FROM course_students cs
+                            INNER JOIN courses c ON c.id = cs.course_id
+                            WHERE cs.student_id = @studentId
+                              AND cs.is_active = 1
                               AND c.is_active = 1
-                              AND c.dia_semana = @diaSemana
-                              AND c.hora_inicio < @horaFin
-                              AND c.hora_fin > @horaInicio
-                              AND c.id != @cursoIdExcluir";
+                              AND c.day_of_week = @dayOfWeek
+                              AND c.start_time < @endTime
+                              AND c.end_time > @startTime
+                              AND c.id != @courseIdToExclude";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@alumnoId", studentId),
-                new SqlParameter("@diaSemana", dayOfWeek),
-                new SqlParameter("@horaInicio", startTime),
-                new SqlParameter("@horaFin", endTime),
-                new SqlParameter("@cursoIdExcluir", courseIdToExclude)
+                new SqlParameter("@studentId", studentId),
+                new SqlParameter("@dayOfWeek", dayOfWeek),
+                new SqlParameter("@startTime", startTime),
+                new SqlParameter("@endTime", endTime),
+                new SqlParameter("@courseIdToExclude", courseIdToExclude)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
@@ -182,16 +182,16 @@ namespace MPP
             return new EnrollmentBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                CourseId = Convert.ToInt32(row["curso_id"]),
-                StudentId = Convert.ToInt32(row["alumno_id"]),
+                CourseId = Convert.ToInt32(row["course_id"]),
+                StudentId = Convert.ToInt32(row["student_id"]),
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 CreatedAt = (DateTime)row["created_at"],
-                CourseName = row["curso_nombre"].ToString(),
-                StudentName = row["alumno_nombre"].ToString(),
-                DayOfWeek = row["dia_semana"] != DBNull.Value ? Convert.ToInt32(row["dia_semana"]) : (int?)null,
-                StartTime = row["hora_inicio"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_inicio"].ToString()) : (TimeSpan?)null,
-                EndTime = row["hora_fin"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_fin"].ToString()) : (TimeSpan?)null,
-                ClassroomName = row["aula_nombre"] != DBNull.Value ? row["aula_nombre"].ToString() : null
+                CourseName = row["course_name"].ToString(),
+                StudentName = row["student_name"].ToString(),
+                DayOfWeek = row["day_of_week"] != DBNull.Value ? Convert.ToInt32(row["day_of_week"]) : (int?)null,
+                StartTime = row["start_time"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["start_time"].ToString()) : (TimeSpan?)null,
+                EndTime = row["end_time"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["end_time"].ToString()) : (TimeSpan?)null,
+                ClassroomName = row["classroom_name"] != DBNull.Value ? row["classroom_name"].ToString() : null
             };
         }
 

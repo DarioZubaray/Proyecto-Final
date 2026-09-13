@@ -39,7 +39,7 @@ namespace MPP
 
         public bool Delete(ClassroomBE classroom)
         {
-            string query = @"UPDATE Aulas
+            string query = @"UPDATE classrooms
                             SET is_active = 0, last_update = @lastUpdate
                             WHERE id = @id";
 
@@ -54,8 +54,8 @@ namespace MPP
 
         public ClassroomBE FindById(int id)
         {
-            string query = @"SELECT id, nombre, capacidad, is_active, created_at, last_update
-                            FROM Aulas
+            string query = @"SELECT id, name, capacity, is_active, created_at, last_update
+                            FROM classrooms
                             WHERE id = @id AND is_active = 1";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -75,24 +75,24 @@ namespace MPP
 
         public List<ClassroomBE> FindAll()
         {
-            string query = @"SELECT id, nombre, capacidad, is_active, created_at, last_update
-                            FROM Aulas
+            string query = @"SELECT id, name, capacity, is_active, created_at, last_update
+                            FROM classrooms
                             WHERE is_active = 1
-                            ORDER BY nombre";
+                            ORDER BY name";
 
             return FindMany(query);
         }
 
         public List<ClassroomBE> FindByName(string name)
         {
-            string query = @"SELECT id, nombre, capacidad, is_active, created_at, last_update
-                            FROM Aulas
-                            WHERE is_active = 1 AND nombre LIKE @nombre
-                            ORDER BY nombre";
+            string query = @"SELECT id, name, capacity, is_active, created_at, last_update
+                            FROM classrooms
+                            WHERE is_active = 1 AND name LIKE @name
+                            ORDER BY name";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@nombre", "%" + name + "%")
+                new SqlParameter("@name", "%" + name + "%")
             };
 
             return FindMany(query, parameters);
@@ -100,7 +100,7 @@ namespace MPP
 
         public int Count()
         {
-            string query = @"SELECT COUNT(*) FROM Aulas WHERE is_active = 1";
+            string query = @"SELECT COUNT(*) FROM classrooms WHERE is_active = 1";
             return _access.ReadScalar(query);
         }
         #endregion
@@ -111,8 +111,8 @@ namespace MPP
             return new ClassroomBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                Name = row["nombre"].ToString(),
-                Capacity = Convert.ToInt32(row["capacidad"]),
+                Name = row["name"].ToString(),
+                Capacity = Convert.ToInt32(row["capacity"]),
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 CreatedAt = (DateTime)row["created_at"],
                 LastUpdate = (DateTime)row["last_update"]
@@ -123,8 +123,8 @@ namespace MPP
         {
             return new SqlParameter[]
             {
-                new SqlParameter("@nombre", classroom.Name),
-                new SqlParameter("@capacidad", classroom.Capacity),
+                new SqlParameter("@name", classroom.Name),
+                new SqlParameter("@capacity", classroom.Capacity),
                 new SqlParameter("@isActive", classroom.IsActive),
                 new SqlParameter("@lastUpdate", classroom.LastUpdate)
             };
@@ -132,8 +132,8 @@ namespace MPP
 
         private bool Insert(ClassroomBE classroom)
         {
-            string query = @"INSERT INTO Aulas (nombre, capacidad, is_active, created_at, last_update)
-                            VALUES (@nombre, @capacidad, @isActive, @createdAt, @lastUpdate);
+            string query = @"INSERT INTO classrooms (name, capacity, is_active, created_at, last_update)
+                            VALUES (@name, @capacity, @isActive, @createdAt, @lastUpdate);
                             SELECT SCOPE_IDENTITY();";
 
             SqlParameter[] parameters = CreateClassroomParameters(classroom);
@@ -147,9 +147,9 @@ namespace MPP
 
         private bool Update(ClassroomBE classroom)
         {
-            string query = @"UPDATE Aulas
-                            SET nombre = @nombre,
-                                capacidad = @capacidad,
+            string query = @"UPDATE classrooms
+                            SET name = @name,
+                                capacity = @capacity,
                                 is_active = @isActive,
                                 last_update = @lastUpdate
                             WHERE id = @id";

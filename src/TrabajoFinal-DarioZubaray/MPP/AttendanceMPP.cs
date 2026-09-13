@@ -31,18 +31,18 @@ namespace MPP
         {
             foreach (var record in records)
             {
-                string query = @"IF EXISTS (SELECT 1 FROM ClasesAlumnos WHERE curso_id = @cursoId AND alumno_id = @alumnoId AND fecha = @fecha)
-                                    UPDATE ClasesAlumnos SET presente = @presente WHERE curso_id = @cursoId AND alumno_id = @alumnoId AND fecha = @fecha
+                string query = @"IF EXISTS (SELECT 1 FROM attendance WHERE course_id = @courseId AND student_id = @studentId AND date = @date)
+                                    UPDATE attendance SET is_present = @isPresent WHERE course_id = @courseId AND student_id = @studentId AND date = @date
                                 ELSE
-                                    INSERT INTO ClasesAlumnos (curso_id, alumno_id, fecha, presente, created_at)
-                                    VALUES (@cursoId, @alumnoId, @fecha, @presente, @createdAt)";
+                                    INSERT INTO attendance (course_id, student_id, date, is_present, created_at)
+                                    VALUES (@courseId, @studentId, @date, @isPresent, @createdAt)";
 
                 SqlParameter[] parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@cursoId", courseId),
-                    new SqlParameter("@alumnoId", record.StudentId),
-                    new SqlParameter("@fecha", date.Date),
-                    new SqlParameter("@presente", record.IsPresent),
+                    new SqlParameter("@courseId", courseId),
+                    new SqlParameter("@studentId", record.StudentId),
+                    new SqlParameter("@date", date.Date),
+                    new SqlParameter("@isPresent", record.IsPresent),
                     new SqlParameter("@createdAt", DateTime.Now)
                 };
 
@@ -54,19 +54,19 @@ namespace MPP
 
         public List<AttendanceBE> FindByCourseIdAndDate(int courseId, DateTime date)
         {
-            string query = @"SELECT ca.id, ca.curso_id, ca.alumno_id, ca.fecha, ca.presente, ca.created_at,
-                                    u.user_name AS alumno_nombre,
-                                    c.nombre AS curso_nombre
-                            FROM ClasesAlumnos ca
-                            INNER JOIN Users u ON u.id = ca.alumno_id
-                            INNER JOIN Cursos c ON c.id = ca.curso_id
-                            WHERE ca.curso_id = @cursoId AND ca.fecha = @fecha
+            string query = @"SELECT a.id, a.course_id, a.student_id, a.date, a.is_present, a.created_at,
+                                    u.user_name AS student_name,
+                                    c.name AS course_name
+                            FROM attendance a
+                            INNER JOIN Users u ON u.id = a.student_id
+                            INNER JOIN courses c ON c.id = a.course_id
+                            WHERE a.course_id = @courseId AND a.date = @date
                             ORDER BY u.user_name";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId),
-                new SqlParameter("@fecha", date.Date)
+                new SqlParameter("@courseId", courseId),
+                new SqlParameter("@date", date.Date)
             };
 
             return FindMany(query, parameters);
@@ -75,13 +75,13 @@ namespace MPP
         public bool IsTeacherOfCourse(int courseId, int teacherId)
         {
             string query = @"SELECT COUNT(*)
-                            FROM CursoDocentes
-                            WHERE curso_id = @cursoId AND docente_id = @docenteId AND is_active = 1";
+                            FROM course_teachers
+                            WHERE course_id = @courseId AND teacher_id = @teacherId AND is_active = 1";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId),
-                new SqlParameter("@docenteId", teacherId)
+                new SqlParameter("@courseId", courseId),
+                new SqlParameter("@teacherId", teacherId)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
@@ -94,13 +94,13 @@ namespace MPP
             return new AttendanceBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                CourseId = Convert.ToInt32(row["curso_id"]),
-                StudentId = Convert.ToInt32(row["alumno_id"]),
-                Date = (DateTime)row["fecha"],
-                IsPresent = Convert.ToBoolean(row["presente"]),
+                CourseId = Convert.ToInt32(row["course_id"]),
+                StudentId = Convert.ToInt32(row["student_id"]),
+                Date = (DateTime)row["date"],
+                IsPresent = Convert.ToBoolean(row["is_present"]),
                 CreatedAt = (DateTime)row["created_at"],
-                StudentName = row["alumno_nombre"].ToString(),
-                CourseName = row["curso_nombre"].ToString()
+                StudentName = row["student_name"].ToString(),
+                CourseName = row["course_name"].ToString()
             };
         }
 

@@ -39,7 +39,7 @@ namespace MPP
 
         public bool Delete(CourseBE course)
         {
-            string query = @"UPDATE Cursos
+            string query = @"UPDATE courses
                             SET is_active = 0, last_update = @lastUpdate
                             WHERE id = @id";
 
@@ -54,12 +54,12 @@ namespace MPP
 
         public CourseBE FindById(int id)
         {
-            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
-                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+            string query = @"SELECT c.id, c.name, c.description, c.start_date, c.end_date,
+                                    c.classroom_id, c.day_of_week, c.start_time, c.end_time,
                                     c.is_active, c.created_at, c.last_update,
-                                    a.nombre AS aula_nombre
-                            FROM Cursos c
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
+                                    cl.name AS classroom_name
+                            FROM courses c
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
                             WHERE c.id = @id";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -81,12 +81,12 @@ namespace MPP
 
         public List<CourseBE> FindAll()
         {
-            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
-                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+            string query = @"SELECT c.id, c.name, c.description, c.start_date, c.end_date,
+                                    c.classroom_id, c.day_of_week, c.start_time, c.end_time,
                                     c.is_active, c.created_at, c.last_update,
-                                    a.nombre AS aula_nombre
-                            FROM Cursos c
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
+                                    cl.name AS classroom_name
+                            FROM courses c
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
                             WHERE c.is_active = 1
                             ORDER BY c.id";
 
@@ -100,13 +100,13 @@ namespace MPP
 
         public List<CourseBE> FindAllIncludingInactive()
         {
-            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
-                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+            string query = @"SELECT c.id, c.name, c.description, c.start_date, c.end_date,
+                                    c.classroom_id, c.day_of_week, c.start_time, c.end_time,
                                     c.is_active, c.created_at, c.last_update,
-                                    a.nombre AS aula_nombre
-                            FROM Cursos c
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            WHERE c.fecha_fin >= CAST(GETDATE() AS DATE)
+                                    cl.name AS classroom_name
+                            FROM courses c
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            WHERE c.end_date >= CAST(GETDATE() AS DATE)
                             ORDER BY c.is_active DESC, c.id";
 
             var courses = FindMany(query);
@@ -119,18 +119,18 @@ namespace MPP
 
         public List<CourseBE> FindByName(string name)
         {
-            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
-                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+            string query = @"SELECT c.id, c.name, c.description, c.start_date, c.end_date,
+                                    c.classroom_id, c.day_of_week, c.start_time, c.end_time,
                                     c.is_active, c.created_at, c.last_update,
-                                    a.nombre AS aula_nombre
-                            FROM Cursos c
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            WHERE c.nombre LIKE @nombre
+                                    cl.name AS classroom_name
+                            FROM courses c
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            WHERE c.name LIKE @name
                             ORDER BY c.is_active DESC, c.id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@nombre", "%" + name + "%")
+                new SqlParameter("@name", "%" + name + "%")
             };
 
             var courses = FindMany(query, parameters);
@@ -144,35 +144,31 @@ namespace MPP
         public bool ExistsClassroomOverlap(int classroomId, DateTime startDate, DateTime endDate, int courseIdToExclude, int? dayOfWeek, TimeSpan? startTime, TimeSpan? endTime)
         {
             string query = @"SELECT COUNT(*)
-                            FROM Cursos
-                            WHERE aula_id = @aulaId
+                            FROM courses
+                            WHERE classroom_id = @classroomId
                               AND is_active = 1
-                              AND id != @cursoIdExcluir
-                              AND fecha_inicio < @fechaFin
-                              AND fecha_fin > @fechaInicio
+                              AND id != @courseIdToExclude
+                              AND start_date < @endDate
+                              AND end_date > @startDate
                               AND (
-                                  -- Ambos tienen dia definido y coinciden
-                                  (dia_semana IS NOT NULL AND @diaSemana IS NOT NULL AND dia_semana = @diaSemana)
-                                  -- O ambos no tienen dia definido
-                                  OR (dia_semana IS NULL AND @diaSemana IS NULL)
+                                  (day_of_week IS NOT NULL AND @dayOfWeek IS NOT NULL AND day_of_week = @dayOfWeek)
+                                  OR (day_of_week IS NULL AND @dayOfWeek IS NULL)
                               )
                               AND (
-                                  -- Ambos tienen horario definido y se trasapan
-                                  (hora_inicio IS NOT NULL AND hora_fin IS NOT NULL AND @horaInicio IS NOT NULL AND @horaFin IS NOT NULL
-                                   AND hora_inicio < @horaFin AND hora_fin > @horaInicio)
-                                  -- O ambos no tienen horario definido
-                                  OR (hora_inicio IS NULL AND hora_fin IS NULL AND @horaInicio IS NULL AND @horaFin IS NULL)
+                                  (start_time IS NOT NULL AND end_time IS NOT NULL AND @startTime IS NOT NULL AND @endTime IS NOT NULL
+                                   AND start_time < @endTime AND end_time > @startTime)
+                                  OR (start_time IS NULL AND end_time IS NULL AND @startTime IS NULL AND @endTime IS NULL)
                               )";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@aulaId", classroomId),
-                new SqlParameter("@fechaInicio", startDate),
-                new SqlParameter("@fechaFin", endDate),
-                new SqlParameter("@cursoIdExcluir", courseIdToExclude),
-                new SqlParameter("@diaSemana", (object)dayOfWeek ?? DBNull.Value),
-                new SqlParameter("@horaInicio", startTime.HasValue ? (object)startTime.Value : DBNull.Value),
-                new SqlParameter("@horaFin", endTime.HasValue ? (object)endTime.Value : DBNull.Value)
+                new SqlParameter("@classroomId", classroomId),
+                new SqlParameter("@startDate", startDate),
+                new SqlParameter("@endDate", endDate),
+                new SqlParameter("@courseIdToExclude", courseIdToExclude),
+                new SqlParameter("@dayOfWeek", (object)dayOfWeek ?? DBNull.Value),
+                new SqlParameter("@startTime", startTime.HasValue ? (object)startTime.Value : DBNull.Value),
+                new SqlParameter("@endTime", endTime.HasValue ? (object)endTime.Value : DBNull.Value)
             };
 
             return _access.ReadScalar(query, parameters) > 0;
@@ -180,25 +176,25 @@ namespace MPP
 
         public bool SaveTeachers(int courseId, List<int> teacherIds)
         {
-            string deleteQuery = @"UPDATE CursoDocentes
+            string deleteQuery = @"UPDATE course_teachers
                                   SET is_active = 0
-                                  WHERE curso_id = @cursoId AND is_active = 1";
+                                  WHERE course_id = @courseId AND is_active = 1";
 
             SqlParameter[] deleteParams = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId)
+                new SqlParameter("@courseId", courseId)
             };
 
             _access.Save(deleteQuery, deleteParams);
 
             foreach (int teacherId in teacherIds)
             {
-                string insertQuery = @"INSERT INTO CursoDocentes (curso_id, docente_id, is_active, created_at)
-                                      VALUES (@cursoId, @docenteId, 1, @createdAt)";
+                string insertQuery = @"INSERT INTO course_teachers (course_id, teacher_id, is_active, created_at)
+                                      VALUES (@courseId, @teacherId, 1, @createdAt)";
                 SqlParameter[] insertParams = new SqlParameter[]
                 {
-                    new SqlParameter("@cursoId", courseId),
-                    new SqlParameter("@docenteId", teacherId),
+                    new SqlParameter("@courseId", courseId),
+                    new SqlParameter("@teacherId", teacherId),
                     new SqlParameter("@createdAt", DateTime.Now)
                 };
                 _access.Save(insertQuery, insertParams);
@@ -213,12 +209,12 @@ namespace MPP
                                     u.retries_count, u.last_update, u.created_at,
                                     u.language, u.theme, u.role_id
                             FROM Users u
-                            INNER JOIN CursoDocentes cd ON cd.docente_id = u.id
-                            WHERE cd.curso_id = @cursoId AND cd.is_active = 1 AND u.is_active = 1";
+                            INNER JOIN course_teachers ct ON ct.teacher_id = u.id
+                            WHERE ct.course_id = @courseId AND ct.is_active = 1 AND u.is_active = 1";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@cursoId", courseId)
+                new SqlParameter("@courseId", courseId)
             };
 
             List<UserBE> teachers = new List<UserBE>();
@@ -234,19 +230,19 @@ namespace MPP
 
         public List<CourseBE> FindByTeacherId(int teacherId)
         {
-            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
-                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+            string query = @"SELECT c.id, c.name, c.description, c.start_date, c.end_date,
+                                    c.classroom_id, c.day_of_week, c.start_time, c.end_time,
                                     c.is_active, c.created_at, c.last_update,
-                                    a.nombre AS aula_nombre
-                            FROM Cursos c
-                            INNER JOIN CursoDocentes cd ON cd.curso_id = c.id
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            WHERE cd.docente_id = @docenteId AND cd.is_active = 1 AND c.is_active = 1
+                                    cl.name AS classroom_name
+                            FROM courses c
+                            INNER JOIN course_teachers ct ON ct.course_id = c.id
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            WHERE ct.teacher_id = @teacherId AND ct.is_active = 1 AND c.is_active = 1
                             ORDER BY c.id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@docenteId", teacherId)
+                new SqlParameter("@teacherId", teacherId)
             };
 
             return FindMany(query, parameters);
@@ -254,19 +250,19 @@ namespace MPP
 
         public List<CourseBE> FindByStudentId(int studentId)
         {
-            string query = @"SELECT c.id, c.nombre, c.descripcion, c.fecha_inicio, c.fecha_fin,
-                                    c.aula_id, c.dia_semana, c.hora_inicio, c.hora_fin,
+            string query = @"SELECT c.id, c.name, c.description, c.start_date, c.end_date,
+                                    c.classroom_id, c.day_of_week, c.start_time, c.end_time,
                                     c.is_active, c.created_at, c.last_update,
-                                    a.nombre AS aula_nombre
-                            FROM Cursos c
-                            INNER JOIN CursoAlumnos ca ON ca.curso_id = c.id
-                            LEFT JOIN Aulas a ON a.id = c.aula_id
-                            WHERE ca.alumno_id = @alumnoId AND ca.is_active = 1 AND c.is_active = 1
+                                    cl.name AS classroom_name
+                            FROM courses c
+                            INNER JOIN course_students cs ON cs.course_id = c.id
+                            LEFT JOIN classrooms cl ON cl.id = c.classroom_id
+                            WHERE cs.student_id = @studentId AND cs.is_active = 1 AND c.is_active = 1
                             ORDER BY c.id";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@alumnoId", studentId)
+                new SqlParameter("@studentId", studentId)
             };
 
             return FindMany(query, parameters);
@@ -275,23 +271,23 @@ namespace MPP
         public bool ExistsTeacherOverlap(int teacherId, int dayOfWeek, TimeSpan startTime, TimeSpan endTime, int courseIdToExclude)
         {
             string query = @"SELECT COUNT(*)
-                            FROM CursoDocentes cd
-                            INNER JOIN Cursos c ON c.id = cd.curso_id
-                            WHERE cd.docente_id = @docenteId
-                            AND cd.is_active = 1
+                            FROM course_teachers ct
+                            INNER JOIN courses c ON c.id = ct.course_id
+                            WHERE ct.teacher_id = @teacherId
+                            AND ct.is_active = 1
                             AND c.is_active = 1
-                            AND c.dia_semana = @diaSemana
-                            AND c.hora_inicio < @horaFin
-                            AND c.hora_fin > @horaInicio
-                            AND c.id <> @cursoIdExcluir";
+                            AND c.day_of_week = @dayOfWeek
+                            AND c.start_time < @endTime
+                            AND c.end_time > @startTime
+                            AND c.id <> @courseIdToExclude";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@docenteId", teacherId),
-                new SqlParameter("@diaSemana", dayOfWeek),
-                new SqlParameter("@horaInicio", startTime),
-                new SqlParameter("@horaFin", endTime),
-                new SqlParameter("@cursoIdExcluir", courseIdToExclude)
+                new SqlParameter("@teacherId", teacherId),
+                new SqlParameter("@dayOfWeek", dayOfWeek),
+                new SqlParameter("@startTime", startTime),
+                new SqlParameter("@endTime", endTime),
+                new SqlParameter("@courseIdToExclude", courseIdToExclude)
             };
 
             DataTable table = _access.Read(query, parameters);
@@ -305,15 +301,15 @@ namespace MPP
             return new CourseBE
             {
                 Id = Convert.ToInt32(row["id"]),
-                Name = row["nombre"].ToString(),
-                Description = row["descripcion"] != DBNull.Value ? row["descripcion"].ToString() : null,
-                StartDate = (DateTime)row["fecha_inicio"],
-                EndDate = (DateTime)row["fecha_fin"],
-                ClassroomId = row["aula_id"] != DBNull.Value ? Convert.ToInt32(row["aula_id"]) : 0,
-                ClassroomName = row["aula_nombre"] != DBNull.Value ? row["aula_nombre"].ToString() : null,
-                DayOfWeek = row["dia_semana"] != DBNull.Value ? Convert.ToInt32(row["dia_semana"]) : (int?)null,
-                StartTime = row["hora_inicio"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_inicio"].ToString()) : (TimeSpan?)null,
-                EndTime = row["hora_fin"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["hora_fin"].ToString()) : (TimeSpan?)null,
+                Name = row["name"].ToString(),
+                Description = row["description"] != DBNull.Value ? row["description"].ToString() : null,
+                StartDate = (DateTime)row["start_date"],
+                EndDate = (DateTime)row["end_date"],
+                ClassroomId = row["classroom_id"] != DBNull.Value ? Convert.ToInt32(row["classroom_id"]) : 0,
+                ClassroomName = row["classroom_name"] != DBNull.Value ? row["classroom_name"].ToString() : null,
+                DayOfWeek = row["day_of_week"] != DBNull.Value ? Convert.ToInt32(row["day_of_week"]) : (int?)null,
+                StartTime = row["start_time"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["start_time"].ToString()) : (TimeSpan?)null,
+                EndTime = row["end_time"] != DBNull.Value ? (TimeSpan?)TimeSpan.Parse(row["end_time"].ToString()) : (TimeSpan?)null,
                 IsActive = Convert.ToBoolean(row["is_active"]),
                 CreatedAt = (DateTime)row["created_at"],
                 LastUpdate = (DateTime)row["last_update"]
@@ -341,14 +337,14 @@ namespace MPP
         {
             return new SqlParameter[]
             {
-                new SqlParameter("@nombre", course.Name),
-                new SqlParameter("@descripcion", (object)course.Description ?? DBNull.Value),
-                new SqlParameter("@fechaInicio", course.StartDate),
-                new SqlParameter("@fechaFin", course.EndDate),
-                new SqlParameter("@aulaId", course.ClassroomId),
-                new SqlParameter("@diaSemana", (object)course.DayOfWeek ?? DBNull.Value),
-                new SqlParameter("@horaInicio", course.StartTime.HasValue ? (object)course.StartTime.Value : DBNull.Value),
-                new SqlParameter("@horaFin", course.EndTime.HasValue ? (object)course.EndTime.Value : DBNull.Value),
+                new SqlParameter("@name", course.Name),
+                new SqlParameter("@description", (object)course.Description ?? DBNull.Value),
+                new SqlParameter("@startDate", course.StartDate),
+                new SqlParameter("@endDate", course.EndDate),
+                new SqlParameter("@classroomId", course.ClassroomId),
+                new SqlParameter("@dayOfWeek", (object)course.DayOfWeek ?? DBNull.Value),
+                new SqlParameter("@startTime", course.StartTime.HasValue ? (object)course.StartTime.Value : DBNull.Value),
+                new SqlParameter("@endTime", course.EndTime.HasValue ? (object)course.EndTime.Value : DBNull.Value),
                 new SqlParameter("@isActive", course.IsActive),
                 new SqlParameter("@lastUpdate", course.LastUpdate)
             };
@@ -356,10 +352,10 @@ namespace MPP
 
         private bool Insert(CourseBE course)
         {
-            string query = @"INSERT INTO Cursos (nombre, descripcion, fecha_inicio, fecha_fin, aula_id,
-                                    dia_semana, hora_inicio, hora_fin, is_active, created_at, last_update)
-                            VALUES (@nombre, @descripcion, @fechaInicio, @fechaFin, @aulaId,
-                                    @diaSemana, @horaInicio, @horaFin, @isActive, @createdAt, @lastUpdate);
+            string query = @"INSERT INTO courses (name, description, start_date, end_date, classroom_id,
+                                    day_of_week, start_time, end_time, is_active, created_at, last_update)
+                            VALUES (@name, @description, @startDate, @endDate, @classroomId,
+                                    @dayOfWeek, @startTime, @endTime, @isActive, @createdAt, @lastUpdate);
                             SELECT SCOPE_IDENTITY();";
 
             SqlParameter[] parameters = CreateCourseParameters(course);
@@ -378,15 +374,15 @@ namespace MPP
 
         private bool Update(CourseBE course)
         {
-            string query = @"UPDATE Cursos
-                            SET nombre = @nombre,
-                                descripcion = @descripcion,
-                                fecha_inicio = @fechaInicio,
-                                fecha_fin = @fechaFin,
-                                aula_id = @aulaId,
-                                dia_semana = @diaSemana,
-                                hora_inicio = @horaInicio,
-                                hora_fin = @horaFin,
+            string query = @"UPDATE courses
+                            SET name = @name,
+                                description = @description,
+                                start_date = @startDate,
+                                end_date = @endDate,
+                                classroom_id = @classroomId,
+                                day_of_week = @dayOfWeek,
+                                start_time = @startTime,
+                                end_time = @endTime,
                                 is_active = @isActive,
                                 last_update = @lastUpdate
                             WHERE id = @id";

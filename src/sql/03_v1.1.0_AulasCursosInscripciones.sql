@@ -1,11 +1,11 @@
 use Trabajo_Final;
 
 -- =============================================
--- MIGRACION v1.1.0: Aulas, Cursos, Inscripciones y Asistencia
--- Create tables + Seed data (inscripciones + asistencia)
+-- MIGRACION v1.1.0: Classrooms, Courses,
+-- Course Teachers, Course Students, Attendance
+-- Tables + Seed data
 -- =============================================
 
--- 1. Verificar si esta migracion ya fue aplicada
 IF NOT EXISTS (SELECT 1 FROM [dbo].[SchemaVersions] WHERE [Version] = '1.1.0')
 BEGIN
     BEGIN TRANSACTION;
@@ -13,14 +13,14 @@ BEGIN
     BEGIN TRY
 
         -- =============================================
-        -- 2. Tabla Aulas (solo si no existe)
+        -- 2. Table: classrooms
         -- =============================================
-        IF OBJECT_ID('dbo.Aulas', 'U') IS NULL
+        IF OBJECT_ID('dbo.classrooms', 'U') IS NULL
         BEGIN
-            CREATE TABLE [dbo].[Aulas] (
+            CREATE TABLE [dbo].[classrooms] (
                 [id]           INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
-                [nombre]       NVARCHAR(100)  NOT NULL,
-                [capacidad]    INT            NOT NULL,
+                [name]         NVARCHAR(100)  NOT NULL,
+                [capacity]     INT            NOT NULL,
                 [is_active]    BIT            NOT NULL DEFAULT 1,
                 [created_at]   DATETIME       NOT NULL DEFAULT GETDATE(),
                 [last_update]  DATETIME       NOT NULL DEFAULT GETDATE()
@@ -28,101 +28,95 @@ BEGIN
         END;
 
         -- =============================================
-        -- 3. Tabla Cursos (solo si no existe)
+        -- 3. Table: courses
         -- =============================================
-        IF OBJECT_ID('dbo.Cursos', 'U') IS NULL
+        IF OBJECT_ID('dbo.courses', 'U') IS NULL
         BEGIN
-            CREATE TABLE [dbo].[Cursos] (
+            CREATE TABLE [dbo].[courses] (
                 [id]            INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
-                [nombre]        NVARCHAR(200)  NOT NULL,
-                [descripcion]   NVARCHAR(500)  NULL,
-                [fecha_inicio]  DATETIME       NOT NULL,
-                [fecha_fin]     DATETIME       NOT NULL,
-                [aula_id]       INT            NOT NULL,
-                [dia_semana]    INT            NULL,
-                [hora_inicio]   TIME           NULL,
-                [hora_fin]      TIME           NULL,
+                [name]          NVARCHAR(200)  NOT NULL,
+                [description]   NVARCHAR(500)  NULL,
+                [start_date]    DATETIME       NOT NULL,
+                [end_date]      DATETIME       NOT NULL,
+                [classroom_id]  INT            NOT NULL,
+                [day_of_week]   INT            NULL,
+                [start_time]    TIME           NULL,
+                [end_time]      TIME           NULL,
                 [is_active]     BIT            NOT NULL DEFAULT 1,
                 [created_at]    DATETIME       NOT NULL DEFAULT GETDATE(),
                 [last_update]   DATETIME       NOT NULL DEFAULT GETDATE(),
-                CONSTRAINT fk_cursos_aulas FOREIGN KEY ([aula_id]) REFERENCES [dbo].[Aulas]([id])
+                CONSTRAINT fk_courses_classrooms FOREIGN KEY ([classroom_id]) REFERENCES [dbo].[classrooms]([id])
             );
         END;
         ELSE
         BEGIN
-            -- Si la tabla existe pero aula_id es NULL, actualizar datos y cambiar a NOT NULL
-            IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('dbo.Cursos') AND name = 'aula_id' AND is_nullable = 1)
+            IF EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('dbo.courses') AND name = 'classroom_id' AND is_nullable = 1)
             BEGIN
-                UPDATE [dbo].[Cursos]
-                SET [aula_id] = 1
-                WHERE [aula_id] IS NULL;
-
-                ALTER TABLE [dbo].[Cursos]
-                    ALTER COLUMN [aula_id] INT NOT NULL;
+                UPDATE [dbo].[courses] SET [classroom_id] = 1 WHERE [classroom_id] IS NULL;
+                ALTER TABLE [dbo].[courses] ALTER COLUMN [classroom_id] INT NOT NULL;
             END;
 
-            -- Agregar columnas de horario si no existen
-            IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('dbo.Cursos') AND name = 'dia_semana')
+            IF NOT EXISTS (SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID('dbo.courses') AND name = 'day_of_week')
             BEGIN
-                ALTER TABLE [dbo].[Cursos]
-                    ADD [dia_semana]  INT  NULL,
-                        [hora_inicio] TIME NULL,
-                        [hora_fin]    TIME NULL;
+                ALTER TABLE [dbo].[courses]
+                    ADD [day_of_week]  INT  NULL,
+                        [start_time]   TIME NULL,
+                        [end_time]     TIME NULL;
             END;
         END;
 
         -- =============================================
-        -- 4. Tabla CursoDocentes (N:N, solo si no existe)
+        -- 4. Table: course_teachers (N:N)
         -- =============================================
-        IF OBJECT_ID('dbo.CursoDocentes', 'U') IS NULL
+        IF OBJECT_ID('dbo.course_teachers', 'U') IS NULL
         BEGIN
-            CREATE TABLE [dbo].[CursoDocentes] (
+            CREATE TABLE [dbo].[course_teachers] (
                 [id]           INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
-                [curso_id]     INT      NOT NULL,
-                [docente_id]   INT      NOT NULL,
+                [course_id]    INT      NOT NULL,
+                [teacher_id]   INT      NOT NULL,
                 [is_active]    BIT      NOT NULL DEFAULT 1,
                 [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
-                CONSTRAINT fk_cursodocentes_cursos   FOREIGN KEY ([curso_id])   REFERENCES [dbo].[Cursos]([id]),
-                CONSTRAINT fk_cursodocentes_users    FOREIGN KEY ([docente_id]) REFERENCES [dbo].[Users]([id])
+                CONSTRAINT fk_course_teachers_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
+                CONSTRAINT fk_course_teachers_users   FOREIGN KEY ([teacher_id]) REFERENCES [dbo].[Users]([id])
             );
         END;
 
         -- =============================================
-        -- 5. Tabla CursoAlumnos (inscripciones, solo si no existe)
+        -- 5. Table: course_students (enrollments)
         -- =============================================
-        IF OBJECT_ID('dbo.CursoAlumnos', 'U') IS NULL
+        IF OBJECT_ID('dbo.course_students', 'U') IS NULL
         BEGIN
-            CREATE TABLE [dbo].[CursoAlumnos] (
+            CREATE TABLE [dbo].[course_students] (
                 [id]           INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
-                [curso_id]     INT      NOT NULL,
-                [alumno_id]    INT      NOT NULL,
+                [course_id]    INT      NOT NULL,
+                [student_id]   INT      NOT NULL,
                 [is_active]    BIT      NOT NULL DEFAULT 1,
                 [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
-                CONSTRAINT fk_cursoalumnos_cursos FOREIGN KEY ([curso_id])  REFERENCES [dbo].[Cursos]([id]),
-                CONSTRAINT fk_cursoalumnos_users  FOREIGN KEY ([alumno_id]) REFERENCES [dbo].[Users]([id])
+                CONSTRAINT fk_course_students_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
+                CONSTRAINT fk_course_students_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[Users]([id])
             );
         END;
 
         -- =============================================
-        -- 6. Tabla ClasesAlumnos (asistencia, solo si no existe)
+        -- 6. Table: attendance
         -- =============================================
-        IF OBJECT_ID('dbo.ClasesAlumnos', 'U') IS NULL
+        IF OBJECT_ID('dbo.attendance', 'U') IS NULL
         BEGIN
-            CREATE TABLE [dbo].[ClasesAlumnos] (
+            CREATE TABLE [dbo].[attendance] (
                 [id]           INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
-                [curso_id]     INT      NOT NULL,
-                [alumno_id]    INT      NOT NULL,
-                [fecha]        DATE     NOT NULL,
-                [presente]     BIT      NOT NULL DEFAULT 0,
+                [course_id]    INT      NOT NULL,
+                [student_id]   INT      NOT NULL,
+                [date]         DATE     NOT NULL,
+                [is_present]   BIT      NOT NULL DEFAULT 0,
                 [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
-                CONSTRAINT fk_clasesalumnos_cursos FOREIGN KEY ([curso_id])  REFERENCES [dbo].[Cursos]([id]),
-                CONSTRAINT fk_clasesalumnos_users  FOREIGN KEY ([alumno_id]) REFERENCES [dbo].[Users]([id]),
-                CONSTRAINT uq_clasesalumnos_unique  UNIQUE ([curso_id], [alumno_id], [fecha])
+                CONSTRAINT fk_attendance_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
+                CONSTRAINT fk_attendance_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[Users]([id]),
+                CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
             );
         END;
 
         -- =============================================
-        -- 7. Permisos
+        -- 7. Permissions
         -- =============================================
         IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [name] = 'FORM_CURSO_MGMT')
         BEGIN
@@ -149,7 +143,7 @@ BEGIN
         END;
 
         -- =============================================
-        -- 8. Rol Coordinador
+        -- 8. Role: Coordinador
         -- =============================================
         IF NOT EXISTS (SELECT 1 FROM [dbo].[Roles] WHERE [name] = 'Coordinador')
         BEGIN
@@ -157,10 +151,10 @@ BEGIN
         END;
 
         -- =============================================
-        -- 9. Asignacion de permisos
+        -- 9. Permission assignments
         -- =============================================
 
-        -- Admin (1): todos los permisos nuevos
+        -- Admin (1)
         IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_CURSO_MGMT'))
         BEGIN
             INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
@@ -179,7 +173,7 @@ BEGIN
             SELECT 1, id FROM [dbo].[Permissions] WHERE name = 'FORM_ASISTENCIA_MGMT';
         END;
 
-        -- Coordinador (4): ABMs + ver asistencia
+        -- Coordinador (4)
         DECLARE @coordinadorId INT = (SELECT id FROM [dbo].[Roles] WHERE name = 'Coordinador');
         IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = @coordinadorId)
         BEGIN
@@ -188,7 +182,7 @@ BEGIN
             WHERE name IN ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_ASISTENCIA_VIEW');
         END;
 
-        -- Profesor (2): cursos, inscripciones, registrar asistencia
+        -- Profesor (2)
         IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_CURSO_MGMT'))
         BEGIN
             INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
@@ -207,12 +201,11 @@ BEGIN
             SELECT 2, id FROM [dbo].[Permissions] WHERE name = 'FORM_ASISTENCIA_MGMT';
         END;
 
-        -- Quitar FORM_USER_MGMT a Profesor (no debe ver administracion)
         DELETE FROM [dbo].[RolePermissions]
         WHERE [role_id] = 2
           AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_USER_MGMT');
 
-        -- Alumno (3): inscripciones
+        -- Alumno (3)
         IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 3 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
         BEGIN
             INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
@@ -220,11 +213,11 @@ BEGIN
         END;
 
         -- =============================================
-        -- 10. Seed data: Aulas
+        -- 10. Seed: classrooms
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Aulas])
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[classrooms])
         BEGIN
-            INSERT INTO [dbo].[Aulas] (nombre, capacidad, is_active, created_at, last_update) VALUES
+            INSERT INTO [dbo].[classrooms] (name, capacity, is_active, created_at, last_update) VALUES
             ('Aula 101 - Goiescalza',      30, 1, GETDATE(), GETDATE()),
             ('Aula 102 - Goiescalza',      30, 1, GETDATE(), GETDATE()),
             ('Aula 201 - Goiescalza',      25, 1, GETDATE(), GETDATE()),
@@ -233,11 +226,11 @@ BEGIN
         END;
 
         -- =============================================
-        -- 11. Seed data: Cursos con horarios
+        -- 11. Seed: courses with schedules
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Cursos])
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[courses])
         BEGIN
-            INSERT INTO [dbo].[Cursos] (nombre, descripcion, fecha_inicio, fecha_fin, aula_id, dia_semana, hora_inicio, hora_fin, is_active, created_at, last_update) VALUES
+            INSERT INTO [dbo].[courses] (name, description, start_date, end_date, classroom_id, day_of_week, start_time, end_time, is_active, created_at, last_update) VALUES
             ('Ingles Basico A1',     'Curso de ingles para principiantes, nivel A1 del MCER',             '2026-08-01', '2026-12-15', 1, 1, '08:00', '10:00', 1, GETDATE(), GETDATE()),
             ('Ingles Intermedio B1', 'Curso de ingles nivel intermedio, preparacion para certificacion',  '2026-08-01', '2026-12-15', 2, 3, '10:00', '12:00', 1, GETDATE(), GETDATE()),
             ('Frances Inicial A1',   'Introduccion al frances, alfabetizacion y frases basicas',         '2026-08-01', '2026-12-15', 3, 2, '14:00', '16:00', 1, GETDATE(), GETDATE()),
@@ -246,11 +239,11 @@ BEGIN
         END;
 
         -- =============================================
-        -- 12. Seed data: Asignacion de docentes a cursos
+        -- 12. Seed: course_teachers
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[CursoDocentes])
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[course_teachers])
         BEGIN
-            INSERT INTO [dbo].[CursoDocentes] (curso_id, docente_id, is_active, created_at)
+            INSERT INTO [dbo].[course_teachers] (course_id, teacher_id, is_active, created_at)
             SELECT c.id, u.id, 1, GETDATE()
             FROM (VALUES
                 (1, 'prof_garcia'),
@@ -260,93 +253,81 @@ BEGIN
                 (4, 'prof_fernandez'),
                 (4, 'prof_garcia'),
                 (5, 'prof_lopez')
-            ) AS assignments(curso_num, user_name)
-            INNER JOIN [dbo].[Cursos] c ON c.id = assignments.curso_num
-            INNER JOIN [dbo].[Users] u ON u.user_name = assignments.user_name;
+            ) AS t(course_num, user_name)
+            INNER JOIN [dbo].[courses] c ON c.id = t.course_num
+            INNER JOIN [dbo].[Users] u ON u.user_name = t.user_name;
         END;
 
         -- =============================================
-        -- 13. Seed data: Inscripciones de alumnos a cursos
+        -- 13. Seed: course_students (enrollments)
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[CursoAlumnos])
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[course_students])
         BEGIN
-            INSERT INTO [dbo].[CursoAlumnos] (curso_id, alumno_id, is_active, created_at)
+            INSERT INTO [dbo].[course_students] (course_id, student_id, is_active, created_at)
             SELECT c.id, u.id, 1, GETDATE()
             FROM (VALUES
-                -- Ingles Basico A1 (curso 1): 5 alumnos
                 (1, 'alumno_perez'),
                 (1, 'alumno_gomez'),
                 (1, 'alumno_diaz'),
                 (1, 'alumno_morales'),
                 (1, 'alumno_torres'),
-                -- Ingles Intermedio B1 (curso 2): 3 alumnos
                 (2, 'alumno_ramos'),
                 (2, 'alumno_silva'),
                 (2, 'alumno_castro'),
-                -- Frances Inicial A1 (curso 3): 4 alumnos
                 (3, 'alumno_ruiz'),
                 (3, 'alumno_alvarez'),
                 (3, 'alumno_romero'),
                 (3, 'alumno_sanchez'),
-                -- Portugues Basico (curso 4): 3 alumnos
                 (4, 'alumno_herrera'),
                 (4, 'alumno_patricio'),
                 (4, 'alumno_soto'),
-                -- Italiano A1 (curso 5): 2 alumnos
                 (5, 'alumno_perez'),
                 (5, 'alumno_ruiz')
-            ) AS enrollments(curso_num, user_name)
-            INNER JOIN [dbo].[Cursos] c ON c.id = enrollments.curso_num
-            INNER JOIN [dbo].[Users] u ON u.user_name = enrollments.user_name;
+            ) AS e(course_num, user_name)
+            INNER JOIN [dbo].[courses] c ON c.id = e.course_num
+            INNER JOIN [dbo].[Users] u ON u.user_name = e.user_name;
         END;
 
         -- =============================================
-        -- 14. Seed data: Registros de asistencia
+        -- 14. Seed: attendance records
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[ClasesAlumnos])
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[attendance])
         BEGIN
-            INSERT INTO [dbo].[ClasesAlumnos] (curso_id, alumno_id, fecha, presente, created_at)
-            SELECT c.id, u.id, att.fecha, att.presente, GETDATE()
+            INSERT INTO [dbo].[attendance] (course_id, student_id, date, is_present, created_at)
+            SELECT c.id, u.id, a.date, a.is_present, GETDATE()
             FROM (VALUES
-                -- Ingles Basico A1 - Lunes 03/08/2026
                 (1, 'alumno_perez',   '2026-08-03', 1),
                 (1, 'alumno_gomez',   '2026-08-03', 1),
                 (1, 'alumno_diaz',    '2026-08-03', 0),
                 (1, 'alumno_morales', '2026-08-03', 1),
                 (1, 'alumno_torres',  '2026-08-03', 1),
-                -- Ingles Basico A1 - Lunes 10/08/2026
                 (1, 'alumno_perez',   '2026-08-10', 1),
                 (1, 'alumno_gomez',   '2026-08-10', 0),
                 (1, 'alumno_diaz',    '2026-08-10', 1),
                 (1, 'alumno_morales', '2026-08-10', 1),
                 (1, 'alumno_torres',  '2026-08-10', 1),
-                -- Ingles Intermedio B1 - Miercoles 05/08/2026
-                (2, 'alumno_ramos',  '2026-08-05', 1),
-                (2, 'alumno_silva',  '2026-08-05', 1),
-                (2, 'alumno_castro', '2026-08-05', 0),
-                -- Ingles Intermedio B1 - Miercoles 12/08/2026
-                (2, 'alumno_ramos',  '2026-08-12', 1),
-                (2, 'alumno_silva',  '2026-08-12', 0),
-                (2, 'alumno_castro', '2026-08-12', 1),
-                -- Frances Inicial A1 - Martes 04/08/2026
-                (3, 'alumno_ruiz',     '2026-08-04', 1),
-                (3, 'alumno_alvarez',  '2026-08-04', 1),
-                (3, 'alumno_romero',   '2026-08-04', 1),
-                (3, 'alumno_sanchez',  '2026-08-04', 0),
-                -- Portugues Basico - Jueves 06/08/2026
-                (4, 'alumno_herrera',  '2026-08-06', 1),
-                (4, 'alumno_patricio', '2026-08-06', 0),
-                (4, 'alumno_soto',     '2026-08-06', 1),
-                -- Italiano A1 - Viernes 07/08/2026
+                (2, 'alumno_ramos',   '2026-08-05', 1),
+                (2, 'alumno_silva',   '2026-08-05', 1),
+                (2, 'alumno_castro',  '2026-08-05', 0),
+                (2, 'alumno_ramos',   '2026-08-12', 1),
+                (2, 'alumno_silva',   '2026-08-12', 0),
+                (2, 'alumno_castro',  '2026-08-12', 1),
+                (3, 'alumno_ruiz',      '2026-08-04', 1),
+                (3, 'alumno_alvarez',   '2026-08-04', 1),
+                (3, 'alumno_romero',    '2026-08-04', 1),
+                (3, 'alumno_sanchez',   '2026-08-04', 0),
+                (4, 'alumno_herrera',   '2026-08-06', 1),
+                (4, 'alumno_patricio',  '2026-08-06', 0),
+                (4, 'alumno_soto',      '2026-08-06', 1),
                 (5, 'alumno_perez', '2026-08-07', 1),
                 (5, 'alumno_ruiz',  '2026-08-07', 1)
-            ) AS att(curso_num, user_name, fecha, presente)
-            INNER JOIN [dbo].[Cursos] c ON c.id = att.curso_num
-            INNER JOIN [dbo].[Users] u ON u.user_name = att.user_name;
+            ) AS a(course_num, user_name, date, is_present)
+            INNER JOIN [dbo].[courses] c ON c.id = a.course_num
+            INNER JOIN [dbo].[Users] u ON u.user_name = a.user_name;
         END;
 
         -- =============================================
-        -- 15. Registrar migracion aplicada
+        -- 15. Register migration
         -- =============================================
         INSERT INTO [dbo].[SchemaVersions] (Version, ScriptName, AppliedAt)
         VALUES ('1.1.0', '03_v1.1.0_AulasCursosInscripciones.sql', GETDATE());
