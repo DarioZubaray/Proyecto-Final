@@ -70,11 +70,12 @@ namespace TrabajoFinal_DarioZubaray
             bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
             bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
             bool canRegisterAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
+            bool canViewAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_VIEW");
 
-            académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance;
+            académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance || canViewAttendance;
             cursosToolStripMenuItem.Visible = canManageCourses;
             inscripcionesToolStripMenuItem.Visible = canViewEnrollments;
-            asistenciaToolStripMenuItem.Visible = canRegisterAttendance;
+            asistenciaToolStripMenuItem.Visible = canRegisterAttendance || canViewAttendance;
         }
 
         private void UpdateFooter()
@@ -209,12 +210,24 @@ namespace TrabajoFinal_DarioZubaray
 
         private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("AttendanceForm");
-            var form = new AttendanceForm(_user)
+            if (_session.HasPermission("FORM_ASISTENCIA_MGMT"))
             {
-                MdiParent = this
-            };
-            form.Show();
+                LogFormAccess("AttendanceForm");
+                var form = new AttendanceForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
+            else if (_session.HasPermission("FORM_ASISTENCIA_VIEW"))
+            {
+                LogFormAccess("AttendanceViewForm");
+                var form = new AttendanceViewForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)

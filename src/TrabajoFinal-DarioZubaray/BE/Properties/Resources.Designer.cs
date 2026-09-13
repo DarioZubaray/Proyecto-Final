@@ -1835,6 +1835,13 @@ namespace BE.Properties {
                 return ResourceManager.GetString("AttendanceForm_Unauthorized", resourceCulture);
             }
         }
+        
+        public static string AttendanceViewForm_Title {
+            get {
+                return ResourceManager.GetString("AttendanceViewForm_Title", resourceCulture);
+            }
+        }
+        
         public static string Main_MenuClassrooms {
             get {
                 return ResourceManager.GetString("Main_MenuClassrooms", resourceCulture);

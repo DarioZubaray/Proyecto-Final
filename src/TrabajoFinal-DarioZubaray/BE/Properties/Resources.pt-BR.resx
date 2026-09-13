@@ -865,4 +865,7 @@
   <data name="ClassroomManagementForm_InfoTitle" xml:space="preserve">
     <value>Aviso</value>
   </data>
+  <data name="AttendanceViewForm_Title" xml:space="preserve">
+    <value>Ver Presença</value>
+  </data>
 </root>
