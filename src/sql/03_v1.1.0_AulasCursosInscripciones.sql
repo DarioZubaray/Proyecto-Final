@@ -6,7 +6,7 @@ use Trabajo_Final;
 -- Tables + Seed data
 -- =============================================
 
-IF NOT EXISTS (SELECT 1 FROM [dbo].[SchemaVersions] WHERE [Version] = '1.1.0')
+IF NOT EXISTS (SELECT 1 FROM [dbo].[schema_versions] WHERE [version] = '1.1.0')
 BEGIN
     BEGIN TRANSACTION;
 
@@ -77,7 +77,7 @@ BEGIN
                 [is_active]    BIT      NOT NULL DEFAULT 1,
                 [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                 CONSTRAINT fk_course_teachers_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
-                CONSTRAINT fk_course_teachers_users   FOREIGN KEY ([teacher_id]) REFERENCES [dbo].[Users]([id])
+                CONSTRAINT fk_course_teachers_users   FOREIGN KEY ([teacher_id]) REFERENCES [dbo].[users]([id])
             );
         END;
 
@@ -93,7 +93,7 @@ BEGIN
                 [is_active]    BIT      NOT NULL DEFAULT 1,
                 [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                 CONSTRAINT fk_course_students_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
-                CONSTRAINT fk_course_students_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[Users]([id])
+                CONSTRAINT fk_course_students_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id])
             );
         END;
 
@@ -110,7 +110,7 @@ BEGIN
                 [is_present]   BIT      NOT NULL DEFAULT 0,
                 [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                 CONSTRAINT fk_attendance_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
-                CONSTRAINT fk_attendance_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[Users]([id]),
+                CONSTRAINT fk_attendance_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id]),
                 CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
             );
         END;
@@ -118,36 +118,36 @@ BEGIN
         -- =============================================
         -- 7. Permissions
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [name] = 'FORM_CURSO_MGMT')
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[permissions] WHERE [name] = 'FORM_CURSO_MGMT')
         BEGIN
-            INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
+            INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
             ('FORM_CURSO_MGMT', 'ABM Cursos', 'Formulario de gestion de cursos', 0);
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [name] = 'FORM_INSCRIPCION_MGMT')
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[permissions] WHERE [name] = 'FORM_INSCRIPCION_MGMT')
         BEGIN
-            INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
+            INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
             ('FORM_INSCRIPCION_MGMT', 'Inscripciones', 'Gestion de inscripciones de alumnos a cursos', 0);
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [name] = 'FORM_ASISTENCIA_MGMT')
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[permissions] WHERE [name] = 'FORM_ASISTENCIA_MGMT')
         BEGIN
-            INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
+            INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
             ('FORM_ASISTENCIA_MGMT', 'Asistencia', 'Registro de asistencia de alumnos en clases', 0);
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Permissions] WHERE [name] = 'FORM_ASISTENCIA_VIEW')
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[permissions] WHERE [name] = 'FORM_ASISTENCIA_VIEW')
         BEGIN
-            INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
+            INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
             ('FORM_ASISTENCIA_VIEW', 'Ver Asistencia', 'Consulta de asistencia de alumnos', 0);
         END;
 
         -- =============================================
         -- 8. Role: Coordinador
         -- =============================================
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Roles] WHERE [name] = 'Coordinador')
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[roles] WHERE [name] = 'Coordinador')
         BEGIN
-            INSERT INTO [dbo].[Roles] (name) VALUES ('Coordinador');
+            INSERT INTO [dbo].[roles] (name) VALUES ('Coordinador');
         END;
 
         -- =============================================
@@ -155,61 +155,61 @@ BEGIN
         -- =============================================
 
         -- Admin (1)
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_CURSO_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_CURSO_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 1, id FROM [dbo].[Permissions] WHERE name = 'FORM_CURSO_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 1, id FROM [dbo].[permissions] WHERE name = 'FORM_CURSO_MGMT';
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 1, id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 1, id FROM [dbo].[permissions] WHERE name = 'FORM_INSCRIPCION_MGMT';
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_ASISTENCIA_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 1 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_ASISTENCIA_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 1, id FROM [dbo].[Permissions] WHERE name = 'FORM_ASISTENCIA_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 1, id FROM [dbo].[permissions] WHERE name = 'FORM_ASISTENCIA_MGMT';
         END;
 
         -- Coordinador (4)
-        DECLARE @coordinadorId INT = (SELECT id FROM [dbo].[Roles] WHERE name = 'Coordinador');
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = @coordinadorId)
+        DECLARE @coordinadorId INT = (SELECT id FROM [dbo].[roles] WHERE name = 'Coordinador');
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = @coordinadorId)
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT @coordinadorId, id FROM [dbo].[Permissions]
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT @coordinadorId, id FROM [dbo].[permissions]
             WHERE name IN ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_ASISTENCIA_VIEW');
         END;
 
         -- Profesor (2)
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_CURSO_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_CURSO_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 2, id FROM [dbo].[Permissions] WHERE name = 'FORM_CURSO_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 2, id FROM [dbo].[permissions] WHERE name = 'FORM_CURSO_MGMT';
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 2, id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 2, id FROM [dbo].[permissions] WHERE name = 'FORM_INSCRIPCION_MGMT';
         END;
 
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_ASISTENCIA_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 2 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_ASISTENCIA_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 2, id FROM [dbo].[Permissions] WHERE name = 'FORM_ASISTENCIA_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 2, id FROM [dbo].[permissions] WHERE name = 'FORM_ASISTENCIA_MGMT';
         END;
 
-        DELETE FROM [dbo].[RolePermissions]
+        DELETE FROM [dbo].[role_permissions]
         WHERE [role_id] = 2
-          AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_USER_MGMT');
+          AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_USER_MGMT');
 
         -- Alumno (3)
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = 3 AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = 3 AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_INSCRIPCION_MGMT'))
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT 3, id FROM [dbo].[Permissions] WHERE name = 'FORM_INSCRIPCION_MGMT';
+            INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+            SELECT 3, id FROM [dbo].[permissions] WHERE name = 'FORM_INSCRIPCION_MGMT';
         END;
 
         -- =============================================
@@ -255,7 +255,7 @@ BEGIN
                 (5, 'prof_lopez')
             ) AS t(course_num, user_name)
             INNER JOIN [dbo].[courses] c ON c.id = t.course_num
-            INNER JOIN [dbo].[Users] u ON u.user_name = t.user_name;
+            INNER JOIN [dbo].[users] u ON u.user_name = t.user_name;
         END;
 
         -- =============================================
@@ -285,7 +285,7 @@ BEGIN
                 (5, 'alumno_ruiz')
             ) AS e(course_num, user_name)
             INNER JOIN [dbo].[courses] c ON c.id = e.course_num
-            INNER JOIN [dbo].[Users] u ON u.user_name = e.user_name;
+            INNER JOIN [dbo].[users] u ON u.user_name = e.user_name;
         END;
 
         -- =============================================
@@ -323,13 +323,13 @@ BEGIN
                 (5, 'alumno_ruiz',  '2026-08-07', 1)
             ) AS a(course_num, user_name, date, is_present)
             INNER JOIN [dbo].[courses] c ON c.id = a.course_num
-            INNER JOIN [dbo].[Users] u ON u.user_name = a.user_name;
+            INNER JOIN [dbo].[users] u ON u.user_name = a.user_name;
         END;
 
         -- =============================================
         -- 15. Register migration
         -- =============================================
-        INSERT INTO [dbo].[SchemaVersions] (Version, ScriptName, AppliedAt)
+        INSERT INTO [dbo].[schema_versions] (version, script_name, applied_at)
         VALUES ('1.1.0', '03_v1.1.0_AulasCursosInscripciones.sql', GETDATE());
 
         COMMIT TRANSACTION;

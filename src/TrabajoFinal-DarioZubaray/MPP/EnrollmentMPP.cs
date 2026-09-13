@@ -66,7 +66,7 @@ namespace MPP
                             FROM course_students cs
                             INNER JOIN courses c ON c.id = cs.course_id
                             LEFT JOIN classrooms cl ON cl.id = c.classroom_id
-                            INNER JOIN Users u ON u.id = cs.student_id
+                            INNER JOIN users u ON u.id = cs.student_id
                             WHERE cs.id = @id";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -93,7 +93,7 @@ namespace MPP
                             FROM course_students cs
                             INNER JOIN courses c ON c.id = cs.course_id
                             LEFT JOIN classrooms cl ON cl.id = c.classroom_id
-                            INNER JOIN Users u ON u.id = cs.student_id
+                            INNER JOIN users u ON u.id = cs.student_id
                             WHERE cs.student_id = @studentId AND cs.is_active = 1 AND c.is_active = 1
                             ORDER BY c.id";
 
@@ -114,7 +114,7 @@ namespace MPP
                             FROM course_students cs
                             INNER JOIN courses c ON c.id = cs.course_id
                             LEFT JOIN classrooms cl ON cl.id = c.classroom_id
-                            INNER JOIN Users u ON u.id = cs.student_id
+                            INNER JOIN users u ON u.id = cs.student_id
                             WHERE cs.is_active = 1 AND c.is_active = 1
                             ORDER BY u.user_name, c.name";
 

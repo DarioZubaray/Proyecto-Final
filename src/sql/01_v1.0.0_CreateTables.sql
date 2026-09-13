@@ -2,17 +2,16 @@ use Trabajo_Final;
 
 -- =============================================
 -- CREATE v1.0.0: Esquema base de tablas
--- Roles, Permisos, Usuarios, ActivityLogs, SchemaVersions
 -- =============================================
 
 -- 1. Roles
-CREATE TABLE [dbo].[Roles] (
+CREATE TABLE [dbo].[roles] (
     [id]   INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [name] NVARCHAR(100)  NOT NULL UNIQUE
 );
 
--- 2. Permisos (cada permiso = 1 formulario)
-CREATE TABLE [dbo].[Permissions] (
+-- 2. Permisos
+CREATE TABLE [dbo].[permissions] (
     [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [name]        NVARCHAR(100)  NOT NULL UNIQUE,
     [label]       NVARCHAR(100)  NOT NULL,
@@ -20,26 +19,26 @@ CREATE TABLE [dbo].[Permissions] (
     [is_system]   BIT            NOT NULL DEFAULT 0
 );
 
--- 3. Relación Roles <-> Permisos (N:N)
-CREATE TABLE [dbo].[RolePermissions] (
+-- 3. Relacion Roles <-> Permisos (N:N)
+CREATE TABLE [dbo].[role_permissions] (
     [role_id]       INT NOT NULL,
     [permission_id] INT NOT NULL,
     PRIMARY KEY ([role_id], [permission_id]),
-    CONSTRAINT fk_rolepermissions_roles       FOREIGN KEY ([role_id])       REFERENCES [dbo].[Roles]([id]),
-    CONSTRAINT fk_rolepermissions_permissions FOREIGN KEY ([permission_id]) REFERENCES [dbo].[Permissions]([id])
+    CONSTRAINT fk_role_permissions_roles       FOREIGN KEY ([role_id])       REFERENCES [dbo].[roles]([id]),
+    CONSTRAINT fk_role_permissions_permissions FOREIGN KEY ([permission_id]) REFERENCES [dbo].[permissions]([id])
 );
 
--- 4. Jerarquía de roles (padre -> hijo, para Composite)
-CREATE TABLE [dbo].[RoleHierarchy] (
+-- 4. Jerarquia de roles
+CREATE TABLE [dbo].[role_hierarchy] (
     [parent_role_id] INT NOT NULL,
     [child_role_id]  INT NOT NULL,
     PRIMARY KEY ([parent_role_id], [child_role_id]),
-    CONSTRAINT fk_rolehierarchy_parent FOREIGN KEY ([parent_role_id]) REFERENCES [dbo].[Roles]([id]),
-    CONSTRAINT fk_rolehierarchy_child  FOREIGN KEY ([child_role_id])  REFERENCES [dbo].[Roles]([id])
+    CONSTRAINT fk_role_hierarchy_parent FOREIGN KEY ([parent_role_id]) REFERENCES [dbo].[roles]([id]),
+    CONSTRAINT fk_role_hierarchy_child  FOREIGN KEY ([child_role_id])  REFERENCES [dbo].[roles]([id])
 );
 
 -- 5. Usuarios
-CREATE TABLE [dbo].[Users] (
+CREATE TABLE [dbo].[users] (
     [id]            INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [user_name]     NVARCHAR(100)  NOT NULL,
     [password_hash] NVARCHAR(256)  NOT NULL,
@@ -50,26 +49,26 @@ CREATE TABLE [dbo].[Users] (
     [role_id]       INT            NULL,
     [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
     [theme]         NVARCHAR(20)   NOT NULL DEFAULT 'System',
-    CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[Roles]([id])
+    CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[roles]([id])
 );
-ALTER TABLE [dbo].[Users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
+ALTER TABLE [dbo].[users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
 
--- 6. Bitácora de actividad (Historial de Actividad) por usuario
-CREATE TABLE [dbo].[ActivityLogs] (
+-- 6. Bitacora de actividad
+CREATE TABLE [dbo].[activity_logs] (
     [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
     [user_id]     INT            NOT NULL,
     [action]      NVARCHAR(64)   NOT NULL,
     [form_name]   NVARCHAR(100)  NULL,
     [description] NVARCHAR(256)  NULL,
     [created_at]  DATETIME       NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT fk_activitylogs_users FOREIGN KEY ([user_id]) REFERENCES [dbo].[Users]([id])
+    CONSTRAINT fk_activity_logs_users FOREIGN KEY ([user_id]) REFERENCES [dbo].[users]([id])
 );
-CREATE INDEX ix_activitylogs_user_created ON [dbo].[ActivityLogs] ([user_id], [created_at] DESC);
+CREATE INDEX ix_activity_logs_user_created ON [dbo].[activity_logs] ([user_id], [created_at] DESC);
 
--- 7. Tabla de versiones de migración
-CREATE TABLE [dbo].[SchemaVersions] (
-    [Id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
-    [Version]     NVARCHAR(20)   NOT NULL,
-    [ScriptName]  NVARCHAR(200)  NOT NULL,
-    [AppliedAt]   DATETIME       NOT NULL DEFAULT GETDATE()
+-- 7. Tabla de versiones de migracion
+CREATE TABLE [dbo].[schema_versions] (
+    [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [version]     NVARCHAR(20)   NOT NULL,
+    [script_name] NVARCHAR(200)  NOT NULL,
+    [applied_at]  DATETIME       NOT NULL DEFAULT GETDATE()
 );

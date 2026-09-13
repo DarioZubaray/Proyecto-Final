@@ -58,7 +58,7 @@ namespace MPP
                                     u.user_name AS student_name,
                                     c.name AS course_name
                             FROM attendance a
-                            INNER JOIN Users u ON u.id = a.student_id
+                            INNER JOIN users u ON u.id = a.student_id
                             INNER JOIN courses c ON c.id = a.course_id
                             WHERE a.course_id = @courseId AND a.date = @date
                             ORDER BY u.user_name";

@@ -208,7 +208,7 @@ namespace MPP
             string query = @"SELECT u.id, u.user_name, u.password_hash, u.is_active,
                                     u.retries_count, u.last_update, u.created_at,
                                     u.language, u.theme, u.role_id
-                            FROM Users u
+                            FROM users u
                             INNER JOIN course_teachers ct ON ct.teacher_id = u.id
                             WHERE ct.course_id = @courseId AND ct.is_active = 1 AND u.is_active = 1";
 

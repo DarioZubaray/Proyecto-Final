@@ -29,7 +29,7 @@ namespace MPP
         #region Métodos Públicos
         public RoleBE FindById(int roleId)
         {
-            string query = @"SELECT id, name FROM Roles WHERE id = @id";
+            string query = @"SELECT id, name FROM roles WHERE id = @id";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@id", roleId)
@@ -55,7 +55,7 @@ namespace MPP
 
         public List<RoleBE> FindAll()
         {
-            string query = @"SELECT id, name FROM Roles";
+            string query = @"SELECT id, name FROM roles";
             DataTable table = _access.Read(query);
             List<RoleBE> roles = new List<RoleBE>();
 
@@ -76,8 +76,8 @@ namespace MPP
         public List<PermissionBE> GetPermissionsByRoleId(int roleId)
         {
             string query = @"SELECT p.id, p.name, p.label, p.description, p.is_system
-                            FROM Permissions p
-                            INNER JOIN RolePermissions rp ON p.id = rp.permission_id
+                            FROM permissions p
+                            INNER JOIN role_permissions rp ON p.id = rp.permission_id
                             WHERE rp.role_id = @roleId";
             SqlParameter[] parameters = new SqlParameter[]
             {
@@ -104,7 +104,7 @@ namespace MPP
 
         public List<int> GetChildRoleIds(int parentId)
         {
-            string query = @"SELECT child_role_id FROM RoleHierarchy WHERE parent_role_id = @parentId";
+            string query = @"SELECT child_role_id FROM role_hierarchy WHERE parent_role_id = @parentId";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@parentId", parentId)
@@ -125,7 +125,7 @@ namespace MPP
         {
             if (role.Id > 0)
             {
-                string updateQuery = @"UPDATE Roles SET name = @name WHERE id = @id";
+                string updateQuery = @"UPDATE roles SET name = @name WHERE id = @id";
                 SqlParameter[] updateParams = new SqlParameter[]
                 {
                     new SqlParameter("@name", role.Name),
@@ -136,7 +136,7 @@ namespace MPP
             }
             else
             {
-                string insertQuery = @"INSERT INTO Roles (name) VALUES (@name); SELECT SCOPE_IDENTITY();";
+                string insertQuery = @"INSERT INTO roles (name) VALUES (@name); SELECT SCOPE_IDENTITY();";
                 SqlParameter[] insertParams = new SqlParameter[]
                 {
                     new SqlParameter("@name", role.Name)
@@ -148,7 +148,7 @@ namespace MPP
 
         public void SavePermissions(int roleId, List<int> permissionIds)
         {
-            string deleteQuery = @"DELETE FROM RolePermissions WHERE role_id = @roleId";
+            string deleteQuery = @"DELETE FROM role_permissions WHERE role_id = @roleId";
             SqlParameter[] deleteParams = new SqlParameter[]
             {
                 new SqlParameter("@roleId", roleId)
@@ -157,7 +157,7 @@ namespace MPP
 
             foreach (int permId in permissionIds)
             {
-                string insertQuery = @"INSERT INTO RolePermissions (role_id, permission_id) VALUES (@roleId, @permId)";
+                string insertQuery = @"INSERT INTO role_permissions (role_id, permission_id) VALUES (@roleId, @permId)";
                 SqlParameter[] insertParams = new SqlParameter[]
                 {
                     new SqlParameter("@roleId", roleId),
@@ -169,14 +169,14 @@ namespace MPP
 
         public bool Delete(int roleId)
         {
-            string deletePermsQuery = @"DELETE FROM RolePermissions WHERE role_id = @roleId";
+            string deletePermsQuery = @"DELETE FROM role_permissions WHERE role_id = @roleId";
             SqlParameter[] deletePermsParams = new SqlParameter[]
             {
                 new SqlParameter("@roleId", roleId)
             };
             _access.Save(deletePermsQuery, deletePermsParams);
 
-            string deleteQuery = @"DELETE FROM Roles WHERE id = @id";
+            string deleteQuery = @"DELETE FROM roles WHERE id = @id";
             SqlParameter[] deleteParams = new SqlParameter[]
             {
                 new SqlParameter("@id", roleId)
@@ -186,7 +186,7 @@ namespace MPP
 
         public List<PermissionBE> GetAllPermissions()
         {
-            string query = @"SELECT id, name, label, description, is_system FROM Permissions";
+            string query = @"SELECT id, name, label, description, is_system FROM permissions";
             DataTable table = _access.Read(query);
             List<PermissionBE> permissions = new List<PermissionBE>();
 

@@ -29,7 +29,7 @@ namespace MPP
         #region Métodos Públicos
         public bool Save(ActivityLogBE log)
         {
-            string query = @"INSERT INTO ActivityLogs (user_id, action, form_name, description, created_at)
+            string query = @"INSERT INTO activity_logs (user_id, action, form_name, description, created_at)
                             VALUES (@userId, @action, @formName, @description, @createdAt)";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -59,7 +59,7 @@ namespace MPP
             int offset = (page - 1) * pageSize;
 
             string query = @"SELECT id, user_id, action, form_name, description, created_at
-                            FROM ActivityLogs
+                            FROM activity_logs
                             WHERE user_id = @userId
                             ORDER BY created_at DESC
                             OFFSET @offset ROWS FETCH NEXT @pageSize ROWS ONLY";
@@ -84,7 +84,7 @@ namespace MPP
 
         public int CountByUser(int userId)
         {
-            string query = @"SELECT COUNT(*) FROM ActivityLogs WHERE user_id = @userId";
+            string query = @"SELECT COUNT(*) FROM activity_logs WHERE user_id = @userId";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@userId", userId)

@@ -1,25 +1,20 @@
 use Trabajo_Final;
 
 -- =============================================
--- SEED v1.0.0: Datos iniciales (solo login)
--- Roles, Permisos, Usuarios
+-- SEED v1.0.0: Datos iniciales
 -- =============================================
 
 -- Hash BCrypt para password "123": $2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy
 
--- =============================================
 -- Roles
--- =============================================
-INSERT INTO [dbo].[Roles] (name) VALUES
+INSERT INTO [dbo].[roles] (name) VALUES
 ('Admin'),
 ('Profesor'),
 ('Alumno'),
 ('Coordinador');
 
--- =============================================
--- Permisos (cada uno = 1 formulario)
--- =============================================
-INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
+-- Permisos
+INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
 ('FORM_USER_MGMT',    'ABM Usuarios',       'Formulario de gestion de usuarios', 0),
 ('FORM_ROLE_MGMT',    'ABM Roles',          'Formulario de gestion de roles', 0),
 ('FORM_COMPLAINTS',   'Quejas',             'Formulario de quejas', 0),
@@ -27,46 +22,42 @@ INSERT INTO [dbo].[Permissions] (name, label, description, is_system) VALUES
 ('FORM_CHANGE_PASS',  'Cambiar Contrasena', 'Formulario de cambio de contrasena', 1),
 ('FORM_PREFERENCES',  'Preferencias',       'Formulario de preferencias/idioma', 1);
 
--- =============================================
--- Asignación de permisos a roles
--- =============================================
+-- Asignacion de permisos a roles
 
--- Admin (1): todos los permisos
-INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-SELECT 1, id FROM [dbo].[Permissions];
+-- Admin (1): todos
+INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+SELECT 1, id FROM [dbo].[permissions];
 
--- Profesor (2): gestionar usuarios, quejas y reportes
-INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-SELECT 2, id FROM [dbo].[Permissions] WHERE name IN
+-- Profesor (2)
+INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+SELECT 2, id FROM [dbo].[permissions] WHERE name IN
 ('FORM_USER_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS');
 
--- Alumno (3): solo quejas
-INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-SELECT 3, id FROM [dbo].[Permissions] WHERE name IN
+-- Alumno (3)
+INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+SELECT 3, id FROM [dbo].[permissions] WHERE name IN
 ('FORM_COMPLAINTS');
 
--- Coordinador (4): todos los ABMs
-INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-SELECT 4, id FROM [dbo].[Permissions] WHERE name IN
+-- Coordinador (4)
+INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+SELECT 4, id FROM [dbo].[permissions] WHERE name IN
 ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS');
 
--- =============================================
--- Usuarios (contraseña: 123 para todos)
--- =============================================
+-- Usuarios (contrasena: 123 para todos)
 
 -- Admin (rol 1)
-INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
+INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
 ('admin',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System'),
 ('dario',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System');
 
 -- Coordinadores (rol 4)
-INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
+INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
 ('coord_maria',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 4, 'es', 'System'),
 ('coord_carlos',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 4, 'es', 'System'),
 ('coord_laura',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 4, 'es', 'System');
 
 -- Docentes / Profesores (rol 2)
-INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
+INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
 ('prof_garcia',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 2, 'es', 'System'),
 ('prof_lopez',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 2, 'es', 'System'),
 ('prof_martinez', '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 2, 'es', 'System'),
@@ -74,7 +65,7 @@ INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, l
 ('prof_fernandez','$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 2, 'es', 'System');
 
 -- Alumnos (rol 3)
-INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
+INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
 ('alumno_perez',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
 ('alumno_gomez',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
 ('alumno_diaz',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
@@ -91,8 +82,6 @@ INSERT INTO [dbo].[Users] (user_name, password_hash, is_active, retries_count, l
 ('alumno_patricio',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
 ('alumno_soto',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System');
 
--- =============================================
--- Registrar migraciones aplicadas
--- =============================================
-INSERT INTO [dbo].[SchemaVersions] (Version, ScriptName, AppliedAt)
+-- Registrar migracion
+INSERT INTO [dbo].[schema_versions] (version, script_name, applied_at)
 VALUES ('1.0.0', '02_v1.0.0_SeedData.sql', GETDATE());

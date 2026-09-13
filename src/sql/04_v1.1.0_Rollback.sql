@@ -23,38 +23,47 @@ BEGIN TRY
     IF OBJECT_ID('dbo.classrooms', 'U') IS NOT NULL
         DROP TABLE dbo.classrooms;
 
-    DELETE FROM [dbo].[RolePermissions]
-    WHERE [permission_id] IN (
-        SELECT id FROM [dbo].[Permissions]
-        WHERE name IN ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_MGMT', 'FORM_ASISTENCIA_VIEW')
-    );
-
-    DELETE FROM [dbo].[Permissions]
-    WHERE name IN ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_MGMT', 'FORM_ASISTENCIA_VIEW');
-
-    DECLARE @profesorId INT = (SELECT id FROM [dbo].[Roles] WHERE name = 'Profesor');
-    IF @profesorId IS NOT NULL
+    IF OBJECT_ID('dbo.role_permissions', 'U') IS NOT NULL
     BEGIN
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[RolePermissions] WHERE [role_id] = @profesorId AND [permission_id] = (SELECT id FROM [dbo].[Permissions] WHERE name = 'FORM_USER_MGMT'))
+        DELETE FROM [dbo].[role_permissions]
+        WHERE [permission_id] IN (
+            SELECT id FROM [dbo].[permissions]
+            WHERE name IN ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_MGMT', 'FORM_ASISTENCIA_VIEW')
+        );
+    END;
+
+    IF OBJECT_ID('dbo.permissions', 'U') IS NOT NULL
+    BEGIN
+        DELETE FROM [dbo].[permissions]
+        WHERE name IN ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_MGMT', 'FORM_ASISTENCIA_VIEW');
+    END;
+
+    IF OBJECT_ID('dbo.roles', 'U') IS NOT NULL AND OBJECT_ID('dbo.users', 'U') IS NOT NULL
+    BEGIN
+        DECLARE @profesorId INT = (SELECT id FROM [dbo].[roles] WHERE name = 'Profesor');
+        IF @profesorId IS NOT NULL
         BEGIN
-            INSERT INTO [dbo].[RolePermissions] (role_id, permission_id)
-            SELECT @profesorId, id FROM [dbo].[Permissions] WHERE name = 'FORM_USER_MGMT';
+            IF NOT EXISTS (SELECT 1 FROM [dbo].[role_permissions] WHERE [role_id] = @profesorId AND [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_USER_MGMT'))
+            BEGIN
+                INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
+                SELECT @profesorId, id FROM [dbo].[permissions] WHERE name = 'FORM_USER_MGMT';
+            END;
+        END;
+
+        DECLARE @coordinadorId INT = (SELECT id FROM [dbo].[roles] WHERE name = 'Coordinador');
+        IF @coordinadorId IS NOT NULL
+        BEGIN
+            DELETE FROM [dbo].[role_permissions] WHERE [role_id] = @coordinadorId;
+            IF NOT EXISTS (SELECT 1 FROM [dbo].[users] WHERE [role_id] = @coordinadorId)
+            BEGIN
+                DELETE FROM [dbo].[roles] WHERE [id] = @coordinadorId;
+            END;
         END;
     END;
 
-    DECLARE @coordinadorId INT = (SELECT id FROM [dbo].[Roles] WHERE name = 'Coordinador');
-    IF @coordinadorId IS NOT NULL
+    IF OBJECT_ID('dbo.schema_versions', 'U') IS NOT NULL
     BEGIN
-        DELETE FROM [dbo].[RolePermissions] WHERE [role_id] = @coordinadorId;
-        IF NOT EXISTS (SELECT 1 FROM [dbo].[Users] WHERE [role_id] = @coordinadorId)
-        BEGIN
-            DELETE FROM [dbo].[Roles] WHERE [id] = @coordinadorId;
-        END;
-    END;
-
-    IF OBJECT_ID('dbo.SchemaVersions', 'U') IS NOT NULL
-    BEGIN
-        INSERT INTO [dbo].[SchemaVersions] (Version, ScriptName, AppliedAt)
+        INSERT INTO [dbo].[schema_versions] (version, script_name, applied_at)
         VALUES ('1.1.0-rollback', '04_v1.1.0_Rollback.sql', GETDATE());
     END;
 
