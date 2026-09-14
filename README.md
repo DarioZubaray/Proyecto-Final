@@ -30,8 +30,8 @@ Se destacan **cuatro** patrones de diseño:
 
 - **Composite** — `IRoleComponentBE`, `RoleCompositeBE` y `PermissionLeafBE` representan la jerarquía de roles/permisos como un árbol.
 - **Singleton / Multiton** — `ServiceLocatorBLL` (singleton de servicios) y `SessionManagerBLL` (multiton de sesiones, una por usuario).
-- **Decorator** — `ActivityLoggingDecorator` envuelve una actividad (`IActivity`/`BaseActivity`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
-- **Strategy** — `PasswordHasher` elige entre algoritmos de hash intercambiables (`BcryptPasswordStrategy` y `LegacySha256PasswordStrategy`) para el cifrado/verificación de contraseñas.
+- **Decorator** — `ActivityLoggingDecoratorBLL` envuelve una actividad (`IActivityLogEntryBE`/`ActivityLogEntryBE`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
+- **Strategy** — `PasswordHasherBLL` elige entre algoritmos de hash intercambiables (`BcryptPasswordStrategyBLL` y `LegacySha256PasswordStrategyBLL`) para el cifrado/verificación de contraseñas.
 
 Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Liskov, Interface Segregation y Dependency Inversion) — los patrones anteriores los materializan (p. ej. **Strategy** hace Open/Closed y facilita la inyección de dependencias) — todo documentado en el README del proyecto.
 
