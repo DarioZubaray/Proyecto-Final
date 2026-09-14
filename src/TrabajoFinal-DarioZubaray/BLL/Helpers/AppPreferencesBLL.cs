@@ -64,9 +64,9 @@ namespace BLL.Helpers
                 var data = new PreferencesData { Language = _language, Theme = _theme };
                 File.WriteAllText(_filePath, JsonSerializer.Serialize(data));
             }
-            catch
+            catch (Exception e)
             {
-                // Fallo al persistir; los valores quedan disponibles en memoria.
+                Console.WriteLine($"Something went wrong: {e.Message}");
             }
         }
         #endregion
@@ -95,8 +95,7 @@ namespace BLL.Helpers
 
         private static string BuildDefaultFilePath()
         {
-            string baseDirectory = Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData);
+            string baseDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             return Path.Combine(baseDirectory, AppFolder, FileName);
         }
 
@@ -125,9 +124,9 @@ namespace BLL.Helpers
                     _theme = string.IsNullOrWhiteSpace(data.Theme) ? DefaultTheme : data.Theme;
                 }
             }
-            catch
+            catch (Exception e)
             {
-                // Archivo corrupto o ilegible: se conservan los valores por defecto.
+                Console.WriteLine($"Something went wrong: {e.Message}");
             }
         }
 

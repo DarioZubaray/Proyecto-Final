@@ -95,7 +95,7 @@ namespace MPP.Tests
             {
                 connection.Open();
                 var cmd = new Microsoft.Data.SqlClient.SqlCommand(
-                    "INSERT INTO Roles (name) VALUES ('Vacio'); SELECT SCOPE_IDENTITY();", connection);
+                    "INSERT INTO roles (name) VALUES ('Vacio'); SELECT SCOPE_IDENTITY();", connection);
                 int newRoleId = System.Convert.ToInt32(cmd.ExecuteScalar());
 
                 List<PermissionBE> perms = _roleMPP.GetPermissionsByRoleId(newRoleId);

@@ -15,7 +15,7 @@ namespace BLL.Tests
         [TestMethod]
         public void BcryptStrategy_Verify_CorrectPassword_ReturnsTrue()
         {
-            var strategy = new BcryptPasswordStrategy();
+            var strategy = new BcryptPasswordStrategyBLL();
             string hash = strategy.Hash("password123");
 
             bool result = strategy.Verify("password123", hash);
@@ -26,7 +26,7 @@ namespace BLL.Tests
         [TestMethod]
         public void BcryptStrategy_Verify_WrongPassword_ReturnsFalse()
         {
-            var strategy = new BcryptPasswordStrategy();
+            var strategy = new BcryptPasswordStrategyBLL();
             string hash = strategy.Hash("password123");
 
             bool result = strategy.Verify("wrongpassword", hash);
@@ -37,7 +37,7 @@ namespace BLL.Tests
         [TestMethod]
         public void BcryptStrategy_Matches_OnNull_ReturnsFalse()
         {
-            var strategy = new BcryptPasswordStrategy();
+            var strategy = new BcryptPasswordStrategyBLL();
 
             Assert.IsFalse(strategy.Matches(null));
         }
@@ -47,7 +47,7 @@ namespace BLL.Tests
         [TestMethod]
         public void LegacyStrategy_Verify_CorrectPassword_ReturnsTrue()
         {
-            var strategy = new LegacySha256PasswordStrategy();
+            var strategy = new LegacySha256PasswordStrategyBLL();
             string legacyHash = ComputeSHA256("password123");
 
             bool result = strategy.Verify("password123", legacyHash);
@@ -58,7 +58,7 @@ namespace BLL.Tests
         [TestMethod]
         public void LegacyStrategy_Verify_WrongPassword_ReturnsFalse()
         {
-            var strategy = new LegacySha256PasswordStrategy();
+            var strategy = new LegacySha256PasswordStrategyBLL();
             string legacyHash = ComputeSHA256("password123");
 
             bool result = strategy.Verify("wrongpassword", legacyHash);
@@ -69,7 +69,7 @@ namespace BLL.Tests
         [TestMethod]
         public void LegacyStrategy_Matches_OnLegacyHash_ReturnsTrue()
         {
-            var strategy = new LegacySha256PasswordStrategy();
+            var strategy = new LegacySha256PasswordStrategyBLL();
             string legacyHash = ComputeSHA256("password123");
 
             Assert.IsTrue(strategy.Matches(legacyHash));
@@ -78,8 +78,8 @@ namespace BLL.Tests
         [TestMethod]
         public void LegacyStrategy_Matches_OnBcryptHash_ReturnsFalse()
         {
-            var strategy = new LegacySha256PasswordStrategy();
-            string bcryptHash = new BcryptPasswordStrategy().Hash("password123");
+            var strategy = new LegacySha256PasswordStrategyBLL();
+            string bcryptHash = new BcryptPasswordStrategyBLL().Hash("password123");
 
             Assert.IsFalse(strategy.Matches(bcryptHash));
         }
@@ -89,7 +89,7 @@ namespace BLL.Tests
         [TestMethod]
         public void PasswordHasher_Hash_IsVerifiableByBcrypt()
         {
-            var hasher = new PasswordHasher();
+            var hasher = new PasswordHasherBLL();
 
             string hash = hasher.Hash("password123");
 
@@ -99,7 +99,7 @@ namespace BLL.Tests
         [TestMethod]
         public void PasswordHasher_Verify_SelectsBcryptForBcryptHash()
         {
-            var hasher = new PasswordHasher();
+            var hasher = new PasswordHasherBLL();
             string hash = hasher.Hash("password123");
 
             bool result = hasher.Verify("password123", hash);
@@ -110,7 +110,7 @@ namespace BLL.Tests
         [TestMethod]
         public void PasswordHasher_Verify_SelectsLegacyForLegacyHash()
         {
-            var hasher = new PasswordHasher();
+            var hasher = new PasswordHasherBLL();
             string legacyHash = ComputeSHA256("password123");
 
             bool result = hasher.Verify("password123", legacyHash);
@@ -121,7 +121,7 @@ namespace BLL.Tests
         [TestMethod]
         public void PasswordHasher_Verify_NullHash_ThrowsArgumentNullException()
         {
-            var hasher = new PasswordHasher();
+            var hasher = new PasswordHasherBLL();
 
             Assert.ThrowsException<ArgumentNullException>(() => hasher.Verify("password", null));
         }
@@ -129,7 +129,7 @@ namespace BLL.Tests
         [TestMethod]
         public void PasswordHasher_Verify_EmptyHash_ThrowsArgumentException()
         {
-            var hasher = new PasswordHasher();
+            var hasher = new PasswordHasherBLL();
 
             Assert.ThrowsException<ArgumentException>(() => hasher.Verify("password", ""));
         }

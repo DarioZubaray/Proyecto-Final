@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BE.Entities;
 using BLL.Interfaces;
 using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Services
 {
@@ -26,20 +27,20 @@ namespace BLL.Services
         #region Registro de actividades (Decorator)
         public void LogFormAccess(int userId, string formName, string description = null)
         {
-            IActivity activity = new BaseActivity(userId, ActivityActions.FormAccess, formName, description);
-            new ActivityLoggingDecorator(activity, _activityMPP).Execute();
+            IActivityLogEntryBE activity = new ActivityLogEntryBE(userId, ActivityActions.FormAccess, formName, description);
+            new ActivityLoggingDecoratorBLL(activity, _activityMPP).Execute();
         }
 
         public void LogLogin(int userId, string description = null)
         {
-            IActivity activity = new BaseActivity(userId, ActivityActions.Login, null, description);
-            new ActivityLoggingDecorator(activity, _activityMPP).Execute();
+            IActivityLogEntryBE activity = new ActivityLogEntryBE(userId, ActivityActions.Login, null, description);
+            new ActivityLoggingDecoratorBLL(activity, _activityMPP).Execute();
         }
 
         public void LogLogout(int userId, string description = null)
         {
-            IActivity activity = new BaseActivity(userId, ActivityActions.Logout, null, description);
-            new ActivityLoggingDecorator(activity, _activityMPP).Execute();
+            IActivityLogEntryBE activity = new ActivityLogEntryBE(userId, ActivityActions.Logout, null, description);
+            new ActivityLoggingDecoratorBLL(activity, _activityMPP).Execute();
         }
         #endregion
 

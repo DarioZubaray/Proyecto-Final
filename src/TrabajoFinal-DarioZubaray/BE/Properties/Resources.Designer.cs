@@ -654,6 +654,24 @@ namespace BE.Properties {
             }
         }
         
+        public static string Main_MenuAcademic {
+            get {
+                return ResourceManager.GetString("Main_MenuAcademic", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuCourses {
+            get {
+                return ResourceManager.GetString("Main_MenuCourses", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuEnrollments {
+            get {
+                return ResourceManager.GetString("Main_MenuEnrollments", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Busca una cadena traducida similar a Gestión de Roles.
         /// </summary>
@@ -1047,6 +1065,948 @@ namespace BE.Properties {
         public static string About_CloseButton {
             get {
                 return ResourceManager.GetString("About_CloseButton", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_NewTitle {
+            get {
+                return ResourceManager.GetString("CourseForm_NewTitle", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_EditTitle {
+            get {
+                return ResourceManager.GetString("CourseForm_EditTitle", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_NameLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_NameLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_DescriptionLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_DescriptionLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_StartDateLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_StartDateLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_EndDateLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_EndDateLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_StartTimeLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_StartTimeLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_EndTimeLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_EndTimeLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ClassroomLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_ClassroomLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_AvailableTeachersLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_AvailableTeachersLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_AssignedTeachersLabel {
+            get {
+                return ResourceManager.GetString("CourseForm_AssignedTeachersLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_TeachersSection {
+            get {
+                return ResourceManager.GetString("CourseForm_TeachersSection", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_Save {
+            get {
+                return ResourceManager.GetString("CourseForm_Save", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_Cancel {
+            get {
+                return ResourceManager.GetString("CourseForm_Cancel", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_Activate {
+            get {
+                return ResourceManager.GetString("CourseForm_Activate", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_Deactivate {
+            get {
+                return ResourceManager.GetString("CourseForm_Deactivate", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_Add {
+            get {
+                return ResourceManager.GetString("CourseForm_Add", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_Remove {
+            get {
+                return ResourceManager.GetString("CourseForm_Remove", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_TimeIncomplete {
+            get {
+                return ResourceManager.GetString("CourseForm_TimeIncomplete", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_TimeInvalidFormat {
+            get {
+                return ResourceManager.GetString("CourseForm_TimeInvalidFormat", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_HoursRange {
+            get {
+                return ResourceManager.GetString("CourseForm_HoursRange", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_MinutesInvalid {
+            get {
+                return ResourceManager.GetString("CourseForm_MinutesInvalid", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_NameRequired {
+            get {
+                return ResourceManager.GetString("CourseForm_NameRequired", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_DatesInvalid {
+            get {
+                return ResourceManager.GetString("CourseForm_DatesInvalid", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_TimeRangeInvalid {
+            get {
+                return ResourceManager.GetString("CourseForm_TimeRangeInvalid", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ClassroomRequired {
+            get {
+                return ResourceManager.GetString("CourseForm_ClassroomRequired", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_TeacherRequired {
+            get {
+                return ResourceManager.GetString("CourseForm_TeacherRequired", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_TeacherOverlap {
+            get {
+                return ResourceManager.GetString("CourseForm_TeacherOverlap", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_CreatedSuccess {
+            get {
+                return ResourceManager.GetString("CourseForm_CreatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_UpdatedSuccess {
+            get {
+                return ResourceManager.GetString("CourseForm_UpdatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_SaveError {
+            get {
+                return ResourceManager.GetString("CourseForm_SaveError", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_DeactivateTitle {
+            get {
+                return ResourceManager.GetString("CourseForm_DeactivateTitle", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ActivateTitle {
+            get {
+                return ResourceManager.GetString("CourseForm_ActivateTitle", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_DeactivateConfirm {
+            get {
+                return ResourceManager.GetString("CourseForm_DeactivateConfirm", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ActivateConfirm {
+            get {
+                return ResourceManager.GetString("CourseForm_ActivateConfirm", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_DeactivatedSuccess {
+            get {
+                return ResourceManager.GetString("CourseForm_DeactivatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ReactivatedSuccess {
+            get {
+                return ResourceManager.GetString("CourseForm_ReactivatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_DeactivateError {
+            get {
+                return ResourceManager.GetString("CourseForm_DeactivateError", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ActivateError {
+            get {
+                return ResourceManager.GetString("CourseForm_ActivateError", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("CourseForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string CourseForm_ErrorTitle {
+            get {
+                return ResourceManager.GetString("CourseForm_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        public static string Day_Monday {
+            get {
+                return ResourceManager.GetString("Day_Monday", resourceCulture);
+            }
+        }
+        
+        public static string Day_Tuesday {
+            get {
+                return ResourceManager.GetString("Day_Tuesday", resourceCulture);
+            }
+        }
+        
+        public static string Day_Wednesday {
+            get {
+                return ResourceManager.GetString("Day_Wednesday", resourceCulture);
+            }
+        }
+        
+        public static string Day_Thursday {
+            get {
+                return ResourceManager.GetString("Day_Thursday", resourceCulture);
+            }
+        }
+        
+        public static string Day_Friday {
+            get {
+                return ResourceManager.GetString("Day_Friday", resourceCulture);
+            }
+        }
+        
+        public static string Day_Saturday {
+            get {
+                return ResourceManager.GetString("Day_Saturday", resourceCulture);
+            }
+        }
+        
+        public static string Day_Sunday {
+            get {
+                return ResourceManager.GetString("Day_Sunday", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_Title {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_AvailableCoursesLabel {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_AvailableCoursesLabel", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_MyEnrollmentsLabel {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_MyEnrollmentsLabel", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_EnrollButton {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_EnrollButton", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_UnenrollButton {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_UnenrollButton", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColId {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColId", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColCourse {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColCourse", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColClassroom {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColClassroom", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColDay {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColDay", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColStartTime {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColStartTime", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColEndTime {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColEndTime", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ColTeachers {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ColTeachers", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_SelectCourseToEnroll {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_SelectCourseToEnroll", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ConfirmEnrollTitle {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ConfirmEnrollTitle", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ConfirmEnrollMessage {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ConfirmEnrollMessage", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_EnrollSuccess {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_EnrollSuccess", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_EnrollError {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_EnrollError", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_SelectEnrollmentToUnenroll {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_SelectEnrollmentToUnenroll", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ConfirmUnenrollTitle {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ConfirmUnenrollTitle", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ConfirmUnenrollMessage {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ConfirmUnenrollMessage", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_UnenrollSuccess {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_UnenrollSuccess", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_UnenrollError {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_UnenrollError", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_SuccessTitle {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_SuccessTitle", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_ErrorTitle {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_InfoTitle {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_InfoTitle", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentForm_NoAssignment {
+            get {
+                return ResourceManager.GetString("EnrollmentForm_NoAssignment", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_Title {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_SearchLabel {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_SearchLabel", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_SearchButton {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColStudent {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColStudent", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColCourse {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColCourse", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColDay {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColDay", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColStartTime {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColStartTime", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColEndTime {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColEndTime", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColClassroom {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColClassroom", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ColEnrollDate {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ColEnrollDate", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_Title {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_SearchLabel {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_SearchLabel", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_SearchButton {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_NewButton {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_NewButton", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_EditButton {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_EditButton", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_DeleteButton {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_DeleteButton", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColId {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColId", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColName {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColName", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColDescription {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColDescription", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColClassroom {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColClassroom", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColStatus {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColStatus", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColStartDate {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColStartDate", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColEndDate {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColEndDate", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColDay {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColDay", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColStartTime {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColStartTime", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColEndTime {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColEndTime", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ColTeachers {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ColTeachers", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_StatusActive {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_StatusActive", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_StatusInactive {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_StatusInactive", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_NoClassroom {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_NoClassroom", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_NoAulasMessage {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_NoAulasMessage", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_SelectToEdit {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_SelectToEdit", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_SelectToDelete {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_SelectToDelete", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_CourseLoadError {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_CourseLoadError", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ConfirmDeleteTitle {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ConfirmDeleteTitle", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_ConfirmDeleteMessage {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_ConfirmDeleteMessage", resourceCulture);
+            }
+        }
+        
+        public static string CourseManagementForm_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("CourseManagementForm_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuAttendance {
+            get {
+                return ResourceManager.GetString("Main_MenuAttendance", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_Title {
+            get {
+                return ResourceManager.GetString("AttendanceForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_CourseLabel {
+            get {
+                return ResourceManager.GetString("AttendanceForm_CourseLabel", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_DateLabel {
+            get {
+                return ResourceManager.GetString("AttendanceForm_DateLabel", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_SearchButton {
+            get {
+                return ResourceManager.GetString("AttendanceForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_SaveButton {
+            get {
+                return ResourceManager.GetString("AttendanceForm_SaveButton", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_ColStudent {
+            get {
+                return ResourceManager.GetString("AttendanceForm_ColStudent", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_ColPresent {
+            get {
+                return ResourceManager.GetString("AttendanceForm_ColPresent", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_NoCourses {
+            get {
+                return ResourceManager.GetString("AttendanceForm_NoCourses", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_NoStudents {
+            get {
+                return ResourceManager.GetString("AttendanceForm_NoStudents", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_SaveSuccess {
+            get {
+                return ResourceManager.GetString("AttendanceForm_SaveSuccess", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_SaveError {
+            get {
+                return ResourceManager.GetString("AttendanceForm_SaveError", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("AttendanceForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_ErrorTitle {
+            get {
+                return ResourceManager.GetString("AttendanceForm_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_SelectCourse {
+            get {
+                return ResourceManager.GetString("AttendanceForm_SelectCourse", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_Unauthorized {
+            get {
+                return ResourceManager.GetString("AttendanceForm_Unauthorized", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceViewForm_Title {
+            get {
+                return ResourceManager.GetString("AttendanceViewForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuClassrooms {
+            get {
+                return ResourceManager.GetString("Main_MenuClassrooms", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_Title {
+            get {
+                return ResourceManager.GetString("ClassroomForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_NewTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_NewTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_EditTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_EditTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_NameLabel {
+            get {
+                return ResourceManager.GetString("ClassroomForm_NameLabel", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CapacityLabel {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CapacityLabel", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_SaveButton {
+            get {
+                return ResourceManager.GetString("ClassroomForm_SaveButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CancelButton {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CancelButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_NameRequired {
+            get {
+                return ResourceManager.GetString("ClassroomForm_NameRequired", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CapacityInvalid {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CapacityInvalid", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_CreatedSuccess {
+            get {
+                return ResourceManager.GetString("ClassroomForm_CreatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_UpdatedSuccess {
+            get {
+                return ResourceManager.GetString("ClassroomForm_UpdatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomForm_ErrorTitle {
+            get {
+                return ResourceManager.GetString("ClassroomForm_ErrorTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_Title {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SearchLabel {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SearchLabel", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SearchButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_NewButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_NewButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_EditButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_EditButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_DeleteButton {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_DeleteButton", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ColName {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ColName", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ColCapacity {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ColCapacity", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SelectToEdit {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SelectToEdit", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_SelectToDelete {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_SelectToDelete", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ConfirmDeleteTitle {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ConfirmDeleteTitle", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_ConfirmDeleteMessage {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_ConfirmDeleteMessage", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        public static string ClassroomManagementForm_InfoTitle {
+            get {
+                return ResourceManager.GetString("ClassroomManagementForm_InfoTitle", resourceCulture);
             }
         }
     }

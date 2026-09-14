@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BE.Composite;
 using BE.Entities;
 using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Services
 {

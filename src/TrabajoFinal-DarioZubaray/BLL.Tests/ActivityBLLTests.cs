@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using BE.Entities;
 using BLL.Services;
 using Moq;
-using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Tests
 {
@@ -53,8 +53,8 @@ namespace BLL.Tests
         [TestMethod]
         public void Decorator_ExecutesWrappedActivityThenSavesSingleLog()
         {
-            IActivity activity = new TestActivity(5, "FORM_ACCESS", "RoleManagementForm");
-            IActivity decorated = new ActivityLoggingDecorator(activity, _mockActivityMPP.Object);
+            IActivityLogEntryBE activity = new TestActivity(5, "FORM_ACCESS", "RoleManagementForm");
+            IActivityLogEntryBE decorated = new ActivityLoggingDecoratorBLL(activity, _mockActivityMPP.Object);
 
             bool result = decorated.Execute();
 
@@ -112,7 +112,7 @@ namespace BLL.Tests
         }
     }
 
-    internal class TestActivity : IActivity
+    internal class TestActivity : IActivityLogEntryBE
     {
         public TestActivity(int userId, string action, string formName)
         {

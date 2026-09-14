@@ -30,8 +30,8 @@ Se destacan **cuatro** patrones de diseño:
 
 - **Composite** — `IRoleComponentBE`, `RoleCompositeBE` y `PermissionLeafBE` representan la jerarquía de roles/permisos como un árbol.
 - **Singleton / Multiton** — `ServiceLocatorBLL` (singleton de servicios) y `SessionManagerBLL` (multiton de sesiones, una por usuario).
-- **Decorator** — `ActivityLoggingDecorator` envuelve una actividad (`IActivity`/`BaseActivity`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
-- **Strategy** — `PasswordHasher` elige entre algoritmos de hash intercambiables (`BcryptPasswordStrategy` y `LegacySha256PasswordStrategy`) para el cifrado/verificación de contraseñas.
+- **Decorator** — `ActivityLoggingDecoratorBLL` envuelve una actividad (`IActivityLogEntryBE`/`ActivityLogEntryBE`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
+- **Strategy** — `PasswordHasherBLL` elige entre algoritmos de hash intercambiables (`BcryptPasswordStrategyBLL` y `LegacySha256PasswordStrategyBLL`) para el cifrado/verificación de contraseñas.
 
 Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Liskov, Interface Segregation y Dependency Inversion) — los patrones anteriores los materializan (p. ej. **Strategy** hace Open/Closed y facilita la inyección de dependencias) — todo documentado en el README del proyecto.
 
@@ -45,10 +45,12 @@ Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, má
 
 Ejecutar los scripts en orden:
 
-1. `00_PurgeDatabase.sql` — elimina la base si existe (reinicialización).
-2. `01_CreateTables.sql` — crea el esquema (tablas, claves, relaciones y jerarquía de roles).
-3. `02_SeedData.sql` — carga datos iniciales (roles, permisos y usuarios de prueba).
-4. `03_Queries.sql` — consultas de ejemplo / verificación.
+1. `00_v0.0.1_PurgeDatabase.sql` — elimina todas las tablas (reinicialización).
+2. `01_v1.0.0_CreateTables.sql` — crea el esquema base (Roles, Permissions, Users, etc.).
+3. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, 24 usuarios.
+4. `03_v1.1.0_AulasCursosInscripciones.sql` — migración v1.1.0: crea Aulas, Cursos, CursoDocentes, CursoAlumnos, permisos y rol Coordinador.
+5. `04_v1.1.0_Rollback.sql` — (opcional) deshace la migración v1.1.0.
+6. `05_v1.1.0_Queries.sql` — consultas de ejemplo / verificación.
 
 #### Datos de prueba
 
@@ -56,7 +58,15 @@ Ejecutar los scripts en orden:
 |---------|-----------|-----|
 | `admin` | `123` | Admin (todos los permisos) |
 | `dario` | `123` | Admin (todos los permisos) |
-| `pepe`  | `123` | Alumno (solo quejas) |
+| `coord_maria` | `123` | Coordinador (ABMs) |
+| `coord_carlos` | `123` | Coordinador (ABMs) |
+| `coord_laura` | `123` | Coordinador (ABMs) |
+| `prof_garcia` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_lopez` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_martinez` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_rodriguez` | `123` | Profesor (cursos, quejas, reportes) |
+| `prof_fernandez` | `123` | Profesor (cursos, quejas, reportes) |
+| `alumno_perez` a `alumno_soto` | `123` | Alumno (solo quejas) |
 
 ### Diagramas (`docs/mermaid-live/`)
 

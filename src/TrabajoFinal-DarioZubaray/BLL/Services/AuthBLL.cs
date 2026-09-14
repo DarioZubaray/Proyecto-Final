@@ -5,7 +5,7 @@ using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
-using MPP;
+using MPP.Interfaces;
 
 namespace BLL.Services
 {

@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
+
 using DAL;
 using BE.Entities;
+using MPP.Interfaces;
 
 namespace MPP
 {
@@ -30,7 +32,7 @@ namespace MPP
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
                                    language, theme, role_id
-                            FROM Users
+                            FROM users
                             WHERE user_name = @userName";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -43,7 +45,7 @@ namespace MPP
 
         public bool UpdateLastUpdate(int userId, DateTime lastUpdate)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET last_update = @lastUpdate
                             WHERE id = @id";
 
@@ -58,7 +60,7 @@ namespace MPP
 
         public bool UpdateRetries(int userId, int retriesCount)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET retries_count = @retriesCount
                             WHERE id = @id";
 
@@ -73,7 +75,7 @@ namespace MPP
 
         public bool Deactivate(int userId)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET is_active = 0, retries_count = 3
                             WHERE id = @id";
 
@@ -87,7 +89,7 @@ namespace MPP
 
         public bool Delete(UserBE user)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET is_active = 0
                             WHERE id = @id";
 
@@ -114,7 +116,7 @@ namespace MPP
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
                                    language, theme, role_id
-                            FROM Users
+                            FROM users
                             WHERE id = @id";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -130,7 +132,7 @@ namespace MPP
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
                                    language, theme, role_id
-                            FROM Users";
+                            FROM users";
 
             return FindMany(query);
         }
@@ -140,7 +142,7 @@ namespace MPP
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
                                    language, theme, role_id
-                            FROM Users
+                            FROM users
                             WHERE user_name LIKE @userName";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -152,7 +154,7 @@ namespace MPP
         }
         public int CountByRoleId(int roleId)
         {
-            string query = @"SELECT COUNT(*) FROM Users WHERE role_id = @roleId";
+            string query = @"SELECT COUNT(*) FROM users WHERE role_id = @roleId";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@roleId", roleId)
@@ -202,7 +204,7 @@ namespace MPP
 
         private bool Insert(UserBE user)
         {
-            string query = @"INSERT INTO Users
+            string query = @"INSERT INTO users
                                 (user_name, password_hash, is_active,
                                  retries_count, last_update, created_at, language, theme, role_id)
                             VALUES
@@ -217,7 +219,7 @@ namespace MPP
 
         private bool Update(UserBE user)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET user_name = @userName,
                                 password_hash = @passwordHash,
                                 is_active = @isActive,
@@ -239,7 +241,7 @@ namespace MPP
 
         public bool UpdateLanguage(int userId, string language)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET language = @language
                             WHERE id = @id";
 
@@ -254,7 +256,7 @@ namespace MPP
 
         public bool UpdateTheme(int userId, string theme)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET theme = @theme
                             WHERE id = @id";
 
@@ -269,7 +271,7 @@ namespace MPP
 
         public bool UpdatePassword(int userId, string passwordHash)
         {
-            string query = @"UPDATE Users
+            string query = @"UPDATE users
                             SET password_hash = @passwordHash
                             WHERE id = @id";
 

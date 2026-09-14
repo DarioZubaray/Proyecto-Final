@@ -1,0 +1,53 @@
+=============================
+Usernames
+=============================
+Administrador
+	admin|admin
+	
+Coordinador
+	coord_maria|123
+	coord_carlos|123
+	coord_laura|123
+	
+Profesor
+	prof_garcia|123
+	prof_lopez|123
+	prof_martinez|123
+	prof_rodriguez|123
+	prof_fernandez|123
+
+Alumno
+	alumno_perez|123
+	alumno_lopez|123
+=============================
+Casos de usos
+=============================
+Administrador
+	todos
+
+User
+	Login
+	Preferencias (Cambiar contraseña | Cambiar tema)
+	Ver registro actividad
+	Logout
+	Ver acerca de
+	
+Coordinador
+	Gestionar Usuario (Buscar | Crear | Editar | Eliminar)
+	Gestionar Roles (Crear rol | Asignar permisos | Eliminar rol)
+	Gestionar Aulas (Buscar | Crear | Editar | Eliminar)
+	Gestionar Curso (Buscar | Crear | Editar | Eliminar)
+	Ver inscripciones
+	
+Profesor
+	Gestionar Usuario (Buscar | Crear | Editar | Eliminar)
+	Gestionar Roles (Crear rol | Asignar permisos | Eliminar rol)
+	Gestionar Aulas (Buscar | Crear | Editar | Eliminar)
+	Gestionar Curso (Buscar | Crear | Editar | Eliminar)
+	Ver inscripciones
+	Registrar Asistencia
+
+Alumno
+	Inscribirse a curso
+
+

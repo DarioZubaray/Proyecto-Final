@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+
+using BE.Entities;
+
+namespace MPP.Interfaces
+{
+    public interface IUserMPP
+    {
+        UserBE GetByUserName(string userName);
+        bool UpdateLastUpdate(int userId, DateTime lastUpdate);
+        bool UpdateRetries(int userId, int retriesCount);
+        bool Deactivate(int userId);
+        bool Delete(UserBE user);
+        bool Save(UserBE user);
+        UserBE FindById(UserBE user);
+        List<UserBE> FindAll();
+        List<UserBE> FindByUserName(string userName);
+        bool UpdateLanguage(int userId, string language);
+        bool UpdateTheme(int userId, string theme);
+        bool UpdatePassword(int userId, string passwordHash);
+        int CountByRoleId(int roleId);
+        bool TestConnection();
+    }
+}

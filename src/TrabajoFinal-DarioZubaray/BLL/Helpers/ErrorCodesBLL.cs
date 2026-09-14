@@ -32,6 +32,8 @@ namespace BLL.Helpers
         {
             public const string RoleHasUsers = "BIZ-001";
             public const string InvalidCurrentPassword = "BIZ-002";
+            public const string TraslapeHorario = "BIZ-003";
+            public const string YaInscripto = "BIZ-004";
         }
 
         public static class General

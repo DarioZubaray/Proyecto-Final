@@ -262,7 +262,7 @@ namespace MPP.Tests
             {
                 connection.Open();
                 var cmd = new Microsoft.Data.SqlClient.SqlCommand(
-                    @"INSERT INTO Users (user_name, password_hash, is_active, retries_count, last_update, created_at, language, theme, role_id)
+                    @"INSERT INTO users (user_name, password_hash, is_active, retries_count, last_update, created_at, language, theme, role_id)
                       VALUES ('nullexisting', 'hash', 1, 0, GETDATE(), GETDATE(), 'es', 'CustomTheme', NULL);
                       SELECT SCOPE_IDENTITY();", connection);
                 cmd.ExecuteScalar();

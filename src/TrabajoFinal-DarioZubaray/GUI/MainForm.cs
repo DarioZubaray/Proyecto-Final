@@ -47,6 +47,11 @@ namespace TrabajoFinal_DarioZubaray
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
             rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
+            académicoToolStripMenuItem.Text = Resources.Main_MenuAcademic;
+            cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
+            inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
+            asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
+            aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
@@ -59,6 +64,18 @@ namespace TrabajoFinal_DarioZubaray
                 && _session.HasPermission("FORM_USER_MGMT");
             rolesToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_ROLE_MGMT");
+            aulasToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_CURSO_MGMT");
+
+            bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
+            bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
+            bool canRegisterAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
+            bool canViewAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_VIEW");
+
+            académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance || canViewAttendance;
+            cursosToolStripMenuItem.Visible = canManageCourses;
+            inscripcionesToolStripMenuItem.Visible = canViewEnrollments;
+            asistenciaToolStripMenuItem.Visible = canRegisterAttendance || canViewAttendance;
         }
 
         private void UpdateFooter()
@@ -147,6 +164,70 @@ namespace TrabajoFinal_DarioZubaray
                 MdiParent = this
             };
             form.Show();
+        }
+
+        private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("ClassroomManagementForm");
+            var form = new ClassroomManagementForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
+        private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("CourseManagementForm");
+            var form = new CourseManagementForm(_user)
+            {
+                MdiParent = this
+            };
+            form.Show();
+        }
+
+        private void inscripcionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_user.RoleId == 3)
+            {
+                LogFormAccess("EnrollmentForm");
+                var form = new EnrollmentForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
+            else
+            {
+                LogFormAccess("EnrollmentManagementForm");
+                var form = new EnrollmentManagementForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
+        }
+
+        private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_session.HasPermission("FORM_ASISTENCIA_MGMT"))
+            {
+                LogFormAccess("AttendanceForm");
+                var form = new AttendanceForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
+            else if (_session.HasPermission("FORM_ASISTENCIA_VIEW"))
+            {
+                LogFormAccess("AttendanceViewForm");
+                var form = new AttendanceViewForm(_user)
+                {
+                    MdiParent = this
+                };
+                form.Show();
+            }
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)

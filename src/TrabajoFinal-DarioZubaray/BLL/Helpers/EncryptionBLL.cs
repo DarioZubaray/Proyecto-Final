@@ -7,12 +7,12 @@ namespace BLL.Helpers
         #region Métodos
         public static string HashPassword(string password)
         {
-            return PasswordHasher.Default.Hash(password);
+            return PasswordHasherBLL.Default.Hash(password);
         }
 
         public static bool VerifyPassword(string password, string hashedPassword)
         {
-            return PasswordHasher.Default.Verify(password, hashedPassword);
+            return PasswordHasherBLL.Default.Verify(password, hashedPassword);
         }
         #endregion
     }

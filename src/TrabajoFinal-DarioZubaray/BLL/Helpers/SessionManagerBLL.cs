@@ -9,8 +9,7 @@ namespace BLL.Helpers
     public class SessionManagerBLL
     {
         #region Propiedades
-        private static Dictionary<int, SessionManagerBLL> _instances
-            = new Dictionary<int, SessionManagerBLL>();
+        private static Dictionary<int, SessionManagerBLL> _instances = new Dictionary<int, SessionManagerBLL>();
 
         public UserBE User { get; private set; }
         public RoleCompositeBE RoleTree { get; private set; }

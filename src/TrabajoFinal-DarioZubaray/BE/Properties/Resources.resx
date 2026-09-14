@@ -256,6 +256,15 @@
   <data name="Main_MenuRoles" xml:space="preserve">
     <value>Roles</value>
   </data>
+  <data name="Main_MenuAcademic" xml:space="preserve">
+    <value>Académico</value>
+  </data>
+  <data name="Main_MenuCourses" xml:space="preserve">
+    <value>Cursos</value>
+  </data>
+  <data name="Main_MenuEnrollments" xml:space="preserve">
+    <value>Inscripciones</value>
+  </data>
   <data name="RoleManagement_Title" xml:space="preserve">
     <value>Gestión de Roles</value>
   </data>
@@ -387,5 +396,476 @@
   </data>
   <data name="About_CloseButton" xml:space="preserve">
     <value>Cerrar</value>
+  </data>
+  <data name="CourseForm_NewTitle" xml:space="preserve">
+    <value>Nuevo Curso</value>
+  </data>
+  <data name="CourseForm_EditTitle" xml:space="preserve">
+    <value>Editar Curso</value>
+  </data>
+  <data name="CourseForm_NameLabel" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="CourseForm_DescriptionLabel" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="CourseForm_StartDateLabel" xml:space="preserve">
+    <value>Fecha Inicio</value>
+  </data>
+  <data name="CourseForm_EndDateLabel" xml:space="preserve">
+    <value>Fecha Fin</value>
+  </data>
+  <data name="CourseForm_StartTimeLabel" xml:space="preserve">
+    <value>Hora Inicio</value>
+  </data>
+  <data name="CourseForm_EndTimeLabel" xml:space="preserve">
+    <value>Hora Fin</value>
+  </data>
+  <data name="CourseForm_ClassroomLabel" xml:space="preserve">
+    <value>Aula</value>
+  </data>
+  <data name="CourseForm_AvailableTeachersLabel" xml:space="preserve">
+    <value>Disponibles</value>
+  </data>
+  <data name="CourseForm_AssignedTeachersLabel" xml:space="preserve">
+    <value>Asignados</value>
+  </data>
+  <data name="CourseForm_TeachersSection" xml:space="preserve">
+    <value>Docentes</value>
+  </data>
+  <data name="CourseForm_Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="CourseForm_Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="CourseForm_Activate" xml:space="preserve">
+    <value>Inactivar</value>
+  </data>
+  <data name="CourseForm_Deactivate" xml:space="preserve">
+    <value>Reactivar</value>
+  </data>
+  <data name="CourseForm_Add" xml:space="preserve">
+    <value>Agregar &gt;</value>
+  </data>
+  <data name="CourseForm_Remove" xml:space="preserve">
+    <value>&lt; Quitar</value>
+  </data>
+  <data name="CourseForm_TimeIncomplete" xml:space="preserve">
+    <value>Debe completar el horario.</value>
+  </data>
+  <data name="CourseForm_TimeInvalidFormat" xml:space="preserve">
+    <value>Formato de horario inválido.</value>
+  </data>
+  <data name="CourseForm_HoursRange" xml:space="preserve">
+    <value>Las horas deben estar entre 00 y 23.</value>
+  </data>
+  <data name="CourseForm_MinutesInvalid" xml:space="preserve">
+    <value>Los minutos deben ser 00, 15, 30 o 45.</value>
+  </data>
+  <data name="CourseForm_NameRequired" xml:space="preserve">
+    <value>El nombre es obligatorio.</value>
+  </data>
+  <data name="CourseForm_DatesInvalid" xml:space="preserve">
+    <value>La fecha de inicio debe ser anterior a la fecha de fin.</value>
+  </data>
+  <data name="CourseForm_TimeRangeInvalid" xml:space="preserve">
+    <value>La hora de inicio debe ser anterior a la hora de fin.</value>
+  </data>
+  <data name="CourseForm_ClassroomRequired" xml:space="preserve">
+    <value>Debe seleccionar un aula.</value>
+  </data>
+  <data name="CourseForm_TeacherRequired" xml:space="preserve">
+    <value>Debe asignar al menos un docente.</value>
+  </data>
+  <data name="CourseForm_TeacherOverlap" xml:space="preserve">
+    <value>Uno o más docentes tienen un curso asignado en el mismo día y horario.</value>
+  </data>
+  <data name="CourseForm_CreatedSuccess" xml:space="preserve">
+    <value>Curso creado exitosamente.</value>
+  </data>
+  <data name="CourseForm_UpdatedSuccess" xml:space="preserve">
+    <value>Curso modificado exitosamente.</value>
+  </data>
+  <data name="CourseForm_SaveError" xml:space="preserve">
+    <value>Error al guardar el curso: {0}</value>
+  </data>
+  <data name="CourseForm_DeactivateTitle" xml:space="preserve">
+    <value>Confirmar inactivación</value>
+  </data>
+  <data name="CourseForm_ActivateTitle" xml:space="preserve">
+    <value>Confirmar reactivación</value>
+  </data>
+  <data name="CourseForm_DeactivateConfirm" xml:space="preserve">
+    <value>¿Está seguro que desea inactivar el curso '{0}'?</value>
+  </data>
+  <data name="CourseForm_ActivateConfirm" xml:space="preserve">
+    <value>¿Está seguro que desea reactivar el curso '{0}'?</value>
+  </data>
+  <data name="CourseForm_DeactivatedSuccess" xml:space="preserve">
+    <value>Curso inactivado exitosamente.</value>
+  </data>
+  <data name="CourseForm_ReactivatedSuccess" xml:space="preserve">
+    <value>Curso reactivado exitosamente.</value>
+  </data>
+  <data name="CourseForm_DeactivateError" xml:space="preserve">
+    <value>Error al inactivar el curso: {0}</value>
+  </data>
+  <data name="CourseForm_ActivateError" xml:space="preserve">
+    <value>Error al reactivar el curso: {0}</value>
+  </data>
+  <data name="CourseForm_ValidationTitle" xml:space="preserve">
+    <value>Validación</value>
+  </data>
+  <data name="CourseForm_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Day_Monday" xml:space="preserve">
+    <value>Lunes</value>
+  </data>
+  <data name="Day_Tuesday" xml:space="preserve">
+    <value>Martes</value>
+  </data>
+  <data name="Day_Wednesday" xml:space="preserve">
+    <value>Miércoles</value>
+  </data>
+  <data name="Day_Thursday" xml:space="preserve">
+    <value>Jueves</value>
+  </data>
+  <data name="Day_Friday" xml:space="preserve">
+    <value>Viernes</value>
+  </data>
+  <data name="Day_Saturday" xml:space="preserve">
+    <value>Sábado</value>
+  </data>
+  <data name="Day_Sunday" xml:space="preserve">
+    <value>Domingo</value>
+  </data>
+  <data name="EnrollmentForm_Title" xml:space="preserve">
+    <value>Mis Inscripciones</value>
+  </data>
+  <data name="EnrollmentForm_AvailableCoursesLabel" xml:space="preserve">
+    <value>Cursos Disponibles:</value>
+  </data>
+  <data name="EnrollmentForm_MyEnrollmentsLabel" xml:space="preserve">
+    <value>Mis Inscripciones:</value>
+  </data>
+  <data name="EnrollmentForm_EnrollButton" xml:space="preserve">
+    <value>Inscribirse</value>
+  </data>
+  <data name="EnrollmentForm_UnenrollButton" xml:space="preserve">
+    <value>Desuscribirse</value>
+  </data>
+  <data name="EnrollmentForm_ColId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="EnrollmentForm_ColCourse" xml:space="preserve">
+    <value>Curso</value>
+  </data>
+  <data name="EnrollmentForm_ColClassroom" xml:space="preserve">
+    <value>Aula</value>
+  </data>
+  <data name="EnrollmentForm_ColDay" xml:space="preserve">
+    <value>Día</value>
+  </data>
+  <data name="EnrollmentForm_ColStartTime" xml:space="preserve">
+    <value>Hora Inicio</value>
+  </data>
+  <data name="EnrollmentForm_ColEndTime" xml:space="preserve">
+    <value>Hora Fin</value>
+  </data>
+  <data name="EnrollmentForm_ColTeachers" xml:space="preserve">
+    <value>Docentes</value>
+  </data>
+  <data name="EnrollmentForm_SelectCourseToEnroll" xml:space="preserve">
+    <value>Seleccione un curso para inscribirse.</value>
+  </data>
+  <data name="EnrollmentForm_ConfirmEnrollTitle" xml:space="preserve">
+    <value>Confirmar inscripción</value>
+  </data>
+  <data name="EnrollmentForm_ConfirmEnrollMessage" xml:space="preserve">
+    <value>¿Desea inscribirse en el curso '{0}'?</value>
+  </data>
+  <data name="EnrollmentForm_EnrollSuccess" xml:space="preserve">
+    <value>Inscripción realizada exitosamente.</value>
+  </data>
+  <data name="EnrollmentForm_EnrollError" xml:space="preserve">
+    <value>Error al inscribirse: {0}</value>
+  </data>
+  <data name="EnrollmentForm_SelectEnrollmentToUnenroll" xml:space="preserve">
+    <value>Seleccione una inscripción para desuscribirse.</value>
+  </data>
+  <data name="EnrollmentForm_ConfirmUnenrollTitle" xml:space="preserve">
+    <value>Confirmar desuscripción</value>
+  </data>
+  <data name="EnrollmentForm_ConfirmUnenrollMessage" xml:space="preserve">
+    <value>¿Desea desuscribirse del curso '{0}'?</value>
+  </data>
+  <data name="EnrollmentForm_UnenrollSuccess" xml:space="preserve">
+    <value>Desuscripción realizada exitosamente.</value>
+  </data>
+  <data name="EnrollmentForm_UnenrollError" xml:space="preserve">
+    <value>Error al desuscribirse: {0}</value>
+  </data>
+  <data name="EnrollmentForm_SuccessTitle" xml:space="preserve">
+    <value>Éxito</value>
+  </data>
+  <data name="EnrollmentForm_ValidationTitle" xml:space="preserve">
+    <value>Error de validación</value>
+  </data>
+  <data name="EnrollmentForm_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="EnrollmentForm_InfoTitle" xml:space="preserve">
+    <value>Aviso</value>
+  </data>
+  <data name="EnrollmentForm_NoAssignment" xml:space="preserve">
+    <value>Sin asignar</value>
+  </data>
+  <data name="EnrollmentManagementForm_Title" xml:space="preserve">
+    <value>Gestión de Inscripciones</value>
+  </data>
+  <data name="EnrollmentManagementForm_SearchLabel" xml:space="preserve">
+    <value>Buscar alumno/curso:</value>
+  </data>
+  <data name="EnrollmentManagementForm_SearchButton" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColStudent" xml:space="preserve">
+    <value>Alumno</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColCourse" xml:space="preserve">
+    <value>Curso</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColDay" xml:space="preserve">
+    <value>Día</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColStartTime" xml:space="preserve">
+    <value>Hora Inicio</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColEndTime" xml:space="preserve">
+    <value>Hora Fin</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColClassroom" xml:space="preserve">
+    <value>Aula</value>
+  </data>
+  <data name="EnrollmentManagementForm_ColEnrollDate" xml:space="preserve">
+    <value>Fecha Inscripción</value>
+  </data>
+  <data name="CourseManagementForm_Title" xml:space="preserve">
+    <value>Gestión de Cursos</value>
+  </data>
+  <data name="CourseManagementForm_SearchLabel" xml:space="preserve">
+    <value>Nombre del curso:</value>
+  </data>
+  <data name="CourseManagementForm_SearchButton" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="CourseManagementForm_NewButton" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="CourseManagementForm_EditButton" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="CourseManagementForm_DeleteButton" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="CourseManagementForm_ColId" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="CourseManagementForm_ColName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="CourseManagementForm_ColDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="CourseManagementForm_ColClassroom" xml:space="preserve">
+    <value>Aula</value>
+  </data>
+  <data name="CourseManagementForm_ColStatus" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="CourseManagementForm_ColStartDate" xml:space="preserve">
+    <value>Fecha Inicio</value>
+  </data>
+  <data name="CourseManagementForm_ColEndDate" xml:space="preserve">
+    <value>Fecha Fin</value>
+  </data>
+  <data name="CourseManagementForm_ColDay" xml:space="preserve">
+    <value>Día</value>
+  </data>
+  <data name="CourseManagementForm_ColStartTime" xml:space="preserve">
+    <value>Hora Inicio</value>
+  </data>
+  <data name="CourseManagementForm_ColEndTime" xml:space="preserve">
+    <value>Hora Fin</value>
+  </data>
+  <data name="CourseManagementForm_ColTeachers" xml:space="preserve">
+    <value>Docentes</value>
+  </data>
+  <data name="CourseManagementForm_StatusActive" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="CourseManagementForm_StatusInactive" xml:space="preserve">
+    <value>Inactivo</value>
+  </data>
+  <data name="CourseManagementForm_NoClassroom" xml:space="preserve">
+    <value>Sin asignar</value>
+  </data>
+  <data name="CourseManagementForm_NoAulasMessage" xml:space="preserve">
+    <value>No hay aulas creadas. Cree un aula primero para poder gestionar cursos.</value>
+  </data>
+  <data name="CourseManagementForm_SelectToEdit" xml:space="preserve">
+    <value>Seleccione un curso para editar.</value>
+  </data>
+  <data name="CourseManagementForm_SelectToDelete" xml:space="preserve">
+    <value>Seleccione un curso para eliminar.</value>
+  </data>
+  <data name="CourseManagementForm_CourseLoadError" xml:space="preserve">
+    <value>No se pudo cargar el curso.</value>
+  </data>
+  <data name="CourseManagementForm_ConfirmDeleteTitle" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="CourseManagementForm_ConfirmDeleteMessage" xml:space="preserve">
+    <value>¿Está seguro que desea eliminar el curso '{0}'?</value>
+  </data>
+  <data name="CourseManagementForm_DeleteSuccess" xml:space="preserve">
+    <value>Curso eliminado exitosamente.</value>
+  </data>
+  <data name="Main_MenuAttendance" xml:space="preserve">
+    <value>Asistencia</value>
+  </data>
+  <data name="AttendanceForm_Title" xml:space="preserve">
+    <value>Registrar Asistencia</value>
+  </data>
+  <data name="AttendanceForm_CourseLabel" xml:space="preserve">
+    <value>Curso:</value>
+  </data>
+  <data name="AttendanceForm_DateLabel" xml:space="preserve">
+    <value>Fecha:</value>
+  </data>
+  <data name="AttendanceForm_SearchButton" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="AttendanceForm_SaveButton" xml:space="preserve">
+    <value>Guardar Asistencia</value>
+  </data>
+  <data name="AttendanceForm_ColStudent" xml:space="preserve">
+    <value>Alumno</value>
+  </data>
+  <data name="AttendanceForm_ColPresent" xml:space="preserve">
+    <value>Presente</value>
+  </data>
+  <data name="AttendanceForm_NoCourses" xml:space="preserve">
+    <value>No tiene cursos asignados.</value>
+  </data>
+  <data name="AttendanceForm_NoStudents" xml:space="preserve">
+    <value>No hay alumnos inscritos en este curso.</value>
+  </data>
+  <data name="AttendanceForm_SaveSuccess" xml:space="preserve">
+    <value>Asistencia guardada exitosamente.</value>
+  </data>
+  <data name="AttendanceForm_SaveError" xml:space="preserve">
+    <value>Error al guardar la asistencia: {0}</value>
+  </data>
+  <data name="AttendanceForm_ValidationTitle" xml:space="preserve">
+    <value>Validación</value>
+  </data>
+  <data name="AttendanceForm_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="AttendanceForm_SelectCourse" xml:space="preserve">
+    <value>Debe seleccionar un curso.</value>
+  </data>
+  <data name="AttendanceForm_Unauthorized" xml:space="preserve">
+    <value>No tiene permiso para registrar asistencia en este curso.</value>
+  </data>
+  <data name="Main_MenuClassrooms" xml:space="preserve">
+    <value>Aulas</value>
+  </data>
+  <data name="ClassroomForm_Title" xml:space="preserve">
+    <value>Aula</value>
+  </data>
+  <data name="ClassroomForm_NewTitle" xml:space="preserve">
+    <value>Nueva Aula</value>
+  </data>
+  <data name="ClassroomForm_EditTitle" xml:space="preserve">
+    <value>Editar Aula</value>
+  </data>
+  <data name="ClassroomForm_NameLabel" xml:space="preserve">
+    <value>Nombre:</value>
+  </data>
+  <data name="ClassroomForm_CapacityLabel" xml:space="preserve">
+    <value>Capacidad:</value>
+  </data>
+  <data name="ClassroomForm_SaveButton" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="ClassroomForm_CancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="ClassroomForm_NameRequired" xml:space="preserve">
+    <value>El nombre es obligatorio.</value>
+  </data>
+  <data name="ClassroomForm_CapacityInvalid" xml:space="preserve">
+    <value>La capacidad debe ser mayor a 0.</value>
+  </data>
+  <data name="ClassroomForm_CreatedSuccess" xml:space="preserve">
+    <value>Aula creada exitosamente.</value>
+  </data>
+  <data name="ClassroomForm_UpdatedSuccess" xml:space="preserve">
+    <value>Aula modificada exitosamente.</value>
+  </data>
+  <data name="ClassroomForm_ValidationTitle" xml:space="preserve">
+    <value>Validación</value>
+  </data>
+  <data name="ClassroomForm_ErrorTitle" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ClassroomManagementForm_Title" xml:space="preserve">
+    <value>Gestión de Aulas</value>
+  </data>
+  <data name="ClassroomManagementForm_SearchLabel" xml:space="preserve">
+    <value>Nombre del aula:</value>
+  </data>
+  <data name="ClassroomManagementForm_SearchButton" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="ClassroomManagementForm_NewButton" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="ClassroomManagementForm_EditButton" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="ClassroomManagementForm_DeleteButton" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="ClassroomManagementForm_ColName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="ClassroomManagementForm_ColCapacity" xml:space="preserve">
+    <value>Capacidad</value>
+  </data>
+  <data name="ClassroomManagementForm_SelectToEdit" xml:space="preserve">
+    <value>Seleccione un aula para editar.</value>
+  </data>
+  <data name="ClassroomManagementForm_SelectToDelete" xml:space="preserve">
+    <value>Seleccione un aula para eliminar.</value>
+  </data>
+  <data name="ClassroomManagementForm_ConfirmDeleteTitle" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="ClassroomManagementForm_ConfirmDeleteMessage" xml:space="preserve">
+    <value>¿Está seguro que desea eliminar el aula '{0}'?</value>
+  </data>
+  <data name="ClassroomManagementForm_DeleteSuccess" xml:space="preserve">
+    <value>Aula eliminada exitosamente.</value>
+  </data>
+  <data name="ClassroomManagementForm_InfoTitle" xml:space="preserve">
+    <value>Aviso</value>
+  </data>
+  <data name="AttendanceViewForm_Title" xml:space="preserve">
+    <value>Ver Asistencia</value>
   </data>
 </root>
