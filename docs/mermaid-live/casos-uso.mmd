@@ -7,10 +7,28 @@ graph TB
 
     UC1[Login]
     UC2[Logout]
+    UC3[Gestionar Usuarios]
+    UC4[Gestionar Roles]
+    UC5[Gestionar Aulas]
+    UC6[Gestionar Cursos]
+    UC7[Gestionar Inscripciones]
+    UC8[Registrar Asistencia]
+    UC9[Ver Historial]
+    UC10[Cambiar Contrasena]
+    UC11[Preferencias]
 
     subgraph "Academic App"
         UC1
         UC2
+        UC3
+        UC4
+        UC5
+        UC6
+        UC7
+        UC8
+        UC9
+        UC10
+        UC11
     end
 
     Coordinador --> Usuario
@@ -19,5 +37,39 @@ graph TB
 
     Admin --> UC1
     Admin --> UC2
+    Admin --> UC3
+    Admin --> UC4
+    Admin --> UC5
+    Admin --> UC6
+    Admin --> UC7
+    Admin --> UC8
+    Admin --> UC9
+    Admin --> UC10
+    Admin --> UC11
+
+    Coordinador --> UC1
+    Coordinador --> UC2
+    Coordinador --> UC5
+    Coordinador --> UC6
+    Coordinador --> UC7
+    Coordinador --> UC9
+    Coordinador --> UC10
+    Coordinador --> UC11
+
+    Profesor --> UC1
+    Profesor --> UC2
+    Profesor --> UC6
+    Profesor --> UC8
+    Profesor --> UC9
+    Profesor --> UC10
+    Profesor --> UC11
+
+    Alumno --> UC1
+    Alumno --> UC2
+    Alumno --> UC7
+    Alumno --> UC9
+    Alumno --> UC10
+    Alumno --> UC11
+
     Usuario --> UC1
     Usuario --> UC2

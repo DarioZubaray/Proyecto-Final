@@ -1,0 +1,290 @@
+{
+  "main": {
+    "id": "3ef4668b8686d4f6",
+    "type": "split",
+    "children": [
+      {
+        "id": "ae3deed1d59ccf45",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c08979282e98dd94",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "4.2.CU-02-Crear-Curso.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "4.2.CU-02-Crear-Curso"
+            }
+          },
+          {
+            "id": "4fd2f6b348b8435f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "4.3.CU-03-Crear-Aula.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "4.3.CU-03-Crear-Aula"
+            }
+          },
+          {
+            "id": "d92b318ab7d97daa",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "4.4.CU-04-Registrar Asistencia.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "4.4.CU-04-Registrar Asistencia"
+            }
+          },
+          {
+            "id": "e60ecc718fb6cfd1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "4.5.CU-05-Inscribirse-Curso.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "4.5.CU-05-Inscribirse-Curso"
+            }
+          },
+          {
+            "id": "bc7b7875ac0c2632",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "6.1.CU-01-Login.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "6.1.CU-01-Login"
+            }
+          },
+          {
+            "id": "1cf581deebd429ee",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "6.2.CU-06-Logout.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "6.2.CU-06-Logout"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "cd35b2c1da8eb4ea",
+    "type": "split",
+    "children": [
+      {
+        "id": "8a4dfbff8a8eb6f7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5c1b4cf6d7e10433",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "83cf0112950f238a",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "b4095a89d323cf2e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "57878be6540bd42f",
+    "type": "split",
+    "children": [
+      {
+        "id": "b371f393857d972b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f179c87ffdbc6d51",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "6.1.CU-01-Login.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes"
+            }
+          },
+          {
+            "id": "0686edfd36d7ee7f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "6.1.CU-01-Login.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes"
+            }
+          },
+          {
+            "id": "eb225758036cd4b0",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "809a576c8ba9c112",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas las propiedades"
+            }
+          },
+          {
+            "id": "f37752945e53b559",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "6.1.CU-01-Login.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Esquema"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Crear nueva base": false
+    }
+  },
+  "active": "bc7b7875ac0c2632",
+  "lastOpenFiles": [
+    "6.2.CU-06-Logout.md",
+    "6.1.CU-01-Login.md",
+    "4.5.CU-05-Inscribirse-Curso.md",
+    "4.2.CU-02-Crear-Curso.md",
+    "4.1 Diagrama de Casos de Uso  (General).md",
+    "4.3.CU-03-Crear-Aula.md",
+    "imgs/CU02.png",
+    "imgs/CU03.png",
+    "imgs/CU04.png",
+    "4.4.CU-04-Registrar Asistencia.md",
+    "imgs/Diagrama-general-CU.png",
+    "imgs/mermaid-diagram-2026-09-14-110911.png",
+    "usuarios-ca.txt",
+    "imgs/CU01.png",
+    "imgs/mermaid-diagram-2026-09-13-214226.png",
+    "imgs/mermaid-diagram-2026-09-13-214029.png",
+    "imgs/CU06.png",
+    "imgs/mermaid-diagram-2026-09-13-213642.png",
+    "6.1.CU-01-Login - copia.md",
+    "cu0X-template - copia.md",
+    "cu0X-template.md",
+    "4.3.CU-03-Crear-Aula - copia.md",
+    "4.2.CU-02 Crear Curso.md",
+    "4.2. CU-02 Crear Curso.md",
+    "imgs"
+  ]
+}
