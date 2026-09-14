@@ -24,12 +24,12 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Proyecto | Responsabilidad |
 |----------|-----------------|
-| **BE** (*Business Entities*) | Entidades del dominio: `UserBE`, `RoleBE`, `PermissionBE`, `AulaBE`, `CursoBE`. Contiene además el **DTO** `LoginResultBE` y la implementación del patrón **Composite** de roles. No depende de ninguna otra capa. |
+| **BE** (*Business Entities*) | Entidades del dominio: `UserBE`, `RoleBE`, `PermissionBE`, `ClassroomBE`, `CourseBE`, `EnrollmentBE`, `AttendanceBE`, `ActivityLogEntryBE`. Contiene además el **DTO** `LoginResultBE` y la implementación del patrón **Composite** de roles. No depende de ninguna otra capa. |
 | **DAL** (*Data Access Layer*) | Acceso a datos de bajo nivel. `AccessDAL` encapsula la conexión y ejecución de sentencias SQL (lectura, escalar y guardado) contra **SQL Server**, usando `SqlConnection`/`SqlCommand` y parámetros. |
-| **MPP** (*Mapper*) | Capa de **mapeo** entre la base de datos y el modelo de negocio. `UserMPP`, `RoleMPP`, `ActivityMPP`, `AulaMPP` y `CursoMPP` implementan interfaces, lo que permite inyectar mocks en pruebas. |
-| **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`, `AppPreferencesBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
-| **GUI** | Interfaz gráfica en WinForms: formularios de login, principal, usuarios, roles, preferencias y cambio de contraseña. El punto de entrada es `Program.cs`. |
-| **BLL.Tests** / **MPP.Tests** | Proyectos de prueba unitaria (MSTest + Moq). Cubren la lógica de `AuthBLL`, `EncryptionBLL`, `CultureHelperBLL`, `UserBLL` y la persistencia de `UserMPP`. |
+| **MPP** (*Mapper*) | Capa de **mapeo** entre la base de datos y el modelo de negocio. `UserMPP`, `RoleMPP`, `ActivityMPP`, `ClassroomMPP`, `CourseMPP`, `EnrollmentMPP` y `AttendanceMPP` implementan interfaces, lo que permite inyectar mocks en pruebas. |
+| **BLL** (*Business Logic Layer*) | Lógica y reglas de negocio. Se organiza en **Servicios** (`AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`, `ClassroomBLL`, `CourseBLL`, `EnrollmentBLL`, `AttendanceBLL`), **Helpers** (`EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`, `AppPreferencesBLL`) y **ServiceLocatorBLL** (localizador/singleton de servicios). |
+| **GUI** | Interfaz gráfica en WinForms: formularios de login, principal, usuarios, roles, aulas, cursos, inscripciones, asistencia, preferencias y cambio de contraseña. El punto de entrada es `Program.cs`. |
+| **BLL.Tests** / **MPP.Tests** | Proyectos de prueba unitaria (MSTest + Moq). Cubren la lógica de `AuthBLL`, `UserBLL`, `RoleBLL`, `PermissionBLL`, `ActivityBLL`, `EncryptionBLL`, `CultureHelperBLL`, `SessionManagerBLL`, `AppPreferencesBLL`, `ClassroomBLL`, `CourseBLL`, `EnrollmentBLL`, `AttendanceBLL` y la persistencia de `UserMPP`, `RoleMPP`, `ActivityMPP`, `ClassroomMPP`, `CourseMPP`, `EnrollmentMPP`, `AttendanceMPP`. |
 
 #### Dependencias entre proyectos
 
@@ -50,8 +50,12 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `PermissionBE` | Entidad *Permiso*. Identifica un formulario/acción concreta (`Name`, `Label`, `Description`, `IsSystem`). `IsSystem` marca permisos que no pueden quitarse. |
 | `LoginResultBE` (DTO) | Resultado del inicio de sesión: `Success`, `Message` y `User` autenticado. |
 | `ActivityLogBE` | Entidad que representa un registro del **Historial de Actividad**: usuario, acción, formulario, detalle y fecha/hora. |
-| `AulaBE` | Entidad *Aula*. Modela un espacio físico: nombre y capacidad. |
-| `CursoBE` | Entidad *Curso*. Modela un curso de idiomas: nombre, descripción, fechas de inicio/fin, aula asignada y lista de docentes. |
+| `ClassroomBE` | Entidad *Aula*. Modela un espacio físico: nombre y capacidad. |
+| `CourseBE` | Entidad *Curso*. Modela un curso de idiomas: nombre, descripción, fechas de inicio/fin, aula asignada, día de la semana, horarios y lista de docentes. |
+| `EnrollmentBE` | Entidad *Inscripción*. Modela la inscripción de un alumno a un curso con datos de horario y aula. |
+| `AttendanceBE` | Entidad *Asistencia*. Modela un registro de asistencia: curso, alumno, fecha y estado (presente/ausente). |
+| `IActivityLogEntryBE` | Interfaz componente del patrón **Decorator**: define `UserId`, `Action`, `FormName`, `Description` y `Execute()`. |
+| `ActivityLogEntryBE` | Componente concreto del **Decorator**: representa una actividad concreta (acceso a formulario, login o logout) sin efectos secundarios. |
 | `IRoleComponentBE` | Interfaz común del **Composite** (componente). Define `Name`, `HasPermission(name)` y `GetAllPermissions()`. |
 | `RoleCompositeBE` | Nodo **compuesto** del árbol: representa un rol que contiene hijos (otros roles y hojas de permiso). Permite agregar/quitar hijos y recorre el árbol para resolver permisos. |
 | `PermissionLeafBE` | **Hoja** del árbol: envuelve un `PermissionBE` concreto. Evalúa `HasPermission` contra su propio nombre. |
@@ -69,8 +73,10 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `IUserMPP` / `UserMPP` | Mapeo de usuarios: transforma filas (`DataRow`) en `UserBE` y viceversa, y persiste las operaciones de login (último acceso, reintentos, desactivación), CRUD, idioma y contraseña. |
 | `IRoleMPP` / `RoleMPP` | Mapeo de roles y permisos: transforma filas en `RoleBE`/`PermissionBE`, CRUD de roles, permisos por rol, jerarquía padre-hijo (`RoleHierarchy`) y asignación de permisos. |
 | `IActivityMPP` / `ActivityMPP` | Mapeo del historial de actividad: transforma filas en `ActivityLogBE`, inserta registros y consulta **paginada** (con `OFFSET`/`FETCH`) filtrando por usuario. |
-| `IAulaMPP` / `AulaMPP` | Mapeo de aulas: CRUD de aulas físicas con búsqueda por nombre. |
-| `ICursoMPP` / `CursoMPP` | Mapeo de cursos: CRUD, asignación de docentes (N:N), validación de traslape de aula y búsqueda por docente. |
+| `IClassroomMPP` / `ClassroomMPP` | Mapeo de aulas: CRUD de aulas físicas con búsqueda por nombre y conteo. |
+| `ICourseMPP` / `CourseMPP` | Mapeo de cursos: CRUD, asignación de docentes (N:N), validación de traslape de aula y de docente, búsqueda por docente y alumno, incluye cursos inactivos. |
+| `IEnrollmentMPP` / `EnrollmentMPP` | Mapeo de inscripciones: inscripción/desinscripción de alumnos a cursos, búsqueda por alumno, conteo y validación de traslape de horario. |
+| `IAttendanceMPP` / `AttendanceMPP` | Mapeo de asistencia: registro masivo (bulk), búsqueda por curso y fecha, y verificación de si un usuario es docente del curso. |
 
 ### BLL — Business Logic Layer
 
@@ -81,8 +87,10 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `IRoleBLL` / `RoleBLL` | Lógica de gestión de roles: CRUD, permisos por rol (protegiendo los de sistema) y jerarquía de roles. |
 | `PermissionBLL` | Construye el árbol **Composite** de un rol mediante `BuildRoleTree(roleId)` y consulta permisos sobre el árbol (`HasPermission`). |
 | `IActivityBLL` / `ActivityBLL` | Servicio del **Historial de Actividad**. Registra accesos a formularios y el inicio/cierre de sesión (usando el **Decorator**) y consulta el historial de forma paginada. |
-| `IAulaBLL` / `AulaBLL` | Lógica de gestión de aulas: CRUD y búsqueda. |
-| `ICursoBLL` / `CursoBLL` | Lógica de gestión de cursos: CRUD, validación de traslape de aula al guardar y gestión de docentes asignados. |
+| `IClassroomBLL` / `ClassroomBLL` | Lógica de gestión de aulas: CRUD, búsqueda y conteo. |
+| `ICourseBLL` / `CourseBLL` | Lógica de gestión de cursos: CRUD, validación de traslape de aula al guardar, validación de traslape de docente, gestión de docentes asignados, búsqueda por docente y alumno. |
+| `IEnrollmentBLL` / `EnrollmentBLL` | Lógica de inscripciones: inscripción con validación de duplicado y traslape de horario, desinscripción, búsqueda y conteo. |
+| `IAttendanceBLL` / `AttendanceBLL` | Lógica de asistencia: registro masivo, búsqueda por curso/fecha y verificación de docente. |
 | `IActivity` (componente) | Interfaz componente del patrón **Decorator**: define `Execute()` y los datos de una actividad. |
 | `BaseActivity` | Componente concreto del **Decorator**: representa una actividad concreta (acceso a formulario, login o logout) sin efectos secundarios. |
 | `ActivityLoggingDecorator` | Decorador del **Decorator**: envuelve una `IActivity` y, al finalizar, guarda el registro en la base. |
@@ -106,10 +114,13 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
 | `AulaManagementForm` / `AulaForm` | ABM de aulas: listado, búsqueda, alta, edición y baja lógica. |
 | `CursoManagementForm` / `CursoForm` | ABM de cursos: listado, búsqueda, alta, edición y baja lógica. Incluye selección de docentes (N:N) y validación de disponibilidad de aula. Si no hay aulas creadas, muestra un mensaje inline. |
+| `InscripcionManagementForm` / `InscripcionForm` | ABM de inscripciones (admin) / autoinscripción de alumnos. Valida traslape de horario y duplicado. |
+| `AsistenciaForm` / `AsistenciaViewForm` | Registro de asistencia (docente) / visualización de asistencia (alumno). |
 | `PreferencesForm` | Cambio de idioma y tema; actualiza la sesión y refresca los recursos de la UI. También persiste lo seleccionado en `AppPreferencesBLL`. |
 | `ChangePasswordForm` | Cambio de contraseña validando la actual. |
 | `ActivityHistoryForm` | **Historial de Actividad** (dentro del menú Archivo): lista paginada de las actividades del usuario autenticado. |
 | `TestComplaintsForm` / `TestReportsForm` | Formularios de ejemplo (quejas/reportes) usados por los permisos `FORM_COMPLAINTS` y `FORM_REPORTS`. |
+| `AboutForm` | Diálogo Acerca de. |
 
 ## Patrones de diseño destacados
 
@@ -143,20 +154,26 @@ Participantes:
 ```csharp
 public static class ServiceLocatorBLL
 {
-    private static IUserMPP _userMPP;   // única instancia
-    private static IRoleMPP _roleMPP;   // única instancia
+    private static IUserMPP _userMPP;       // única instancia
+    private static IRoleMPP _roleMPP;       // única instancia
+    private static IActivityMPP _activityMPP;
+    private static IClassroomMPP _classroomMPP;
+    private static ICourseMPP _courseMPP;
+    private static IEnrollmentMPP _enrollmentMPP;
+    private static IAttendanceMPP _attendanceMPP;
 
     public static IUserMPP GetUserMPP()
     {
         if (_userMPP == null) _userMPP = new UserMPP();  // lazy singleton
         return _userMPP;
     }
-    // ... CreateAuthBLL(), CreateUserBLL(), CreateRoleBLL(), etc.
+    // ... GetRoleMPP(), GetActivityMPP(), GetClassroomMPP(), GetCourseMPP(), etc.
+    // ... CreateAuthBLL(), CreateUserBLL(), CreateRoleBLL(), CreateClassroomBLL(), etc.
 }
 ```
 
 - Garantiza **una sola instancia** de cada servicio de persistencia durante todo el ciclo de vida de la aplicación (*singleton*).
-- **Descarga la responsabilidad** de instanciación de las formas de la GUI: `LoginForm`, `UserForm`, `UserManagementForm`, `RoleManagementForm`, `ChangePasswordForm` y `PreferencesForm` obtienen sus servicios a través de `ServiceLocatorBLL`.
+- **Descarga la responsabilidad** de instanciación de las formas de la GUI: `LoginForm`, `UserForm`, `UserManagementForm`, `RoleManagementForm`, `ChangePasswordForm`, `PreferencesForm`, `ClassroomForm`, `ClassroomManagementForm`, `CourseForm`, `CourseManagementForm`, `EnrollmentForm`, `EnrollmentManagementForm`, `AttendanceForm` y `AttendanceViewForm` obtienen sus servicios a través de `ServiceLocatorBLL`.
 
 ### 3) Multiton — `SessionManagerBLL`
 
@@ -186,18 +203,18 @@ public class SessionManagerBLL
 El **Decorator** permite añadir responsabilidades a un objeto sin modificar su clase, envolviéndolo en otro objeto que implementa la misma interfaz. Se usa para registrar en el **Historial de Actividad**: se envuelve la "actividad" que se quiere realizar y, al finalizar, se guarda el registro en la base.
 
 ```
-IActivity  (interfaz componente: Execute())
-   ├─ BaseActivity            (componente concreto: actividad de acceso formulario / login / logout)
-   └─ ActivityLoggingDecorator (decorator: ejecuta la actividad y luego guarda en la base)
+IActivityLogEntryBE  (interfaz componente: Execute())
+   ├─ ActivityLogEntryBE            (componente concreto: actividad de acceso formulario / login / logout)
+   └─ ActivityLoggingDecoratorBLL   (decorator: ejecuta la actividad y luego guarda en la base)
 ```
 
 Participantes:
 
-- **Componente** → `IActivity` — `UserId`, `Action`, `FormName`, `Description` y `Execute()`.
-- **Componente concreto** → `BaseActivity` — una actividad concreta; `Execute()` no produce efectos secundarios.
-- **Decorator** → `ActivityLoggingDecorator` — recibe una `IActivity` y un `IActivityMPP`; en `Execute()` primero ejecuta la actividad envuelta y luego **guarda el registro** (`_activityMPP.Save(...)`).
+- **Componente** → `IActivityLogEntryBE` — `UserId`, `Action`, `FormName`, `Description` y `Execute()`.
+- **Componente concreto** → `ActivityLogEntryBE` — una actividad concreta; `Execute()` no produce efectos secundarios.
+- **Decorator** → `ActivityLoggingDecoratorBLL` — recibe una `IActivityLogEntryBE` y un `IActivityMPP`; en `Execute()` primero ejecuta la actividad envuelta y luego **guarda el registro** (`_activityMPP.Save(...)`).
 
-**Uso**: `ActivityBLL` expone `LogFormAccess`, `LogLogin` y `LogLogout`, que construyen `new ActivityLoggingDecorator(new BaseActivity(...), _activityMPP).Execute()`. Los puntos de registro son:
+**Uso**: `ActivityBLL` expone `LogFormAccess`, `LogLogin` y `LogLogout`, que construyen `new ActivityLoggingDecoratorBLL(new ActivityLogEntryBE(...), _activityMPP).Execute()`. Los puntos de registro son:
 
 - **LoginForm**: tras autenticar (`LogLogin`) y al cerrar sesión (`LogLogout`).
 - **MainForm**: cada opción del menú que abre un formulario registra un `LogFormAccess` (Preferencias, Usuarios, Roles, Cambiar Contraseña).
@@ -208,19 +225,19 @@ Participantes:
 El **Strategy** permite intercambiar algoritmos en tiempo de ejecución sin modificar a quien los consume. Se usa para la verificación de contraseñas, que históricamente mezclaba dos algoritmos en un único `if/else` y hoy delega en estrategias intercambiables.
 
 ```
-IPasswordStrategy  (interfaz estrategia: Matches / Hash / Verify)
-   ├─ BcryptPasswordStrategy        (BCrypt)
-   └─ LegacySha256PasswordStrategy  (SHA-256 legacy, para datos existentes)
-PasswordHasher  (contexto: elige la estrategia según el formato del hash)
+IPasswordStrategyBLL  (interfaz estrategia: Matches / Hash / Verify)
+   ├─ BcryptPasswordStrategyBLL        (BCrypt)
+   └─ LegacySha256PasswordStrategyBLL  (SHA-256 legacy, para datos existentes)
+PasswordHasherBLL  (contexto: elige la estrategia según el formato del hash)
 ```
 
 Participantes:
 
-- **Estrategia** → `IPasswordStrategy` — `Matches(storedHash)` (dice si el hash le corresponde), `Hash(password)` y `Verify(plain, stored)`.
-- **Estrategia concreta** → `BcryptPasswordStrategy` (BCrypt) y `LegacySha256PasswordStrategy` (SHA-256 de 64 hex), esta última para mantener la compatibilidad con usuarios creados antes del cifrado BCrypt.
-- **Contexto** → `PasswordHasher` — mantiene una lista ordenada de estrategias; `Verify` recorre las estrategias, delega en la que `Matches` el hash guardado y, si ninguna, usa la estrategia por defecto (BCrypt).
+- **Estrategia** → `IPasswordStrategyBLL` — `Matches(storedHash)` (dice si el hash le corresponde), `Hash(password)` y `Verify(plain, stored)`.
+- **Estrategia concreta** → `BcryptPasswordStrategyBLL` (BCrypt) y `LegacySha256PasswordStrategyBLL` (SHA-256 de 64 hex), esta última para mantener la compatibilidad con usuarios creados antes del cifrado BCrypt.
+- **Contexto** → `PasswordHasherBLL` — mantiene una lista ordenada de estrategias; `Verify` recorre las estrategias, delega en la que `Matches` el hash guardado y, si ninguna, usa la estrategia por defecto (BCrypt).
 
-**Uso**: `EncryptionBLL` (podado a ser una fachada de compatibilidad) delega en `PasswordHasher.Default` para `HashPassword` y `VerifyPassword`; `AuthBLL`, `UserBLL` y `GUI/UserForm` siguen usando la misma API sin cambios. Agregar un tercer algoritmo (p. ej. Argon2) solo implica una nueva `IPasswordStrategy`: **Open/Closed y sin tocar el contexto**.
+**Uso**: `EncryptionBLL` (podado a ser una fachada de compatibilidad) delega en `PasswordHasherBLL.Default` para `HashPassword` y `VerifyPassword`; `AuthBLL`, `UserBLL` y `GUI/UserForm` siguen usando la misma API sin cambios. Agregar un tercer algoritmo (p. ej. Argon2) solo implica una nueva `IPasswordStrategyBLL`: **Open/Closed y sin tocar el contexto**.
 
 ## Principios SOLID aplicados
 
@@ -241,7 +258,7 @@ El sistema está **abierto a la extensión y cerrado a la modificación**:
 
 - **Composite**: se pueden agregar nuevos tipos de componentes de rol/permiso sin modificar la interfaz `IRoleComponentBE` ni el recorrido del árbol.
 - **Decorator**: se agrega la responsabilidad de "guardar en el historial" (`ActivityLoggingDecorator`) **sin tocar** la actividad base (`BaseActivity`); se pueden añadir nuevas actividades o decoradores sin modificar lo existente.
-- **Strategy**: se puede incorporar un tercer algoritmo de hash (p. ej. Argon2) creando una nueva `IPasswordStrategy`, **sin modificar** ni `PasswordHasher` ni a sus consumidores.
+- **Strategy**: se puede incorporar un tercer algoritmo de hash (p. ej. Argon2) creando una nueva `IPasswordStrategyBLL`, **sin modificar** ni `PasswordHasherBLL` ni a sus consumidores.
 - **Interfaces** `IUserBLL`, `IRoleBLL`, `IAuthBLL`, `IActivityBLL` y `IUserMPP`, `IRoleMPP`, `IActivityMPP`: el consumidor depende de la abstracción, por lo que se pueden incorporar nuevas implementaciones (p. ej. otra persistencia) sin alterar a quien las usa.
 
 ### L — Liskov Substitution (Sustitución de Liskov)
@@ -264,7 +281,7 @@ Las capas superiores dependen de **abstracciones**, no de concreciones:
 
 - **BLL** consume `IUserMPP`, `IRoleMPP` e `IActivityMPP`; **GUI** consume las interfaces de BLL.
 - **Inyección por constructor**: `AuthBLL(IUserMPP)`, `UserBLL(IUserMPP)`, `RoleBLL(IRoleMPP)`, `ActivityBLL(IActivityMPP)` (p. ej. BLL/Services/AuthBLL.cs). Esto habilita las pruebas con mocks y desacopla la creación, que queda centralizada en `ServiceLocatorBLL`.
-- **Strategy**: `PasswordHasher` depende de `IPasswordStrategy` (puede recibir estrategias por constructor), lo que permite sustituir el algoritmo en pruebas sin tocar el contexto.
+- **Strategy**: `PasswordHasherBLL` depende de `IPasswordStrategyBLL` (puede recibir estrategias por constructor), lo que permite sustituir el algoritmo en pruebas sin tocar el contexto.
 - La **dirección de dependencia** va de las capas altas hacia lo abstracto; el dominio (BE) no depende de nada.
 
 ### Limitaciones y puntos de mejora
@@ -274,6 +291,7 @@ Para no sobrevender el cumplimiento, cabe notar algunas decisiones que presentan
 - `ServiceLocatorBLL` es un **Service Locator estático**: aunque los constructores reciben abstracciones (buen uso de DIP), el *cableado* de dependencias queda oculto y es difícil de sustituir en pruebas sin el patrón.
 - `PermissionBLL` se expone **concreto** (sin interfaz) a través de `ServiceLocatorBLL.CreatePermissionBLL()`, a diferencia del resto de los servicios que se devuelven por su interfaz — una inconsistencia menor con DIP.
 - Las capas **MPP** dependen directamente de la clase concreta `AccessDAL` (DAL); para un desacople total convendría que DAL también expusiera una abstracción.
+- `EnrollmentBLL` recibe `ICourseBLL` por constructor (buen uso de DIP), pero `ServiceLocatorBLL` lo crea internamente, lo que dificulta el testing aislado sin el patrón.
 
 ## Manejo de errores y códigos de error
 
@@ -335,7 +353,7 @@ El **acceso a datos** usa `Microsoft.Data.SqlClient` (SQL Server) y `System.Conf
 
 ## Pruebas
 
-Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, el historial de actividad (Decorator y paginación) y la persistencia. Para ejecutarlos:
+Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, roles y permisos, el historial de actividad (Decorator y paginación), las preferencias locales, la estrategia de hash de contraseñas, la gestión de aulas, cursos, inscripciones y asistencia. Para ejecutarlos:
 
 ```
 dotnet test TrabajoFinal-DarioZubaray.slnx

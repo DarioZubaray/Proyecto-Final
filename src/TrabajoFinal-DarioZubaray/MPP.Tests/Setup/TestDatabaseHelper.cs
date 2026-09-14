@@ -260,11 +260,21 @@ namespace MPP.Tests.Setup
             {
                 connection.Open();
                 string sql = @"
+                    DELETE FROM [dbo].[attendance];
+                    DELETE FROM [dbo].[course_students];
+                    DELETE FROM [dbo].[course_teachers];
+                    DELETE FROM [dbo].[courses];
+                    DELETE FROM [dbo].[classrooms];
                     DELETE FROM [dbo].[activity_logs];
                     DELETE FROM [dbo].[role_permissions];
                     DELETE FROM [dbo].[role_hierarchy];
                     DELETE FROM [dbo].[users];
-                    DBCC CHECKIDENT ('[dbo].[users]', RESEED, 0);";
+                    DBCC CHECKIDENT ('[dbo].[users]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[classrooms]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[courses]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[course_teachers]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[course_students]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[attendance]', RESEED, 0);";
                 var cmd = new SqlCommand(sql, connection);
                 cmd.ExecuteNonQuery();
             }
