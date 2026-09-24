@@ -1,5 +1,6 @@
-using BE.Entities;
 using System.Collections.Generic;
+
+using BE.Entities;
 
 namespace BE.Composite
 {
