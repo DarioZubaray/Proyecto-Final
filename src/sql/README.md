@@ -1,6 +1,6 @@
 # Scripts SQL (`src/sql/`)
 
-Scripts para crear, poblar y consultar la base de datos **`Trabajo_Final`** (SQL Server).
+Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (SQL Server).
 
 ## Contenido
 
@@ -12,9 +12,15 @@ Scripts para crear, poblar y consultar la base de datos **`Trabajo_Final`** (SQL
 | [`03_v1.1.0_AulasCursosInscripciones.sql`](03_v1.1.0_AulasCursosInscripciones.sql) | Migración consolidada: classrooms, courses, course_teachers, course_students, attendance. Permisos, rol Coordinador. Seed data completo. |
 | [`04_v1.1.0_Rollback.sql`](04_v1.1.0_Rollback.sql) | Rollback de v1.1.0. |
 | [`05_v1.1.0_Queries.sql`](05_v1.1.0_Queries.sql) | Consultas de verificación y desarrollo. |
-| [`Trabajo_Final_BBDD.bak`](Trabajo_Final_BBDD.bak) | Respaldo de la base de datos. |
+| [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql) | **Script maestro**: crea la base (si no existe), crea todas las tablas, inserta los datos y registra las versiones en un solo paso. |
 
-## Instalación limpia
+## Instalación
+
+### Opción A — Script maestro (recomendada, un solo paso)
+
+Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema completo (v1.0.0 + v1.1.0) y carga todos los datos.
+
+### Opción B — Scripts por pasos (migraciones)
 
 ```sql
 -- 1. Reinicializar

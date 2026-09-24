@@ -10,7 +10,7 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 |-------|-----------|-------------|
 | **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, **.NET 10**, `net10.0-windows`) con arquitectura en capas. Incluye su propio README. |
 | **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator, Strategy) y principios SOLID. |
-| **Base de datos — scripts SQL** | [`src/sql/`](src/sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `Trabajo_Final`. Ver [`src/sql/README.md`](src/sql/README.md). |
+| **Base de datos — scripts SQL** | [`src/sql/`](src/sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `DarioZubaray_TF`. Ver [`src/sql/README.md`](src/sql/README.md). |
 | **Diagramas (Mermaid Live)** | [`docs/mermaid-live/`](docs/mermaid-live/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencias de login/logout. |
 | **Modelos Enterprise Architect** | [`docs/ea/`](docs/ea/) | Archivos de modelado UML creados con Enterprise Architect. |
 | **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
@@ -41,7 +41,7 @@ La aplicación también centraliza un **catálogo de códigos de error** por dom
 
 ### Base de datos (`src/sql/`)
 
-Contiene los scripts para crear, poblar y consultar la base `Trabajo_Final`, más un respaldo. Detalle completo en [`src/sql/README.md`](src/sql/README.md).
+Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`, más un script maestro consolidado. Detalle completo en [`src/sql/README.md`](src/sql/README.md).
 
 Ejecutar los scripts en orden:
 
@@ -51,6 +51,8 @@ Ejecutar los scripts en orden:
 4. `03_v1.1.0_AulasCursosInscripciones.sql` — migración v1.1.0: crea Aulas, Cursos, CursoDocentes, CursoAlumnos, permisos y rol Coordinador.
 5. `04_v1.1.0_Rollback.sql` — (opcional) deshace la migración v1.1.0.
 6. `05_v1.1.0_Queries.sql` — consultas de ejemplo / verificación.
+
+> **Alternativa (recomendada):** `06_v1.1.0_ScriptConsolidado.sql` es el **script maestro** que crea la base `DarioZubaray_TF` (si no existe) y deja el esquema completo con todos los datos en un solo paso.
 
 #### Datos de prueba
 

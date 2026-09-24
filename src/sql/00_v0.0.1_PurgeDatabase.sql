@@ -1,4 +1,4 @@
-use Trabajo_Final;
+﻿USE DarioZubaray_TF;
 
 -- =============================================
 -- PURGE v0.0.1: Eliminar todas las tablas
