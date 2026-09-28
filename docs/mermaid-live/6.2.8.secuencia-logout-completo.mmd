@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant SES as :SessionManagerBLL
+    participant ACT as :ActivityBLL
+    participant ACC as :AccessDAL
+    participant BD as :SQL Server (Base de Datos)
+    participant APP as :AppPreferencesBLL
+
+    Note over Usuario,BD: CU-06 paso 1: selecciona "Cerrar Sesión"
+    Usuario->>SES: CerrarSesión(userId=1, userName="dario")
+    SES->>ACT: LogLogout(1, "dario")
+    ACT->>ACC: Save(consulta de log, SqlParameters)
+    ACC->>BD: INSERT INTO activity_logs(user_id, action, form_name, description, created_at) VALUES(1, 'LOGOUT', 'MainForm', '...', GETDATE())
+    BD-->>ACC: OK
+    ACC-->>ACT: true
+    ACT-->>SES: ok
+    SES->>SES: RemoveSession(1)
+    SES->>APP: SavePreferences(language="es", theme="Light")
+    SES-->>Usuario: Sesión finalizada - muestra la pantalla de inicio de sesión

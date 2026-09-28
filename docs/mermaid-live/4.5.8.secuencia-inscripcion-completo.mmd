@@ -1,0 +1,48 @@
+sequenceDiagram
+    autonumber
+    actor Coordinador
+    participant EB as :EnrollmentBLL
+    participant CB as :CourseBLL
+    participant CMP as :CourseMPP
+    participant EMP as :EnrollmentMPP
+    participant ACC as :AccessDAL
+    participant BD as :SQL Server (Base de Datos)
+
+    Note over Coordinador,BD: CU-05 pasos 3-5: selecciona alumno y curso y presiona "Inscribirse"
+    Coordinador->>EB: Enroll(courseId=1, studentId=12)
+    EB->>EMP: ExistsActiveEnrollment(1, 12)
+    EMP->>ACC: ReadScalar(SELECT COUNT(*) FROM course_students WHERE course_id=@c AND student_id=@s AND is_active=1, SqlParameters)
+    ACC->>BD: Ejecuta la consulta
+    BD-->>ACC: 0 (sin inscripción activa)
+    ACC-->>EMP: 0
+    EMP-->>EB: false
+
+    alt El alumno ya está inscripto (paso 5.b)
+        EB-->>Coordinador: "Ya está inscripto en este curso." - no registra
+    else No está inscripto
+        EB->>CB: FindById(1)
+        CB->>CMP: FindById(1)
+        CMP->>ACC: Read(consulta de curso, SqlParameters)
+        ACC->>BD: SELECT c.*, cl.name AS classroom_name FROM courses c LEFT JOIN classrooms cl ON cl.id=... WHERE c.id=@id
+        BD-->>ACC: Datos del curso 1
+        ACC-->>CMP: DataTable
+        CMP-->>CB: CourseBE{Name="Programación I", DayOfWeek=Lunes, 18:00-21:00}
+        CB-->>EB: CourseBE
+        EB->>EMP: FindByStudentId(12)
+        EMP->>ACC: Read(consulta de inscripciones del alumno, SqlParameters)
+        ACC->>BD: SELECT cs.*, c.name, c.day_of_week, c.start_time, c.end_time ... WHERE cs.student_id=@s AND cs.is_active=1 AND c.is_active=1
+        BD-->>ACC: Inscripciones del alumno (curso 3: Martes 18:00-21:00)
+        ACC-->>EMP: DataTable
+        EMP-->>EB: List[EnrollmentBE]
+        alt Traslape de horario con otro curso
+            EB-->>Coordinador: "Tiene traslape de horario con el curso 'Base de Datos' (Martes 18:00-21:00)." - no registra
+        else Sin traslape
+            EB->>EMP: Enroll(1, 12)
+            EMP->>ACC: Save(INSERT de inscripción, SqlParameters)
+            ACC->>BD: INSERT INTO course_students(course_id, student_id, is_active, created_at) VALUES(1, 12, 1, ...)
+            BD-->>ACC: OK
+            ACC-->>EMP: true
+            EMP-->>EB: true
+            EB-->>Coordinador: "Inscripción registrada" - confirma en pantalla
+        end
+    end

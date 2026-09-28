@@ -1,0 +1,22 @@
+flowchart LR
+    subgraph ALM[Alumno]
+        direction TB
+        A1([Inicio])
+        A2[Acude a la academia y plantea el reclamo]
+        A3[Recibe la constancia y la resolución del reclamo]
+        A4([Fin])
+    end
+    subgraph BED[Bedelía / Secretaría]
+        direction TB
+        B1[Toma nota del reclamo en la planilla de reclamos]
+        B2[Entrega la constancia al alumno]
+        B3[Deriva el reclamo a Coordinación]
+    end
+    subgraph COO[Coordinación]
+        direction TB
+        C1[Analiza el reclamo]
+        C2[Resuelve o programa la respuesta]
+        C3[Comunica la resolución]
+    end
+    A1 --> A2 --> B1 --> B2 --> B3
+    B3 --> C1 --> C2 --> C3 --> A3 --> A4

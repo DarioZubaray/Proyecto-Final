@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor Profesor
+    participant ASI as :Gestión de Asistencia
+    participant CUR as :Gestión de Cursos
+    participant MAN as :Manejador de Asistencia
+    participant BD as :Base de Datos
+
+    Note over Profesor,BD: CU-04 - Flujo básico (pasos 1 a 7 del caso de uso)
+    Profesor->>ASI: Accede a "Asistencia" y selecciona el curso y la fecha
+    ASI->>CUR: Obtener los cursos asignados al profesor
+    CUR-->>ASI: Lista de cursos del profesor
+    ASI->>MAN: Obtener la planilla del curso y fecha
+    MAN->>BD: Consultar asistencias del curso y fecha
+    BD-->>MAN: Planilla existente (si la hay)
+    ASI-->>Profesor: Muestra la lista de alumnos con estados
+    Profesor->>ASI: Marca Presente/Ausente/Justificado y presiona "Guardar Asistencia"
+    ASI->>MAN: Registrar las asistencias
+    MAN->>BD: Actualizar o insertar cada asistencia
+    BD-->>MAN: OK
+    ASI-->>Profesor: Confirma que la planilla fue guardada
+
+    Note over Profesor,BD: CU-04 - Flujo alternativo (paso 4.a del caso de uso)
+    alt Curso sin alumnos inscriptos
+        ASI-->>Profesor: Informa que el curso no posee alumnos
+    end

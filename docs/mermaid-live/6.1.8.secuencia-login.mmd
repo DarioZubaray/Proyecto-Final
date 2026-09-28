@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant AUT as :Servicio de Autenticación
+    participant UST as :Manejador de Usuarios
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-01 - Flujo básico (pasos 2 a 4 del caso de uso)
+    Usuario->>AUT: Ingresa usuario y contraseña y presiona "Ingresar"
+    AUT->>UST: Obtener el usuario por su nombre de usuario
+    UST->>BD: Consultar los datos del usuario
+    BD-->>UST: Datos del usuario (contraseña encriptada, activo, reintentos)
+    UST-->>AUT: Usuario encontrado
+    AUT-->>Usuario: Confirma el acceso y muestra las opciones del rol
+
+    Note over Usuario,BD: CU-01 - Flujo alternativo (pasos 3.a a 3.d del caso de uso)
+    alt Credenciales incorrectas con intentos disponibles
+        AUT-->>Usuario: "Usuario o contraseña incorrectos. Intentos restantes: N"
+    else Credenciales incorrectas (último intento)
+        AUT->>UST: Bloquear la cuenta del usuario
+        AUT-->>Usuario: "Usuario bloqueado por exceso de intentos fallidos."
+    else Cuenta inactiva
+        AUT-->>Usuario: "Usuario bloqueado. Contacte al administrador."
+    end

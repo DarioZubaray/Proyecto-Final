@@ -1,0 +1,21 @@
+flowchart LR
+    subgraph BED[Bedelía / Secretaría]
+        direction TB
+        B1([Inicio])
+        B2[Recibe la novedad: alta, baja o modificación de un registro]
+        B3[Completa el formulario con los datos del cambio]
+        B4[Eleva el formulario a Coordinación]
+        B5[Registra el cambio aprobado en la planilla correspondiente]
+        B6([Fin])
+    end
+    subgraph COO[Coordinación]
+        direction TB
+        C1[Revisa los datos del formulario]
+        C2{¿El cambio es válido?}
+        C3[Aprueba y firma la novedad]
+        C4[Devuelve el formulario para corrección]
+    end
+    B1 --> B2 --> B3 --> B4
+    B4 --> C1 --> C2
+    C2 -->|Sí| C3 --> B5 --> B6
+    C2 -->|No| C4 --> B3

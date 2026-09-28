@@ -1,0 +1,20 @@
+usecase-beta
+actor Admin("Admin")
+actor Coordinador("Coordinador")
+actor Profesor("Profesor")
+
+UC2(CU-02 Crear Curso)
+UC3(CU-03 Crear Aula)
+UC4(CU-04 Registrar Asistencia)
+UC5(CU-05 Inscribirse a Curso)
+
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+
+Coordinador --> UC2
+Coordinador --> UC3
+Coordinador --> UC5
+
+Profesor --> UC4

@@ -1,0 +1,10 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant SES as :Servicio de Sesión
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-06 - Flujo básico (pasos 1 a 3 del caso de uso)
+    Usuario->>SES: Selecciona "Cerrar Sesión"
+    SES->>SES: Finalizar la sesión activa del usuario
+    SES-->>Usuario: Muestra la pantalla de inicio de sesión

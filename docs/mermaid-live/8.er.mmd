@@ -1,0 +1,98 @@
+erDiagram
+    roles {
+        int id PK
+        string name UK
+    }
+    permissions {
+        int id PK
+        string name UK
+        string label
+        string description
+        bool is_system
+    }
+    role_permissions {
+        int role_id FK
+        int permission_id FK
+    }
+    role_hierarchy {
+        int parent_role_id FK
+        int child_role_id FK
+    }
+    users {
+        int id PK
+        string user_name UK
+        string password_hash
+        bool is_active
+        int retries_count
+        datetime last_update
+        datetime created_at
+        int role_id FK
+        string language
+        string theme
+    }
+    activity_logs {
+        int id PK
+        int user_id FK
+        string action
+        string form_name
+        string description
+        datetime created_at
+    }
+    classrooms {
+        int id PK
+        string name
+        int capacity
+        bool is_active
+        datetime created_at
+        datetime last_update
+    }
+    courses {
+        int id PK
+        string name
+        string description
+        datetime start_date
+        datetime end_date
+        int classroom_id FK
+        int day_of_week
+        time start_time
+        time end_time
+        bool is_active
+        datetime created_at
+        datetime last_update
+    }
+    course_teachers {
+        int id PK
+        int course_id FK
+        int teacher_id FK
+        bool is_active
+        datetime created_at
+    }
+    course_students {
+        int id PK
+        int course_id FK
+        int student_id FK
+        bool is_active
+        datetime created_at
+    }
+    attendance {
+        int id PK
+        int course_id FK
+        int student_id FK
+        date date
+        bool is_present
+        datetime created_at
+    }
+
+    users }o--|| roles : "role_id"
+    roles ||--o{ role_permissions : "permissions"
+    permissions ||--o{ role_permissions : "assigned to"
+    roles ||--o{ role_hierarchy : "parent"
+    roles ||--o{ role_hierarchy : "child"
+    users ||--o{ activity_logs : "activity log"
+    classrooms ||--o{ courses : "classroom"
+    courses ||--o{ course_teachers : "teachers"
+    users ||--o{ course_teachers : "teaches"
+    courses ||--o{ course_students : "students"
+    users ||--o{ course_students : "enrolled in"
+    courses ||--o{ attendance : "classes"
+    users ||--o{ attendance : "attendance"

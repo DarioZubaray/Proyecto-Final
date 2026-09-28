@@ -1,0 +1,117 @@
+classDiagram
+    class UserBE {
+        -int Id
+        -string UserName
+        -string PasswordHash
+        -bool IsActive
+        -int RetriesCount
+        -int RoleId
+    }
+    class RoleBE {
+        -int Id
+        -string Name
+        +List~PermissionBE~ Permissions
+        +RoleCompositeBE ToComposite(List~RoleBE~)
+        +bool HasPermission(string)
+    }
+    class PermissionBE {
+        -int Id
+        -string Name
+        -string Label
+        -string Description
+        -bool IsSystem
+    }
+    class CourseBE {
+        -int Id
+        -string Name
+        -string Description
+        -DateTime StartDate
+        -DateTime EndDate
+        -int ClassroomId
+        -int? DayOfWeek
+        -TimeSpan? StartTime
+        -TimeSpan? EndTime
+        -bool IsActive
+        +List~UserBE~ Teachers
+    }
+    class ClassroomBE {
+        -int Id
+        -string Name
+        -int Capacity
+        -bool IsActive
+    }
+    class EnrollmentBE {
+        -int Id
+        -int CourseId
+        -int StudentId
+        -bool IsActive
+    }
+    class AttendanceBE {
+        -int Id
+        -int CourseId
+        -int StudentId
+        -DateTime Date
+        -bool IsPresent
+    }
+    class ActivityLogBE {
+        -int Id
+        -int UserId
+        -string Action
+        -string FormName
+        -string Description
+    }
+    class ActivityLogEntryBE {
+        -int UserId
+        -string Action
+        -string FormName
+        -string Description
+        +bool Execute()
+    }
+    class IActivityLogEntryBE {
+        <<interface>>
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +bool Execute()
+    }
+    class RoleComponentBE {
+        <<abstract>>
+        +string Name
+        +bool HasPermission(string)
+        +List~PermissionBE~ GetAllPermissions()
+    }
+    class RoleCompositeBE {
+        -int Id
+        -string Name
+        -List~RoleComponentBE~ _children
+        +void AddChild(RoleComponentBE)
+        +void RemoveChild(RoleComponentBE)
+        +List~RoleComponentBE~ GetChildren()
+        +bool HasPermission(string)
+        +List~PermissionBE~ GetAllPermissions()
+    }
+    class PermissionLeafBE {
+        -PermissionBE _option
+        +string Name
+        +bool HasPermission(string)
+        +List~PermissionBE~ GetAllPermissions()
+    }
+
+    IActivityLogEntryBE <|.. ActivityLogEntryBE
+
+    RoleComponentBE <|.. RoleCompositeBE
+    RoleComponentBE <|.. PermissionLeafBE
+    RoleCompositeBE "1" o-- "0..*" RoleComponentBE : compone
+    PermissionLeafBE "1" --> "1" PermissionBE : envuelve
+
+    RoleBE "1" --> "0..*" PermissionBE : contiene
+    RoleBE ..> RoleCompositeBE : construye
+    UserBE "0..*" --> "1" RoleBE : pertenece a
+    CourseBE "0..*" --> "1" ClassroomBE : se dicta en
+    CourseBE "1" --> "0..*" UserBE : dictada por
+    EnrollmentBE "0..*" --> "1" CourseBE : se inscribe en
+    EnrollmentBE "0..*" --> "1" UserBE : alumno
+    AttendanceBE "0..*" --> "1" CourseBE : de la clase de
+    AttendanceBE "0..*" --> "1" UserBE : del alumno
+    ActivityLogBE "0..*" --> "1" UserBE : registrada por

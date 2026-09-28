@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph PRO[Profesor]
+        direction TB
+        P1([Inicio])
+        P2[Toma la lista en clase y marca presentes / ausentes / justificados]
+        P3{¿Hubo ausencias?}
+        P4[Recibe y registra las justificaciones presentadas]
+        P5[Firma la planilla de asistencia y registra las notas de evaluaciones]
+        P6[Entrega las planillas a Bedelía]
+    end
+    subgraph BED[Bedelía]
+        direction TB
+        B1[Recibe y controla las planillas]
+        B2[Archiva en el legajo del curso]
+    end
+    subgraph COO[Coordinación]
+        direction TB
+        C1[Supervisa el registro mensual de asistencias y notas]
+        C2([Fin])
+    end
+    P1 --> P2 --> P3
+    P3 -->|Sí| P4 --> P5
+    P3 -->|No| P5
+    P5 --> P6 --> B1 --> B2 --> C1 --> C2

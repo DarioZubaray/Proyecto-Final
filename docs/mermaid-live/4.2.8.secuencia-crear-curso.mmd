@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant CUR as :Gestión de Cursos
+    participant MAN as :Manejador de Cursos
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-02 - Flujo básico (pasos 3 a 6 del caso de uso)
+    Usuario->>CUR: Completa los datos del curso y presiona "Guardar"
+    CUR->>MAN: Consultar si el aula está ocupada en el día y horario
+    MAN->>BD: Contar cursos del aula en ese día y rango horario
+    BD-->>MAN: Cantidad de solapamientos
+    MAN-->>CUR: No hay solapamiento
+    CUR->>MAN: Guardar el curso
+    MAN->>BD: Registrar el curso
+    BD-->>MAN: OK
+    MAN-->>CUR: Curso guardado
+    CUR->>MAN: Asignar el profesor a cargo
+    MAN->>BD: Registrar la asignación del profesor
+    BD-->>MAN: OK
+    CUR-->>Usuario: Confirma el alta del curso
+
+    Note over Usuario,BD: CU-02 - Flujo alternativo (paso 5.c del caso de uso)
+    alt El aula está ocupada en el día y horario
+        CUR-->>Usuario: "El aula ya está ocupada en ese horario." - no guarda el curso
+    end

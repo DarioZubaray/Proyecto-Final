@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant CB as :CourseBLL
+    participant CMP as :CourseMPP
+    participant ACC as :AccessDAL
+    participant BD as :SQL Server (Base de Datos)
+
+    Note over Usuario,BD: CU-02 pasos 3-5: completa el formulario y presiona "Guardar"
+    Usuario->>CB: Save(CourseBE{Name="Programación I", ClassroomId=2, Lunes, 18:00-21:00})
+    CB->>CMP: ExistsClassroomOverlap(2, fechas, 0, Lunes, 18:00, 21:00)
+    CMP->>ACC: ReadScalar(consulta de solapamiento de aula, SqlParameters)
+    ACC->>BD: SELECT COUNT(*) FROM courses WHERE classroom_id=@id AND is_active=1 AND id!=@excluir AND rango de fechas y horario solapado
+    BD-->>ACC: 0 (sin cursos en ese aula y horario)
+    ACC-->>CMP: 0
+    CMP-->>CB: false
+
+    alt El aula está ocupada (paso 5.c)
+        CB-->>Usuario: "El aula ya está ocupada en ese horario." - no guarda el curso
+    else Aula libre
+        CB->>CMP: Save(course)
+        CMP->>ACC: ReadScalar(INSERT de curso y obtención del SCOPE_IDENTITY, SqlParameters)
+        ACC->>BD: INSERT INTO courses(name, description, start_date, end_date, classroom_id, day_of_week, start_time, end_time, is_active, created_at, last_update) VALUES(...)
+        BD-->>ACC: 25 (nuevo id del curso)
+        ACC-->>CMP: 25
+        CMP-->>CB: true
+        CB->>CMP: SaveTeachers(25, [5])
+        CMP->>ACC: Save(INSERT de asignación, SqlParameters)
+        ACC->>BD: INSERT INTO course_teachers(course_id, teacher_id, is_active, created_at) VALUES(25, 5, 1, ...)
+        BD-->>ACC: OK
+        ACC-->>CMP: true
+        CMP-->>CB: true
+        CB-->>Usuario: Confirma el alta del curso y actualiza el listado
+    end

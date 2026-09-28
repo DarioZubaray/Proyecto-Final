@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant CLB as :ClassroomBLL
+    participant CMP as :ClassroomMPP
+    participant ACC as :AccessDAL
+    participant BD as :SQL Server (Base de Datos)
+
+    Note over Usuario,BD: CU-03 pasos 3-4: completa el formulario y presiona "Guardar"
+    Usuario->>CLB: Save(ClassroomBE{Name="Aula 102", Capacity=30, IsActive=true})
+    CLB->>CMP: Save(classroom)
+    CMP->>ACC: ReadScalar(INSERT de aula y obtención del SCOPE_IDENTITY, SqlParameters)
+    ACC->>BD: INSERT INTO classrooms(name, capacity, is_active, created_at, last_update) VALUES('Aula 102', 30, 1, ...)
+    BD-->>ACC: 8 (nuevo id del aula)
+    ACC-->>CMP: 8
+    CMP-->>CLB: true
+    CLB-->>Usuario: Confirma el alta del aula y actualiza el listado

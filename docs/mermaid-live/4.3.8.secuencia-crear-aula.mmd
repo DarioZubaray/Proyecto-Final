@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant AUL as :Gestión de Aulas
+    participant MAN as :Manejador de Aulas
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-03 - Flujo básico (pasos 3 a 5 del caso de uso)
+    Usuario->>AUL: Completa los datos del aula y presiona "Guardar"
+    AUL->>MAN: Guardar el aula
+    MAN->>BD: Registrar el aula
+    BD-->>MAN: OK
+    MAN-->>AUL: Aula guardada
+    AUL-->>Usuario: Confirma el alta del aula

@@ -1,0 +1,29 @@
+sequenceDiagram
+    autonumber
+    actor Coordinador
+    participant INS as :Gestión de Inscripciones
+    participant CUR as :Gestión de Cursos
+    participant MAN as :Manejador de Inscripciones
+    participant BD as :Base de Datos
+
+    Note over Coordinador,BD: CU-05 - Flujo básico (pasos 3 a 6 del caso de uso)
+    Coordinador->>INS: Selecciona el alumno y el curso y presiona "Inscribirse"
+    INS->>MAN: Consultar si el alumno ya está inscripto en el curso
+    MAN->>BD: Consultar inscripción activa del alumno en el curso
+    BD-->>MAN: No existe inscripción activa
+    INS->>CUR: Obtener los datos del curso
+    CUR-->>INS: Curso (día y horario)
+    INS->>MAN: Obtener las inscripciones actuales del alumno
+    MAN-->>INS: Inscripciones del alumno
+    INS->>INS: Verificar que no haya traslape de horario
+    INS->>MAN: Registrar la inscripción
+    MAN->>BD: Insertar la inscripción del alumno
+    BD-->>MAN: OK
+    INS-->>Coordinador: Confirma la inscripción
+
+    Note over Coordinador,BD: CU-05 - Flujos alternativos (pasos 5.a y 5.b del caso de uso)
+    alt El cupo está completo o el alumno ya está inscripto
+        INS-->>Coordinador: Informa el motivo y no registra la inscripción
+    else Traslape de horario con otro curso
+        INS-->>Coordinador: Informa el traslape y no registra la inscripción
+    end

@@ -1,0 +1,303 @@
+classDiagram
+    class UserBE {
+        +int Id
+        +string UserName
+        +string PasswordHash
+        +bool IsActive
+        +int RetriesCount
+        +DateTime LastUpdate
+        +DateTime CreatedAt
+        +string Language
+        +string Theme
+        +int RoleId
+    }
+
+    class LoginResultBE {
+        +bool Success
+        +string Message
+        +UserBE User
+        +string ErrorCode
+    }
+
+    class RoleBE {
+        +int Id
+        +string Name
+    }
+
+    class PermissionBE {
+        +int Id
+        +string Name
+        +string Label
+        +string Description
+        +bool IsSystem
+    }
+
+    class ClassroomBE {
+        +int Id
+        +string Name
+        +int Capacity
+        +bool IsActive
+        +DateTime CreatedAt
+        +DateTime LastUpdate
+    }
+
+    class CourseBE {
+        +int Id
+        +string Name
+        +string Description
+        +DateTime StartDate
+        +DateTime EndDate
+        +int ClassroomId
+        +string ClassroomName
+        +int? DayOfWeek
+        +TimeSpan? StartTime
+        +TimeSpan? EndTime
+        +bool IsActive
+        +List~UserBE~ Teachers
+    }
+
+    class EnrollmentBE {
+        +int Id
+        +int CourseId
+        +int StudentId
+        +bool IsActive
+        +string CourseName
+        +string StudentName
+    }
+
+    class AttendanceBE {
+        +int Id
+        +int CourseId
+        +int StudentId
+        +DateTime Date
+        +bool IsPresent
+        +string StudentName
+        +string CourseName
+    }
+
+    class RoleComponentBE {
+        <<abstract>>
+        +string Name
+        +HasPermission(string) bool
+        +GetAllPermissions() List~PermissionBE~
+    }
+
+    class RoleCompositeBE {
+        +List~RoleComponentBE~ _children
+        +AddChild(RoleComponentBE) void
+        +RemoveChild(RoleComponentBE) void
+    }
+
+    class PermissionLeafBE {
+        +PermissionBE _permission
+    }
+
+    class IActivityLogEntryBE {
+        <<interface>>
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +bool Execute()
+    }
+
+    class ActivityLogEntryBE {
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +bool Execute()
+    }
+
+    class ActivityLoggingDecoratorBLL {
+        -IActivityLogEntryBE _activity
+        -IActivityMPP _activityMPP
+        +bool Execute()
+    }
+
+    class IPasswordStrategyBLL {
+        <<interface>>
+        +bool Matches(string)
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class BcryptPasswordStrategyBLL {
+        +bool Matches(string)
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class LegacySha256PasswordStrategyBLL {
+        +bool Matches(string)
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class PasswordHasherBLL {
+        +List~IPasswordStrategyBLL~ _strategies
+        +string HashPassword(string)
+        +bool VerifyPassword(string, string)
+    }
+
+    class AuthBLL {
+        -IUserMPP _userMPP
+        +Login(string, string) LoginResultBE
+        +Logout(UserBE) bool
+    }
+
+    class UserBLL {
+        -IUserMPP _userMPP
+        +Save(UserBE) bool
+        +Delete(UserBE) bool
+        +FindAll() List~UserBE~
+        +FindById(int) UserBE
+        +ChangePassword(int, string, string) bool
+    }
+
+    class RoleBLL {
+        -IRoleMPP _roleMPP
+        +Save(RoleBE) int
+        +Delete(int) bool
+        +SavePermissions(int, List~int~) void
+    }
+
+    class PermissionBLL {
+        -IRoleMPP _roleMPP
+        +BuildRoleTree(int) RoleCompositeBE
+        +HasPermission(int, string) bool
+    }
+
+    class ActivityBLL {
+        -IActivityMPP _activityMPP
+        +LogFormAccess(int, string, string) void
+        +LogLogin(int, string) void
+        +LogLogout(int, string) void
+        +GetByUserPaginated(int, int, int) List~ActivityLogBE~
+    }
+
+    class ClassroomBLL {
+        -IClassroomMPP _classroomMPP
+        +Save(ClassroomBE) bool
+        +Delete(ClassroomBE) bool
+        +FindById(int) ClassroomBE
+        +FindAll() List~ClassroomBE~
+        +Count() int
+    }
+
+    class CourseBLL {
+        -ICourseMPP _courseMPP
+        +Save(CourseBE) bool
+        +Delete(CourseBE) bool
+        +FindById(int) CourseBE
+        +FindAll() List~CourseBE~
+        +ExistsClassroomOverlap(...) bool
+        +SaveTeachers(int, List~int~) bool
+    }
+
+    class EnrollmentBLL {
+        -IEnrollmentMPP _enrollmentMPP
+        -ICourseBLL _courseBLL
+        +Enroll(int, int) bool
+        +Unenroll(int, int) bool
+        +FindByStudentId(int) List~EnrollmentBE~
+    }
+
+    class AttendanceBLL {
+        -IAttendanceMPP _attendanceMPP
+        +RegisterAttendanceBulk(int, DateTime, List~AttendanceBE~) bool
+        +FindByCourseIdAndDate(int, DateTime) List~AttendanceBE~
+        +IsTeacherOfCourse(int, int) bool
+    }
+
+    class ServiceLocatorBLL {
+        <<static>>
+        +GetUserMPP() IUserMPP
+        +GetRoleMPP() IRoleMPP
+        +CreateAuthBLL() IAuthBLL
+        +CreateUserBLL() IUserBLL
+        +CreateClassroomBLL() IClassroomBLL
+        +CreateCourseBLL() ICourseBLL
+    }
+
+    class SessionManagerBLL {
+        -Dictionary~int,SessionManagerBLL~ _instances
+        +CreateSession(UserBE) SessionManagerBLL
+        +GetInstance(int) SessionManagerBLL
+        +RemoveSession(int) void
+        +HasPermission(string) bool
+    }
+
+    class UserMPP {
+        -AccessDAL _access
+        +GetByUserName(string) UserBE
+        +Save(UserBE) bool
+        +Delete(UserBE) bool
+    }
+
+    class ClassroomMPP {
+        -AccessDAL _access
+        +Save(ClassroomBE) bool
+        +Delete(ClassroomBE) bool
+        +FindById(int) ClassroomBE
+        +FindAll() List~ClassroomBE~
+    }
+
+    class CourseMPP {
+        -AccessDAL _access
+        +Save(CourseBE) bool
+        +Delete(CourseBE) bool
+        +FindById(int) CourseBE
+        +ExistsClassroomOverlap(...) bool
+    }
+
+    class AccessDAL {
+        +Read(string, SqlParameters[]) DataTable
+        +ReadScalar(string) int
+        +Save(string, SqlParameters[]) bool
+    }
+
+    class LoginForm {
+        +IAuthBLL _authBLL
+        +btnLogin_Click(object, EventArgs) void
+    }
+
+    class MainForm {
+        +SessionManagerBLL _session
+        +ShowMenuByPermissions() void
+    }
+
+    UserBE --> RoleBE : role
+    RoleBE --> PermissionBE : permissions
+    RoleBE --> RoleCompositeBE : ToComposite()
+    RoleCompositeBE ..|> RoleComponentBE
+    PermissionLeafBE ..|> RoleComponentBE
+    ActivityLogEntryBE ..|> IActivityLogEntryBE
+    ActivityLoggingDecoratorBLL ..|> IActivityLogEntryBE
+    ActivityLoggingDecoratorBLL --> IActivityLogEntryBE : _activity
+    BcryptPasswordStrategyBLL ..|> IPasswordStrategyBLL
+    LegacySha256PasswordStrategyBLL ..|> IPasswordStrategyBLL
+    PasswordHasherBLL --> IPasswordStrategyBLL : strategies
+    AuthBLL --> UserMPP : _userMPP
+    AuthBLL --> PasswordHasherBLL : uses
+    UserBLL --> UserMPP : _userMPP
+    RoleBLL --> RoleMPP : _roleMPP
+    PermissionBLL --> RoleMPP : _roleMPP
+    ActivityBLL --> ActivityMPP : _activityMPP
+    ClassroomBLL --> ClassroomMPP : _classroomMPP
+    CourseBLL --> CourseMPP : _courseMPP
+    EnrollmentBLL --> EnrollmentMPP : _enrollmentMPP
+    EnrollmentBLL --> CourseBLL : _courseBLL
+    AttendanceBLL --> AttendanceMPP : _attendanceMPP
+    UserMPP --> AccessDAL : _access
+    ClassroomMPP --> AccessDAL : _access
+    CourseMPP --> AccessDAL : _access
+    LoginForm --> AuthBLL : _authBLL
+    MainForm --> SessionManagerBLL : _session
+    ServiceLocatorBLL --> UserMPP : creates
+    ServiceLocatorBLL --> RoleMPP : creates
+    ServiceLocatorBLL --> ClassroomMPP : creates
+    ServiceLocatorBLL --> CourseMPP : creates
+    CourseBE --> ClassroomBE : classroom
+    EnrollmentBE --> CourseBE : course
+    AttendanceBE --> CourseBE : course

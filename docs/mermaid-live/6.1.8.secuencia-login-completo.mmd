@@ -1,0 +1,43 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant AUTH as :AuthBLL
+    participant ENC as :EncryptionBLL
+    participant UMP as :UserMPP
+    participant ACC as :AccessDAL
+    participant BD as :SQL Server (Base de Datos)
+    participant SES as :SessionManagerBLL
+
+    Note over Usuario,BD: CU-01 pasos 2-3: ingresa credenciales y presiona "Ingresar"
+    Usuario->>AUTH: Ingresar(userName="dario", password="******")
+    alt Usuario y contraseña incompletos
+        AUTH-->>Usuario: "Usuario y contraseña son obligatorios."
+    end
+
+    AUTH->>UMP: GetByUserName("dario")
+    UMP->>ACC: Read(consulta de usuario, SqlParameters[userName])
+    ACC->>BD: SELECT user_name, password_hash, is_active, retries_count FROM users WHERE user_name=@userName
+    BD-->>ACC: Fila(s) del usuario
+    ACC-->>UMP: DataTable
+    UMP-->>AUTH: UserBE{UserName="dario", IsActive=true, RetriesCount=1}
+
+    alt Usuario inexistente
+        AUTH-->>Usuario: "Usuario o contraseña incorrectos."
+    else Cuenta inactiva
+        AUTH-->>Usuario: "Usuario bloqueado. Contacte al administrador."
+    else Cuenta activa
+        AUTH->>ENC: AuthenticateUser(user, password)
+        ENC->>ENC: VerifyPassword(password, user.PasswordHash)
+        alt Contraseña válida
+            AUTH->>UMP: UpdateLastUpdate(user.Id, DateTime.Now)
+            AUTH->>UMP: UpdateRetries(user.Id, 0)
+            AUTH->>SES: CreateSession(user)
+            AUTH-->>Usuario: "Login exitoso." - muestra la pantalla principal según rol
+        else Contraseña inválida (quedan intentos)
+            AUTH->>UMP: UpdateRetries(user.Id, user.RetriesCount + 1)
+            AUTH-->>Usuario: "Usuario o contraseña incorrectos. Intentos restantes: N"
+        else Contraseña inválida (último intento)
+            AUTH->>UMP: Deactivate(user.Id)
+            AUTH-->>Usuario: "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador."
+        end
+    end
