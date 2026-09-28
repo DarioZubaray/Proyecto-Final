@@ -56,9 +56,9 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `AttendanceBE` | Entidad *Asistencia*. Modela un registro de asistencia: curso, alumno, fecha y estado (presente/ausente). |
 | `IActivityLogEntryBE` | Interfaz componente del patrón **Decorator**: define `UserId`, `Action`, `FormName`, `Description` y `Execute()`. |
 | `ActivityLogEntryBE` | Componente concreto del **Decorator**: representa una actividad concreta (acceso a formulario, login o logout) sin efectos secundarios. |
-| `IRoleComponentBE` | Interfaz común del **Composite** (componente). Define `Name`, `HasPermission(name)` y `GetAllPermissions()`. |
-| `RoleCompositeBE` | Nodo **compuesto** del árbol: representa un rol que contiene hijos (otros roles y hojas de permiso). Permite agregar/quitar hijos y recorre el árbol para resolver permisos. |
-| `PermissionLeafBE` | **Hoja** del árbol: envuelve un `PermissionBE` concreto. Evalúa `HasPermission` contra su propio nombre. |
+| `RoleComponentBE` | Entidad **genérica** del **Composite** (clase base abstracta). Define `Name`, `HasPermission(name)` y `GetAllPermissions()`. Es la base de la que heredan las 2 clases del patrón. |
+| `RoleCompositeBE` | Nodo **compuesto** del árbol (hereda de `RoleComponentBE`): representa un rol que contiene hijos (otros roles y hojas de permiso). Permite agregar/quitar hijos y recorre el árbol para resolver permisos. |
+| `PermissionLeafBE` | **Hoja** del árbol (hereda de `RoleComponentBE`): envuelve un `PermissionBE` concreto. Evalúa `HasPermission` contra su propio nombre. |
 
 ### DAL — Data Access Layer
 
@@ -129,16 +129,16 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 El patrón **Composite** permite tratar por igual a un rol completo y a un permiso individual, de modo que los permisos de un usuario se modelan como un **árbol**.
 
 ```
-IRoleComponentBE  (interfaz componente)
+RoleComponentBE  (entidad genérica abstracta)
    ├─ RoleCompositeBE  (compuesto: contiene hijos)
    └─ PermissionLeafBE (hoja: envuelve un PermissionBE)
 ```
 
 Participantes:
 
-- **Componente** → `IRoleComponentBE` — `Name`, `HasPermission(name)`, `GetAllPermissions()`.
-- **Compuesto** → `RoleCompositeBE` — mantiene una lista `_children` y dispone de `AddChild`/`RemoveChild`. `HasPermission` delega en cada hijo y `GetAllPermissions` concatena los resultados.
-- **Hoja** → `PermissionLeafBE` — envuelve un `PermissionBE` concreto; `HasPermission` compara su propio nombre.
+- **Componente (entidad genérica)** → `RoleComponentBE` — clase base abstracta con `Name`, `HasPermission(name)`, `GetAllPermissions()`.
+- **Compuesto** → `RoleCompositeBE` (hereda de `RoleComponentBE`) — mantiene una lista `_children` y dispone de `AddChild`/`RemoveChild`. `HasPermission` delega en cada hijo y `GetAllPermissions` concatena los resultados.
+- **Hoja** → `PermissionLeafBE` (hereda de `RoleComponentBE`) — envuelve un `PermissionBE` concreto; `HasPermission` compara su propio nombre.
 
 **Construcción del árbol**:
 1. `SessionManagerBLL.CreateSession(user)` invoca `PermissionBLL.BuildRoleTree(user.RoleId)`.
@@ -256,7 +256,7 @@ Cada tipo tiene **un único motivo de cambio**:
 
 El sistema está **abierto a la extensión y cerrado a la modificación**:
 
-- **Composite**: se pueden agregar nuevos tipos de componentes de rol/permiso sin modificar la interfaz `IRoleComponentBE` ni el recorrido del árbol.
+- **Composite**: se pueden agregar nuevos tipos de componentes de rol/permiso sin modificar la clase base `RoleComponentBE` ni el recorrido del árbol.
 - **Decorator**: se agrega la responsabilidad de "guardar en el historial" (`ActivityLoggingDecorator`) **sin tocar** la actividad base (`BaseActivity`); se pueden añadir nuevas actividades o decoradores sin modificar lo existente.
 - **Strategy**: se puede incorporar un tercer algoritmo de hash (p. ej. Argon2) creando una nueva `IPasswordStrategyBLL`, **sin modificar** ni `PasswordHasherBLL` ni a sus consumidores.
 - **Interfaces** `IUserBLL`, `IRoleBLL`, `IAuthBLL`, `IActivityBLL` y `IUserMPP`, `IRoleMPP`, `IActivityMPP`: el consumidor depende de la abstracción, por lo que se pueden incorporar nuevas implementaciones (p. ej. otra persistencia) sin alterar a quien las usa.
@@ -265,7 +265,7 @@ El sistema está **abierto a la extensión y cerrado a la modificación**:
 
 Los subtipos son intercambiables por su base sin romper el comportamiento:
 
-- `RoleCompositeBE` y `PermissionLeafBE` pueden usarse indistintamente como `IRoleComponentBE`; el árbol los recorre de forma uniforme en `HasPermission` y `GetAllPermissions`.
+- `RoleCompositeBE` y `PermissionLeafBE` pueden usarse indistintamente como `RoleComponentBE`; el árbol los recorre de forma uniforme en `HasPermission` y `GetAllPermissions`.
 - Las implementaciones concretas (p. ej. `UserMPP`, `RoleBLL`) son **sustituibles por mocks** en las pruebas (MSTest + Moq) sin que cambie el comportamiento de quienes las consumen.
 
 ### I — Interface Segregation (Segregación de Interfaces)

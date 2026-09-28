@@ -4,18 +4,18 @@ using BE.Entities;
 
 namespace BE.Composite
 {
-    public class RoleCompositeBE : IRoleComponentBE
+    public class RoleCompositeBE : RoleComponentBE
     {
         #region Propiedades
         public int Id { get; set; }
-        public string Name { get; set; }
-        private readonly List<IRoleComponentBE> _children;
+        public override string Name { get; }
+        private readonly List<RoleComponentBE> _children;
         #endregion
 
         #region Constructor
         public RoleCompositeBE()
         {
-            _children = new List<IRoleComponentBE>();
+            _children = new List<RoleComponentBE>();
         }
 
         public RoleCompositeBE(int id, string name) : this()
@@ -26,22 +26,22 @@ namespace BE.Composite
         #endregion
 
         #region Métodos
-        public void AddChild(IRoleComponentBE child)
+        public void AddChild(RoleComponentBE child)
         {
             _children.Add(child);
         }
 
-        public void RemoveChild(IRoleComponentBE child)
+        public void RemoveChild(RoleComponentBE child)
         {
             _children.Remove(child);
         }
 
-        public List<IRoleComponentBE> GetChildren()
+        public List<RoleComponentBE> GetChildren()
         {
-            return new List<IRoleComponentBE>(_children);
+            return new List<RoleComponentBE>(_children);
         }
 
-        public bool HasPermission(string permissionName)
+        public override bool HasPermission(string permissionName)
         {
             foreach (var child in _children)
             {
@@ -53,7 +53,7 @@ namespace BE.Composite
             return false;
         }
 
-        public List<PermissionBE> GetAllPermissions()
+        public override List<PermissionBE> GetAllPermissions()
         {
             var permissions = new List<PermissionBE>();
             foreach (var child in _children)

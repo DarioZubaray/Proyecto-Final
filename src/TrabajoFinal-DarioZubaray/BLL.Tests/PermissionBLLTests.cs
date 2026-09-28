@@ -124,6 +124,20 @@ namespace BLL.Tests
 
             Assert.IsFalse(_permissionBLL.HasPermission(composite, "FORM_REPORTS"));
         }
+
+        [TestMethod]
+        public void CompositeHierarchy_SimpleAndComposite_InheritGenericEntity()
+        {
+            var leaf = new PermissionLeafBE(new PermissionBE(1, "FORM_USER_MGMT", "Usuarios", null));
+            var composite = new RoleCompositeBE(1, "Admin");
+
+            Assert.AreEqual(typeof(RoleComponentBE), leaf.GetType().BaseType);
+            Assert.AreEqual(typeof(RoleComponentBE), composite.GetType().BaseType);
+
+            RoleComponentBE node = leaf;
+            Assert.IsTrue(node.HasPermission("FORM_USER_MGMT"));
+            Assert.IsFalse(node.HasPermission("FORM_REPORTS"));
+        }
         #endregion
     }
 }

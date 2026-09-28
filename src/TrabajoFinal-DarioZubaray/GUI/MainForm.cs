@@ -95,7 +95,7 @@ namespace TrabajoFinal_DarioZubaray
             return roleNames.Any() ? string.Join(", ", roleNames.Distinct()) : "-";
         }
 
-        private List<string> CollectRoleNames(IRoleComponentBE component)
+        private List<string> CollectRoleNames(RoleComponentBE component)
         {
             var names = new List<string>();
 
