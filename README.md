@@ -28,7 +28,7 @@ Solución con la siguiente arquitectura en capas (cada capa es un proyecto):
 
 Se destacan **cuatro** patrones de diseño:
 
-- **Composite** — `IRoleComponentBE`, `RoleCompositeBE` y `PermissionLeafBE` representan la jerarquía de roles/permisos como un árbol.
+- **Composite** — `RoleComponentBE` (entidad genérica abstracta), `RoleCompositeBE` (compuesto) y `PermissionLeafBE` (hoja) representan la jerarquía de roles/permisos como un árbol.
 - **Singleton / Multiton** — `ServiceLocatorBLL` (singleton de servicios) y `SessionManagerBLL` (multiton de sesiones, una por usuario).
 - **Decorator** — `ActivityLoggingDecoratorBLL` envuelve una actividad (`IActivityLogEntryBE`/`ActivityLogEntryBE`) y, al finalizar, guarda un registro en el **Historial de Actividad**.
 - **Strategy** — `PasswordHasherBLL` elige entre algoritmos de hash intercambiables (`BcryptPasswordStrategyBLL` y `LegacySha256PasswordStrategyBLL`) para el cifrado/verificación de contraseñas.
@@ -74,13 +74,16 @@ Ejecutar los scripts en orden:
 
 Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato, como el [Mermaid Live Editor](https://mermaid.live/) (índice completo en [`docs/README.md`](docs/README.md)):
 
-- `casos-uso.mmd` — casos de uso por actor (Admin, Profesor, Alumno).
-- `clases.mmd` — diagrama de clases con el patrón Composite.
-- `er.mmd` — modelo entidad-relación de la base.
-- `secuencia-login.mmd` — secuencia simple del inicio de sesión (vista de alto nivel).
-- `secuencia-login-completo.mmd` — secuencia completa con toda la cadena: AuthBLL → UserMPP → AccessDAL → SQL Server, ActivityBLL, PermissionBLL → RoleMPP, SessionManagerBLL, AppPreferencesBLL.
-- `secuencia-logout.mmd` — secuencia simple del cierre de sesión (vista de alto nivel).
-- `secuencia-logout-completo.mmd` — secuencia completa: AppPreferencesBLL (archivo), SessionManagerBLL (memoria), ActivityBLL → ActivityMPP → AccessDAL → SQL Server, CultureHelperBLL, ThemeHelper.
+- `3.1.4.modelo-conceptual.mmd` — modelo conceptual (diagrama de clases de BE, con el Composite).
+- `4.1.casos-uso.mmd` — casos de uso (Admin, Coordinador, Profesor).
+- `7.clases.mmd` — diagrama de clases con el patrón Composite.
+- `8.er.mmd` — modelo entidad-relación de la base.
+- `4.2.8.secuencia-crear-curso.mmd` — secuencia simple de crear curso (vista de alto nivel).
+- `4.2.8.secuencia-crear-curso-completo.mmd` — secuencia completa con toda la cadena: Coordinador → CourseBLL → CourseMPP → AccessDAL → SQL Server.
+- `6.1.8.secuencia-login.mmd` — secuencia simple del inicio de sesión (vista de alto nivel).
+- `6.1.8.secuencia-login-completo.mmd` — secuencia completa con toda la cadena: AuthBLL → UserMPP → AccessDAL → SQL Server, ActivityBLL, PermissionBLL → RoleMPP, SessionManagerBLL, AppPreferencesBLL.
+- `6.2.8.secuencia-logout.mmd` — secuencia simple del cierre de sesión (vista de alto nivel).
+- `6.2.8.secuencia-logout-completo.mmd` — secuencia completa: AppPreferencesBLL (archivo), SessionManagerBLL (memoria), ActivityBLL → ActivityMPP → AccessDAL → SQL Server, CultureHelperBLL, ThemeHelper.
 
 ## Enlaces útiles
 
