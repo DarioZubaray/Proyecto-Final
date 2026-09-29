@@ -129,82 +129,43 @@ namespace TrabajoFinal_DarioZubaray
         #region MenuItem_Click
         private void historialActividadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = new ActivityHistoryForm(_user)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new ActivityHistoryForm(_user));
         }
 
         private void preferenciasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("PreferencesForm");
-            var form = new PreferencesForm(_user, this)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new PreferencesForm(_user, this), "PreferencesForm");
         }
 
         private void usuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("UserManagementForm");
-            var form = new UserManagementForm(_user)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new UserManagementForm(_user), "UserManagementForm");
         }
 
         private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("RoleManagementForm");
-            var form = new RoleManagementForm(_user)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new RoleManagementForm(_user), "RoleManagementForm");
         }
 
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("ClassroomManagementForm");
-            var form = new ClassroomManagementForm(_user)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new ClassroomManagementForm(_user), "ClassroomManagementForm");
         }
 
         private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("CourseManagementForm");
-            var form = new CourseManagementForm(_user)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new CourseManagementForm(_user), "CourseManagementForm");
         }
 
         private void inscripcionesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_user.RoleId == 3)
             {
-                LogFormAccess("EnrollmentForm");
-                var form = new EnrollmentForm(_user)
-                {
-                    MdiParent = this
-                };
-                form.Show();
+                ShowChildForm(() => new EnrollmentForm(_user), "EnrollmentForm");
             }
             else
             {
-                LogFormAccess("EnrollmentManagementForm");
-                var form = new EnrollmentManagementForm(_user)
-                {
-                    MdiParent = this
-                };
-                form.Show();
+                ShowChildForm(() => new EnrollmentManagementForm(_user), "EnrollmentManagementForm");
             }
         }
 
@@ -212,42 +173,52 @@ namespace TrabajoFinal_DarioZubaray
         {
             if (_session.HasPermission("FORM_ASISTENCIA_MGMT"))
             {
-                LogFormAccess("AttendanceForm");
-                var form = new AttendanceForm(_user)
-                {
-                    MdiParent = this
-                };
-                form.Show();
+                ShowChildForm(() => new AttendanceForm(_user), "AttendanceForm");
             }
             else if (_session.HasPermission("FORM_ASISTENCIA_VIEW"))
             {
-                LogFormAccess("AttendanceViewForm");
-                var form = new AttendanceViewForm(_user)
-                {
-                    MdiParent = this
-                };
-                form.Show();
+                ShowChildForm(() => new AttendanceViewForm(_user), "AttendanceViewForm");
             }
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("ChangePasswordForm");
-            var form = new ChangePasswordForm(_user)
-            {
-                MdiParent = this
-            };
-            form.Show();
+            ShowChildForm(() => new ChangePasswordForm(_user), "ChangePasswordForm");
         }
 
         private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LogFormAccess("AboutForm");
-            var form = new AboutForm(_user)
+            ShowChildForm(() => new AboutForm(_user), "AboutForm");
+        }
+
+        private void ShowChildForm<TForm>(Func<TForm> factory, string logName = null) where TForm : Form
+        {
+            var existing = MdiChildren.OfType<TForm>().FirstOrDefault();
+
+            if (existing != null)
             {
-                MdiParent = this
-            };
+                FocusChildForm(existing);
+                return;
+            }
+
+            if (logName != null)
+            {
+                LogFormAccess(logName);
+            }
+
+            var form = factory();
+            form.MdiParent = this;
             form.Show();
+        }
+
+        private void FocusChildForm(Form form)
+        {
+            if (form.WindowState == FormWindowState.Minimized)
+            {
+                form.WindowState = FormWindowState.Normal;
+            }
+
+            form.BringToFront();
         }
 
         private void LogFormAccess(string formName)
