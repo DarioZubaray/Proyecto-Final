@@ -13,13 +13,15 @@ namespace BLL.Services
     {
         #region Propiedades
         private readonly IUserMPP _userMPP;
+        private readonly ITwoFactorBLL _twoFactor;
         private const int MAX_RETRIES = 3;
         #endregion
 
         #region Constructor
-        public AuthBLL(IUserMPP userMPP)
+        public AuthBLL(IUserMPP userMPP, ITwoFactorBLL twoFactor)
         {
             _userMPP = userMPP;
+            _twoFactor = twoFactor;
         }
         #endregion
 
@@ -38,12 +40,22 @@ namespace BLL.Services
                 return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
             }
 
-            if (!user.IsActive)
+            if (!user.IsActive && !IsAdmin(user))
             {
                 return CreateLoginFailed(Resources.Auth_UserBlocked, ErrorCodesBLL.Auth.UserBlocked);
             }
 
             return AuthenticateUser(user, password);
+        }
+
+        public bool ValidateTwoFactor(UserBE user, string code)
+        {
+            if (user == null || string.IsNullOrEmpty(code))
+            {
+                return false;
+            }
+
+            return _twoFactor.Verify(user.UserName, code);
         }
 
         public bool Logout(UserBE user)
@@ -62,6 +74,11 @@ namespace BLL.Services
         {
             return !string.IsNullOrEmpty(userName)
                 && !string.IsNullOrEmpty(password);
+        }
+
+        private bool IsAdmin(UserBE user)
+        {
+            return user != null && UserBLL.IsAdminName(user.UserName);
         }
 
         private LoginResultBE AuthenticateUser(UserBE user, string password)
@@ -91,12 +108,20 @@ namespace BLL.Services
             {
                 Success = true,
                 Message = Resources.Auth_LoginSuccess,
-                User = user
+                User = user,
+                RequiresTwoFactor = IsAdmin(user)
             };
         }
 
         private LoginResultBE LoginFailed(UserBE user)
         {
+            // El usuario admin esta exento del control de reintentos:
+            // no cuenta, no se desactiva y no recibe mensajes de reintento.
+            if (IsAdmin(user))
+            {
+                return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
+            }
+
             user.RetriesCount++;
 
             if (user.RetriesCount >= MAX_RETRIES)

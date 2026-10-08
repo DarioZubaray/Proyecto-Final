@@ -16,6 +16,7 @@ namespace BLL.Helpers
             public const string UserBlocked = "AUTH-003";
             public const string MaxRetriesExceeded = "AUTH-004";
             public const string RetryAttemptsLeft = "AUTH-005";
+            public const string TwoFactorInvalid = "AUTH-006";
         }
 
         public static class Validation
@@ -26,6 +27,7 @@ namespace BLL.Helpers
             public const string NameRequired = "VAL-004";
             public const string NoSelection = "VAL-005";
             public const string LanguageThemeRequired = "VAL-006";
+            public const string AdminUsernameLocked = "VAL-007";
         }
 
         public static class Business
@@ -34,6 +36,7 @@ namespace BLL.Helpers
             public const string InvalidCurrentPassword = "BIZ-002";
             public const string TraslapeHorario = "BIZ-003";
             public const string YaInscripto = "BIZ-004";
+            public const string AdminProtected = "BIZ-005";
         }
 
         public static class General

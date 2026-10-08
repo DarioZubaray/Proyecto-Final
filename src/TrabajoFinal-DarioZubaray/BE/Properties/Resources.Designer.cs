@@ -106,6 +106,24 @@ namespace BE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Código de doble factor inválido..
+        /// </summary>
+        public static string Auth_TwoFactorInvalid {
+            get {
+                return ResourceManager.GetString("Auth_TwoFactorInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Ingrese el código de doble factor de autenticación..
+        /// </summary>
+        public static string Auth_TwoFactorPrompt {
+            get {
+                return ResourceManager.GetString("Auth_TwoFactorPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Usuario bloqueado. Contacte al administrador..
         /// </summary>
         public static string Auth_UserBlocked {
@@ -237,6 +255,42 @@ namespace BE.Properties {
         public static string Theme_System {
             get {
                 return ResourceManager.GetString("Theme_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Código de verificación:.
+        /// </summary>
+        public static string TwoFactor_CodeLabel {
+            get {
+                return ResourceManager.GetString("TwoFactor_CodeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Aceptar.
+        /// </summary>
+        public static string TwoFactor_AcceptButton {
+            get {
+                return ResourceManager.GetString("TwoFactor_AcceptButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Cancelar.
+        /// </summary>
+        public static string TwoFactor_CancelButton {
+            get {
+                return ResourceManager.GetString("TwoFactor_CancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Doble Factor de Autenticación.
+        /// </summary>
+        public static string TwoFactor_Title {
+            get {
+                return ResourceManager.GetString("TwoFactor_Title", resourceCulture);
             }
         }
         
@@ -376,6 +430,15 @@ namespace BE.Properties {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El usuario administrador no puede ser eliminado..
+        /// </summary>
+        public static string UserManagement_DeleteDenied {
+            get {
+                return ResourceManager.GetString("UserManagement_DeleteDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Usuario eliminado correctamente..
         /// </summary>
         public static string UserManagement_DeleteSuccess {
@@ -480,6 +543,15 @@ namespace BE.Properties {
         public static string UserForm_UserNameRequired {
             get {
                 return ResourceManager.GetString("UserForm_UserNameRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El nombre del usuario administrador no puede modificarse..
+        /// </summary>
+        public static string UserForm_UserNameAdminLocked {
+            get {
+                return ResourceManager.GetString("UserForm_UserNameAdminLocked", resourceCulture);
             }
         }
         

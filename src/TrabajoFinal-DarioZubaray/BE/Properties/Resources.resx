@@ -103,6 +103,27 @@
   <data name="Auth_RetriesLeft" xml:space="preserve">
     <value>Usuario o contraseña incorrectos. Intentos restantes: {0}</value>
   </data>
+  <data name="Auth_TwoFactorPrompt" xml:space="preserve">
+    <value>Ingrese el código de doble factor de autenticación.</value>
+  </data>
+  <data name="Auth_TwoFactorInvalid" xml:space="preserve">
+    <value>Código de doble factor inválido.</value>
+  </data>
+  <data name="TwoFactor_Title" xml:space="preserve">
+    <value>Doble Factor de Autenticación</value>
+  </data>
+  <data name="TwoFactor_CodeLabel" xml:space="preserve">
+    <value>Código de verificación:</value>
+  </data>
+  <data name="TwoFactor_AcceptButton" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="TwoFactor_CancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="UserManagement_DeleteDenied" xml:space="preserve">
+    <value>El usuario administrador no puede ser eliminado.</value>
+  </data>
   <data name="Role_OptionsCount" xml:space="preserve">
     <value>{0} opciones</value>
   </data>
@@ -201,6 +222,9 @@
   </data>
   <data name="UserForm_UserNameRequired" xml:space="preserve">
     <value>El nombre de usuario es obligatorio.</value>
+  </data>
+  <data name="UserForm_UserNameAdminLocked" xml:space="preserve">
+    <value>El nombre del usuario administrador no puede modificarse.</value>
   </data>
   <data name="UserForm_PasswordRequired" xml:space="preserve">
     <value>La contraseña es obligatoria.</value>

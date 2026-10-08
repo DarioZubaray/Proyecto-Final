@@ -138,6 +138,12 @@ namespace TrabajoFinal_DarioZubaray
                     MessageBox.Show(Resources.UserManagement_DeleteSuccess);
                     LoadUsers();
                 }
+                else
+                {
+                    MessageBox.Show(ErrorFormatter.WithCode(
+                        Resources.UserManagement_DeleteDenied,
+                        ErrorCodesBLL.Business.AdminProtected));
+                }
             }
         }
 

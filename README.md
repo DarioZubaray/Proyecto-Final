@@ -51,6 +51,7 @@ Ejecutar los scripts en orden:
 4. `03_v1.1.0_AulasCursosInscripciones.sql` — migración v1.1.0: crea Aulas, Cursos, CursoDocentes, CursoAlumnos, permisos y rol Coordinador.
 5. `04_v1.1.0_Rollback.sql` — (opcional) deshace la migración v1.1.0.
 6. `05_v1.1.0_Queries.sql` — consultas de ejemplo / verificación.
+7. `07_v1.2.0_AdminPassword.sql` — migración v1.2.0: contraseña `admin` para el usuario `admin` (exento de bloqueo, requiere 2FA).
 
 > **Alternativa (recomendada):** `06_v1.1.0_ScriptConsolidado.sql` es el **script maestro** que crea la base `DarioZubaray_TF` (si no existe) y deja el esquema completo con todos los datos en un solo paso.
 
@@ -58,7 +59,7 @@ Ejecutar los scripts en orden:
 
 | Usuario | Contraseña | Rol |
 |---------|-----------|-----|
-| `admin` | `123` | Admin (todos los permisos) |
+| `admin` | `admin` | Admin (todos los permisos) — exento de bloqueo por intentos, pide código 2FA `123` |
 | `dario` | `123` | Admin (todos los permisos) |
 | `coord_maria` | `123` | Coordinador (ABMs) |
 | `coord_carlos` | `123` | Coordinador (ABMs) |

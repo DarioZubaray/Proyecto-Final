@@ -13,6 +13,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | [`04_v1.1.0_Rollback.sql`](04_v1.1.0_Rollback.sql) | Rollback de v1.1.0. |
 | [`05_v1.1.0_Queries.sql`](05_v1.1.0_Queries.sql) | Consultas de verificación y desarrollo. |
 | [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql) | **Script maestro**: crea la base (si no existe), crea todas las tablas, inserta los datos y registra las versiones en un solo paso. |
+| [`07_v1.2.0_AdminPassword.sql`](07_v1.2.0_AdminPassword.sql) | Migración v1.2.0: cambia la contraseña del usuario `admin` a `admin` y resetea su estado (exento de bloqueo, 2FA). |
 
 ## Instalación
 
@@ -35,7 +36,10 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 -- 4. Migración v1.1.0 (aulas, cursos, inscripciones, asistencia)
 03_v1.1.0_AulasCursosInscripciones.sql
 
--- 5. (opcional) Consultas de verificación
+-- 5. Migración v1.2.0 (contraseña admin/admin)
+07_v1.2.0_AdminPassword.sql
+
+-- 6. (opcional) Consultas de verificación
 05_v1.1.0_Queries.sql
 ```
 
@@ -53,7 +57,7 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 
 | Usuario | Contraseña | Rol |
 |---------|-----------|-----|
-| `admin` | `123` | Admin |
+| `admin` | `admin` | Admin — exento de bloqueo por 3 intentos; pide código 2FA `123` |
 | `dario` | `123` | Admin |
 | `coord_maria`, `coord_carlos`, `coord_laura` | `123` | Coordinador |
 | `prof_garcia` a `prof_fernandez` (5) | `123` | Profesor |

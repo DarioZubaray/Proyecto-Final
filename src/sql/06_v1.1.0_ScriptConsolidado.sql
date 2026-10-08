@@ -119,6 +119,7 @@ BEGIN TRY
     -- =============================================
 
     -- Hash BCrypt para password "123": $2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy
+    -- Hash BCrypt para password "admin" (usuario admin): $2a$11$h9OQXeWvXFC29T2cytB8HemgdlZQG35mnA6bmyZMTx3RNOMahmI0G
 
     -- 4.1 Roles
     INSERT INTO [dbo].[roles] (name) VALUES
@@ -161,11 +162,11 @@ BEGIN TRY
     SELECT 4, id FROM [dbo].[permissions] WHERE name IN
     ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_ASISTENCIA_VIEW');
 
-    -- 4.4 Usuarios (contrasena: 123 para todos)
+    -- 4.4 Usuarios (contrasena: 123 para todos, excepto admin: admin)
 
-    -- Admin (rol 1)
+    -- Admin (rol 1) - exento de bloqueo por reintentos, requiere 2FA (codigo: 123)
     INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
-    ('admin',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System'),
+    ('admin',  '$2a$11$h9OQXeWvXFC29T2cytB8HemgdlZQG35mnA6bmyZMTx3RNOMahmI0G', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System'),
     ('dario',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System');
 
     -- Coordinadores (rol 4)
@@ -364,14 +365,15 @@ BEGIN TRY
     -- =============================================
     INSERT INTO [dbo].[schema_versions] (version, script_name, applied_at) VALUES
     ('1.0.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
-    ('1.1.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
+    ('1.1.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
+    ('1.2.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
 
     -- =============================================
     -- 8. Confirmar
     -- =============================================
     COMMIT TRANSACTION;
 
-    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.1.0.';
+    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.2.0.';
 
 END TRY
 BEGIN CATCH

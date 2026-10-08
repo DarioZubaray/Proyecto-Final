@@ -82,8 +82,9 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Clase | Responsabilidad |
 |-------|-----------------|
-| `IAuthBLL` / `AuthBLL` | Autenticación. Valida credenciales, maneja hasta **3 reintentos**, desactiva el usuario superado el máximo y registra el último acceso. |
-| `IUserBLL` / `UserBLL` | Lógica de gestión de usuarios: CRUD, búsqueda, cambio de idioma y cambio de contraseña (verificando la actual). |
+| `IAuthBLL` / `AuthBLL` | Autenticación. Valida credenciales, maneja hasta **3 reintentos**, desactiva el usuario superado el máximo y registra el último acceso. El usuario **`admin`** está **exento** del bloqueo (no cuenta reintentos ni se desactiva) y requiere **doble factor (2FA)** antes de crear la sesión (`ValidateTwoFactor`). |
+| `ITwoFactorBLL` / `InternalTwoFactorBLL` | Servicio de **doble factor de autenticación**. Contrato intercambiable para conectar proveedores reales (Google, Microsoft, etc.); hoy resuelve internamente con el código hardcodeado **`123`**. Se configura en `ServiceLocatorBLL.CreateTwoFactorBLL()`. |
+| `IUserBLL` / `UserBLL` | Lógica de gestión de usuarios: CRUD, búsqueda, cambio de idioma y cambio de contraseña (verificando la actual). **Protege al usuario `admin`** (`UserBLL.ADMIN_USERNAME`, identificación por nombre case-insensitive): no se puede eliminar, desactivar, renombrar ni cambiarle el rol (`Delete`/`Save`); el rol es lo que define los permisos y por ende el menú de administración. En la UI, nombre/rol/estado quedan bloqueados al editar al admin (`UserForm`). |
 | `IRoleBLL` / `RoleBLL` | Lógica de gestión de roles: CRUD, permisos por rol (protegiendo los de sistema) y jerarquía de roles. |
 | `PermissionBLL` | Construye el árbol **Composite** de un rol mediante `BuildRoleTree(roleId)` y consulta permisos sobre el árbol (`HasPermission`). |
 | `IActivityBLL` / `ActivityBLL` | Servicio del **Historial de Actividad**. Registra accesos a formularios y el inicio/cierre de sesión (usando el **Decorator**) y consulta el historial de forma paginada. |
@@ -108,7 +109,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Formulario | Responsabilidad |
 |------------|-----------------|
-| `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). Al iniciar y al cerrar sesión aplica el idioma y tema "último usado" (`AppPreferencesBLL`). |
+| `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). Al iniciar y al cerrar sesión aplica el idioma y tema "último usado" (`AppPreferencesBLL`). Si el login requiere 2FA (`RequiresTwoFactor`, usuario `admin`), pide el código en `TwoFactorForm` antes de crear la sesión. |
 | `MainForm` | Menú principal (MDI). Muestra el usuario/rol en el pie y **oculta o muestra opciones según los permisos** del árbol Composite de la sesión. |
 | `UserManagementForm` / `UserForm` | ABM de usuarios: listado, búsqueda, alta, edición y baja lógica. |
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
@@ -280,7 +281,7 @@ Interfaces **chicas y específicas por responsabilidad**: ningún cliente depend
 Las capas superiores dependen de **abstracciones**, no de concreciones:
 
 - **BLL** consume `IUserMPP`, `IRoleMPP` e `IActivityMPP`; **GUI** consume las interfaces de BLL.
-- **Inyección por constructor**: `AuthBLL(IUserMPP)`, `UserBLL(IUserMPP)`, `RoleBLL(IRoleMPP)`, `ActivityBLL(IActivityMPP)` (p. ej. BLL/Services/AuthBLL.cs). Esto habilita las pruebas con mocks y desacopla la creación, que queda centralizada en `ServiceLocatorBLL`.
+- **Inyección por constructor**: `AuthBLL(IUserMPP, ITwoFactorBLL)`, `UserBLL(IUserMPP)`, `RoleBLL(IRoleMPP)`, `ActivityBLL(IActivityMPP)` (p. ej. BLL/Services/AuthBLL.cs). Esto habilita las pruebas con mocks y desacopla la creación, que queda centralizada en `ServiceLocatorBLL`.
 - **Strategy**: `PasswordHasherBLL` depende de `IPasswordStrategyBLL` (puede recibir estrategias por constructor), lo que permite sustituir el algoritmo en pruebas sin tocar el contexto.
 - La **dirección de dependencia** va de las capas altas hacia lo abstracto; el dominio (BE) no depende de nada.
 
@@ -319,7 +320,7 @@ Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón
 
 | Formulario / Servicio | Código usado |
 |-----------------------|--------------|
-| `LoginForm` / `AuthBLL` | `DB-001`, `AUTH-001` a `AUTH-005` |
+| `LoginForm` / `AuthBLL` | `DB-001`, `AUTH-001` a `AUTH-006` |
 | `ChangePasswordForm` / `UserBLL.ChangePassword` | `VAL-002`, `VAL-003`, `BIZ-002` |
 | `UserForm` | `VAL-001`, `VAL-002` |
 | `UserManagementForm` | `VAL-005` (+ título `Common_Confirm`) |

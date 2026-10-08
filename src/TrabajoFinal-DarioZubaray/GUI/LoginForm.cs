@@ -115,6 +115,14 @@ namespace TrabajoFinal_DarioZubaray
 
             LoginResultBE result = _authBLL.Login(username, password);
 
+            if (result.Success && result.RequiresTwoFactor)
+            {
+                if (!PromptTwoFactor(result.User))
+                {
+                    return;
+                }
+            }
+
             if (result.Success)
             {
                 LogLogin(result.User);
@@ -149,6 +157,34 @@ namespace TrabajoFinal_DarioZubaray
             lblMessage.Text = string.Format(Resources.Auth_DbUnavailable, ErrorCodesBLL.Database.Unavailable);
             lblMessage.Visible = true;
             SetDatabaseStatus(false);
+        }
+
+        // Pide el codigo 2FA y lo valida contra la BLL.
+        // Devuelve false si el usuario cancela (no se crea sesion).
+        private bool PromptTwoFactor(UserBE user)
+        {
+            while (true)
+            {
+                using (var form = new TwoFactorForm())
+                {
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                    {
+                        lblMessage.Visible = false;
+                        return false;
+                    }
+
+                    if (_authBLL.ValidateTwoFactor(user, form.Code))
+                    {
+                        lblMessage.Visible = false;
+                        return true;
+                    }
+
+                    lblMessage.Text = ErrorFormatter.WithCode(
+                        Resources.Auth_TwoFactorInvalid,
+                        ErrorCodesBLL.Auth.TwoFactorInvalid);
+                    lblMessage.Visible = true;
+                }
+            }
         }
 
         private void txtUser_KeyDown(object sender, KeyEventArgs e)

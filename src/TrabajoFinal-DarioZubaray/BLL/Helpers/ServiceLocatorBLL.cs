@@ -80,7 +80,14 @@ namespace BLL.Helpers
 
         public static IAuthBLL CreateAuthBLL()
         {
-            return new AuthBLL(GetUserMPP());
+            return new AuthBLL(GetUserMPP(), CreateTwoFactorBLL());
+        }
+
+        // Punto unico de configuracion del proveedor de 2FA.
+        // Hoy: InternalTwoFactorBLL (hardcodeado). Futuro: Google/Microsoft, etc.
+        public static ITwoFactorBLL CreateTwoFactorBLL()
+        {
+            return new InternalTwoFactorBLL();
         }
 
         public static IUserBLL CreateUserBLL()

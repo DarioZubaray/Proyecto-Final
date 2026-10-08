@@ -5,6 +5,7 @@
 -- =============================================
 
 -- Hash BCrypt para password "123": $2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy
+-- Hash BCrypt para password "admin" (usuario admin): $2a$11$h9OQXeWvXFC29T2cytB8HemgdlZQG35mnA6bmyZMTx3RNOMahmI0G
 
 -- Roles
 INSERT INTO [dbo].[roles] (name) VALUES
@@ -43,11 +44,11 @@ INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
 SELECT 4, id FROM [dbo].[permissions] WHERE name IN
 ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS');
 
--- Usuarios (contrasena: 123 para todos)
+-- Usuarios (contrasena: 123 para todos, excepto admin: admin)
 
--- Admin (rol 1)
+-- Admin (rol 1) - exento de bloqueo por reintentos, requiere 2FA (codigo: 123)
 INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
-('admin',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System'),
+('admin',  '$2a$11$h9OQXeWvXFC29T2cytB8HemgdlZQG35mnA6bmyZMTx3RNOMahmI0G', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System'),
 ('dario',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 1, 'es', 'System');
 
 -- Coordinadores (rol 4)
