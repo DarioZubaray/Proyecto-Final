@@ -19,7 +19,9 @@ sequenceDiagram
     ACC->>BD: SELECT user_name, password_hash, is_active, retries_count FROM users WHERE user_name=@userName
     BD-->>ACC: Fila(s) del usuario
     ACC-->>UMP: DataTable
-    UMP-->>AUTH: UserBE{UserName="dario", IsActive=true, RetriesCount=1}
+    UMP-->>AUTH: UserBE{UserName="dario", IsActive=true, RetriesCount=0}
+
+    Note over AUTH,BD: Control de reintentos: cada fallo persiste retries_count en BD.<br/>Al alcanzar 3 fallos la cuenta se desactiva (is_active=0).<br/>Un login exitoso lo resetea a 0.
 
     alt Usuario inexistente
         AUTH-->>Usuario: "Usuario o contraseña incorrectos."
@@ -33,11 +35,14 @@ sequenceDiagram
             AUTH->>UMP: UpdateRetries(user.Id, 0)
             AUTH->>SES: CreateSession(user)
             AUTH-->>Usuario: "Login exitoso." - muestra la pantalla principal según rol
-        else Contraseña inválida (quedan intentos)
-            AUTH->>UMP: UpdateRetries(user.Id, user.RetriesCount + 1)
-            AUTH-->>Usuario: "Usuario o contraseña incorrectos. Intentos restantes: N"
-        else Contraseña inválida (último intento)
-            AUTH->>UMP: Deactivate(user.Id)
-            AUTH-->>Usuario: "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador."
+        else Contraseña inválida
+            AUTH->>AUTH: RetriesCount := RetriesCount + 1
+            alt RetriesCount >= 3 (tercer intento fallido)
+                AUTH->>UMP: Deactivate(user.Id) (is_active=0, retries_count=3)
+                AUTH-->>Usuario: "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador."
+            else RetriesCount < 3 (quedan intentos)
+                AUTH->>UMP: UpdateRetries(user.Id, RetriesCount)
+                AUTH-->>Usuario: "Usuario o contraseña incorrectos. Intentos restantes: N"
+            end
         end
     end
