@@ -37,7 +37,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 - **BLL** → referencia a `BE` y `MPP`.
 - **MPP** → referencia a `BE` y `DAL`.
 - **BE** → sin dependencias.
-- **BLL.Tests** → `BLL`, `BE`, `MPP` (+ `Moq`). **MPP.Tests** → `MPP`, `BE`, `DAL`.
+- **BLL.Tests** → `BLL`, `BE`, `MPP` (+ `Moq`). **MPP.Tests** → `MPP`, `BE`, `DAL`, `BLL`.
 
 ## Descripción de clases por capa
 
@@ -45,7 +45,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Clase | Responsabilidad |
 |-------|-----------------|
-| `UserBE` | Entidad *Usuario*. Modela datos de cuenta: nombre de usuario, hash de contraseña, estado activo, reintentos, fechas, idioma y rol asignado. |
+| `UserBE` | Entidad *Usuario*. Modela datos de cuenta: nombre de usuario, hash de contraseña, estado activo, reintentos, fechas, idioma y rol asignado. Expone `GetDvhValues()` con la **composición de la fila** (qué valores y en qué orden entran) para el **Dígito Verificador Horizontal** (`Dvh`); la serialización canónica y el hasheo viven en `BLL.DVHHelperBLL`. |
 | `RoleBE` | Entidad *Rol*. Posee la lista de permisos y el método `ToComposite(...)` que convierte el rol (y sus roles hijos) en un árbol **Composite**. |
 | `PermissionBE` | Entidad *Permiso*. Identifica un formulario/acción concreta (`Name`, `Label`, `Description`, `IsSystem`). `IsSystem` marca permisos que no pueden quitarse. |
 | `LoginResultBE` (DTO) | Resultado del inicio de sesión: `Success`, `Message` y `User` autenticado. |
@@ -59,6 +59,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `RoleComponentBE` | Entidad **genérica** del **Composite** (clase base abstracta). Define `Name`, `HasPermission(name)` y `GetAllPermissions()`. Es la base de la que heredan las 2 clases del patrón. |
 | `RoleCompositeBE` | Nodo **compuesto** del árbol (hereda de `RoleComponentBE`): representa un rol que contiene hijos (otros roles y hojas de permiso). Permite agregar/quitar hijos y recorre el árbol para resolver permisos. |
 | `PermissionLeafBE` | **Hoja** del árbol (hereda de `RoleComponentBE`): envuelve un `PermissionBE` concreto. Evalúa `HasPermission` contra su propio nombre. |
+| `IntegrityViolationBE` (DTO) | Fila violada detectada por la auditoría: tabla, id, descripción, hash almacenado y hash recalculado. |
 
 ### DAL — Data Access Layer
 
@@ -70,7 +71,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Clase | Responsabilidad |
 |-------|-----------------|
-| `IUserMPP` / `UserMPP` | Mapeo de usuarios: transforma filas (`DataRow`) en `UserBE` y viceversa, y persiste las operaciones de login (último acceso, reintentos, desactivación), CRUD, idioma y contraseña. |
+| `IUserMPP` / `UserMPP` | Mapeo de usuarios: transforma filas (`DataRow`) en `UserBE` y viceversa, y persiste las operaciones de login (último acceso, reintentos, desactivación), CRUD, idioma y contraseña. **No calcula el `dvh`**: escribe, relee la fila persistida (para que BLL calcule el hash sobre los valores guardados, evitando el redondeo de `DATETIME`) y expone `UpdateDvh(id, dvh)` para persistir el hash que calcula BLL. |
 | `IRoleMPP` / `RoleMPP` | Mapeo de roles y permisos: transforma filas en `RoleBE`/`PermissionBE`, CRUD de roles, permisos por rol, jerarquía padre-hijo (`RoleHierarchy`) y asignación de permisos. |
 | `IActivityMPP` / `ActivityMPP` | Mapeo del historial de actividad: transforma filas en `ActivityLogBE`, inserta registros y consulta **paginada** (con `OFFSET`/`FETCH`) filtrando por usuario. |
 | `IClassroomMPP` / `ClassroomMPP` | Mapeo de aulas: CRUD de aulas físicas con búsqueda por nombre y conteo. |
@@ -82,9 +83,9 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 
 | Clase | Responsabilidad |
 |-------|-----------------|
-| `IAuthBLL` / `AuthBLL` | Autenticación. Valida credenciales, maneja hasta **3 reintentos**, desactiva el usuario superado el máximo y registra el último acceso. El usuario **`admin`** está **exento** del bloqueo (no cuenta reintentos ni se desactiva) y requiere **doble factor (2FA)** antes de crear la sesión (`ValidateTwoFactor`). |
+| `IAuthBLL` / `AuthBLL` | Autenticación. Valida credenciales, maneja hasta **3 reintentos**, desactiva el usuario superado el máximo y registra el último acceso; tras cada mutación **regenera el `dvh`** de la fila (`DVHHelperBLL.Regenerate`). El usuario **`admin`** está **exento** del bloqueo (no cuenta reintentos ni se desactiva) y requiere **doble factor (2FA)** antes de crear la sesión (`ValidateTwoFactor`). |
 | `ITwoFactorBLL` / `InternalTwoFactorBLL` | Servicio de **doble factor de autenticación**. Contrato intercambiable para conectar proveedores reales (Google, Microsoft, etc.); hoy resuelve internamente con el código hardcodeado **`123`**. Se configura en `ServiceLocatorBLL.CreateTwoFactorBLL()`. |
-| `IUserBLL` / `UserBLL` | Lógica de gestión de usuarios: CRUD, búsqueda, cambio de idioma y cambio de contraseña (verificando la actual). **Protege al usuario `admin`** (`UserBLL.ADMIN_USERNAME`, identificación por nombre case-insensitive): no se puede eliminar, desactivar, renombrar ni cambiarle el rol (`Delete`/`Save`); el rol es lo que define los permisos y por ende el menú de administración. En la UI, nombre/rol/estado quedan bloqueados al editar al admin (`UserForm`). |
+| `IUserBLL` / `UserBLL` | Lógica de gestión de usuarios: CRUD, búsqueda, cambio de idioma y cambio de contraseña (verificando la actual). Tras **cada escritura regenera el `dvh`** (`DVHHelperBLL.Regenerate`: recalcula el hash sobre la fila releída y lo persiste vía `IUserMPP.UpdateDvh`). **Protege al usuario `admin`** (`UserBLL.ADMIN_USERNAME`, identificación por nombre case-insensitive): no se puede eliminar, desactivar, renombrar ni cambiarle el rol (`Delete`/`Save`); el rol es lo que define los permisos y por ende el menú de administración. En la UI, nombre/rol/estado quedan bloqueados al editar al admin (`UserForm`). |
 | `IRoleBLL` / `RoleBLL` | Lógica de gestión de roles: CRUD, permisos por rol (protegiendo los de sistema) y jerarquía de roles. |
 | `PermissionBLL` | Construye el árbol **Composite** de un rol mediante `BuildRoleTree(roleId)` y consulta permisos sobre el árbol (`HasPermission`). |
 | `IActivityBLL` / `ActivityBLL` | Servicio del **Historial de Actividad**. Registra accesos a formularios y el inicio/cierre de sesión (usando el **Decorator**) y consulta el historial de forma paginada. |
@@ -104,12 +105,16 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `ServiceLocatorBLL` (static) | **Singleton / Localizador de servicios.** Mantiene una única instancia por servicio de persistencia y crea la lógica de negocio correspondiente. |
 | `SessionManagerBLL` | **Multiton de sesiones.** Mantiene el estado de la sesión por usuario (multiton: una instancia por `userId`). |
 | `AppPreferencesBLL` (static) | Persistencia local de preferencias de la UI (`language`, `theme`) en `%LocalAppData%\TrabajoFinal-DarioZubaray\preferences.json`. Conserva lo "último usado" entre sesiones. |
+| `IIntegrityBLL` / `IntegrityBLL` | Servicio de **auditoría de integridad (DVH)**: `Scan()` recorre todos los verificadores registrados y guarda el resultado en `IntegrityStateBLL`; `GetViolations()` lista las filas alteradas; `AcceptAndRegenerate(violation)` reacepta una fila (vuelve a escanear). |
+| `IDvhTableVerifierBLL` / `UserDvhVerifierBLL` | Verificador por tabla (hoy `users`): recalcula el DVH de cada fila (`DVHHelperBLL.Compute`) y compara contra el persistido; `AcceptAndRegenerate` regenera el hash de una fila aceptada. Diseño multi-tabla: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un verificador por cada tabla soportada. |
+| `DVHHelperBLL` (static) | Helper del **Dígito Verificador Horizontal**: serializa los valores que declara la entidad (coma como separador, fechas estilo 126, `NULL` → `''`), calcula el **SHA-256** en hex (UTF-16LE, igual que `HASHBYTES` sobre `NVARCHAR`) y orquesta la regeneración (`Regenerate(mpp, user/id)`) tras cada escritura. |
+| `IntegrityStateBLL` (static) | Memoria de la sesión con el resultado del último escaneo (`LastScanHasFailures`, `RecordScan`, `Reset`), consumida por `LoginForm` y `MainForm`. |
 
 ### GUI — Interfaz gráfica
 
 | Formulario | Responsabilidad |
 |------------|-----------------|
-| `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). Al iniciar y al cerrar sesión aplica el idioma y tema "último usado" (`AppPreferencesBLL`). Si el login requiere 2FA (`RequiresTwoFactor`, usuario `admin`), pide el código en `TwoFactorForm` antes de crear la sesión. |
+| `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). Al iniciar y al cerrar sesión aplica el idioma y tema "último usado" (`AppPreferencesBLL`). Si el login requiere 2FA (`RequiresTwoFactor`, usuario `admin`), pide el código en `TwoFactorForm` antes de crear la sesión. Al conectar con la base y en **cada intento de login** ejecuta el **escaneo de integridad (DVH)** en segundo plano; si al lanzar hay filas alteradas muestra un aviso modal. Con filas alteradas, los usuarios no-sysadmin quedan bloqueados (`INT-001`) y el sysadmin (tras el 2FA) pasa por la auditoría antes de entrar. |
 | `MainForm` | Menú principal (MDI). Muestra el usuario/rol en el pie y **oculta o muestra opciones según los permisos** del árbol Composite de la sesión. |
 | `UserManagementForm` / `UserForm` | ABM de usuarios: listado, búsqueda, alta, edición y baja lógica. |
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
@@ -120,6 +125,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `PreferencesForm` | Cambio de idioma y tema; actualiza la sesión y refresca los recursos de la UI. También persiste lo seleccionado en `AppPreferencesBLL`. |
 | `ChangePasswordForm` | Cambio de contraseña validando la actual. |
 | `ActivityHistoryForm` | **Historial de Actividad** (dentro del menú Archivo): lista paginada de las actividades del usuario autenticado. |
+| `IntegrityAuditForm` | **Auditoría de Integridad (DVH)**: grilla de filas alteradas (tabla, id, hash almacenado vs recalculado) con acciones *Editar*, *Aceptar y regenerar*, *Refrescar* y *Cerrar*. Accesible desde el login (si el escaneo falló) y desde el menú principal (solo sysadmin). |
 | `TestComplaintsForm` / `TestReportsForm` | Formularios de ejemplo (quejas/reportes) usados por los permisos `FORM_COMPLAINTS` y `FORM_REPORTS`. |
 | `AboutForm` | Diálogo Acerca de. |
 
@@ -308,6 +314,7 @@ Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón
 | `AUTH-` | `Auth` | `RequiredFields AUTH-001`, `InvalidCredentials AUTH-002`, `UserBlocked AUTH-003`, `MaxRetriesExceeded AUTH-004`, `RetryAttemptsLeft AUTH-005` |
 | `VAL-` | `Validation` | `UsernameRequired VAL-001`, `PasswordRequired VAL-002`, `PasswordsMismatch VAL-003`, `NameRequired VAL-004`, `NoSelection VAL-005`, `LanguageThemeRequired VAL-006` |
 | `BIZ-` | `Business` | `RoleHasUsers BIZ-001`, `InvalidCurrentPassword BIZ-002` |
+| `INT-` | `Integrity` | `Blocked INT-001`, `ResolveFailed INT-002`, `ScanFailed INT-003` |
 | `GEN-` | `General` | `Unhandled GEN-001` |
 
 ### Cómo se transportan y muestran
@@ -326,6 +333,7 @@ Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón
 | `UserManagementForm` | `VAL-005` (+ título `Common_Confirm`) |
 | `RoleManagementForm` | `VAL-004`, `VAL-005`, `BIZ-001` |
 | `PreferencesForm` | `VAL-006` |
+| `LoginForm` / `IntegrityBLL` (auditoría DVH) | `INT-001` a `INT-003` |
 
 ### Excepciones inesperadas (handler global)
 
@@ -335,6 +343,29 @@ Para que ninguna excepción de las capas inferiores (por ejemplo `SqlException`,
 - `AppDomain.CurrentDomain.UnhandledException` — errores no manejados en otros hilos o antes del cierre.
 
 Ambas muestran un mensaje amigable con el código genérico **(Código: GEN-001)** en lugar de cerrar la aplicación silenciosamente o mostrar un diálogo de runtime.
+
+## Integridad de datos (Dígito Verificador Horizontal — DVH)
+
+La aplicación protege la tabla `users` (y en el futuro otras tablas) con un **Dígito Verificador Horizontal**: cada fila guarda en la columna `dvh` el **SHA-256** de todos sus valores (menos el propio hash).
+
+### Algoritmo (`BLL\Helpers\DVHHelperBLL.cs`)
+
+- **Composición de la fila:** la entidad declara qué valores y en qué orden entran al hash (`UserBE.GetDvhValues()`, incluido `id`, excluido `dvh`); `role_id` `0`/`NULL` se declara como `NULL`.
+- **Serialización canónica:** la helper normaliza cada valor y los une por **coma `,` sin espacios**: `NULL` → `''` (`role_id` `0`/`NULL` → `''`), `bool` → `1`/`0`, fechas en formato estilo 126 (`yyyy-MM-ddTHH:mm:ss.fff`, **sin fracción cuando los milisegundos son 0**, igual que `CONVERT(..., 126)` de T-SQL).
+- **Hash:** SHA-256 en hex **minúsculas** (64 caracteres) del payload codificado en **UTF-16LE** (`Encoding.Unicode`), para coincidir byte a byte con `HASHBYTES('SHA2_256', <NVARCHAR>)` de SQL Server.
+
+### Escritura regenerativa (BLL)
+
+Toda escritura de la fila **regenera su `dvh`**: `UserBLL` y `AuthBLL` invocan `DVHHelperBLL.Regenerate(...)` tras cada mutación (`Save`, `Delete`, idioma, tema, contraseña, reintentos, último acceso, desactivación). La helper recalcula el hash sobre la fila **releída** desde la base (no sobre los valores en memoria, porque `DATETIME` redondea a 1/300 s al escribir) y lo persiste con `IUserMPP.UpdateDvh(id, dvh)`. `UserMPP` solo escribe y relee la fila: no calcula hashes.
+
+### Verificación al inicio y auditoría
+
+1. Al conectar con la base y en cada intento de login, `LoginForm` ejecuta `IntegrityBLL.Scan()` en segundo plano: recalcula el DVH de cada fila registrada y lo compara con el persistido (`IntegrityStateBLL`). Si al lanzar la aplicación hay discrepancias, se muestra un aviso modal (mensaje `INT-001`); el re-escaneo del click de login es silencioso porque el bloqueo/auditoría ya informa en ese momento.
+2. Si hay discrepancias, `AuthBLL.Login` **bloquea** a todo usuario que no sea el sysadmin (`admin`, id 1) con el código **`INT-001`**.
+3. El sysadmin (tras su **2FA**) abre el formulario **Auditoría de Integridad** (`IntegrityAuditForm`), donde puede *Editar* la fila o *Aceptar y regenerar* su hash; el sistema vuelve a escanear y solo ingresa cuando no quedan discrepancias (o si el sysadmin confirma continuar con alertas). También puede reabrirla desde el menú principal.
+4. Diseño **multi-tabla**: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un `IDvhTableVerifierBLL` por tabla (hoy `UserDvhVerifierBLL` para `users`); agregar una tabla nueva consiste en sumar un verificador.
+
+La migración `sql/08_v1.3.0_DVH.sql` agrega la columna y calcula el backfill con la misma expresión T-SQL (verificada contra la app por el test `Dvh_BackfillExpression_MatchesApplicationHash`).
 
 ## Cómo ejecutar
 
@@ -354,7 +385,7 @@ El **acceso a datos** usa `Microsoft.Data.SqlClient` (SQL Server) y `System.Conf
 
 ## Pruebas
 
-Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, roles y permisos, el historial de actividad (Decorator y paginación), las preferencias locales, la estrategia de hash de contraseñas, la gestión de aulas, cursos, inscripciones y asistencia. Para ejecutarlos:
+Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, roles y permisos, el historial de actividad (Decorator y paginación), las preferencias locales, la estrategia de hash de contraseñas, la gestión de aulas, cursos, inscripciones y asistencia, y el **Dígito Verificador Horizontal** (serialización/normalización, bloqueo de login, auditoría y paridad con el backfill T-SQL). Para ejecutarlos:
 
 ```
 dotnet test TrabajoFinal-DarioZubaray.slnx

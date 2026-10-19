@@ -37,7 +37,9 @@ Además, la aplicación aplica los **principios SOLID** (SRP, Open/Closed, Lisko
 
 Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md).
 
-La aplicación también centraliza un **catálogo de códigos de error** por dominio (`ErrorCodesBLL`, prefijos `DB-`, `AUTH-`, `VAL-`, `BIZ-`, `GEN-`) con un **handler global** de excepciones en `Program.cs`. Ver la sección *"Manejo de errores y códigos de error"* en el README del proyecto .NET.
+La aplicación también centraliza un **catálogo de códigos de error** por dominio (`ErrorCodesBLL`, prefijos `DB-`, `AUTH-`, `VAL-`, `BIZ-`, `GEN-`, `INT-`) con un **handler global** de excepciones en `Program.cs`. Ver la sección *"Manejo de errores y códigos de error"* en el README del proyecto .NET.
+
+Además, aplica un **Dígito Verificador Horizontal (DVH)** sobre la tabla `users`: cada fila guarda su SHA-256 en la columna `dvh`; al iniciar, la aplicación recalcula los hashes y **bloquea el acceso** si detecta filas alteradas fuera de la app (solo el sysadmin puede auditarlas y regenerarlas). Ver la sección *"Integridad de datos (DVH)"* en el README del proyecto .NET.
 
 ### Base de datos (`src/sql/`)
 
@@ -52,6 +54,7 @@ Ejecutar los scripts en orden:
 5. `04_v1.1.0_Rollback.sql` — (opcional) deshace la migración v1.1.0.
 6. `05_v1.1.0_Queries.sql` — consultas de ejemplo / verificación.
 7. `07_v1.2.0_AdminPassword.sql` — migración v1.2.0: contraseña `admin` para el usuario `admin` (exento de bloqueo, requiere 2FA).
+8. `08_v1.3.0_DVH.sql` — migración v1.3.0: agrega la columna `dvh` (Dígito Verificador Horizontal, SHA-256 por fila) a `users` y calcula el hash de todas las filas existentes.
 
 > **Alternativa (recomendada):** `06_v1.1.0_ScriptConsolidado.sql` es el **script maestro** que crea la base `DarioZubaray_TF` (si no existe) y deja el esquema completo con todos los datos en un solo paso.
 
