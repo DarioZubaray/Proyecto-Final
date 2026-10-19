@@ -38,4 +38,4 @@ IF OBJECT_ID('dbo.users', 'U') IS NOT NULL DROP TABLE dbo.users;
 IF OBJECT_ID('dbo.permissions', 'U') IS NOT NULL DROP TABLE dbo.permissions;
 IF OBJECT_ID('dbo.roles', 'U') IS NOT NULL DROP TABLE dbo.roles;
 
-PRINT 'Purge completado exitosamente.';
+PRINT 'Purga completada con éxito.';

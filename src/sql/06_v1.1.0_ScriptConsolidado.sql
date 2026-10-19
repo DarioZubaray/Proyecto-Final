@@ -90,6 +90,7 @@ BEGIN TRY
         [role_id]       INT            NULL,
         [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
         [theme]         NVARCHAR(20)   NOT NULL DEFAULT 'System',
+        [dvh]           NVARCHAR(64)   NULL,
         CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[roles]([id])
     );
     ALTER TABLE [dbo].[users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
@@ -361,19 +362,46 @@ BEGIN TRY
     INNER JOIN [dbo].[users] u ON u.user_name = a.user_name;
 
     -- =============================================
+    -- 6.6 DVH (v1.3.0): backfill del digito verificador
+    --     Replica la serializacion canonica de la app
+    --     (BLL.DVHHelperBLL): columnas menos [dvh], en orden
+    --     de columna, unidas por coma; fechas estilo 126;
+    --     role_id NULL -> ''; SHA2_256 sobre NVARCHAR (bytes
+    --     UTF-16LE, igual que Encoding.Unicode en la app).
+    -- =============================================
+    UPDATE u
+    SET u.[dvh] = LOWER(CONVERT(VARCHAR(64),
+        HASHBYTES('SHA2_256',
+            CONCAT(
+                CONVERT(NVARCHAR(MAX), u.[id]),          ',',
+                u.[user_name],                           ',',
+                u.[password_hash],                       ',',
+                CASE WHEN u.[is_active] = 1 THEN '1' ELSE '0' END, ',',
+                CONVERT(NVARCHAR(MAX), u.[retries_count]), ',',
+                CONVERT(NVARCHAR(30), u.[last_update], 126), ',',
+                CONVERT(NVARCHAR(30), u.[created_at], 126),  ',',
+                CASE WHEN u.[role_id] IS NULL THEN '' ELSE CONVERT(NVARCHAR(MAX), u.[role_id]) END, ',',
+                u.[language],                            ',',
+                u.[theme]
+            )
+        ), 2))
+    FROM [dbo].[users] u;
+
+    -- =============================================
     -- 7. Registrar versiones de migracion
     -- =============================================
     INSERT INTO [dbo].[schema_versions] (version, script_name, applied_at) VALUES
     ('1.0.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
     ('1.1.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
-    ('1.2.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
+    ('1.2.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
+    ('1.3.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
 
     -- =============================================
     -- 8. Confirmar
     -- =============================================
     COMMIT TRANSACTION;
 
-    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.2.0.';
+    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.3.0.';
 
 END TRY
 BEGIN CATCH
