@@ -19,6 +19,7 @@ namespace MPP.Interfaces
         bool UpdateLanguage(int userId, string language);
         bool UpdateTheme(int userId, string theme);
         bool UpdatePassword(int userId, string passwordHash);
+        bool UpdateDvh(int userId, string dvh);
         int CountByRoleId(int roleId);
         bool TestConnection();
     }
