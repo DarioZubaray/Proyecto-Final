@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 using BE.Entities;
@@ -11,6 +12,19 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class TicketManagementForm : Form
     {
+        #region Clases Auxiliares
+        private sealed class TicketGridRow
+        {
+            public int Id { get; set; }
+            public string UserName { get; set; }
+            public string Subject { get; set; }
+            public string Status { get; set; }
+            public string CreatedAt { get; set; }
+            public string ClosedAt { get; set; }
+            public TicketBE Ticket { get; set; }
+        }
+        #endregion
+
         #region Propiedades
         private readonly UserBE _currentUser;
         private readonly ITicketBLL _ticketBLL;
@@ -45,10 +59,33 @@ namespace TrabajoFinal_DarioZubaray
 
         private void LoadTickets()
         {
-            dgvTickets.DataSource = null;
-            dgvTickets.DataSource = _canManage
+            List<TicketBE> tickets = _canManage
                 ? _ticketBLL.FindAll()
                 : _ticketBLL.FindByUser(_currentUser.Id);
+
+            var rows = new List<TicketGridRow>();
+
+            foreach (TicketBE ticket in tickets)
+            {
+                rows.Add(new TicketGridRow
+                {
+                    Id = ticket.Id,
+                    UserName = ticket.UserName,
+                    Subject = ticket.Subject,
+                    Status = ticket.IsClosed
+                        ? Resources.TicketManagementForm_StatusClosed
+                        : Resources.TicketManagementForm_StatusOpen,
+                    CreatedAt = ticket.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                    ClosedAt = ticket.ClosedAt.HasValue
+                        ? ticket.ClosedAt.Value.ToString("yyyy-MM-dd HH:mm:ss")
+                        : string.Empty,
+                    Ticket = ticket
+                });
+            }
+
+            dgvTickets.AutoGenerateColumns = true;
+            dgvTickets.DataSource = null;
+            dgvTickets.DataSource = rows;
             ConfigureGrid();
         }
 
@@ -62,13 +99,11 @@ namespace TrabajoFinal_DarioZubaray
             dgvTickets.Columns["Id"].HeaderText = "ID";
             dgvTickets.Columns["UserName"].HeaderText = Resources.TicketManagementForm_ColUser;
             dgvTickets.Columns["Subject"].HeaderText = Resources.TicketManagementForm_ColSubject;
-            dgvTickets.Columns["IsClosed"].HeaderText = Resources.TicketManagementForm_ColStatus;
+            dgvTickets.Columns["Status"].HeaderText = Resources.TicketManagementForm_ColStatus;
             dgvTickets.Columns["CreatedAt"].HeaderText = Resources.TicketManagementForm_ColCreatedAt;
             dgvTickets.Columns["ClosedAt"].HeaderText = Resources.TicketManagementForm_ColClosedAt;
-            dgvTickets.Columns["UserId"].Visible = false;
-            dgvTickets.Columns["Description"].Visible = false;
-            dgvTickets.Columns["ClosedBy"].Visible = false;
-            dgvTickets.Columns["ClosedByName"].Visible = false;
+            dgvTickets.Columns["Ticket"].Visible = false;
+
             dgvTickets.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvTickets.MultiSelect = false;
             dgvTickets.ReadOnly = true;
@@ -78,9 +113,13 @@ namespace TrabajoFinal_DarioZubaray
 
         private TicketBE SelectedTicket()
         {
-            return dgvTickets.CurrentRow != null
-                ? dgvTickets.CurrentRow.DataBoundItem as TicketBE
-                : null;
+            if (dgvTickets.CurrentRow == null)
+            {
+                return null;
+            }
+
+            var row = dgvTickets.CurrentRow.DataBoundItem as TicketGridRow;
+            return row?.Ticket;
         }
         #endregion
 
@@ -131,31 +170,6 @@ namespace TrabajoFinal_DarioZubaray
             {
                 MessageBox.Show(Resources.TicketManagementForm_CloseSuccess, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadTickets();
-            }
-        }
-
-        private void dgvTickets_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
-        {
-            string columnName = dgvTickets.Columns[e.ColumnIndex].Name;
-
-            if (columnName == "IsClosed" && e.Value is bool closed)
-            {
-                e.Value = closed
-                    ? Resources.TicketManagementForm_StatusClosed
-                    : Resources.TicketManagementForm_StatusOpen;
-                e.FormattingApplied = true;
-            }
-            else if (columnName == "ClosedAt")
-            {
-                e.Value = e.Value is DateTime closedAt
-                    ? closedAt.ToString("yyyy-MM-dd HH:mm:ss")
-                    : string.Empty;
-                e.FormattingApplied = true;
-            }
-            else if (columnName == "CreatedAt" && e.Value is DateTime createdAt)
-            {
-                e.Value = createdAt.ToString("yyyy-MM-dd HH:mm:ss");
-                e.FormattingApplied = true;
             }
         }
         #endregion

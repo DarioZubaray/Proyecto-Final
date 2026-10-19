@@ -68,7 +68,6 @@ namespace TrabajoFinal_DarioZubaray
             this.dgvTickets.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTickets.Size = new System.Drawing.Size(800, 360);
             this.dgvTickets.TabIndex = 1;
-            this.dgvTickets.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvTickets_CellFormatting);
             // 
             // TicketManagementForm
             // 
