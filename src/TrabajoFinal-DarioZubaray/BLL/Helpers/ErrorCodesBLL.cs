@@ -44,6 +44,9 @@ namespace BLL.Helpers
             public const string TraslapeHorario = "BIZ-003";
             public const string YaInscripto = "BIZ-004";
             public const string AdminProtected = "BIZ-005";
+            public const string TicketSubjectRequired = "BIZ-006";
+            public const string TicketDescriptionRequired = "BIZ-007";
+            public const string TicketAlreadyClosed = "BIZ-008";
         }
 
         public static class General

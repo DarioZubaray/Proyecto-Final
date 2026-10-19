@@ -15,6 +15,7 @@ namespace BLL.Helpers
         private static ICourseMPP _courseMPP;
         private static IEnrollmentMPP _enrollmentMPP;
         private static IAttendanceMPP _attendanceMPP;
+        private static ITicketMPP _ticketMPP;
         #endregion
 
         #region Métodos
@@ -144,6 +145,21 @@ namespace BLL.Helpers
             {
                 new UserDvhVerifierBLL(CreateUserBLL())
             });
+        }
+
+        public static ITicketMPP GetTicketMPP()
+        {
+            if (_ticketMPP == null)
+            {
+                _ticketMPP = new TicketMPP();
+            }
+
+            return _ticketMPP;
+        }
+
+        public static ITicketBLL CreateTicketBLL()
+        {
+            return new TicketBLL(GetTicketMPP());
         }
         #endregion
     }
