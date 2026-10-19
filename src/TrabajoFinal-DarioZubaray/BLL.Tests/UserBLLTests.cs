@@ -22,6 +22,9 @@ namespace BLL.Tests
         public void Setup()
         {
             _mockUserMPP = new Mock<IUserMPP>();
+            _mockUserMPP
+                .Setup(m => m.UpdateDvh(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(true);
             _userBLL = new UserBLL(_mockUserMPP.Object);
         }
         #endregion
@@ -113,6 +116,41 @@ namespace BLL.Tests
 
             Assert.IsTrue(result);
             _mockUserMPP.Verify(m => m.Save(user), Times.Once);
+        }
+
+        [TestMethod]
+        public void Save_RegeneratesDvh()
+        {
+            var user = new UserBE { Id = 5, UserName = "newuser" };
+            _mockUserMPP
+                .Setup(m => m.Save(user))
+                .Returns(true);
+
+            var result = _userBLL.Save(user);
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(
+                m => m.UpdateDvh(user.Id, DVHHelperBLL.Compute(user.GetDvhValues())),
+                Times.Once);
+        }
+
+        [TestMethod]
+        public void UpdateLanguage_RegeneratesDvh()
+        {
+            var persisted = new UserBE { Id = 3, UserName = "user3", Language = "es" };
+            _mockUserMPP
+                .Setup(m => m.UpdateLanguage(3, "en"))
+                .Returns(true);
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 3)))
+                .Returns(persisted);
+
+            var result = _userBLL.UpdateLanguage(3, "en");
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(
+                m => m.UpdateDvh(3, DVHHelperBLL.Compute(persisted.GetDvhValues())),
+                Times.Once);
         }
 
         [TestMethod]

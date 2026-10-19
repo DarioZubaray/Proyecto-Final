@@ -24,9 +24,19 @@ namespace BLL.Tests
         [TestInitialize]
         public void Setup()
         {
+            IntegrityStateBLL.Reset();
             _mockUserMPP = new Mock<IUserMPP>();
+            _mockUserMPP
+                .Setup(m => m.UpdateDvh(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(true);
             _mockTwoFactor = new Mock<ITwoFactorBLL>();
             _authBLL = new AuthBLL(_mockUserMPP.Object, _mockTwoFactor.Object);
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            IntegrityStateBLL.Reset();
         }
         #endregion
 
@@ -153,6 +163,9 @@ namespace BLL.Tests
             _mockUserMPP
                 .Setup(m => m.GetByUserName("admin"))
                 .Returns(user);
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 1)))
+                .Returns(user);
 
             var result = _authBLL.Login("admin", password);
 
@@ -160,6 +173,7 @@ namespace BLL.Tests
             Assert.AreEqual(Resources.Auth_LoginSuccess, result.Message);
             Assert.AreEqual(user, result.User);
             _mockUserMPP.Verify(m => m.UpdateLastUpdate(user.Id, It.IsAny<DateTime>()), Times.Once);
+            _mockUserMPP.Verify(m => m.UpdateDvh(user.Id, It.IsAny<string>()), Times.Once);
         }
 
         [TestMethod]
@@ -373,6 +387,92 @@ namespace BLL.Tests
                 .Returns(false);
 
             Assert.IsFalse(_authBLL.TestConnection());
+        }
+
+        [TestMethod]
+        public void Login_IntegrityFailure_NonSysAdmin_Blocked()
+        {
+            IntegrityStateBLL.RecordScan(2);
+
+            var result = _authBLL.Login("testuser", "password123");
+
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual(Resources.Auth_IntegrityBlocked, result.Message);
+            Assert.AreEqual(ErrorCodesBLL.Integrity.Blocked, result.ErrorCode);
+            _mockUserMPP.Verify(m => m.GetByUserName(It.IsAny<string>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Login_IntegrityFailure_SysAdmin_ContinuesAuthentication()
+        {
+            IntegrityStateBLL.RecordScan(1);
+
+            string password = "admin";
+            var admin = new UserBE
+            {
+                Id = 1,
+                UserName = "admin",
+                IsActive = true,
+                RetriesCount = 0,
+                PasswordHash = EncryptionBLL.HashPassword(password)
+            };
+
+            _mockUserMPP
+                .Setup(m => m.GetByUserName("admin"))
+                .Returns(admin);
+
+            var result = _authBLL.Login("admin", password);
+
+            Assert.IsTrue(result.Success);
+            Assert.IsTrue(result.RequiresTwoFactor);
+        }
+
+        [TestMethod]
+        public void Login_IntegrityFailure_AdminNameButNotSysAdminId_Blocked()
+        {
+            IntegrityStateBLL.RecordScan(1);
+
+            var impostor = new UserBE
+            {
+                Id = 99,
+                UserName = "admin",
+                IsActive = true,
+                RetriesCount = 0,
+                PasswordHash = EncryptionBLL.HashPassword("admin")
+            };
+
+            _mockUserMPP
+                .Setup(m => m.GetByUserName("admin"))
+                .Returns(impostor);
+
+            var result = _authBLL.Login("admin", "admin");
+
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual(ErrorCodesBLL.Integrity.Blocked, result.ErrorCode);
+        }
+
+        [TestMethod]
+        public void Login_NoIntegrityFailure_NormalLoginWorks()
+        {
+            IntegrityStateBLL.RecordScan(0);
+
+            string password = "correctpassword";
+            var user = new UserBE
+            {
+                Id = 2,
+                UserName = "testuser",
+                IsActive = true,
+                RetriesCount = 0,
+                PasswordHash = EncryptionBLL.HashPassword(password)
+            };
+
+            _mockUserMPP
+                .Setup(m => m.GetByUserName("testuser"))
+                .Returns(user);
+
+            var result = _authBLL.Login("testuser", password);
+
+            Assert.IsTrue(result.Success);
         }
         #endregion
     }
