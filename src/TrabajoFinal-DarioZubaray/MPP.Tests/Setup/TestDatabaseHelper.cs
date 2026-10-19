@@ -92,6 +92,7 @@ namespace MPP.Tests.Setup
                 connection.Open();
 
                 string sql = @"
+                    IF OBJECT_ID('dbo.tickets', 'U') IS NOT NULL DROP TABLE dbo.tickets;
                     IF OBJECT_ID('dbo.attendance', 'U') IS NOT NULL DROP TABLE dbo.attendance;
                     IF OBJECT_ID('dbo.course_students', 'U') IS NOT NULL DROP TABLE dbo.course_students;
                     IF OBJECT_ID('dbo.course_teachers', 'U') IS NOT NULL DROP TABLE dbo.course_teachers;
@@ -218,6 +219,19 @@ namespace MPP.Tests.Setup
                         CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
                     );
 
+                    CREATE TABLE [dbo].[tickets] (
+                        [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [user_id]     INT            NOT NULL,
+                        [subject]     NVARCHAR(200)  NOT NULL,
+                        [description] NVARCHAR(MAX)  NOT NULL,
+                        [is_closed]   BIT            NOT NULL DEFAULT 0,
+                        [created_at]  DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [closed_at]   DATETIME       NULL,
+                        [closed_by]   INT            NULL,
+                        CONSTRAINT fk_tickets_user FOREIGN KEY ([user_id]) REFERENCES [dbo].[users]([id]),
+                        CONSTRAINT fk_tickets_closed_by FOREIGN KEY ([closed_by]) REFERENCES [dbo].[users]([id])
+                    );
+
                     CREATE TABLE [dbo].[schema_versions] (
                         [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
                         [version]     NVARCHAR(20)   NOT NULL,
@@ -273,6 +287,7 @@ namespace MPP.Tests.Setup
             {
                 connection.Open();
                 string sql = @"
+                    DELETE FROM [dbo].[tickets];
                     DELETE FROM [dbo].[attendance];
                     DELETE FROM [dbo].[course_students];
                     DELETE FROM [dbo].[course_teachers];
@@ -287,7 +302,8 @@ namespace MPP.Tests.Setup
                     DBCC CHECKIDENT ('[dbo].[courses]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[course_teachers]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[course_students]', RESEED, 0);
-                    DBCC CHECKIDENT ('[dbo].[attendance]', RESEED, 0);";
+                    DBCC CHECKIDENT ('[dbo].[attendance]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[tickets]', RESEED, 0);";
                 var cmd = new SqlCommand(sql, connection);
                 cmd.ExecuteNonQuery();
             }
