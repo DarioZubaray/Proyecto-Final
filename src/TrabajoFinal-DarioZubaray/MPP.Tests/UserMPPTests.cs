@@ -274,5 +274,42 @@ namespace MPP.Tests
             Assert.AreEqual("CustomTheme", user.Theme);
             Assert.AreEqual(0, user.RoleId);
         }
+
+        [TestMethod]
+        public void Save_LeavesDvhNull_BllRegeneratesIt()
+        {
+            var newUser = new UserBE
+            {
+                UserName = "dvhuser",
+                PasswordHash = "hashedpassword",
+                IsActive = true,
+                RetriesCount = 0,
+                LastUpdate = DateTime.Now,
+                CreatedAt = DateTime.Now,
+                Language = "es",
+                Theme = "System",
+                RoleId = 2
+            };
+
+            Assert.IsTrue(_userMPP.Save(newUser));
+
+            UserBE persisted = _userMPP.GetByUserName("dvhuser");
+
+            Assert.IsNotNull(persisted);
+            Assert.IsTrue(string.IsNullOrEmpty(persisted.Dvh));
+        }
+
+        [TestMethod]
+        public void UpdateDvh_PersistsHashOnRow()
+        {
+            UserBE user = _userMPP.GetByUserName("testuser");
+            Assert.IsNotNull(user);
+
+            Assert.IsTrue(_userMPP.UpdateDvh(user.Id, "abc123dvh"));
+
+            UserBE persisted = _userMPP.GetByUserName("testuser");
+
+            Assert.AreEqual("abc123dvh", persisted.Dvh);
+        }
     }
 }

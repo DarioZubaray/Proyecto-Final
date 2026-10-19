@@ -145,6 +145,7 @@ namespace MPP.Tests.Setup
                         [role_id]       INT            NULL,
                         [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
                         [theme]         NVARCHAR(20)   NOT NULL DEFAULT 'System',
+                        [dvh]           NVARCHAR(64)   NULL,
                         CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[roles]([id])
                     );
                     ALTER TABLE [dbo].[users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
@@ -203,6 +204,18 @@ namespace MPP.Tests.Setup
                         [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                         CONSTRAINT fk_course_students_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
                         CONSTRAINT fk_course_students_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id])
+                    );
+
+                    CREATE TABLE [dbo].[attendance] (
+                        [id]           INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [course_id]    INT      NOT NULL,
+                        [student_id]   INT      NOT NULL,
+                        [date]         DATE     NOT NULL,
+                        [is_present]   BIT      NOT NULL DEFAULT 0,
+                        [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT fk_attendance_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
+                        CONSTRAINT fk_attendance_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id]),
+                        CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
                     );
 
                     CREATE TABLE [dbo].[schema_versions] (
