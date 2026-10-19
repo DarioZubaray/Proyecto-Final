@@ -39,6 +39,7 @@ namespace TrabajoFinal_DarioZubaray
             this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.rolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aulasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.integridadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.académicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cursosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inscripcionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,7 +110,8 @@ namespace TrabajoFinal_DarioZubaray
             this.administraciónToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.usuariosToolStripMenuItem,
             this.rolesToolStripMenuItem,
-            this.aulasToolStripMenuItem});
+            this.aulasToolStripMenuItem,
+            this.integridadToolStripMenuItem});
             this.administraciónToolStripMenuItem.Name = "administraciónToolStripMenuItem";
             this.administraciónToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
             this.administraciónToolStripMenuItem.Text = "Administración";
@@ -134,6 +136,13 @@ namespace TrabajoFinal_DarioZubaray
             this.aulasToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.aulasToolStripMenuItem.Text = "Aulas";
             this.aulasToolStripMenuItem.Click += new System.EventHandler(this.aulasToolStripMenuItem_Click);
+            // 
+            // integridadToolStripMenuItem
+            // 
+            this.integridadToolStripMenuItem.Name = "integridadToolStripMenuItem";
+            this.integridadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.integridadToolStripMenuItem.Text = "Auditoría de Integridad (DVH)";
+            this.integridadToolStripMenuItem.Click += new System.EventHandler(this.integridadToolStripMenuItem_Click);
             // 
             // académicoToolStripMenuItem
             // 
@@ -235,6 +244,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.ToolStripMenuItem usuariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rolesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aulasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem integridadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem académicoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cursosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inscripcionesToolStripMenuItem;

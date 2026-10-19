@@ -7,6 +7,7 @@ using BE.Composite;
 using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
+using BLL.Services;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -52,6 +53,7 @@ namespace TrabajoFinal_DarioZubaray
             inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
             asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
             aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
+            integridadToolStripMenuItem.Text = Resources.Integrity_Title;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
@@ -66,6 +68,8 @@ namespace TrabajoFinal_DarioZubaray
                 && _session.HasPermission("FORM_ROLE_MGMT");
             aulasToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_CURSO_MGMT");
+
+            integridadToolStripMenuItem.Visible = UserBLL.IsSysAdmin(_user);
 
             bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
             bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
@@ -150,6 +154,16 @@ namespace TrabajoFinal_DarioZubaray
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowChildForm(() => new ClassroomManagementForm(_user), "ClassroomManagementForm");
+        }
+
+        private void integridadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogFormAccess("IntegrityAuditForm");
+
+            using (var form = new IntegrityAuditForm(_user))
+            {
+                form.ShowDialog(this);
+            }
         }
 
         private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
