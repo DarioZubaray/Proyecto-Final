@@ -54,6 +54,7 @@ namespace TrabajoFinal_DarioZubaray
             asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
             aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
             integridadToolStripMenuItem.Text = Resources.Integrity_Title;
+            ticketsToolStripMenuItem.Text = Resources.Main_MenuTickets;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
             acercaDeToolStripMenuItem.Text = Resources.Main_MenuAbout;
             UpdateFooter();
@@ -70,6 +71,7 @@ namespace TrabajoFinal_DarioZubaray
                 && _session.HasPermission("FORM_CURSO_MGMT");
 
             integridadToolStripMenuItem.Visible = UserBLL.IsSysAdmin(_user);
+            ticketsToolStripMenuItem.Visible = _session != null;
 
             bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
             bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
@@ -154,6 +156,11 @@ namespace TrabajoFinal_DarioZubaray
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowChildForm(() => new ClassroomManagementForm(_user), "ClassroomManagementForm");
+        }
+
+        private void ticketsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(() => new TicketManagementForm(_user), "TicketManagementForm");
         }
 
         private void integridadToolStripMenuItem_Click(object sender, EventArgs e)

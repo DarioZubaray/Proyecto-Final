@@ -40,6 +40,7 @@ namespace TrabajoFinal_DarioZubaray
             this.rolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aulasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.integridadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ticketsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.académicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cursosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inscripcionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,6 +59,7 @@ namespace TrabajoFinal_DarioZubaray
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
             this.administraciónToolStripMenuItem,
+            this.ticketsToolStripMenuItem,
             this.académicoToolStripMenuItem,
             this.ayudaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -143,6 +145,13 @@ namespace TrabajoFinal_DarioZubaray
             this.integridadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.integridadToolStripMenuItem.Text = "Auditoría de Integridad (DVH)";
             this.integridadToolStripMenuItem.Click += new System.EventHandler(this.integridadToolStripMenuItem_Click);
+            // 
+            // ticketsToolStripMenuItem
+            // 
+            this.ticketsToolStripMenuItem.Name = "ticketsToolStripMenuItem";
+            this.ticketsToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.ticketsToolStripMenuItem.Text = "Tickets";
+            this.ticketsToolStripMenuItem.Click += new System.EventHandler(this.ticketsToolStripMenuItem_Click);
             // 
             // académicoToolStripMenuItem
             // 
@@ -245,6 +254,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.ToolStripMenuItem rolesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aulasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem integridadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ticketsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem académicoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cursosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inscripcionesToolStripMenuItem;

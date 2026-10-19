@@ -2189,5 +2189,143 @@ namespace BE.Properties {
                 return ResourceManager.GetString("Integrity_PendingContinueMessage", resourceCulture);
             }
         }
+        
+        public static string Main_MenuTickets {
+            get {
+                return ResourceManager.GetString("Main_MenuTickets", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_Title {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_BtnNew {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_BtnNew", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_BtnClose {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_BtnClose", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_ColUser {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_ColUser", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_ColSubject {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_ColSubject", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_ColStatus {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_ColStatus", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_ColCreatedAt {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_ColCreatedAt", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_ColClosedAt {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_ColClosedAt", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_StatusOpen {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_StatusOpen", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_StatusClosed {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_StatusClosed", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_CloseConfirm {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_CloseConfirm", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_CloseSuccess {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_CloseSuccess", resourceCulture);
+            }
+        }
+        
+        public static string TicketManagementForm_SelectOpenTicket {
+            get {
+                return ResourceManager.GetString("TicketManagementForm_SelectOpenTicket", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_Title {
+            get {
+                return ResourceManager.GetString("TicketForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_SubjectLabel {
+            get {
+                return ResourceManager.GetString("TicketForm_SubjectLabel", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_DescriptionLabel {
+            get {
+                return ResourceManager.GetString("TicketForm_DescriptionLabel", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_BtnSave {
+            get {
+                return ResourceManager.GetString("TicketForm_BtnSave", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_BtnCancel {
+            get {
+                return ResourceManager.GetString("TicketForm_BtnCancel", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_SubjectRequired {
+            get {
+                return ResourceManager.GetString("TicketForm_SubjectRequired", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_DescriptionRequired {
+            get {
+                return ResourceManager.GetString("TicketForm_DescriptionRequired", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_CreatedSuccess {
+            get {
+                return ResourceManager.GetString("TicketForm_CreatedSuccess", resourceCulture);
+            }
+        }
+        
+        public static string TicketForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("TicketForm_ValidationTitle", resourceCulture);
+            }
+        }
     }
 }
