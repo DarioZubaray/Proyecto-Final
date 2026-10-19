@@ -15,12 +15,13 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql) | **Script maestro**: crea la base (si no existe), crea todas las tablas, inserta los datos y registra las versiones en un solo paso. |
 | [`07_v1.2.0_AdminPassword.sql`](07_v1.2.0_AdminPassword.sql) | Migración v1.2.0: cambia la contraseña del usuario `admin` a `admin` y resetea su estado (exento de bloqueo, 2FA). |
 | [`08_v1.3.0_DVH.sql`](08_v1.3.0_DVH.sql) | Migración v1.3.0: agrega la columna `users.dvh` (Dígito Verificador Horizontal) y calcula el hash SHA-256 de cada fila (columnas unidas por coma, sin espacios). |
+| [`09_v1.4.0_Tickets.sql`](09_v1.4.0_Tickets.sql) | Migración v1.4.0: crea la tabla `tickets` (reportes de usuarios con estados Abierto/Cerrado) y el permiso `FORM_TICKET_MGMT` (gestión administrativa, rol Admin). |
 
 ## Instalación
 
 ### Opción A — Script maestro (recomendada, un solo paso)
 
-Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema completo (v1.0.0 + v1.1.0 + DVH v1.3.0) y carga todos los datos.
+Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema completo (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0) y carga todos los datos.
 
 ### Opción B — Scripts por pasos (migraciones)
 
@@ -43,7 +44,10 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 -- 6. Migración v1.3.0 (DVH: columna users.dvh + backfill de hashes)
 08_v1.3.0_DVH.sql
 
--- 7. (opcional) Consultas de verificación
+-- 7. Migración v1.4.0 (tickets: tabla + permiso FORM_TICKET_MGMT)
+09_v1.4.0_Tickets.sql
+
+-- 8. (opcional) Consultas de verificación
 05_v1.1.0_Queries.sql
 ```
 
@@ -53,7 +57,7 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 `Roles`, `Permissions`, `RolePermissions`, `RoleHierarchy`, `Users`, `ActivityLogs`, `SchemaVersions`
 
 **Tablas v1.1.0+** (snake_case plural inglés):
-`classrooms`, `courses`, `course_teachers`, `course_students`, `attendance`
+`classrooms`, `courses`, `course_teachers`, `course_students`, `attendance`, `tickets`
 
 **Columnas**: Todas `snake_case` (`start_date`, `day_of_week`, `is_active`, etc.)
 

@@ -5,6 +5,8 @@
 -- =============================================
 
 -- 1. Deshabilitar FK de cada tabla
+IF OBJECT_ID('dbo.tickets', 'U') IS NOT NULL
+    ALTER TABLE dbo.tickets NOCHECK CONSTRAINT ALL;
 IF OBJECT_ID('dbo.attendance', 'U') IS NOT NULL
     ALTER TABLE dbo.attendance NOCHECK CONSTRAINT ALL;
 IF OBJECT_ID('dbo.course_students', 'U') IS NOT NULL
@@ -25,6 +27,7 @@ IF OBJECT_ID('dbo.users', 'U') IS NOT NULL
     ALTER TABLE dbo.users NOCHECK CONSTRAINT ALL;
 
 -- 2. Eliminar todas las tablas
+IF OBJECT_ID('dbo.tickets', 'U') IS NOT NULL DROP TABLE dbo.tickets;
 IF OBJECT_ID('dbo.attendance', 'U') IS NOT NULL DROP TABLE dbo.attendance;
 IF OBJECT_ID('dbo.course_students', 'U') IS NOT NULL DROP TABLE dbo.course_students;
 IF OBJECT_ID('dbo.course_teachers', 'U') IS NOT NULL DROP TABLE dbo.course_teachers;

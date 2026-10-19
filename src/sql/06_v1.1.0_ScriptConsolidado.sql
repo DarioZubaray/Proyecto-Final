@@ -1,10 +1,10 @@
 -- ============================================================
--- SCRIPT CONSOLIDADO v1.1.0
+-- SCRIPT CONSOLIDADO v1.4.0
 -- Instalacion completa de la base DarioZubaray_TF en un solo paso:
 --   1. Crear la base si no existe
 --   2. Eliminar todas las tablas (purge)
---   3. Crear el esquema completo (v1.0.0 + v1.1.0)
---   4. Insertar datos iniciales y seed de la migracion v1.1.0
+--   3. Crear el esquema completo (v1.0.0 + v1.1.0 + v1.3.0 + v1.4.0)
+--   4. Insertar datos iniciales, seed v1.1.0 y backfill DVH v1.3.0
 --   5. Registrar versiones en schema_versions
 -- ============================================================
 
@@ -28,6 +28,7 @@ BEGIN TRY
     -- =============================================
     -- 2. PURGE: eliminar todas las tablas
     -- =============================================
+    IF OBJECT_ID('dbo.tickets', 'U') IS NOT NULL DROP TABLE dbo.tickets;
     IF OBJECT_ID('dbo.attendance', 'U') IS NOT NULL DROP TABLE dbo.attendance;
     IF OBJECT_ID('dbo.course_students', 'U') IS NOT NULL DROP TABLE dbo.course_students;
     IF OBJECT_ID('dbo.course_teachers', 'U') IS NOT NULL DROP TABLE dbo.course_teachers;
@@ -140,7 +141,8 @@ BEGIN TRY
     ('FORM_CURSO_MGMT',       'ABM Cursos',         'Formulario de gestion de cursos',        0),
     ('FORM_INSCRIPCION_MGMT', 'Inscripciones',      'Gestion de inscripciones de alumnos a cursos', 0),
     ('FORM_ASISTENCIA_MGMT',  'Asistencia',         'Registro de asistencia de alumnos en clases',  0),
-    ('FORM_ASISTENCIA_VIEW',  'Ver Asistencia',     'Consulta de asistencia de alumnos',      0);
+    ('FORM_ASISTENCIA_VIEW',  'Ver Asistencia',     'Consulta de asistencia de alumnos',      0),
+    ('FORM_TICKET_MGMT',      'Gestion de Tickets', 'Listar y cerrar tickets de todos los usuarios', 0);
 
     -- 4.3 Asignacion de permisos a roles (estado final)
 
@@ -268,6 +270,22 @@ BEGIN TRY
         CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
     );
 
+    -- 5.6 Tickets (v1.4.0)
+    CREATE TABLE [dbo].[tickets] (
+        [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+        [user_id]     INT            NOT NULL,
+        [subject]     NVARCHAR(200)  NOT NULL,
+        [description] NVARCHAR(MAX)  NOT NULL,
+        [is_closed]   BIT            NOT NULL DEFAULT 0,
+        [created_at]  DATETIME       NOT NULL DEFAULT GETDATE(),
+        [closed_at]   DATETIME       NULL,
+        [closed_by]   INT            NULL,
+        CONSTRAINT fk_tickets_user FOREIGN KEY ([user_id]) REFERENCES [dbo].[users]([id]),
+        CONSTRAINT fk_tickets_closed_by FOREIGN KEY ([closed_by]) REFERENCES [dbo].[users]([id])
+    );
+    CREATE INDEX ix_tickets_user_created ON [dbo].[tickets] ([user_id], [created_at] DESC);
+    CREATE INDEX ix_tickets_is_closed ON [dbo].[tickets] ([is_closed], [created_at] DESC);
+
     -- =============================================
     -- 6. INSERT: seed v1.1.0
     -- =============================================
@@ -394,14 +412,15 @@ BEGIN TRY
     ('1.0.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
     ('1.1.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
     ('1.2.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
-    ('1.3.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
+    ('1.3.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
+    ('1.4.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
 
     -- =============================================
     -- 8. Confirmar
     -- =============================================
     COMMIT TRANSACTION;
 
-    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.3.0.';
+    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.4.0.';
 
 END TRY
 BEGIN CATCH
