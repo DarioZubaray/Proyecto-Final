@@ -136,11 +136,25 @@ namespace TrabajoFinal_DarioZubaray
 
         private void dgvTickets_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (e.Value is bool closed && dgvTickets.Columns[e.ColumnIndex].Name == "IsClosed")
+            string columnName = dgvTickets.Columns[e.ColumnIndex].Name;
+
+            if (columnName == "IsClosed" && e.Value is bool closed)
             {
                 e.Value = closed
                     ? Resources.TicketManagementForm_StatusClosed
                     : Resources.TicketManagementForm_StatusOpen;
+                e.FormattingApplied = true;
+            }
+            else if (columnName == "ClosedAt")
+            {
+                e.Value = e.Value is DateTime closedAt
+                    ? closedAt.ToString("yyyy-MM-dd HH:mm:ss")
+                    : string.Empty;
+                e.FormattingApplied = true;
+            }
+            else if (columnName == "CreatedAt" && e.Value is DateTime createdAt)
+            {
+                e.Value = createdAt.ToString("yyyy-MM-dd HH:mm:ss");
                 e.FormattingApplied = true;
             }
         }
