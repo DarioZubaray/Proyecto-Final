@@ -892,4 +892,58 @@
   <data name="AttendanceViewForm_Title" xml:space="preserve">
     <value>Ver Presença</value>
   </data>
+  <data name="Auth_IntegrityBlocked" xml:space="preserve">
+    <value>Acesso bloqueado: foram detectadas inconsistências no banco de dados. Somente o administrador do sistema pode entrar.</value>
+  </data>
+  <data name="Integrity_Title" xml:space="preserve">
+    <value>Auditoria de Integridade (DVH)</value>
+  </data>
+  <data name="Integrity_InfoLabel" xml:space="preserve">
+    <value>Foram detectadas linhas cujo dígito verificador não corresponde ao seu conteúdo. Selecione uma linha para editá-la, ou aceitá-la e regenerar seu hash.</value>
+  </data>
+  <data name="Integrity_ColTable" xml:space="preserve">
+    <value>Tabela</value>
+  </data>
+  <data name="Integrity_ColRowId" xml:space="preserve">
+    <value>ID linha</value>
+  </data>
+  <data name="Integrity_ColDescription" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="Integrity_ColStoredHash" xml:space="preserve">
+    <value>Hash armazenado</value>
+  </data>
+  <data name="Integrity_ColComputedHash" xml:space="preserve">
+    <value>Hash recalculado</value>
+  </data>
+  <data name="Integrity_EditButton" xml:space="preserve">
+    <value>Editar linha</value>
+  </data>
+  <data name="Integrity_AcceptButton" xml:space="preserve">
+    <value>Aceitar e regenerar hash</value>
+  </data>
+  <data name="Integrity_RefreshButton" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="Integrity_CloseButton" xml:space="preserve">
+    <value>Fechar</value>
+  </data>
+  <data name="Integrity_SelectRow" xml:space="preserve">
+    <value>Selecione uma linha para continuar.</value>
+  </data>
+  <data name="Integrity_AcceptConfirmMessage" xml:space="preserve">
+    <value>Regenerar o hash da linha {0} com seus valores atuais?</value>
+  </data>
+  <data name="Integrity_AcceptSuccess" xml:space="preserve">
+    <value>Hash regenerado com sucesso.</value>
+  </data>
+  <data name="Integrity_AcceptFailed" xml:space="preserve">
+    <value>Não foi possível regenerar o hash da linha.</value>
+  </data>
+  <data name="Integrity_NoViolations" xml:space="preserve">
+    <value>Não há linhas alteradas. A integridade dos dados está correta.</value>
+  </data>
+  <data name="Integrity_PendingContinueMessage" xml:space="preserve">
+    <value>Restam linhas sem resolver. Continuar mesmo assim?</value>
+  </data>
 </root>

@@ -892,4 +892,58 @@
   <data name="AttendanceViewForm_Title" xml:space="preserve">
     <value>Ver Asistencia</value>
   </data>
+  <data name="Auth_IntegrityBlocked" xml:space="preserve">
+    <value>Acceso bloqueado: se detectaron inconsistencias en la base de datos. Solo el administrador del sistema puede ingresar.</value>
+  </data>
+  <data name="Integrity_Title" xml:space="preserve">
+    <value>Auditoría de Integridad (DVH)</value>
+  </data>
+  <data name="Integrity_InfoLabel" xml:space="preserve">
+    <value>Se detectaron filas cuyo dígito verificador no coincide con su contenido. Seleccione una fila para editarla, o aceptarla y regenerar su hash.</value>
+  </data>
+  <data name="Integrity_ColTable" xml:space="preserve">
+    <value>Tabla</value>
+  </data>
+  <data name="Integrity_ColRowId" xml:space="preserve">
+    <value>ID fila</value>
+  </data>
+  <data name="Integrity_ColDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="Integrity_ColStoredHash" xml:space="preserve">
+    <value>Hash guardado</value>
+  </data>
+  <data name="Integrity_ColComputedHash" xml:space="preserve">
+    <value>Hash recalculado</value>
+  </data>
+  <data name="Integrity_EditButton" xml:space="preserve">
+    <value>Editar fila</value>
+  </data>
+  <data name="Integrity_AcceptButton" xml:space="preserve">
+    <value>Aceptar y regenerar hash</value>
+  </data>
+  <data name="Integrity_RefreshButton" xml:space="preserve">
+    <value>Refrescar</value>
+  </data>
+  <data name="Integrity_CloseButton" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="Integrity_SelectRow" xml:space="preserve">
+    <value>Seleccione una fila para continuar.</value>
+  </data>
+  <data name="Integrity_AcceptConfirmMessage" xml:space="preserve">
+    <value>¿Regenerar el hash de la fila {0} con sus valores actuales?</value>
+  </data>
+  <data name="Integrity_AcceptSuccess" xml:space="preserve">
+    <value>Hash regenerado correctamente.</value>
+  </data>
+  <data name="Integrity_AcceptFailed" xml:space="preserve">
+    <value>No se pudo regenerar el hash de la fila.</value>
+  </data>
+  <data name="Integrity_NoViolations" xml:space="preserve">
+    <value>No hay filas alteradas. La integridad de los datos es correcta.</value>
+  </data>
+  <data name="Integrity_PendingContinueMessage" xml:space="preserve">
+    <value>Quedan filas sin resolver. ¿Continuar igualmente?</value>
+  </data>
 </root>

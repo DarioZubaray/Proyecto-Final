@@ -892,4 +892,58 @@
   <data name="AttendanceViewForm_Title" xml:space="preserve">
     <value>View Attendance</value>
   </data>
+  <data name="Auth_IntegrityBlocked" xml:space="preserve">
+    <value>Access blocked: inconsistencies were detected in the database. Only the system administrator can log in.</value>
+  </data>
+  <data name="Integrity_Title" xml:space="preserve">
+    <value>Integrity Audit (DVH)</value>
+  </data>
+  <data name="Integrity_InfoLabel" xml:space="preserve">
+    <value>Rows whose verification digit does not match their content were detected. Select a row to edit it, or accept it and regenerate its hash.</value>
+  </data>
+  <data name="Integrity_ColTable" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="Integrity_ColRowId" xml:space="preserve">
+    <value>Row ID</value>
+  </data>
+  <data name="Integrity_ColDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Integrity_ColStoredHash" xml:space="preserve">
+    <value>Stored hash</value>
+  </data>
+  <data name="Integrity_ColComputedHash" xml:space="preserve">
+    <value>Recomputed hash</value>
+  </data>
+  <data name="Integrity_EditButton" xml:space="preserve">
+    <value>Edit row</value>
+  </data>
+  <data name="Integrity_AcceptButton" xml:space="preserve">
+    <value>Accept and regenerate hash</value>
+  </data>
+  <data name="Integrity_RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Integrity_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Integrity_SelectRow" xml:space="preserve">
+    <value>Select a row to continue.</value>
+  </data>
+  <data name="Integrity_AcceptConfirmMessage" xml:space="preserve">
+    <value>Regenerate the hash of row {0} with its current values?</value>
+  </data>
+  <data name="Integrity_AcceptSuccess" xml:space="preserve">
+    <value>Hash regenerated successfully.</value>
+  </data>
+  <data name="Integrity_AcceptFailed" xml:space="preserve">
+    <value>The row hash could not be regenerated.</value>
+  </data>
+  <data name="Integrity_NoViolations" xml:space="preserve">
+    <value>No altered rows. Data integrity is correct.</value>
+  </data>
+  <data name="Integrity_PendingContinueMessage" xml:space="preserve">
+    <value>There are unresolved rows. Continue anyway?</value>
+  </data>
 </root>

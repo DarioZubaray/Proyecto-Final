@@ -2081,5 +2081,113 @@ namespace BE.Properties {
                 return ResourceManager.GetString("ClassroomManagementForm_InfoTitle", resourceCulture);
             }
         }
+        
+        public static string Auth_IntegrityBlocked {
+            get {
+                return ResourceManager.GetString("Auth_IntegrityBlocked", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_Title {
+            get {
+                return ResourceManager.GetString("Integrity_Title", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_InfoLabel {
+            get {
+                return ResourceManager.GetString("Integrity_InfoLabel", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_ColTable {
+            get {
+                return ResourceManager.GetString("Integrity_ColTable", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_ColRowId {
+            get {
+                return ResourceManager.GetString("Integrity_ColRowId", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_ColDescription {
+            get {
+                return ResourceManager.GetString("Integrity_ColDescription", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_ColStoredHash {
+            get {
+                return ResourceManager.GetString("Integrity_ColStoredHash", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_ColComputedHash {
+            get {
+                return ResourceManager.GetString("Integrity_ColComputedHash", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_EditButton {
+            get {
+                return ResourceManager.GetString("Integrity_EditButton", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_AcceptButton {
+            get {
+                return ResourceManager.GetString("Integrity_AcceptButton", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_RefreshButton {
+            get {
+                return ResourceManager.GetString("Integrity_RefreshButton", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_CloseButton {
+            get {
+                return ResourceManager.GetString("Integrity_CloseButton", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_SelectRow {
+            get {
+                return ResourceManager.GetString("Integrity_SelectRow", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_AcceptConfirmMessage {
+            get {
+                return ResourceManager.GetString("Integrity_AcceptConfirmMessage", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_AcceptSuccess {
+            get {
+                return ResourceManager.GetString("Integrity_AcceptSuccess", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_AcceptFailed {
+            get {
+                return ResourceManager.GetString("Integrity_AcceptFailed", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_NoViolations {
+            get {
+                return ResourceManager.GetString("Integrity_NoViolations", resourceCulture);
+            }
+        }
+        
+        public static string Integrity_PendingContinueMessage {
+            get {
+                return ResourceManager.GetString("Integrity_PendingContinueMessage", resourceCulture);
+            }
+        }
     }
 }
