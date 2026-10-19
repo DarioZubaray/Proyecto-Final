@@ -33,11 +33,21 @@ namespace BLL.Services
                 return CreateLoginFailed(Resources.Auth_RequiredFields, ErrorCodesBLL.Auth.RequiredFields);
             }
 
+            if (IntegrityStateBLL.LastScanHasFailures && !UserBLL.IsAdminName(userName))
+            {
+                return CreateLoginFailed(Resources.Auth_IntegrityBlocked, ErrorCodesBLL.Integrity.Blocked);
+            }
+
             UserBE user = _userMPP.GetByUserName(userName);
 
             if (user == null)
             {
                 return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
+            }
+
+            if (IntegrityStateBLL.LastScanHasFailures && !UserBLL.IsSysAdmin(user))
+            {
+                return CreateLoginFailed(Resources.Auth_IntegrityBlocked, ErrorCodesBLL.Integrity.Blocked);
             }
 
             if (!user.IsActive && !IsAdmin(user))
@@ -60,7 +70,7 @@ namespace BLL.Services
 
         public bool Logout(UserBE user)
         {
-            return _userMPP.Save(user);
+            return _userMPP.Save(user) && DVHHelperBLL.Regenerate(_userMPP, user);
         }
 
         public bool TestConnection()
@@ -104,6 +114,8 @@ namespace BLL.Services
                 _userMPP.UpdateRetries(user.Id, 0);
             }
 
+            DVHHelperBLL.Regenerate(_userMPP, user.Id);
+
             return new LoginResultBE
             {
                 Success = true,
@@ -115,8 +127,6 @@ namespace BLL.Services
 
         private LoginResultBE LoginFailed(UserBE user)
         {
-            // El usuario admin esta exento del control de reintentos:
-            // no cuenta, no se desactiva y no recibe mensajes de reintento.
             if (IsAdmin(user))
             {
                 return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
@@ -127,10 +137,12 @@ namespace BLL.Services
             if (user.RetriesCount >= MAX_RETRIES)
             {
                 _userMPP.Deactivate(user.Id);
+                DVHHelperBLL.Regenerate(_userMPP, user.Id);
                 return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded, ErrorCodesBLL.Auth.MaxRetriesExceeded);
             }
 
             _userMPP.UpdateRetries(user.Id, user.RetriesCount);
+            DVHHelperBLL.Regenerate(_userMPP, user.Id);
             int retriesLeft = MAX_RETRIES - user.RetriesCount;
             return CreateLoginFailed(
                 string.Format(Resources.Auth_RetriesLeft, retriesLeft),

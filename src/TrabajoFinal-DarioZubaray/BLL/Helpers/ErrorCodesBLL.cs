@@ -19,6 +19,13 @@ namespace BLL.Helpers
             public const string TwoFactorInvalid = "AUTH-006";
         }
 
+        public static class Integrity
+        {
+            public const string Blocked = "INT-001";
+            public const string ResolveFailed = "INT-002";
+            public const string ScanFailed = "INT-003";
+        }
+
         public static class Validation
         {
             public const string UsernameRequired = "VAL-001";

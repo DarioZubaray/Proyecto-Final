@@ -83,8 +83,6 @@ namespace BLL.Helpers
             return new AuthBLL(GetUserMPP(), CreateTwoFactorBLL());
         }
 
-        // Punto unico de configuracion del proveedor de 2FA.
-        // Hoy: InternalTwoFactorBLL (hardcodeado). Futuro: Google/Microsoft, etc.
         public static ITwoFactorBLL CreateTwoFactorBLL()
         {
             return new InternalTwoFactorBLL();
@@ -138,6 +136,14 @@ namespace BLL.Helpers
         public static IAttendanceBLL CreateAttendanceBLL()
         {
             return new AttendanceBLL(GetAttendanceMPP());
+        }
+
+        public static IIntegrityBLL CreateIntegrityBLL()
+        {
+            return new IntegrityBLL(new IDvhTableVerifierBLL[]
+            {
+                new UserDvhVerifierBLL(CreateUserBLL())
+            });
         }
         #endregion
     }

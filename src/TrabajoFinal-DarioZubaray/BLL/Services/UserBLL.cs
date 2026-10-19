@@ -12,9 +12,8 @@ namespace BLL.Services
         #region Propiedades
         private readonly IUserMPP _userMPP;
 
-        // Usuario admin: no se elimina, no se desactiva, no se renombra,
-        // no cambia de rol.
         public const string ADMIN_USERNAME = "admin";
+        public const int SYSADMIN_ID = 1;
         #endregion
 
         #region Constructor
@@ -27,13 +26,12 @@ namespace BLL.Services
         #region Métodos
         public bool Delete(UserBE user)
         {
-            // El admin nunca se elimina.
             if (user != null && IsAdminName(user.UserName))
             {
                 return false;
             }
 
-            return _userMPP.Delete(user);
+            return _userMPP.Delete(user) && DVHHelperBLL.Regenerate(_userMPP, user.Id);
         }
 
         public bool Save(UserBE user)
@@ -43,27 +41,28 @@ namespace BLL.Services
                 return false;
             }
 
-            // El admin no se renombra ni cambia de rol: se compara contra el
-            // registro persistido, porque la GUI ya pudo haber pisado los valores.
             if (user.Id != 0 && IsAdminProtectedChange(user))
             {
                 return false;
             }
 
-            // El admin nunca se desactiva ni conserva reintentos:
-            // se fuerzan siempre sus valores seguros.
             if (IsAdminName(user.UserName))
             {
                 user.IsActive = true;
                 user.RetriesCount = 0;
             }
 
-            return _userMPP.Save(user);
+            return _userMPP.Save(user) && DVHHelperBLL.Regenerate(_userMPP, user);
         }
 
         public static bool IsAdminName(string userName)
         {
             return string.Equals(userName, ADMIN_USERNAME, System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static bool IsSysAdmin(UserBE user)
+        {
+            return user != null && user.Id == SYSADMIN_ID && IsAdminName(user.UserName);
         }
 
         private bool IsAdminProtectedChange(UserBE user)
@@ -75,7 +74,6 @@ namespace BLL.Services
                 return false;
             }
 
-            // Nombre cambiado, o rol cambiado (el rol define los permisos del admin).
             return !IsAdminName(user.UserName) || persisted.RoleId != user.RoleId;
         }
 
@@ -96,12 +94,14 @@ namespace BLL.Services
 
         public bool UpdateLanguage(int userId, string language)
         {
-            return _userMPP.UpdateLanguage(userId, language);
+            return _userMPP.UpdateLanguage(userId, language)
+                && DVHHelperBLL.Regenerate(_userMPP, userId);
         }
 
         public bool UpdateTheme(int userId, string theme)
         {
-            return _userMPP.UpdateTheme(userId, theme);
+            return _userMPP.UpdateTheme(userId, theme)
+                && DVHHelperBLL.Regenerate(_userMPP, userId);
         }
 
         public bool ChangePassword(int userId, string currentPassword, string newPassword)
@@ -121,7 +121,8 @@ namespace BLL.Services
             }
 
             string newHash = EncryptionBLL.HashPassword(newPassword);
-            return _userMPP.UpdatePassword(userId, newHash);
+            return _userMPP.UpdatePassword(userId, newHash)
+                && DVHHelperBLL.Regenerate(_userMPP, userId);
         }
 
         public int CountByRoleId(int roleId)
