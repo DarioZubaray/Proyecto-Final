@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant PF as :Preferencias
+    participant UP as :Usuario / Persistencia
+    participant SS as :Sesión / Interfaz
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-09 - Flujo básico (pasos 3 a 8 del caso de uso)
+    Usuario->>PF: Abre Archivo → Preferencias
+    PF-->>Usuario: Muestra combos de Idioma y Tema (valores vigentes)
+    Usuario->>PF: Selecciona idioma y tema y presiona "Guardar"
+    PF->>PF: Validar que ambos valores estén seleccionados y soportados
+    PF->>UP: Guardar idioma y tema del usuario
+    UP->>BD: UPDATE users SET language, theme (regenerar DVH)
+    BD-->>UP: OK
+    UP-->>PF: Guardado exitoso
+    PF->>SS: Aplicar cambios en la sesión y la interfaz
+    SS->>SS: Cultura del hilo + textos del MainForm + tema de todos los forms abiertos
+    SS->>SS: Guardar preferencias en el archivo local (para la próxima pantalla de login)
+    PF-->>Usuario: Confirma "Preferencias guardadas correctamente"
+
+    Note over Usuario,BD: CU-09 - Flujos alternativos (pasos 5.a a 7.a del caso de uso)
+    alt Selección vacía o inválida
+        PF-->>Usuario: Informa "Debe seleccionar idioma y tema. (Código: VAL-006)"
+    else Falla el guardado en la base de datos
+        PF-->>Usuario: No aplica los cambios (valores anteriores se mantienen)
+    else Falla la escritura del archivo local
+        PF-->>Usuario: Muestra confirmación (el error se silencia)
+    end

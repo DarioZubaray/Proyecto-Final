@@ -83,6 +83,16 @@ erDiagram
         bool is_present
         datetime created_at
     }
+    tickets {
+        int id PK
+        int user_id FK
+        string subject
+        string description
+        bool is_closed
+        datetime created_at
+        int closed_by FK
+        datetime closed_at
+    }
 
     users }o--|| roles : "role_id"
     roles ||--o{ role_permissions : "permissions"
@@ -97,3 +107,5 @@ erDiagram
     users ||--o{ course_students : "enrolled in"
     courses ||--o{ attendance : "classes"
     users ||--o{ attendance : "attendance"
+    users ||--o{ tickets : "reports"
+    users ||--o{ tickets : "closes"

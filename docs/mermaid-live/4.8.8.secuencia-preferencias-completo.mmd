@@ -1,0 +1,63 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant PF as :PreferencesForm
+    participant UB as :UserBLL
+    participant UMP as :UserMPP
+    participant ACC as :AccessDAL
+    participant SES as :SessionManagerBLL
+    participant APB as :AppPreferencesBLL
+    participant MF as :MainForm
+    participant BD as :SQL Server (Base de Datos)
+
+    Note over Usuario,BD: CU-09 pasos 1-3: abre Archivo → Preferencias
+    Usuario->>MF: ShowChildForm(PreferencesForm, logName="PreferencesForm") → registra FORM_ACCESS
+    MF->>PF: new PreferencesForm(user, mainForm) (MDI hijo)
+    PF->>SES: SessionManagerBLL.GetInstance(user.Id)
+    SES-->>PF: sesión del usuario
+    PF->>PF: Carga combos: Idioma (es/en/pt-BR desde CultureHelperBLL) y Tema (System/Light/Dark desde ThemeHelper), con los valores vigentes del usuario
+    PF-->>Usuario: Muestra los combos inicializados
+
+    Note over Usuario,BD: CU-09 pasos 4-8: guardar preferencias
+    Usuario->>PF: Selecciona idioma y tema y presiona "Guardar"
+    alt Selección vacía o inválida (paso 5.a)
+        PF->>PF: Validar SelectedValue de ambos combos
+        PF-->>Usuario: "Debe seleccionar idioma y tema. (Código: VAL-006)" - no guarda
+    else Selección válida
+        PF->>UB: UpdateLanguage(user.Id, selectedLanguage)
+        UB->>UMP: UpdateLanguage(userId, language) (UPDATE users SET language ...)
+        UMP->>ACC: Mutate(userId, user.Language = language)
+        ACC->>BD: UPDATE users SET ..., language=@language ... WHERE id=@id
+        BD-->>ACC: OK
+        ACC-->>UMP: true
+        UMP-->>UB: true
+        UB->>UB: DVHHelperBLL.Regenerate(...) → regenera el hash de integridad del usuario
+        UB->>UMP: Recalcular DVH y actualizar dvh en users
+        UMP->>ACC: Execute(UPDATE de dvh, SqlParameters)
+        ACC->>BD: UPDATE users SET dvh=@dvh WHERE id=@id
+        BD-->>ACC: OK
+        UB-->>PF: languageSaved = true
+        PF->>UB: UpdateTheme(user.Id, selectedTheme)
+        UB->>UMP: UpdateTheme(userId, theme) (UPDATE users SET theme ...)
+        UMP->>ACC: Mutate(userId, user.Theme = theme)
+        ACC->>BD: UPDATE users SET ..., theme=@theme ... WHERE id=@id
+        BD-->>ACC: OK
+        UB->>UMP: Recalcular DVH y actualizar dvh en users
+        UMP->>ACC: Execute(UPDATE de dvh, SqlParameters)
+        ACC->>BD: UPDATE users SET dvh=@dvh WHERE id=@id
+        BD-->>ACC: OK
+        UB-->>PF: themeSaved = true
+        alt Ambos guardados exitosos (paso 7)
+            PF->>SES: UpdateLanguage(selectedLanguage) → cultura del hilo (Thread.CurrentThread.CurrentCulture/CurrentUICulture) y memoria de sesión
+            PF->>SES: UpdateTheme(selectedTheme) → memoria de sesión
+            PF->>APB: SavePreferences(selectedLanguage, selectedTheme)
+            APB->>APB: Escribe JSON en %LocalAppData%\TrabajoFinal-DarioZubaray\preferences.json (para la próxima pantalla de login)
+            PF->>MF: ApplyResources() → re-traduce menú y footer del MainForm
+            PF->>MF: ApplyTheme() → aplica el tema al MainForm
+            PF->>PF: ThemeHelper.ApplyThemeToAllOpenForms(selectedTheme) → tema de todos los forms abiertos
+            PF->>PF: ApplyResources() y ApplyTheme() propios
+            PF-->>Usuario: "Preferencias guardadas correctamente" - aplica sin reiniciar
+        else Falla el guardado en BD (paso 6.a)
+            PF-->>Usuario: No aplica los cambios (sin mensaje, la sesión y la interfaz mantienen los valores anteriores)
+        end
+    end

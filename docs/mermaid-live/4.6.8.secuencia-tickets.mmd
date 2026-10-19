@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GT as :Gestión de Tickets
+    participant NT as :Nuevo Ticket
+    participant MT as :Manejador de Tickets
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-07 - Flujo básico de registro (pasos 3 a 7 del caso de uso)
+    Usuario->>GT: Presiona "Nuevo"
+    GT->>NT: Abrir formulario de alta
+    NT-->>Usuario: Muestra Asunto y Descripción
+    Usuario->>NT: Completa asunto y descripción y presiona "Guardar"
+    NT->>MT: Validar y registrar el ticket
+    MT->>BD: Insertar ticket (estado Abierto, usuario logueado)
+    BD-->>MT: OK
+    NT-->>Usuario: Confirma "Ticket creado correctamente"
+    GT->>MT: Obtener los tickets a mostrar
+    MT->>BD: Consultar tickets (todos si es Admin, propios si no)
+    BD-->>MT: Lista de tickets
+    MT-->>GT: Tickets
+    GT-->>Usuario: Grilla actualizada
+
+    Note over Usuario,BD: CU-07 - Gestión (pasos 8 a 10, solo Admin)
+    alt Admin selecciona un ticket abierto
+        Usuario->>GT: Selecciona ticket y presiona "Cerrar" y confirma
+        GT->>MT: Cerrar ticket
+        MT->>BD: Marcar cerrado (fecha + usuario de cierre)
+        BD-->>MT: OK
+        GT-->>Usuario: Grilla actualizada con el ticket cerrado
+    else Ticket ya cerrado o sin permiso
+        GT-->>Usuario: Informa que debe seleccionar un ticket abierto
+    end

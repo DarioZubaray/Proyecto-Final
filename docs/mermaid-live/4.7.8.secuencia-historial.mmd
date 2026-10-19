@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant HA as :Historial de Actividad
+    participant MA as :Manejador de Actividad
+    participant BD as :Base de Datos
+
+    Note over Usuario,BD: CU-08 - Flujo básico (pasos 3 a 5 del caso de uso)
+    Usuario->>HA: Abre Archivo → Historial de Actividad
+    HA->>MA: Consultar total de páginas del usuario
+    MA->>BD: Contar registros del usuario (user_id)
+    BD-->>MA: Total
+    MA-->>HA: Páginas totales
+    HA->>MA: Obtener la página actual (10 registros)
+    MA->>BD: SELECT paginado (ORDER BY created_at DESC)
+    BD-->>MA: Registros
+    MA-->>HA: Actividades del usuario
+    HA-->>Usuario: Grilla con Fecha, Acción (traducida), Formulario y Detalle
+
+    Note over Usuario,BD: CU-08 - Navegación y tamaño de página (pasos 4 y 5)
+    alt El usuario navega de página
+        Usuario->>HA: Presiona "Anterior" o "Siguiente"
+        HA->>MA: Obtener la página solicitada
+        MA->>BD: SELECT paginado
+        BD-->>MA: Registros
+        MA-->>HA: Actividades
+        HA-->>Usuario: Grilla actualizada
+    else El usuario cambia el tamaño de página (10/25/50)
+        Usuario->>HA: Selecciona tamaño de página
+        HA->>MA: Obtener página 1 con el nuevo tamaño
+        MA->>BD: SELECT paginado
+        BD-->>MA: Registros
+        MA-->>HA: Actividades
+        HA-->>Usuario: Grilla actualizada
+    end

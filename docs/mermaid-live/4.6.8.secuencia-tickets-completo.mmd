@@ -1,0 +1,87 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant TMF as :TicketManagementForm
+    participant TF as :TicketForm
+    participant TB as :TicketBLL
+    participant TMP as :TicketMPP
+    participant ACC as :AccessDAL
+    participant BD as :SQL Server (Base de Datos)
+
+    Note over Usuario,BD: CU-07 pasos 1-2: abre menú Tickets
+    Usuario->>TMF: Menú "Tickets" → ShowChildForm(TicketManagementForm)
+    TMF->>TB: canManage = SessionManagerBLL.HasPermission(FORM_TICKET_MGMT)
+    alt Es Admin (permiso FORM_TICKET_MGMT)
+        TMF->>TB: GetAll()
+    else Usuario sin permiso de gestión
+        TMF->>TB: GetByUserId(user.Id)
+    end
+    TB->>TMP: FindAll() o FindByUser(userId)
+    TMP->>ACC: Read(consulta con joins a users, SqlParameters)
+    ACC->>BD: SELECT t.*, u.user_name ... FROM tickets t INNER JOIN users u ...
+    BD-->>ACC: Filas de tickets
+    ACC-->>TMP: DataTable
+    TMP-->>TB: List[TicketBE]
+    TB-->>TMF: Tickets
+    TMF-->>Usuario: Grilla (Fecha, Asunto, Usuario, Estado, Cerrado por)
+
+    Note over Usuario,BD: CU-07 pasos 3-7: registrar ticket
+    Usuario->>TMF: Presiona "Nuevo"
+    TMF->>TF: new TicketForm(user) (modal)
+    TF-->>Usuario: Muestra Asunto y Descripción
+    Usuario->>TF: Completa asunto y descripción y presiona "Guardar"
+    TF->>TB: Create(ticket)
+    alt Asunto vacío
+        TB-->>TF: throw "El asunto del ticket es obligatorio. (BIZ-006)"
+        TF-->>Usuario: Muestra el mensaje y foco en Asunto
+    else Descripción vacía
+        TB-->>TF: throw "La descripción del ticket es obligatoria. (BIZ-007)"
+        TF-->>Usuario: Muestra el mensaje y foco en Descripción
+    else Datos válidos
+        TB->>TMP: Insert(ticket)
+        TMP->>ACC: Save(INSERT de ticket, SqlParameters)
+        ACC->>BD: INSERT INTO tickets(user_id, subject, description, is_closed) VALUES(...)
+        BD-->>ACC: OK
+        ACC-->>TMP: id generado (SCOPE_IDENTITY)
+        TMP-->>TB: id
+        TB-->>TF: true
+        TF-->>Usuario: "Ticket creado correctamente"
+        TMF->>TB: Recargar grilla (FindAll/FindByUser)
+        TB->>TMP: FindAll() o FindByUser(userId)
+        TMP->>ACC: Read(consulta de tickets)
+        ACC->>BD: SELECT de tickets
+        BD-->>ACC: Filas
+        ACC-->>TMP: DataTable
+        TMP-->>TB: List[TicketBE]
+        TB-->>TMF: Tickets
+        TMF-->>Usuario: Grilla actualizada con el ticket nuevo (Abierto)
+    end
+
+    Note over Usuario,BD: CU-07 pasos 8-10: cerrar ticket (solo Admin)
+    alt Admin con permiso FORM_TICKET_MGMT
+        Usuario->>TMF: Selecciona ticket Abierto y presiona "Cerrar" y confirma
+        TMF->>TB: Close(ticketId, closedById)
+        TB->>TMP: Close(id, closedById)
+        TMP->>ACC: Execute(UPDATE de cierre con condición is_closed=0, SqlParameters)
+        ACC->>BD: UPDATE tickets SET is_closed=1, closed_by=@u, closed_at=GETDATE() WHERE id=@id AND is_closed=0
+        BD-->>ACC: Filas afectadas
+        alt Ticket ya estaba cerrado
+            ACC-->>TMP: 0
+            TMP-->>TB: false
+            TB-->>TMF: false
+            TMF-->>Usuario: "Seleccione un ticket abierto."
+        else Cierre exitoso
+            ACC-->>TMP: 1
+            TMP-->>TB: true
+            TB-->>TMF: true
+            TMF->>TB: Recargar grilla
+            TB->>TMP: FindAll()
+            TMP->>ACC: Read(consulta de tickets)
+            ACC->>BD: SELECT de tickets
+            BD-->>ACC: Filas
+            ACC-->>TMP: DataTable
+            TMP-->>TB: List[TicketBE]
+            TB-->>TMF: Tickets
+            TMF-->>Usuario: Grilla actualizada con el ticket Cerrado
+        end
+    end
