@@ -6,6 +6,9 @@ classDiagram
         -bool IsActive
         -int RetriesCount
         -int RoleId
+        -string Language
+        -string Theme
+        -string Dvh
     }
     class RoleBE {
         -int Id
@@ -59,6 +62,16 @@ classDiagram
         -string Action
         -string FormName
         -string Description
+    }
+    class TicketBE {
+        -int Id
+        -int UserId
+        -string Subject
+        -string Description
+        -bool IsClosed
+        -DateTime CreatedAt
+        -DateTime? ClosedAt
+        -int? ClosedBy
     }
     class ActivityLogEntryBE {
         -int UserId
@@ -115,3 +128,5 @@ classDiagram
     AttendanceBE "0..*" --> "1" CourseBE : de la clase de
     AttendanceBE "0..*" --> "1" UserBE : del alumno
     ActivityLogBE "0..*" --> "1" UserBE : registrada por
+    TicketBE "0..*" --> "1" UserBE : reportado por
+    TicketBE "0..*" --> "0..1" UserBE : cerrado por
