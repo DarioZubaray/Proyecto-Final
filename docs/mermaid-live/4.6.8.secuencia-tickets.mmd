@@ -16,13 +16,13 @@ sequenceDiagram
     BD-->>MT: OK
     NT-->>Usuario: Confirma "Ticket creado correctamente"
     GT->>MT: Obtener los tickets a mostrar
-    MT->>BD: Consultar tickets (todos si es Admin, propios si no)
+    MT->>BD: Consultar tickets (todos si es Coordinador o Admin, propios si no)
     BD-->>MT: Lista de tickets
     MT-->>GT: Tickets
     GT-->>Usuario: Grilla actualizada
 
-    Note over Usuario,BD: CU-07 - Gestión (pasos 8 a 10, solo Admin)
-    alt Admin selecciona un ticket abierto
+    Note over Usuario,BD: CU-07 - Gestión (pasos 8 a 10, solo Coordinador)
+    alt Coordinador selecciona un ticket abierto
         Usuario->>GT: Selecciona ticket y presiona "Cerrar" y confirma
         GT->>MT: Cerrar ticket
         MT->>BD: Marcar cerrado (fecha + usuario de cierre)

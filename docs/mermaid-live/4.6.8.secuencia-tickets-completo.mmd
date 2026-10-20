@@ -11,7 +11,7 @@ sequenceDiagram
     Note over Usuario,BD: CU-07 pasos 1-2: abre menú Tickets
     Usuario->>TMF: Menú "Tickets" → ShowChildForm(TicketManagementForm)
     TMF->>TB: canManage = SessionManagerBLL.HasPermission(FORM_TICKET_MGMT)
-    alt Es Admin (permiso FORM_TICKET_MGMT)
+    alt Es Coordinador o Admin (permiso FORM_TICKET_MGMT)
         TMF->>TB: GetAll()
     else Usuario sin permiso de gestión
         TMF->>TB: GetByUserId(user.Id)
@@ -57,8 +57,8 @@ sequenceDiagram
         TMF-->>Usuario: Grilla actualizada con el ticket nuevo (Abierto)
     end
 
-    Note over Usuario,BD: CU-07 pasos 8-10: cerrar ticket (solo Admin)
-    alt Admin con permiso FORM_TICKET_MGMT
+    Note over Usuario,BD: CU-07 pasos 8-10: cerrar ticket (solo Coordinador o Admin)
+    alt Coordinador con permiso FORM_TICKET_MGMT
         Usuario->>TMF: Selecciona ticket Abierto y presiona "Cerrar" y confirma
         TMF->>TB: Close(ticketId, closedById)
         TB->>TMP: Close(id, closedById)
