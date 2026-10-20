@@ -8,7 +8,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 |---------|-------------|
 | [`00_v0.0.1_PurgeDatabase.sql`](00_v0.0.1_PurgeDatabase.sql) | Elimina todas las tablas (reinicialización limpia). |
 | [`01_v1.0.0_CreateTables.sql`](01_v1.0.0_CreateTables.sql) | Esquema base: Roles, Permissions, RolePermissions, RoleHierarchy, Users, ActivityLogs, SchemaVersions. |
-| [`02_v1.0.0_SeedData.sql`](02_v1.0.0_SeedData.sql) | Datos iniciales: roles, permisos, 24 usuarios de prueba. |
+| [`02_v1.0.0_SeedData.sql`](02_v1.0.0_SeedData.sql) | Datos iniciales: roles, permisos, 24 usuarios de prueba (los alumnos con `is_active = 0`: son datos, no actores del sistema). |
 | [`03_v1.1.0_AulasCursosInscripciones.sql`](03_v1.1.0_AulasCursosInscripciones.sql) | Migración consolidada: classrooms, courses, course_teachers, course_students, attendance. Permisos, rol Coordinador. Seed data completo. |
 | [`04_v1.1.0_Rollback.sql`](04_v1.1.0_Rollback.sql) | Rollback de v1.1.0. |
 | [`05_v1.1.0_Queries.sql`](05_v1.1.0_Queries.sql) | Consultas de verificación y desarrollo. |
@@ -16,12 +16,13 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | [`07_v1.2.0_AdminPassword.sql`](07_v1.2.0_AdminPassword.sql) | Migración v1.2.0: cambia la contraseña del usuario `admin` a `admin` y resetea su estado (exento de bloqueo, 2FA). |
 | [`08_v1.3.0_DVH.sql`](08_v1.3.0_DVH.sql) | Migración v1.3.0: agrega la columna `users.dvh` (Dígito Verificador Horizontal) y calcula el hash SHA-256 de cada fila (columnas unidas por coma, sin espacios). |
 | [`09_v1.4.0_Tickets.sql`](09_v1.4.0_Tickets.sql) | Migración v1.4.0: crea la tabla `tickets` (reportes de usuarios con estados Abierto/Cerrado) y el permiso `FORM_TICKET_MGMT` (gestión administrativa, rol Admin). |
+| [`10_v1.4.1_AjusteActores.sql`](10_v1.4.1_AjusteActores.sql) | Migración v1.4.1: desactiva el login de los alumnos (`is_active = 0`; siguen como datos para inscripción/asistencia) y otorga `FORM_TICKET_MGMT` al rol Coordinador (listar todos los tickets y cerrarlos; Profesor solo crea). |
 
 ## Instalación
 
 ### Opción A — Script maestro (recomendada, un solo paso)
 
-Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema completo (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0) y carga todos los datos.
+Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema completo (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0 + ajuste de actores v1.4.1) y carga todos los datos.
 
 ### Opción B — Scripts por pasos (migraciones)
 
@@ -47,7 +48,10 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 -- 7. Migración v1.4.0 (tickets: tabla + permiso FORM_TICKET_MGMT)
 09_v1.4.0_Tickets.sql
 
--- 8. (opcional) Consultas de verificación
+-- 8. Migración v1.4.1 (alumnos solo datos + FORM_TICKET_MGMT al Coordinador)
+10_v1.4.1_AjusteActores.sql
+
+-- 9. (opcional) Consultas de verificación
 05_v1.1.0_Queries.sql
 ```
 

@@ -1,9 +1,9 @@
 -- ============================================================
--- SCRIPT CONSOLIDADO v1.4.0
+-- SCRIPT CONSOLIDADO v1.4.1
 -- Instalacion completa de la base DarioZubaray_TF en un solo paso:
 --   1. Crear la base si no existe
 --   2. Eliminar todas las tablas (purge)
---   3. Crear el esquema completo (v1.0.0 + v1.1.0 + v1.3.0 + v1.4.0)
+--   3. Crear el esquema completo (v1.0.0 + v1.1.0 + v1.3.0 + v1.4.0 + v1.4.1)
 --   4. Insertar datos iniciales, seed v1.1.0 y backfill DVH v1.3.0
 --   5. Registrar versiones en schema_versions
 -- ============================================================
@@ -163,7 +163,7 @@ BEGIN TRY
     -- Coordinador (4)
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 4, id FROM [dbo].[permissions] WHERE name IN
-    ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_ASISTENCIA_VIEW');
+    ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_ASISTENCIA_VIEW', 'FORM_TICKET_MGMT');
 
     -- 4.4 Usuarios (contrasena: 123 para todos, excepto admin: admin)
 
@@ -188,21 +188,21 @@ BEGIN TRY
 
     -- Alumnos (rol 3)
     INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
-    ('alumno_perez',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_gomez',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_diaz',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_morales',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_torres',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_ramos',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_silva',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_castro',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_ruiz',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_alvarez',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_romero',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_sanchez',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_herrera',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_patricio',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
-    ('alumno_soto',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 3, 'es', 'System');
+    ('alumno_perez',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_gomez',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_diaz',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_morales',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_torres',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_ramos',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_silva',     '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_castro',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_ruiz',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_alvarez',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_romero',    '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_sanchez',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_herrera',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_patricio',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('alumno_soto',      '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System');
 
     -- =============================================
     -- 5. CREATE: tablas v1.1.0 (aulas, cursos, inscripciones, asistencia)
@@ -413,14 +413,15 @@ BEGIN TRY
     ('1.1.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
     ('1.2.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
     ('1.3.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
-    ('1.4.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
+    ('1.4.0', '06_v1.1.0_ScriptConsolidado.sql', GETDATE()),
+    ('1.4.1', '06_v1.1.0_ScriptConsolidado.sql', GETDATE());
 
     -- =============================================
     -- 8. Confirmar
     -- =============================================
     COMMIT TRANSACTION;
 
-    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.4.0.';
+    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.4.1.';
 
 END TRY
 BEGIN CATCH
