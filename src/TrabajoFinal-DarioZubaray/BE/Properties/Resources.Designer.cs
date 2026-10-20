@@ -2196,6 +2196,12 @@ namespace BE.Properties {
             }
         }
         
+        public static string Main_MenuSupport {
+            get {
+                return ResourceManager.GetString("Main_MenuSupport", resourceCulture);
+            }
+        }
+        
         public static string TicketManagementForm_Title {
             get {
                 return ResourceManager.GetString("TicketManagementForm_Title", resourceCulture);

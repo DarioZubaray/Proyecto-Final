@@ -949,6 +949,9 @@
   <data name="Main_MenuTickets" xml:space="preserve">
     <value>Chamados</value>
   </data>
+  <data name="Main_MenuSupport" xml:space="preserve">
+    <value>Suporte</value>
+  </data>
   <data name="TicketManagementForm_Title" xml:space="preserve">
     <value>Gestão de Chamados</value>
   </data>
