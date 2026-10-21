@@ -1,0 +1,90 @@
+classDiagram
+    direction TB
+
+    %% ============ BE ============
+    class UserBE {
+        +int Id
+        +string UserName
+        +int RoleId
+        +string RoleName
+    }
+
+    class TicketBE {
+        +int Id
+        +int UserId
+        +string Subject
+        +string Description
+        +bool IsClosed
+        +DateTime CreatedAt
+        +int? ClosedBy
+        +DateTime? ClosedAt
+        +string UserName
+        +string ClosedByName
+    }
+
+    %% ============ BLL ============
+    class ITicketBLL {
+        <<interface>>
+        +Create(TicketBE) bool
+        +Close(int, int) bool
+        +FindAll() List~TicketBE~
+        +FindByUser(int) List~TicketBE~
+    }
+
+    class TicketBLL {
+        -ITicketMPP _ticketMPP
+        +Create(TicketBE) bool
+        +Close(int, int) bool
+        +FindAll() List~TicketBE~
+        +FindByUser(int) List~TicketBE~
+    }
+
+    %% ============ MPP ============
+    class ITicketMPP {
+        <<interface>>
+        +Insert(TicketBE) int
+        +FindAll() List~TicketBE~
+        +FindByUser(int) List~TicketBE~
+        +Close(int, int) bool
+    }
+
+    class TicketMPP {
+        -AccessDAL _access
+        +Insert(TicketBE) int
+        +FindAll() List~TicketBE~
+        +FindByUser(int) List~TicketBE~
+        +Close(int, int) bool
+    }
+
+    %% ============ DAL (compartido) ============
+    class AccessDAL {
+        +Read(string, SqlParameter[]) DataTable
+        +ReadScalar(string, SqlParameter[]) int
+        +Save(string, SqlParameter[]) bool
+        +Execute(string, SqlParameter[]) bool
+    }
+
+    %% ============ GUI ============
+    class TicketManagementForm {
+        +ITicketBLL _ticketBLL
+        +bool _canManage
+        +LoadTickets() void
+        +btnClose_Click(object, EventArgs) void
+    }
+
+    class TicketForm {
+        +ITicketBLL _ticketBLL
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    %% ============ Relaciones ============
+    TicketBE --> UserBE : user (autor) / closed by
+
+    TicketBLL ..|> ITicketBLL
+    TicketMPP ..|> ITicketMPP
+
+    TicketBLL --> TicketMPP : _ticketMPP
+    TicketMPP --> AccessDAL : _access
+
+    TicketManagementForm --> ITicketBLL : _ticketBLL
+    TicketForm --> ITicketBLL : _ticketBLL

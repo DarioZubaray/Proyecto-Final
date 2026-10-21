@@ -1,0 +1,160 @@
+classDiagram
+    direction TB
+
+    %% ============ BE ============
+    class UserBE {
+        +int Id
+        +string UserName
+    }
+
+    class ActivityLogBE {
+        +int Id
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +DateTime CreatedAt
+    }
+
+    class IntegrityViolationBE {
+        +string Table
+        +int RecordId
+        +string ExpectedDvh
+        +string ActualDvh
+    }
+
+    class IActivityLogEntryBE {
+        <<interface>>
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +bool Execute()
+    }
+
+    class ActivityLogEntryBE {
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +bool Execute()
+    }
+
+    %% ============ BLL - Interfaces ============
+    class IActivityBLL {
+        <<interface>>
+        +LogFormAccess(int, string, string) void
+        +GetByUserPaginated(int, int, int) List~ActivityLogBE~
+        +TotalPages(int, int) int
+    }
+
+    class IIntegrityBLL {
+        <<interface>>
+        +AuditAll() List~IntegrityViolationBE~
+    }
+
+    class IDvhTableVerifierBLL {
+        <<interface>>
+        +VerifyTable(string) List~IntegrityViolationBE~
+    }
+
+    %% ============ BLL - Servicios ============
+    class ActivityLoggingDecoratorBLL {
+        -IActivityLogEntryBE _activity
+        -IActivityMPP _activityMPP
+        +bool Execute()
+    }
+
+    class ActivityBLL {
+        -IActivityMPP _activityMPP
+        +LogFormAccess(int, string, string) void
+        +LogLogin(int, string) void
+        +LogLogout(int, string) void
+        +GetByUserPaginated(int, int, int) List~ActivityLogBE~
+        +TotalPages(int, int) int
+    }
+
+    class IntegrityBLL {
+        -ServiceLocatorBLL _locator
+        +AuditAll() List~IntegrityViolationBE~
+    }
+
+    class UserDvhVerifierBLL {
+        -IUserMPP _userMPP
+        +VerifyTable(string) List~IntegrityViolationBE~
+    }
+
+    class IntegrityStateBLL {
+        <<static>>
+        +LastScanFailed bool
+        +LastScanError string
+    }
+
+    %% ============ MPP ============
+    class IActivityMPP {
+        <<interface>>
+        +Save(ActivityLogBE) bool
+        +GetByUserPaginated(int, int, int) List~ActivityLogBE~
+        +CountByUser(int) int
+    }
+
+    class IUserMPP {
+        <<interface>>
+        +GetByUserName(string) UserBE
+        +Save(UserBE) bool
+    }
+
+    class ActivityMPP {
+        -AccessDAL _access
+        +Save(ActivityLogBE) bool
+        +GetByUserPaginated(int, int, int) List~ActivityLogBE~
+        +CountByUser(int) int
+    }
+
+    %% ============ BLL - Locator y DAL (compartidos) ============
+    class ServiceLocatorBLL {
+        <<static>>
+        +GetUserMPP() IUserMPP
+        +GetRoleMPP() IRoleMPP
+        +GetTicketMPP() ITicketMPP
+        +CreateActivityBLL() IActivityBLL
+        +CreateIntegrityBLL() IIntegrityBLL
+    }
+
+    class AccessDAL {
+        +Read(string, SqlParameter[]) DataTable
+        +ReadScalar(string, SqlParameter[]) int
+        +Save(string, SqlParameter[]) bool
+        +Execute(string, SqlParameter[]) bool
+    }
+
+    %% ============ GUI ============
+    class ActivityHistoryForm {
+        +IActivityBLL _activityBLL
+        +LoadPage() void
+        +ChangePage(int) void
+    }
+
+    class IntegrityAuditForm {
+        +IIntegrityBLL _integrityBLL
+        +btnRunAudit_Click(object, EventArgs) void
+    }
+
+    %% ============ Relaciones ============
+    ActivityLogBE --> UserBE : user
+    ActivityLogEntryBE ..|> IActivityLogEntryBE
+    ActivityLoggingDecoratorBLL ..|> IActivityLogEntryBE
+    ActivityLoggingDecoratorBLL --> IActivityLogEntryBE : _activity
+    ActivityBLL ..|> IActivityBLL
+    ActivityMPP ..|> IActivityMPP
+    IntegrityBLL ..|> IIntegrityBLL
+    UserDvhVerifierBLL ..|> IDvhTableVerifierBLL
+
+    ActivityBLL --> ActivityMPP : _activityMPP
+    ActivityMPP --> AccessDAL : _access
+    IntegrityBLL --> ServiceLocatorBLL : _locator
+    IntegrityBLL --> IntegrityStateBLL : RecordScan()
+    UserDvhVerifierBLL --> IUserMPP : _userMPP
+
+    ActivityHistoryForm --> IActivityBLL : _activityBLL
+    IntegrityAuditForm --> IIntegrityBLL : _integrityBLL

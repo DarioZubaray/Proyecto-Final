@@ -1,8 +1,6 @@
 $config = Join-Path $PSScriptRoot "puppeteer-config.json"
 $excluir = @("4.1.diagrama-de-casos-de-uso")
-$extraArgs = @{
-    "7.clases" = "-w 2600"
-}
+$extraArgs = @{}
 
 Get-ChildItem -Path $PSScriptRoot -Filter *.mmd | ForEach-Object {
     if ($excluir -contains $_.BaseName) {

@@ -15,7 +15,11 @@ Esta carpeta reúne material de documentación del trabajo final: **diagramas** 
 | Archivo | Descripción |
 |---------|-------------|
 | [`4.1.casos-uso.mmd`](mermaid-live/4.1.casos-uso.mmd) | Casos de uso por actor (Coordinador, Profesor). |
-| [`7.clases.mmd`](mermaid-live/7.clases.mmd) | Diagrama de clases con el patrón **Composite** de roles/permisos. |
+| [`7.1.clases-seguridad.mmd`](mermaid-live/7.1.clases-seguridad.mmd) | Diagrama de clases — módulo **Seguridad**: usuarios, roles/permisos (patrón **Composite**), login, 2FA, sesión. |
+| [`7.2.clases-academico.mmd`](mermaid-live/7.2.clases-academico.mmd) | Diagrama de clases — módulo **Académico**: aulas, cursos, inscripciones y asistencia. |
+| [`7.3.clases-tickets.mmd`](mermaid-live/7.3.clases-tickets.mmd) | Diagrama de clases — módulo **Tickets**: TicketBE y su cadena BLL → MPP → DAL + formularios. |
+| [`7.4.clases-actividad-integridad.mmd`](mermaid-live/7.4.clases-actividad-integridad.mmd) | Diagrama de clases — módulos **Actividad e Integridad (DVH)**: bitácora de actividad y auditoría de integridad. |
+| [`7.5.clases-infraestructura.mmd`](mermaid-live/7.5.clases-infraestructura.mmd) | Diagrama de clases — **Infraestructura y GUI base**: AccessDAL, ServiceLocator, sesión, preferencias/cultura, temas y formularios raíz. |
 | [`8.er.mmd`](mermaid-live/8.er.mmd) | Modelo entidad-relación de la base de datos. |
 | [`4.2.8.secuencia-crear-curso.mmd`](mermaid-live/4.2.8.secuencia-crear-curso.mmd) | Secuencia simple de crear curso (vista de alto nivel). |
 | [`4.2.8.secuencia-crear-curso-completo.mmd`](mermaid-live/4.2.8.secuencia-crear-curso-completo.mmd) | Secuencia completa del login: Coordinador → CourseBLL → CourseMPP → AccessDAL → SQL Server. |

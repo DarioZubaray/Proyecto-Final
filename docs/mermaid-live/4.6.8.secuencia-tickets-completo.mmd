@@ -46,6 +46,7 @@ sequenceDiagram
         TMP-->>TB: id
         TB-->>TF: true
         TF-->>Usuario: "Ticket creado correctamente"
+        TF-->>TMF: Cierra formulario (modal)
         TMF->>TB: Recargar grilla (FindAll/FindByUser)
         TB->>TMP: FindAll() o FindByUser(userId)
         TMP->>ACC: Read(consulta de tickets)
@@ -55,33 +56,4 @@ sequenceDiagram
         TMP-->>TB: List[TicketBE]
         TB-->>TMF: Tickets
         TMF-->>Usuario: Grilla actualizada con el ticket nuevo (Abierto)
-    end
-
-    Note over Usuario,BD: CU-07 pasos 8-10: cerrar ticket (solo Coordinador o Admin)
-    alt Coordinador con permiso FORM_TICKET_MGMT
-        Usuario->>TMF: Selecciona ticket Abierto y presiona "Cerrar" y confirma
-        TMF->>TB: Close(ticketId, closedById)
-        TB->>TMP: Close(id, closedById)
-        TMP->>ACC: Execute(UPDATE de cierre con condición is_closed=0, SqlParameters)
-        ACC->>BD: UPDATE tickets SET is_closed=1, closed_by=@u, closed_at=GETDATE() WHERE id=@id AND is_closed=0
-        BD-->>ACC: Filas afectadas
-        alt Ticket ya estaba cerrado
-            ACC-->>TMP: 0
-            TMP-->>TB: false
-            TB-->>TMF: false
-            TMF-->>Usuario: "Seleccione un ticket abierto."
-        else Cierre exitoso
-            ACC-->>TMP: 1
-            TMP-->>TB: true
-            TB-->>TMF: true
-            TMF->>TB: Recargar grilla
-            TB->>TMP: FindAll()
-            TMP->>ACC: Read(consulta de tickets)
-            ACC->>BD: SELECT de tickets
-            BD-->>ACC: Filas
-            ACC-->>TMP: DataTable
-            TMP-->>TB: List[TicketBE]
-            TB-->>TMF: Tickets
-            TMF-->>Usuario: Grilla actualizada con el ticket Cerrado
-        end
     end
