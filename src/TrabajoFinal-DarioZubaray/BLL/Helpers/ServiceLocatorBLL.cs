@@ -19,6 +19,7 @@ namespace BLL.Helpers
         private static IStudentMPP _studentMPP;
         private static IEvaluationMPP _evaluationMPP;
         private static IReportMPP _reportMPP;
+        private static IBackupMPP _backupMPP;
         #endregion
 
         #region Métodos
@@ -208,6 +209,21 @@ namespace BLL.Helpers
         public static IReportBLL CreateReportBLL()
         {
             return new ReportBLL(GetReportMPP());
+        }
+
+        public static IBackupMPP GetBackupMPP()
+        {
+            if (_backupMPP == null)
+            {
+                _backupMPP = new BackupMPP();
+            }
+
+            return _backupMPP;
+        }
+
+        public static IBackupBLL CreateBackupBLL()
+        {
+            return new BackupBLL(GetBackupMPP());
         }
         #endregion
     }
