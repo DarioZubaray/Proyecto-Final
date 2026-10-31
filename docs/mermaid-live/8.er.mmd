@@ -75,6 +75,17 @@ erDiagram
         bool is_active
         datetime created_at
     }
+    students {
+        int id PK
+        string first_name
+        string last_name
+        string document
+        string email
+        string phone
+        bool is_active
+        datetime created_at
+        datetime last_update
+    }
     attendance {
         int id PK
         int course_id FK
@@ -82,6 +93,21 @@ erDiagram
         date date
         bool is_present
         datetime created_at
+    }
+    evaluations {
+        int id PK
+        int course_id FK
+        string name
+        date date
+        int created_by FK
+        datetime created_at
+        datetime last_update
+    }
+    grades {
+        int id PK
+        int evaluation_id FK
+        int student_id FK
+        decimal grade
     }
     tickets {
         int id PK
@@ -104,8 +130,12 @@ erDiagram
     courses ||--o{ course_teachers : "teachers"
     users ||--o{ course_teachers : "teaches"
     courses ||--o{ course_students : "students"
-    users ||--o{ course_students : "enrolled in"
+    students ||--o{ course_students : "enrolled in"
     courses ||--o{ attendance : "classes"
-    users ||--o{ attendance : "attendance"
+    students ||--o{ attendance : "attendance"
+    courses ||--o{ evaluations : "evaluations"
+    users ||--o{ evaluations : "created by"
+    evaluations ||--o{ grades : "grades"
+    students ||--o{ grades : "grades of"
     users ||--o{ tickets : "reports"
     users ||--o{ tickets : "closes"
