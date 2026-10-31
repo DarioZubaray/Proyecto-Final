@@ -20,6 +20,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql) | Migración v1.5.0: crea la tabla `students` (entidad propia de alumnos, ya no son usuarios), migra los alumnos desde `users`, repunta las FK de `course_students` y `attendance`, elimina el rol Alumno, crea el rol Director (`FORM_REPORTS`) y el permiso `FORM_STUDENT_MGMT`, y ajusta los permisos de Admin/Profesor/Coordinador. |
 | [`12_v1.6.0_Evaluaciones.sql`](12_v1.6.0_Evaluaciones.sql) | Migración v1.6.0: crea las tablas `evaluations` y `grades` (notas 0–10 por alumno y evaluación) y el permiso `FORM_EVAL_MGMT` (menú Académico → Evaluaciones), otorgado al rol Profesor. |
 | [`13_v1.7.0_Informes.sql`](13_v1.7.0_Informes.sql) | Migración v1.7.0: crea el permiso `FORM_REPORT_DETAIL` (menú Reportes → Informes Personalizados, CU-12), otorgado a Coordinador y Director; asegura `FORM_REPORTS` (CU-11) en Admin, Coordinador, Director y Profesor. |
+| [`14_v1.8.0_Respaldo.sql`](14_v1.8.0_Respaldo.sql) | Migración v1.8.0: crea el permiso `FORM_BACKUP_MGMT` (menú Administración → Respaldo y Restauración, CU-13), otorgado solo al rol Admin. |
 
 ## Instalación
 
@@ -29,6 +30,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 2. Ejecutar [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql). Migra los alumnos a la tabla `students`, ajusta los roles finales (sin Alumno, con Director) y agrega el permiso `FORM_STUDENT_MGMT`.
 3. Ejecutar [`12_v1.6.0_Evaluaciones.sql`](12_v1.6.0_Evaluaciones.sql). Crea `evaluations`/`grades` y el permiso `FORM_EVAL_MGMT` para el rol Profesor.
 4. Ejecutar [`13_v1.7.0_Informes.sql`](13_v1.7.0_Informes.sql). Crea el permiso `FORM_REPORT_DETAIL` (CU-12, solo Coordinador y Director) y asegura `FORM_REPORTS` (CU-11) en los roles con reportes.
+5. Ejecutar [`14_v1.8.0_Respaldo.sql`](14_v1.8.0_Respaldo.sql). Crea el permiso `FORM_BACKUP_MGMT` (CU-13, menú Administración → Respaldo y Restauración) solo para el rol Admin.
 
 ### Opción B — Scripts por pasos (migraciones)
 
@@ -66,7 +68,10 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 -- 11. Migración v1.7.0 (permiso FORM_REPORT_DETAIL para CU-12 + FORM_REPORTS CU-11)
 13_v1.7.0_Informes.sql
 
--- 12. (opcional) Consultas de verificación
+-- 12. Migración v1.8.0 (permiso FORM_BACKUP_MGMT para CU-13, solo Admin)
+14_v1.8.0_Respaldo.sql
+
+-- 13. (opcional) Consultas de verificación
 05_v1.1.0_Queries.sql
 ```
 
