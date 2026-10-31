@@ -1,59 +1,91 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Usuario
-    participant TMF as :TicketManagementForm
-    participant TF as :TicketForm
-    participant TB as :TicketBLL
-    participant TMP as :TicketMPP
-    participant ACC as :AccessDAL
-    participant BD as :SQL Server (Base de Datos)
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Usuario,BD: CU-07 pasos 1-2: abre menú Tickets
-    Usuario->>TMF: Menú "Tickets" → ShowChildForm(TicketManagementForm)
-    TMF->>TB: canManage = SessionManagerBLL.HasPermission(FORM_TICKET_MGMT)
-    alt Es Coordinador o Admin (permiso FORM_TICKET_MGMT)
-        TMF->>TB: GetAll()
-    else Usuario sin permiso de gestión
-        TMF->>TB: GetByUserId(user.Id)
+    Note right of BE: TicketBE y UserBE transportan los datos entre las capas
+    Note over Usuario,BD: CU-07 Tickets / Reclamos - flujos básicos y alternativos
+
+    Usuario->>GUI: Elige "Tickets" en el menú principal
+    alt Coordinador (permiso de gestión de tickets)
+        GUI->>BLL: FindAll(): List<TicketBE>
+        BLL->>MPP: FindAll(): List<TicketBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta parametrizada de todos los tickets
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<TicketBE>
+        BLL-->>GUI: List<TicketBE>
+    else Resto de los usuarios
+        GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+        BLL->>MPP: FindByUser(userId: int): List<TicketBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta parametrizada de tickets del usuario
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<TicketBE>
+        BLL-->>GUI: List<TicketBE>
     end
-    TB->>TMP: FindAll() o FindByUser(userId)
-    TMP->>ACC: Read(consulta con joins a users, SqlParameters)
-    ACC->>BD: SELECT t.*, u.user_name ... FROM tickets t INNER JOIN users u ...
-    BD-->>ACC: Filas de tickets
-    ACC-->>TMP: DataTable
-    TMP-->>TB: List[TicketBE]
-    TB-->>TMF: Tickets
-    TMF-->>Usuario: Grilla (Fecha, Asunto, Usuario, Estado, Cerrado por)
+    GUI-->>Usuario: Muestra la ventana "Gestión de Tickets" con la grilla
 
-    Note over Usuario,BD: CU-07 pasos 3-7: registrar ticket
-    Usuario->>TMF: Presiona "Nuevo"
-    TMF->>TF: new TicketForm(user) (modal)
-    TF-->>Usuario: Muestra Asunto y Descripción
-    Usuario->>TF: Completa asunto y descripción y presiona "Guardar"
-    TF->>TB: Create(ticket)
+    Usuario->>GUI: Presiona el botón "Nuevo"
+    GUI-->>Usuario: Muestra el formulario "Nuevo Ticket" con Asunto y Descripción
+    Usuario->>GUI: Completa el campo "Asunto"
+    Usuario->>GUI: Completa el campo "Descripción"
+    Usuario->>GUI: Presiona el botón "Guardar"
     alt Asunto vacío
-        TB-->>TF: throw "El asunto del ticket es obligatorio. (BIZ-006)"
-        TF-->>Usuario: Muestra el mensaje y foco en Asunto
+        GUI-->>Usuario: Muestra "El asunto del ticket es obligatorio. (Código: BIZ-006)" y devuelve el foco a Asunto
     else Descripción vacía
-        TB-->>TF: throw "La descripción del ticket es obligatoria. (BIZ-007)"
-        TF-->>Usuario: Muestra el mensaje y foco en Descripción
+        GUI-->>Usuario: Muestra "La descripción del ticket es obligatoria. (Código: BIZ-007)" y devuelve el foco a Descripción
     else Datos válidos
-        TB->>TMP: Insert(ticket)
-        TMP->>ACC: Save(INSERT de ticket, SqlParameters)
-        ACC->>BD: INSERT INTO tickets(user_id, subject, description, is_closed) VALUES(...)
-        BD-->>ACC: OK
-        ACC-->>TMP: id generado (SCOPE_IDENTITY)
-        TMP-->>TB: id
-        TB-->>TF: true
-        TF-->>Usuario: "Ticket creado correctamente"
-        TF-->>TMF: Cierra formulario (modal)
-        TMF->>TB: Recargar grilla (FindAll/FindByUser)
-        TB->>TMP: FindAll() o FindByUser(userId)
-        TMP->>ACC: Read(consulta de tickets)
-        ACC->>BD: SELECT de tickets
-        BD-->>ACC: Filas
-        ACC-->>TMP: DataTable
-        TMP-->>TB: List[TicketBE]
-        TB-->>TMF: Tickets
-        TMF-->>Usuario: Grilla actualizada con el ticket nuevo (Abierto)
+        GUI->>BLL: Create(ticket: TicketBE): bool
+        BLL->>MPP: Insert(ticket: TicketBE): bool
+        MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+        DAL->>BD: Registro del ticket (estado Abierto, usuario logueado)
+        BD-->>DAL: 1 fila afectada
+        DAL-->>MPP: true
+        MPP-->>BLL: true
+        BLL-->>GUI: true
+        GUI-->>Usuario: Muestra "Ticket creado correctamente."
+        alt Coordinador (permiso de gestión de tickets)
+            GUI->>BLL: FindAll(): List<TicketBE>
+            BLL-->>GUI: List<TicketBE>
+        else Resto de los usuarios
+            GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+            BLL-->>GUI: List<TicketBE>
+        end
+        GUI-->>Usuario: Vuelve a la grilla con el ticket nuevo incluido
+    end
+
+    Usuario->>GUI: Selecciona un ticket en la grilla y presiona "Cerrar"
+    alt Ticket seleccionado ya cerrado
+        GUI-->>Usuario: Muestra "Seleccione un ticket abierto."
+    else Ticket en estado Abierto
+        GUI-->>Usuario: Muestra la confirmación "¿Cerrar el ticket seleccionado?"
+        alt El usuario presiona "Sí"
+            GUI->>BLL: Close(ticketId: int, closedBy: int): bool
+            BLL->>MPP: Close(ticketId: int, closedBy: int, closedAt: DateTime): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Registro del cierre (fecha y autor del cierre)
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Usuario: Muestra "Ticket cerrado correctamente."
+            alt Coordinador (permiso de gestión de tickets)
+                GUI->>BLL: FindAll(): List<TicketBE>
+                BLL-->>GUI: List<TicketBE>
+            else Resto de los usuarios
+                GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+                BLL-->>GUI: List<TicketBE>
+            end
+            GUI-->>Usuario: Actualiza la grilla con el ticket en estado Cerrado
+        else El usuario presiona "No"
+            Note over GUI: No se realizan cambios en el ticket
+        end
     end

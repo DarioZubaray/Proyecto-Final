@@ -1,10 +1,26 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Usuario
-    participant SES as :Servicio de Sesión
-    participant BD as :Base de Datos
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Usuario,BD: CU-06 - Flujo básico (pasos 1 a 3 del caso de uso)
-    Usuario->>SES: Selecciona "Cerrar Sesión"
-    SES->>SES: Finalizar la sesión activa del usuario
-    SES-->>Usuario: Muestra la pantalla de inicio de sesión
+    Note right of BE: UserBE y ActivityLogBE transportan los datos entre las capas
+    Note over Usuario,BD: CU-06 Logout - flujo básico (pasos 1 a 3)
+
+    Usuario->>GUI: Selecciona "Cerrar Sesión" del menú principal
+    GUI->>BLL: SavePreferences(language: string, theme: string): void
+    GUI->>BLL: RemoveSession(userId: int): void
+    GUI->>BLL: LogLogout(userId: int, description: string): void
+    BLL->>MPP: Save(log: ActivityLogBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro de auditoría de cierre de sesión
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    GUI->>BLL: SetCulture(languageCode: string): void
+    GUI->>GUI: Aplica los recursos de la pantalla y el tema guardado
+    GUI-->>Usuario: Muestra la pantalla de inicio de sesión con los campos vacíos

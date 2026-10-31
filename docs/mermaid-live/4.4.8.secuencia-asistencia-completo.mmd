@@ -1,41 +1,105 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Profesor
-    participant ATB as :AttendanceBLL
-    participant CRB as :CourseBLL
-    participant CMP as :CourseMPP
-    participant AMP as :AttendanceMPP
-    participant ACC as :AccessDAL
-    participant BD as :SQL Server (Base de Datos)
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Profesor,BD: CU-04 pasos 1-3: abre "Asistencia" y selecciona curso y fecha
-    Profesor->>ATB: Selecciona el curso y la fecha de la clase
-    ATB->>CRB: FindByTeacherId(profesorId=5)
-    CRB->>CMP: FindByTeacherId(5)
-    CMP->>ACC: Read(consulta de cursos del profesor, SqlParameters)
-    ACC->>BD: SELECT c.* FROM courses c INNER JOIN course_teachers ct ON ct.course_id=c.id WHERE ct.teacher_id=@id AND ct.is_active=1 AND c.is_active=1
-    BD-->>ACC: Cursos asignados al profesor
-    ACC-->>CMP: DataTable
-    CMP-->>CRB: List[CourseBE] (Programación I, Base de Datos)
-    CRB-->>ATB: List[CourseBE]
-    ATB->>AMP: FindByCourseIdAndDate(1, 2026-09-14)
-    AMP->>ACC: Read(consulta de asistencias, SqlParameters)
-    ACC->>BD: SELECT a.*, u.user_name, c.name FROM attendance a INNER JOIN users u ... WHERE a.course_id=@id AND a.date=@fecha
-    BD-->>ACC: Planilla del curso 1 del 2026-09-14
-    ACC-->>AMP: DataTable
-    AMP-->>ATB: List[AttendanceBE] (planilla)
+    Note right of BE: CourseBE, EnrollmentBE y AttendanceBE transportan los datos entre las capas
+    Note over Profesor,BD: CU-04 Registrar Asistencia - flujo básico y flujos alternativos
 
-    Note over Profesor,BD: CU-04 pasos 5-6: marca estados y presiona "Guardar Asistencia"
-    Profesor->>ATB: RegisterAttendanceBulk(1, 2026-09-14, registros)
-    ATB->>AMP: RegisterAttendanceBulk(1, 2026-09-14, registros)
-    AMP->>ACC: Save(consulta upsert de asistencia, SqlParameters) por cada alumno
-    ACC->>BD: IF EXISTS (SELECT 1 FROM attendance WHERE course_id=@c AND student_id=@s AND date=@f) UPDATE attendance SET is_present=@v ... ELSE INSERT INTO attendance(...)
-    BD-->>ACC: OK
-    ACC-->>AMP: true
-    AMP-->>ATB: true
-    ATB-->>Profesor: "Planilla guardada" - confirma el registro
+    Profesor->>GUI: Accede al formulario "Registrar Asistencia"
+    GUI->>BLL: FindByTeacherId(teacherId: int): List<CourseBE>
+    BLL->>MPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de cursos del docente
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<CourseBE>
+    BLL-->>GUI: List<CourseBE>
 
-    Note over Profesor,BD: CU-04 - Flujo alternativo (paso 4.a del caso de uso)
-    alt Curso sin alumnos inscriptos
-        ATB-->>Profesor: Informa que el curso seleccionado no posee alumnos
+    alt El Profesor no tiene cursos asignados
+        GUI-->>Profesor: Muestra "No tiene cursos asignados." y deshabilita "Buscar" y "Guardar Asistencia"
+    else Tiene cursos asignados
+        GUI-->>Profesor: Muestra sus cursos, el campo "Fecha" y habilita "Buscar" y "Guardar Asistencia"
+        Profesor->>GUI: Selecciona "Curso" y "Fecha" y presiona "Buscar"
+
+        alt Curso no seleccionado
+            GUI-->>Profesor: Muestra "Debe seleccionar un curso."
+        else Curso seleccionado
+            GUI->>BLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+            BLL->>MPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+            MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+            DAL->>BD: Consulta de pertenencia del curso
+            BD-->>DAL: Cantidad de coincidencias
+            DAL-->>MPP: int
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+
+            alt El curso no le pertenece al Profesor
+                BLL-->>GUI: false
+                GUI-->>Profesor: Muestra "No tiene permiso para registrar asistencia en este curso."
+            else Curso asignado al Profesor
+                GUI->>BLL: FindAll(): List<EnrollmentBE>
+                BLL->>MPP: FindAll(): List<EnrollmentBE>
+                MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                DAL->>BD: Consulta parametrizada de inscripciones
+                BD-->>DAL: Filas resultantes
+                DAL-->>MPP: DataTable
+                MPP-->>BLL: List<EnrollmentBE>
+                BLL-->>GUI: List<EnrollmentBE>
+
+                alt Curso sin alumnos inscriptos
+                    GUI-->>Profesor: Muestra "No hay alumnos inscritos en este curso."
+                else Con alumnos inscriptos
+                    GUI->>BLL: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+                    BLL->>MPP: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+                    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                    DAL->>BD: Consulta parametrizada de asistencias
+                    BD-->>DAL: Filas resultantes
+                    DAL-->>MPP: DataTable
+                    MPP-->>BLL: List<AttendanceBE>
+                    BLL-->>GUI: List<AttendanceBE>
+                    GUI-->>Profesor: Muestra la grilla de alumnos con la asistencia previa de esa fecha
+
+                    Profesor->>GUI: Marca o desmarca la casilla "Presente" de cada alumno y presiona "Guardar Asistencia"
+
+                    alt Grilla vacía
+                        GUI-->>Profesor: Muestra "No hay alumnos inscritos en este curso." o "Debe seleccionar un curso."
+                    else Grilla con alumnos
+                        GUI->>BLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+                        BLL->>MPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+                        MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+                        DAL->>BD: Consulta de pertenencia del curso
+                        BD-->>DAL: Cantidad de coincidencias
+                        DAL-->>MPP: int
+                        MPP-->>BLL: true
+                        BLL-->>GUI: true
+
+                        alt El curso no le pertenece al Profesor
+                            BLL-->>GUI: false
+                            GUI-->>Profesor: Muestra "No tiene permiso para registrar asistencia en este curso."
+                        else Curso asignado al Profesor
+                            alt La base de datos rechaza la operación
+                                BLL-->>GUI: Excepción de SQL Server
+                                GUI-->>Profesor: Muestra "Error al guardar la asistencia: <detalle>"
+                            else Operación correcta
+                                GUI->>BLL: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+                                BLL->>MPP: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+                                MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                                DAL->>BD: Registro de asistencia por alumno
+                                BD-->>DAL: 1 fila afectada
+                                DAL-->>MPP: true
+                                MPP-->>BLL: true
+                                BLL-->>GUI: true
+                                GUI-->>Profesor: Muestra "Asistencia guardada exitosamente."
+                            end
+                        end
+                    end
+                end
+            end
+        end
     end

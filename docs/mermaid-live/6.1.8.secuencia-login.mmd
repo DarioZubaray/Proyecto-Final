@@ -1,24 +1,43 @@
 sequenceDiagram
     autonumber
     actor Usuario
-    participant AUT as :Servicio de Autenticación
-    participant UST as :Manejador de Usuarios
-    participant BD as :Base de Datos
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Usuario,BD: CU-01 - Flujo básico (pasos 2 a 4 del caso de uso)
-    Usuario->>AUT: Ingresa usuario y contraseña y presiona "Ingresar"
-    AUT->>UST: Obtener el usuario por su nombre de usuario
-    UST->>BD: Consultar los datos del usuario
-    BD-->>UST: Datos del usuario (contraseña encriptada, activo, reintentos)
-    UST-->>AUT: Usuario encontrado
-    AUT-->>Usuario: Confirma el acceso y muestra las opciones del rol
+    Note right of BE: UserBE y LoginResultBE (DTO) transportan los datos entre capas
+    Note over Usuario,BD: CU-01 Login - flujo básico (pasos 1 a 5)
 
-    Note over Usuario,BD: CU-01 - Flujo alternativo (pasos 3.a a 3.d del caso de uso)
-    alt Credenciales incorrectas (1er y 2do fallo, quedan intentos)
-        AUT-->>Usuario: "Usuario o contraseña incorrectos. Intentos restantes: N"
-    else Credenciales incorrectas (3er fallo, sin intentos restantes)
-        AUT->>UST: Bloquear la cuenta del usuario
-        AUT-->>Usuario: "Usuario bloqueado por exceso de intentos fallidos."
-    else Cuenta inactiva
-        AUT-->>Usuario: "Usuario bloqueado. Contacte al administrador."
-    end
+    Usuario->>GUI: Completa "Usuario" y "Contraseña" y presiona "Ingresar"
+    GUI->>BLL: TestConnection(): bool
+    BLL->>MPP: TestConnection(): bool
+    MPP->>DAL: TestConnection(): bool
+    DAL->>BD: Abrir conexión
+    BD-->>DAL: Conexión establecida
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI->>BLL: Login(userName: string, password: string): LoginResultBE
+    BLL->>MPP: GetByUserName(userName: string): UserBE
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: UserBE
+    BLL->>BLL: VerifyPassword(password: string, passwordHash: string): bool
+    BLL->>MPP: UpdateLastUpdate(userId: int, lastUpdate: DateTime): bool
+    BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+    BLL-->>GUI: LoginResultBE (Success = true)
+    GUI->>BLL: LogLogin(userId: int, description: string): void
+    BLL->>MPP: Save(log: ActivityLogBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro de auditoría de acceso
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    GUI->>BLL: CreateSession(user: UserBE): SessionManagerBLL
+    GUI->>BLL: SavePreferences(language: string, theme: string): void
+    GUI-->>Usuario: Muestra la pantalla principal con las opciones de su rol

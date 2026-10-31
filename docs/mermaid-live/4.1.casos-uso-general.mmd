@@ -1,0 +1,55 @@
+graph LR
+    ADM["Administrador"]@{ shape: person, lbl: "Administrador" }
+    COO["Coordinador"]@{ shape: person, lbl: "Coordinador" }
+    PRO["Profesor"]@{ shape: person, lbl: "Profesor" }
+    DIR["Director"]@{ shape: person, lbl: "Director" }
+
+    CU01(["CU-01: Login"])
+    CU06(["CU-06: Logout"])
+    CU08(["CU-08: Gestionar Usuarios"])
+    CU09(["CU-09: Gestionar Roles y Permisos"])
+    CU13(["CU-13: Respaldo y Restauración"])
+    CU02(["CU-02: Crear Curso"])
+    CU03(["CU-03: Crear Aula"])
+    CU05(["CU-05: Registrar Inscripción"])
+    CU04(["CU-04: Registrar Asistencia"])
+    CU10(["CU-10: Registrar Evaluación y Cargar Notas"])
+    CU11(["CU-11: Consultar Rendimiento Académico"])
+    CU12(["CU-12: Generar Informe Personalizado"])
+    CU07(["CU-07: Tickets / Reclamos"])
+    ALU(["Gestionar Alumnos"])
+
+    %% Módulo Base / Sesión: todos los roles autenticados
+    ADM --> CU01
+    ADM --> CU06
+    COO --> CU01
+    COO --> CU06
+    PRO --> CU01
+    PRO --> CU06
+    DIR --> CU01
+    DIR --> CU06
+
+    %% Módulo Administración
+    ADM --> CU08
+    ADM --> CU09
+    ADM --> CU13
+    ADM --> ALU
+
+    %% Módulo Académico
+    COO --> CU02
+    COO --> CU03
+    COO --> CU05
+    COO --> ALU
+    PRO --> CU04
+
+    %% Módulo Evaluaciones e Informes
+    PRO --> CU10
+    PRO --> CU11
+    COO --> CU11
+    COO --> CU12
+    DIR --> CU11
+    DIR --> CU12
+
+    %% Módulo Soporte
+    COO --> CU07
+    PRO --> CU07

@@ -1,34 +1,91 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Usuario
-    participant CB as :CourseBLL
-    participant CMP as :CourseMPP
-    participant ACC as :AccessDAL
-    participant BD as :SQL Server (Base de Datos)
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Usuario,BD: CU-02 pasos 3-5: completa el formulario y presiona "Guardar"
-    Usuario->>CB: Save(CourseBE{Name="Programación I", ClassroomId=2, Lunes, 18:00-21:00})
-    CB->>CMP: ExistsClassroomOverlap(2, fechas, 0, Lunes, 18:00, 21:00)
-    CMP->>ACC: ReadScalar(consulta de solapamiento de aula, SqlParameters)
-    ACC->>BD: SELECT COUNT(*) FROM courses WHERE classroom_id=@id AND is_active=1 AND id!=@excluir AND rango de fechas y horario solapado
-    BD-->>ACC: 0 (sin cursos en ese aula y horario)
-    ACC-->>CMP: 0
-    CMP-->>CB: false
+    Note right of BE: CourseBE, ClassroomBE y UserBE transportan los datos entre capas
+    Note over Usuario,BD: CU-02 Crear Curso - flujo básico y flujos alternativos
 
-    alt El aula está ocupada (paso 5.c)
-        CB-->>Usuario: "El aula ya está ocupada en ese horario." - no guarda el curso
-    else Aula libre
-        CB->>CMP: Save(course)
-        CMP->>ACC: ReadScalar(INSERT de curso y obtención del SCOPE_IDENTITY, SqlParameters)
-        ACC->>BD: INSERT INTO courses(name, description, start_date, end_date, classroom_id, day_of_week, start_time, end_time, is_active, created_at, last_update) VALUES(...)
-        BD-->>ACC: 25 (nuevo id del curso)
-        ACC-->>CMP: 25
-        CMP-->>CB: true
-        CB->>CMP: SaveTeachers(25, [5])
-        CMP->>ACC: Save(INSERT de asignación, SqlParameters)
-        ACC->>BD: INSERT INTO course_teachers(course_id, teacher_id, is_active, created_at) VALUES(25, 5, 1, ...)
-        BD-->>ACC: OK
-        ACC-->>CMP: true
-        CMP-->>CB: true
-        CB-->>Usuario: Confirma el alta del curso y actualiza el listado
+    Usuario->>GUI: Accede a "Cursos" y presiona "Nuevo"
+    GUI->>BLL: FindAll(): List<ClassroomBE>
+    BLL->>MPP: FindAll(): List<ClassroomBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de aulas
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<ClassroomBE>
+    BLL-->>GUI: List<ClassroomBE>
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL->>MPP: FindAll(): List<UserBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI-->>Usuario: Muestra el formulario de alta con los campos y las listas
+
+    Usuario->>GUI: Completa "Nombre", "Descripción", "Fecha de inicio", "Fecha de fin", "Aula", "Hora de inicio" y "Hora de fin"
+    Usuario->>GUI: Selecciona un docente y presiona "Agregar"
+    GUI-->>Usuario: Muestra el docente en la lista "Docentes asignados"
+    Usuario->>GUI: Presiona "Guardar"
+
+    alt Campos incompletos o inválidos
+        Note over GUI: ValidateInputs() evalúa en orden: nombre, fechas, horario, aula y docentes
+        GUI-->>Usuario: Muestra el mensaje del primer campo observado y devuelve el foco a ese campo
+    else Datos correctos
+        GUI->>BLL: ValidateTeacherOverlap(courseId: int, dayOfWeek: int?, startTime: TimeSpan?, endTime: TimeSpan?, teacherIds: List<int>): bool
+        BLL->>MPP: ExistsTeacherOverlap(teacherId: int, dayOfWeek: int, startTime: TimeSpan, endTime: TimeSpan, courseIdToExclude: int): bool
+        MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+        DAL->>BD: Consulta de trasape del docente
+        BD-->>DAL: Cantidad de coincidencias
+        DAL-->>MPP: int
+        MPP-->>BLL: false
+        BLL-->>GUI: false
+
+        alt Algún docente ya tiene un curso en ese día y horario
+            BLL-->>GUI: true
+            GUI-->>Usuario: Muestra "Uno o más docentes tienen un curso asignado en el mismo día y horario."
+        else Sin trasape de docentes
+            GUI->>BLL: Save(course: CourseBE): bool
+            BLL->>MPP: ExistsClassroomOverlap(classroomId: int, startDate: DateTime, endDate: DateTime, courseIdToExclude: int, dayOfWeek: int?, startTime: TimeSpan?, endTime: TimeSpan?): bool
+            MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+            DAL->>BD: Consulta de trasape del aula
+            BD-->>DAL: Cantidad de coincidencias
+            DAL-->>MPP: int
+            MPP-->>BLL: false
+
+            alt El aula ya está ocupada en ese día y horario
+                BLL-->>GUI: throw InvalidOperationException
+                GUI-->>Usuario: Muestra "El aula ya está ocupada en ese horario."
+            else Aula libre
+                alt La base de datos rechaza la operación
+                    BLL-->>GUI: Excepción de SQL Server
+                    GUI-->>Usuario: Muestra "Error al guardar el curso: <detalle>"
+                else Operación correcta
+                    BLL->>MPP: Save(course: CourseBE): bool
+                    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                    DAL->>BD: Registro del curso
+                    BD-->>DAL: 1 fila afectada
+                    DAL-->>MPP: true
+                    MPP-->>BLL: true
+                    BLL-->>GUI: true
+
+                    GUI->>BLL: SaveTeachers(courseId: int, teacherIds: List<int>): bool
+                    BLL->>MPP: SaveTeachers(courseId: int, teacherIds: List<int>): bool
+                    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                    DAL->>BD: Registro de la asignación de docentes
+                    BD-->>DAL: 1 fila afectada
+                    DAL-->>MPP: true
+                    MPP-->>BLL: true
+                    BLL-->>GUI: true
+                    GUI-->>Usuario: Muestra "Curso creado exitosamente." y cierra el formulario
+                end
+            end
+        end
     end

@@ -79,7 +79,7 @@ Ejecutar los scripts en orden:
 Son archivos [Mermaid](https://mermaid.js.org/) que pueden visualizarse en GitHub o con herramientas que soporten el formato, como el [Mermaid Live Editor](https://mermaid.live/) (índice completo en [`docs/README.md`](docs/README.md)):
 
 - `3.1.4.modelo-conceptual.mmd` — modelo conceptual (diagrama de clases de BE, con el Composite).
-- `4.1.casos-uso.mmd` — casos de uso (Admin, Coordinador, Profesor).
+- `4.1.casos-uso-general.mmd` — diagrama general de casos de uso (Administrador, Coordinador, Profesor y Director).
 - `7.clases.mmd` — diagrama de clases con el patrón Composite.
 - `8.er.mmd` — modelo entidad-relación de la base.
 - `4.2.8.secuencia-crear-curso.mmd` — secuencia simple de crear curso (vista de alto nivel).

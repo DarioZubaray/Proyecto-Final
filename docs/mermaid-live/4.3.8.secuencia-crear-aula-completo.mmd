@@ -1,17 +1,32 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Usuario
-    participant CLB as :ClassroomBLL
-    participant CMP as :ClassroomMPP
-    participant ACC as :AccessDAL
-    participant BD as :SQL Server (Base de Datos)
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Usuario,BD: CU-03 pasos 3-4: completa el formulario y presiona "Guardar"
-    Usuario->>CLB: Save(ClassroomBE{Name="Aula 102", Capacity=30, IsActive=true})
-    CLB->>CMP: Save(classroom)
-    CMP->>ACC: ReadScalar(INSERT de aula y obtención del SCOPE_IDENTITY, SqlParameters)
-    ACC->>BD: INSERT INTO classrooms(name, capacity, is_active, created_at, last_update) VALUES('Aula 102', 30, 1, ...)
-    BD-->>ACC: 8 (nuevo id del aula)
-    ACC-->>CMP: 8
-    CMP-->>CLB: true
-    CLB-->>Usuario: Confirma el alta del aula y actualiza el listado
+    Note right of BE: ClassroomBE transporta los datos entre las capas
+    Note over Usuario,BD: CU-03 Crear Aula - flujo básico y flujos alternativos
+
+    Usuario->>GUI: Accede a "Aulas" y presiona "Nuevo"
+    GUI-->>Usuario: Muestra el formulario de alta de aula con sus campos
+    Usuario->>GUI: Completa "Nombre" y "Capacidad"
+    Usuario->>GUI: Presiona "Guardar"
+
+    alt Campos incompletos o inválidos
+        Note over GUI: ValidateInputs() evalúa en orden: nombre y capacidad
+        GUI-->>Usuario: Muestra "El nombre es obligatorio." o "La capacidad debe ser mayor a 0." y devuelve el foco al campo observado
+    else Datos correctos
+        GUI->>BLL: Save(classroom: ClassroomBE): bool
+        BLL->>MPP: Save(classroom: ClassroomBE): bool
+        MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+        DAL->>BD: Registro del aula
+        BD-->>DAL: 1 fila afectada
+        DAL-->>MPP: true
+        MPP-->>BLL: true
+        BLL-->>GUI: true
+        GUI-->>Usuario: Muestra "Aula creada exitosamente." y cierra el formulario
+    end

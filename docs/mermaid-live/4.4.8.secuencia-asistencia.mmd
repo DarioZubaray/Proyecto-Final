@@ -1,26 +1,63 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Profesor
-    participant ASI as :Gestión de Asistencia
-    participant CUR as :Gestión de Cursos
-    participant MAN as :Manejador de Asistencia
-    participant BD as :Base de Datos
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
 
-    Note over Profesor,BD: CU-04 - Flujo básico (pasos 1 a 7 del caso de uso)
-    Profesor->>ASI: Accede a "Asistencia" y selecciona el curso y la fecha
-    ASI->>CUR: Obtener los cursos asignados al profesor
-    CUR-->>ASI: Lista de cursos del profesor
-    ASI->>MAN: Obtener la planilla del curso y fecha
-    MAN->>BD: Consultar asistencias del curso y fecha
-    BD-->>MAN: Planilla existente (si la hay)
-    ASI-->>Profesor: Muestra la lista de alumnos con estados
-    Profesor->>ASI: Marca Presente/Ausente/Justificado y presiona "Guardar Asistencia"
-    ASI->>MAN: Registrar las asistencias
-    MAN->>BD: Actualizar o insertar cada asistencia
-    BD-->>MAN: OK
-    ASI-->>Profesor: Confirma que la planilla fue guardada
+    Note right of BE: CourseBE, EnrollmentBE y AttendanceBE transportan los datos entre las capas
+    Note over Profesor,BD: CU-04 Registrar Asistencia - flujo básico (pasos 1 a 10)
 
-    Note over Profesor,BD: CU-04 - Flujo alternativo (paso 4.a del caso de uso)
-    alt Curso sin alumnos inscriptos
-        ASI-->>Profesor: Informa que el curso no posee alumnos
-    end
+    Profesor->>GUI: Accede al formulario "Registrar Asistencia"
+    GUI->>BLL: FindByTeacherId(teacherId: int): List<CourseBE>
+    BLL->>MPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de cursos del docente
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<CourseBE>
+    BLL-->>GUI: List<CourseBE>
+    GUI-->>Profesor: Muestra sus cursos, el campo "Fecha" y habilita "Buscar" y "Guardar Asistencia"
+
+    Profesor->>GUI: Selecciona "Curso" y "Fecha" y presiona "Buscar"
+    GUI->>BLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    BLL->>MPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    DAL->>BD: Consulta de pertenencia del curso
+    BD-->>DAL: Cantidad de coincidencias
+    DAL-->>MPP: int
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI->>BLL: FindAll(): List<EnrollmentBE>
+    BLL->>MPP: FindAll(): List<EnrollmentBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de inscripciones
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<EnrollmentBE>
+    BLL-->>GUI: List<EnrollmentBE>
+    GUI->>BLL: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+    BLL->>MPP: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de asistencias
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<AttendanceBE>
+    BLL-->>GUI: List<AttendanceBE>
+    GUI-->>Profesor: Muestra la grilla de alumnos con la asistencia previa de esa fecha
+
+    Profesor->>GUI: Marca o desmarca la casilla "Presente" de cada alumno y presiona "Guardar Asistencia"
+    GUI->>BLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    BLL-->>GUI: true
+    GUI->>BLL: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+    BLL->>MPP: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro de asistencia por alumno
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI-->>Profesor: Muestra "Asistencia guardada exitosamente."
