@@ -92,6 +92,8 @@ namespace MPP.Tests.Setup
                 connection.Open();
 
                 string sql = @"
+                    IF OBJECT_ID('dbo.grades', 'U') IS NOT NULL DROP TABLE dbo.grades;
+                    IF OBJECT_ID('dbo.evaluations', 'U') IS NOT NULL DROP TABLE dbo.evaluations;
                     IF OBJECT_ID('dbo.tickets', 'U') IS NOT NULL DROP TABLE dbo.tickets;
                     IF OBJECT_ID('dbo.attendance', 'U') IS NOT NULL DROP TABLE dbo.attendance;
                     IF OBJECT_ID('dbo.course_students', 'U') IS NOT NULL DROP TABLE dbo.course_students;
@@ -233,6 +235,28 @@ namespace MPP.Tests.Setup
                         CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
                     );
 
+                    CREATE TABLE [dbo].[evaluations] (
+                        [id]           INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [course_id]    INT            NOT NULL,
+                        [name]         NVARCHAR(200)  NOT NULL,
+                        [date]         DATE           NOT NULL,
+                        [created_by]   INT            NOT NULL,
+                        [created_at]   DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [last_update]  DATETIME       NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT fk_evaluations_courses FOREIGN KEY ([course_id]) REFERENCES [dbo].[courses]([id]),
+                        CONSTRAINT fk_evaluations_users   FOREIGN KEY ([created_by]) REFERENCES [dbo].[users]([id])
+                    );
+
+                    CREATE TABLE [dbo].[grades] (
+                        [id]             INT           NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [evaluation_id]  INT           NOT NULL,
+                        [student_id]     INT           NOT NULL,
+                        [grade]          DECIMAL(4,2)  NOT NULL,
+                        CONSTRAINT fk_grades_evaluations FOREIGN KEY ([evaluation_id]) REFERENCES [dbo].[evaluations]([id]),
+                        CONSTRAINT fk_grades_students    FOREIGN KEY ([student_id])    REFERENCES [dbo].[students]([id]),
+                        CONSTRAINT uq_grades_evaluation_student UNIQUE ([evaluation_id], [student_id])
+                    );
+
                     CREATE TABLE [dbo].[tickets] (
                         [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
                         [user_id]     INT            NOT NULL,
@@ -307,6 +331,8 @@ namespace MPP.Tests.Setup
             {
                 connection.Open();
                 string sql = @"
+                    DELETE FROM [dbo].[grades];
+                    DELETE FROM [dbo].[evaluations];
                     DELETE FROM [dbo].[tickets];
                     DELETE FROM [dbo].[attendance];
                     DELETE FROM [dbo].[course_students];
@@ -325,7 +351,9 @@ namespace MPP.Tests.Setup
                     DBCC CHECKIDENT ('[dbo].[course_teachers]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[course_students]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[attendance]', RESEED, 0);
-                    DBCC CHECKIDENT ('[dbo].[tickets]', RESEED, 0);";
+                    DBCC CHECKIDENT ('[dbo].[tickets]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[evaluations]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[grades]', RESEED, 0);";
                 var cmd = new SqlCommand(sql, connection);
                 cmd.ExecuteNonQuery();
             }
