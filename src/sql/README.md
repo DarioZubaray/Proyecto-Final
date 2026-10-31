@@ -18,6 +18,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | [`09_v1.4.0_Tickets.sql`](09_v1.4.0_Tickets.sql) | Migración v1.4.0: crea la tabla `tickets` (reportes de usuarios con estados Abierto/Cerrado) y el permiso `FORM_TICKET_MGMT` (gestión administrativa, rol Admin). |
 | [`10_v1.4.1_AjusteActores.sql`](10_v1.4.1_AjusteActores.sql) | Migración v1.4.1: desactiva el login de los alumnos (`is_active = 0`; siguen como datos para inscripción/asistencia) y otorga `FORM_TICKET_MGMT` al rol Coordinador (listar todos los tickets y cerrarlos; Profesor solo crea). |
 | [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql) | Migración v1.5.0: crea la tabla `students` (entidad propia de alumnos, ya no son usuarios), migra los alumnos desde `users`, repunta las FK de `course_students` y `attendance`, elimina el rol Alumno, crea el rol Director (`FORM_REPORTS`) y el permiso `FORM_STUDENT_MGMT`, y ajusta los permisos de Admin/Profesor/Coordinador. |
+| [`12_v1.6.0_Evaluaciones.sql`](12_v1.6.0_Evaluaciones.sql) | Migración v1.6.0: crea las tablas `evaluations` y `grades` (notas 0–10 por alumno y evaluación) y el permiso `FORM_EVAL_MGMT` (menú Académico → Evaluaciones), otorgado al rol Profesor. |
 
 ## Instalación
 
@@ -25,6 +26,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 
 1. Ejecutar [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema consolidado (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0 + ajuste de actores v1.4.1) y carga todos los datos.
 2. Ejecutar [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql). Migra los alumnos a la tabla `students`, ajusta los roles finales (sin Alumno, con Director) y agrega el permiso `FORM_STUDENT_MGMT`.
+3. Ejecutar [`12_v1.6.0_Evaluaciones.sql`](12_v1.6.0_Evaluaciones.sql). Crea `evaluations`/`grades` y el permiso `FORM_EVAL_MGMT` para el rol Profesor.
 
 ### Opción B — Scripts por pasos (migraciones)
 
@@ -56,7 +58,10 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 -- 9. Migración v1.5.0 (tabla students, rol Director, permiso FORM_STUDENT_MGMT)
 11_v1.5.0_EstudiantesYRoles.sql
 
--- 10. (opcional) Consultas de verificación
+-- 10. Migración v1.6.0 (evaluations/grades + permiso FORM_EVAL_MGMT)
+12_v1.6.0_Evaluaciones.sql
+
+-- 11. (opcional) Consultas de verificación
 05_v1.1.0_Queries.sql
 ```
 
@@ -66,7 +71,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 `Roles`, `Permissions`, `RolePermissions`, `RoleHierarchy`, `Users`, `ActivityLogs`, `SchemaVersions`
 
 **Tablas v1.1.0+** (snake_case plural inglés):
-`classrooms`, `courses`, `course_teachers`, `course_students`, `attendance`, `tickets`, `students`
+`classrooms`, `courses`, `course_teachers`, `course_students`, `attendance`, `tickets`, `students`, `evaluations`, `grades`
 
 **Columnas**: Todas `snake_case` (`start_date`, `day_of_week`, `is_active`, etc.)
 
