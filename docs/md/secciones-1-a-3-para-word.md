@@ -120,17 +120,19 @@ El alcance del sistema abarca los siguientes módulos:
 
 #### 3.1.3. Diagrama de Proceso
 
-Diagramas de los procesos actuales del sistema:
+Diagramas de los procesos que el sistema soporta con los roles Administrador, Coordinador, Profesor y Director:
 
 - Mantenimiento de Aplicativo (ABM): ![](../mermaid-live/3.1.3.actividad-abm.png)
 - Inscripción a Cursos: ![](../mermaid-live/3.1.3.actividad-inscripcion.png)
 - Registro de Asistencias: ![](../mermaid-live/3.1.3.actividad-asistencia.png)
 - Gestión de Tickets de Reclamo: ![](../mermaid-live/3.1.3.actividad-tickets.png)
+- Registro de Evaluaciones y Notas: ![](../mermaid-live/3.1.3.actividad-evaluaciones.png)
+- Consulta de Rendimiento e Informes Personalizados: ![](../mermaid-live/3.1.3.actividad-informes.png)
 
-> Los diagramas de proceso de *Registro de Evaluaciones y Notas*, *Rendimiento e Informes* y *Respaldo y Restauración* se incorporan junto con la implementación de esos módulos.
+> El diagrama de proceso de *Respaldo y Restauración* se incorpora junto con la implementación de ese módulo.
 
 #### 3.1.4. Modelo Conceptual
 
 ![](../mermaid-live/3.1.4.modelo-conceptual.png)
 
-El modelo describe las entidades centrales del sistema: usuarios, roles y permisos (seguridad); cursos, aulas, inscripciones y asistencia (ámbito académico); tickets (reclamos) y la bitácora de actividad (trazabilidad). Las entidades de evaluaciones y notas se agregan al modelo junto con ese módulo.
+El modelo describe las entidades centrales del sistema: usuarios, roles y permisos (seguridad); cursos, aulas, inscripciones y asistencia (ámbito académico); alumnos como entidad propia (gestionados por la academia, no son usuarios); evaluaciones y notas (cargas del Profesor); tickets (reclamos) y la bitácora de actividad (trazabilidad).

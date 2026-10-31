@@ -56,6 +56,28 @@ classDiagram
         -DateTime Date
         -bool IsPresent
     }
+    class StudentBE {
+        -int Id
+        -string FirstName
+        -string LastName
+        -string Document
+        -string Email
+        -string Phone
+        -bool IsActive
+    }
+    class EvaluationBE {
+        -int Id
+        -int CourseId
+        -string Name
+        -DateTime Date
+        -int CreatedBy
+    }
+    class GradeBE {
+        -int Id
+        -int EvaluationId
+        -int StudentId
+        -decimal Grade
+    }
     class ActivityLogBE {
         -int Id
         -int UserId
@@ -124,9 +146,13 @@ classDiagram
     CourseBE "0..*" --> "1" ClassroomBE : se dicta en
     CourseBE "1" --> "0..*" UserBE : dictada por
     EnrollmentBE "0..*" --> "1" CourseBE : se inscribe en
-    EnrollmentBE "0..*" --> "1" UserBE : alumno
+    EnrollmentBE "0..*" --> "1" StudentBE : alumno
     AttendanceBE "0..*" --> "1" CourseBE : de la clase de
-    AttendanceBE "0..*" --> "1" UserBE : del alumno
+    AttendanceBE "0..*" --> "1" StudentBE : del alumno
+    EvaluationBE "0..*" --> "1" CourseBE : evaluación de
+    EvaluationBE "0..*" --> "1" UserBE : creada por
+    GradeBE "0..*" --> "1" EvaluationBE : nota de
+    GradeBE "0..*" --> "1" StudentBE : alumno
     ActivityLogBE "0..*" --> "1" UserBE : registrada por
     TicketBE "0..*" --> "1" UserBE : reportado por
     TicketBE "0..*" --> "0..1" UserBE : cerrado por

@@ -1,0 +1,18 @@
+flowchart LR
+    subgraph PRO[Profesor]
+        direction TB
+        P1([Inicio])
+        P2[Selecciona uno de sus cursos]
+        P3[Registra la evaluación: nombre y fecha]
+        P4[Carga la nota de cada alumno inscripto]
+        P5([Fin])
+    end
+    subgraph SIS[Sistema]
+        direction TB
+        S1[Muestra los alumnos inscriptos al curso]
+        S2[Valida el nombre, el rango de nota 0 a 10 y que el curso le pertenezca al Profesor]
+        S3[Guarda la evaluación y las notas en la base de datos]
+    end
+    P1 --> P2 --> S1 --> P3 --> P4 --> S2
+    S2 -->|Datos válidos| S3 --> P5
+    S2 -->|Datos inválidos| P6[Muestra el mensaje de validación] --> P4

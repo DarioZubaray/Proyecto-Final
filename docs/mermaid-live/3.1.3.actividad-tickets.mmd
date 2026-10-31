@@ -1,22 +1,24 @@
 flowchart LR
-    subgraph ALM[Alumno]
+    subgraph USR[Usuario]
         direction TB
-        A1([Inicio])
-        A2[Acude a la academia y plantea el reclamo]
-        A3[Recibe la constancia y la resolución del reclamo]
-        A4([Fin])
+        U1([Inicio])
+        U2[Plantea el reclamo o solicitud en el sistema]
+        U3[Recibe la constancia con el número de ticket]
+        U4[Recibe la respuesta al reclamo]
+        U5([Fin])
     end
-    subgraph BED[Bedelía / Secretaría]
+    subgraph SIS[Sistema]
         direction TB
-        B1[Toma nota del reclamo en la planilla de reclamos]
-        B2[Entrega la constancia al alumno]
-        B3[Deriva el reclamo a Coordinación]
+        S1[Registra el ticket en estado Abierto]
+        S2[Envía el ticket a la bandeja del Coordinador]
     end
-    subgraph COO[Coordinación]
+    subgraph COO[Coordinador]
         direction TB
         C1[Analiza el reclamo]
-        C2[Resuelve o programa la respuesta]
-        C3[Comunica la resolución]
+        C2{¿Cómo se resuelve?}
+        C3[Resuelve y cierra el ticket]
     end
-    A1 --> A2 --> B1 --> B2 --> B3
-    B3 --> C1 --> C2 --> C3 --> A3 --> A4
+    U1 --> U2 --> S1 --> S2 --> U3
+    S2 --> C1 --> C2
+    C2 -->|Responde| C3 --> S3[Marca el ticket como Cerrado] --> U4 --> U5
+    C2 -->|Requiere gestión| C4[Deriva la gestión y mantiene el ticket abierto] --> C1
