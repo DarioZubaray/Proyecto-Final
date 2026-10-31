@@ -128,8 +128,7 @@ Diagramas de los procesos que el sistema soporta con los roles Administrador, Co
 - Gestión de Tickets de Reclamo: ![](../mermaid-live/3.1.3.actividad-tickets.png)
 - Registro de Evaluaciones y Notas: ![](../mermaid-live/3.1.3.actividad-evaluaciones.png)
 - Consulta de Rendimiento e Informes Personalizados: ![](../mermaid-live/3.1.3.actividad-informes.png)
-
-> El diagrama de proceso de *Respaldo y Restauración* se incorpora junto con la implementación de ese módulo.
+- Respaldo y Restauración de la Base de Datos: ![](../mermaid-live/3.1.3.actividad-respaldo.png)
 
 #### 3.1.4. Modelo Conceptual
 

@@ -7,7 +7,7 @@ Esta carpeta reúne material de documentación del trabajo final: **diagramas** 
 | Subcarpeta | Descripción |
 |------------|-------------|
 | [`mermaid-live/`](mermaid-live/) | Diagramas en formato [Mermaid](https://mermaid.js.org/): casos de uso, clases, entidad-relación y secuencias de login/logout. |
-| [`md/`](md/) | Especificaciones de casos de uso (CU-01 a CU-12), convenciones de documentación y material para Word. |
+| [`md/`](md/) | Especificaciones de casos de uso (CU-01 a CU-13), convenciones de documentación y material para Word. |
 | [`ea/`](ea/) | Modelos UML creados con **Enterprise Architect**. |
 | [`MDS2/`](MDS2/) | Documentación de la materia **Metodologías de Desarrollo 2** (examen final). |
 
@@ -42,6 +42,8 @@ Esta carpeta reúne material de documentación del trabajo final: **diagramas** 
 | [`4.10.8.secuencia-rendimiento-completo.mmd`](mermaid-live/4.10.8.secuencia-rendimiento-completo.mmd) | Secuencia completa de rendimiento: Coordinador/Director/Profesor → ReportBLL → ReportMPP → AccessDAL → SQL Server. |
 | [`4.11.8.secuencia-informes.mmd`](mermaid-live/4.11.8.secuencia-informes.mmd) | Secuencia simple de generar informes personalizados (vista de alto nivel). |
 | [`4.11.8.secuencia-informes-completo.mmd`](mermaid-live/4.11.8.secuencia-informes-completo.mmd) | Secuencia completa de informes: Coordinador/Director → ReportBLL → ReportMPP → AccessDAL → SQL Server. |
+| [`4.12.8.secuencia-respaldo.mmd`](mermaid-live/4.12.8.secuencia-respaldo.mmd) | Secuencia simple de respaldo y restauración de la base de datos (vista de alto nivel). |
+| [`4.12.8.secuencia-respaldo-completo.mmd`](mermaid-live/4.12.8.secuencia-respaldo-completo.mmd) | Secuencia completa de respaldo/restauración: Administrador → BackupBLL → BackupMPP → AccessDAL → SQL Server. |
 | [`6.1.8.secuencia-login.mmd`](mermaid-live/6.1.8.secuencia-login.mmd) | Secuencia simple del inicio de sesión (vista de alto nivel). |
 | [`6.1.8.secuencia-login-completo.mmd`](mermaid-live/6.1.8.secuencia-login-completo.mmd) | Secuencia completa del login: AuthBLL → UserMPP → AccessDAL → SQL Server, ActivityBLL → ActivityMPP, PermissionBLL → RoleMPP, SessionManagerBLL, AppPreferencesBLL. |
 | [`6.2.8.secuencia-logout.mmd`](mermaid-live/6.2.8.secuencia-logout.mmd) | Secuencia simple del cierre de sesión (vista de alto nivel). |
