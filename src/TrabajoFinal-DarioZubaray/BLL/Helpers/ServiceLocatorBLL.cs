@@ -18,6 +18,7 @@ namespace BLL.Helpers
         private static ITicketMPP _ticketMPP;
         private static IStudentMPP _studentMPP;
         private static IEvaluationMPP _evaluationMPP;
+        private static IReportMPP _reportMPP;
         #endregion
 
         #region Métodos
@@ -192,6 +193,21 @@ namespace BLL.Helpers
         public static IEvaluationBLL CreateEvaluationBLL()
         {
             return new EvaluationBLL(GetEvaluationMPP(), GetCourseMPP());
+        }
+
+        public static IReportMPP GetReportMPP()
+        {
+            if (_reportMPP == null)
+            {
+                _reportMPP = new ReportMPP();
+            }
+
+            return _reportMPP;
+        }
+
+        public static IReportBLL CreateReportBLL()
+        {
+            return new ReportBLL(GetReportMPP());
         }
         #endregion
     }
