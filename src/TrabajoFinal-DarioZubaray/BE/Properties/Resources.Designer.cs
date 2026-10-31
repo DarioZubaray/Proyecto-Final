@@ -2549,5 +2549,95 @@ namespace BE.Properties {
                 return ResourceManager.GetString("StudentManagementForm_InfoTitle", resourceCulture);
             }
         }
+        
+        public static string Main_MenuEvaluations {
+            get {
+                return ResourceManager.GetString("Main_MenuEvaluations", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_Title {
+            get {
+                return ResourceManager.GetString("EvaluationForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_CourseLabel {
+            get {
+                return ResourceManager.GetString("EvaluationForm_CourseLabel", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_NameLabel {
+            get {
+                return ResourceManager.GetString("EvaluationForm_NameLabel", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_DateLabel {
+            get {
+                return ResourceManager.GetString("EvaluationForm_DateLabel", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_LoadStudentsButton {
+            get {
+                return ResourceManager.GetString("EvaluationForm_LoadStudentsButton", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_SaveButton {
+            get {
+                return ResourceManager.GetString("EvaluationForm_SaveButton", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_ColStudent {
+            get {
+                return ResourceManager.GetString("EvaluationForm_ColStudent", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_ColGrade {
+            get {
+                return ResourceManager.GetString("EvaluationForm_ColGrade", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_NoCourses {
+            get {
+                return ResourceManager.GetString("EvaluationForm_NoCourses", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_NoStudents {
+            get {
+                return ResourceManager.GetString("EvaluationForm_NoStudents", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_NameRequired {
+            get {
+                return ResourceManager.GetString("EvaluationForm_NameRequired", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_GradeOutOfRange {
+            get {
+                return ResourceManager.GetString("EvaluationForm_GradeOutOfRange", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_Saved {
+            get {
+                return ResourceManager.GetString("EvaluationForm_Saved", resourceCulture);
+            }
+        }
+        
+        public static string EvaluationForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("EvaluationForm_ValidationTitle", resourceCulture);
+            }
+        }
     }
 }

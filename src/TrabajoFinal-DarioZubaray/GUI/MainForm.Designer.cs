@@ -47,6 +47,7 @@ namespace TrabajoFinal_DarioZubaray
             this.cursosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inscripcionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.asistenciaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.evaluacionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -176,7 +177,8 @@ namespace TrabajoFinal_DarioZubaray
             this.académicoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cursosToolStripMenuItem,
             this.inscripcionesToolStripMenuItem,
-            this.asistenciaToolStripMenuItem});
+            this.asistenciaToolStripMenuItem,
+            this.evaluacionesToolStripMenuItem});
             this.académicoToolStripMenuItem.Name = "académicoToolStripMenuItem";
             this.académicoToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
             this.académicoToolStripMenuItem.Text = "Académico";
@@ -201,6 +203,13 @@ namespace TrabajoFinal_DarioZubaray
             this.asistenciaToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.asistenciaToolStripMenuItem.Text = "Asistencia";
             this.asistenciaToolStripMenuItem.Click += new System.EventHandler(this.asistenciaToolStripMenuItem_Click);
+            //
+            // evaluacionesToolStripMenuItem
+            //
+            this.evaluacionesToolStripMenuItem.Name = "evaluacionesToolStripMenuItem";
+            this.evaluacionesToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.evaluacionesToolStripMenuItem.Text = "Evaluaciones";
+            this.evaluacionesToolStripMenuItem.Click += new System.EventHandler(this.evaluacionesToolStripMenuItem_Click);
             // 
             // ayudaToolStripMenuItem
             // 
@@ -279,6 +288,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.ToolStripMenuItem cursosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem inscripcionesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem asistenciaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem evaluacionesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ayudaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem acercaDeToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;

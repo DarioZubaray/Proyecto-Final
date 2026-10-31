@@ -1126,4 +1126,49 @@
   <data name="StudentManagementForm_InfoTitle" xml:space="preserve">
     <value>Information</value>
   </data>
+  <data name="Main_MenuEvaluations" xml:space="preserve">
+    <value>Evaluations</value>
+  </data>
+  <data name="EvaluationForm_Title" xml:space="preserve">
+    <value>Evaluations</value>
+  </data>
+  <data name="EvaluationForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="EvaluationForm_NameLabel" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="EvaluationForm_DateLabel" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="EvaluationForm_LoadStudentsButton" xml:space="preserve">
+    <value>Load students</value>
+  </data>
+  <data name="EvaluationForm_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="EvaluationForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="EvaluationForm_ColGrade" xml:space="preserve">
+    <value>Grade</value>
+  </data>
+  <data name="EvaluationForm_NoCourses" xml:space="preserve">
+    <value>You have no assigned courses.</value>
+  </data>
+  <data name="EvaluationForm_NoStudents" xml:space="preserve">
+    <value>The selected course has no enrolled students.</value>
+  </data>
+  <data name="EvaluationForm_NameRequired" xml:space="preserve">
+    <value>The evaluation name is required.</value>
+  </data>
+  <data name="EvaluationForm_GradeOutOfRange" xml:space="preserve">
+    <value>The grade must be between 0 and 10.</value>
+  </data>
+  <data name="EvaluationForm_Saved" xml:space="preserve">
+    <value>Evaluation registered successfully.</value>
+  </data>
+  <data name="EvaluationForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
 </root>

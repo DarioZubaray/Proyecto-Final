@@ -53,6 +53,7 @@ namespace TrabajoFinal_DarioZubaray
             cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
             inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
             asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
+            evaluacionesToolStripMenuItem.Text = Resources.Main_MenuEvaluations;
             aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
             integridadToolStripMenuItem.Text = Resources.Integrity_Title;
             ticketsToolStripMenuItem.Text = Resources.Main_MenuTickets;
@@ -84,11 +85,13 @@ namespace TrabajoFinal_DarioZubaray
             bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
             bool canRegisterAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
             bool canViewAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_VIEW");
+            bool canManageEvaluations = _session != null && _session.HasPermission("FORM_EVAL_MGMT");
 
-            académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance || canViewAttendance;
+            académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance || canViewAttendance || canManageEvaluations;
             cursosToolStripMenuItem.Visible = canManageCourses;
             inscripcionesToolStripMenuItem.Visible = canViewEnrollments;
             asistenciaToolStripMenuItem.Visible = canRegisterAttendance || canViewAttendance;
+            evaluacionesToolStripMenuItem.Visible = canManageEvaluations;
         }
 
         private void UpdateFooter()
@@ -205,6 +208,11 @@ namespace TrabajoFinal_DarioZubaray
             {
                 ShowChildForm(() => new AttendanceViewForm(_user), "AttendanceViewForm");
             }
+        }
+
+        private void evaluacionesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(() => new EvaluationForm(_user), "EvaluationForm");
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
