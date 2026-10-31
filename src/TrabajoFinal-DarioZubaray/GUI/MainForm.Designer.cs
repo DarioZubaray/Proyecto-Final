@@ -41,6 +41,7 @@ namespace TrabajoFinal_DarioZubaray
             this.rolesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aulasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.integridadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.respaldoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.soporteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ticketsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.académicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -121,7 +122,8 @@ namespace TrabajoFinal_DarioZubaray
             this.alumnosToolStripMenuItem,
             this.rolesToolStripMenuItem,
             this.aulasToolStripMenuItem,
-            this.integridadToolStripMenuItem});
+            this.integridadToolStripMenuItem,
+            this.respaldoToolStripMenuItem});
             this.administraciónToolStripMenuItem.Name = "administraciónToolStripMenuItem";
             this.administraciónToolStripMenuItem.Size = new System.Drawing.Size(100, 20);
             this.administraciónToolStripMenuItem.Text = "Administración";
@@ -160,6 +162,13 @@ namespace TrabajoFinal_DarioZubaray
             this.integridadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.integridadToolStripMenuItem.Text = "Auditoría de Integridad (DVH)";
             this.integridadToolStripMenuItem.Click += new System.EventHandler(this.integridadToolStripMenuItem_Click);
+            // 
+            // respaldoToolStripMenuItem
+            // 
+            this.respaldoToolStripMenuItem.Name = "respaldoToolStripMenuItem";
+            this.respaldoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.respaldoToolStripMenuItem.Text = "Respaldo y Restauración";
+            this.respaldoToolStripMenuItem.Click += new System.EventHandler(this.respaldoToolStripMenuItem_Click);
             // 
             // soporteToolStripMenuItem
             // 
@@ -309,6 +318,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.ToolStripMenuItem rolesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aulasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem integridadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem respaldoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem soporteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ticketsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem académicoToolStripMenuItem;

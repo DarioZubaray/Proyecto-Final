@@ -2849,5 +2849,65 @@ namespace BE.Properties {
                 return ResourceManager.GetString("ReportForm_ValidationTitle", resourceCulture);
             }
         }
+        
+        public static string Main_MenuBackup {
+            get {
+                return ResourceManager.GetString("Main_MenuBackup", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_Title {
+            get {
+                return ResourceManager.GetString("BackupForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_GenerateButton {
+            get {
+                return ResourceManager.GetString("BackupForm_GenerateButton", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_RestoreButton {
+            get {
+                return ResourceManager.GetString("BackupForm_RestoreButton", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_BackupGenerated {
+            get {
+                return ResourceManager.GetString("BackupForm_BackupGenerated", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_Restored {
+            get {
+                return ResourceManager.GetString("BackupForm_Restored", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_BackupError {
+            get {
+                return ResourceManager.GetString("BackupForm_BackupError", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_RestoreError {
+            get {
+                return ResourceManager.GetString("BackupForm_RestoreError", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_Filter {
+            get {
+                return ResourceManager.GetString("BackupForm_Filter", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_InfoLabel {
+            get {
+                return ResourceManager.GetString("BackupForm_InfoLabel", resourceCulture);
+            }
+        }
     }
 }

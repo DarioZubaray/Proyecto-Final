@@ -1276,4 +1276,34 @@
   <data name="ReportForm_ValidationTitle" xml:space="preserve">
     <value>Validation</value>
   </data>
+  <data name="Main_MenuBackup" xml:space="preserve">
+    <value>Backup and Restore</value>
+  </data>
+  <data name="BackupForm_Title" xml:space="preserve">
+    <value>Backup and Restore</value>
+  </data>
+  <data name="BackupForm_GenerateButton" xml:space="preserve">
+    <value>Generate backup</value>
+  </data>
+  <data name="BackupForm_RestoreButton" xml:space="preserve">
+    <value>Restore backup</value>
+  </data>
+  <data name="BackupForm_BackupGenerated" xml:space="preserve">
+    <value>Backup generated successfully.</value>
+  </data>
+  <data name="BackupForm_Restored" xml:space="preserve">
+    <value>Backup restored successfully.</value>
+  </data>
+  <data name="BackupForm_BackupError" xml:space="preserve">
+    <value>Error generating backup:</value>
+  </data>
+  <data name="BackupForm_RestoreError" xml:space="preserve">
+    <value>Error restoring backup:</value>
+  </data>
+  <data name="BackupForm_Filter" xml:space="preserve">
+    <value>SQL Backup (*.bak)|*.bak</value>
+  </data>
+  <data name="BackupForm_InfoLabel" xml:space="preserve">
+    <value>Generate a backup of the database or restore from a .bak file</value>
+  </data>
 </root>

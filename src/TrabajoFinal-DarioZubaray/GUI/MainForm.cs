@@ -59,6 +59,7 @@ namespace TrabajoFinal_DarioZubaray
             informesToolStripMenuItem.Text = Resources.Main_MenuReportsCustom;
             aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
             integridadToolStripMenuItem.Text = Resources.Integrity_Title;
+            respaldoToolStripMenuItem.Text = Resources.Main_MenuBackup;
             ticketsToolStripMenuItem.Text = Resources.Main_MenuTickets;
             soporteToolStripMenuItem.Text = Resources.Main_MenuSupport;
             ayudaToolStripMenuItem.Text = Resources.Main_MenuHelp;
@@ -71,7 +72,8 @@ namespace TrabajoFinal_DarioZubaray
         {
             administraciónToolStripMenuItem.Visible = _session != null
                 && (_session.HasPermission("FORM_USER_MGMT")
-                    || _session.HasPermission("FORM_STUDENT_MGMT"));
+                    || _session.HasPermission("FORM_STUDENT_MGMT")
+                    || _session.HasPermission("FORM_BACKUP_MGMT"));
             usuariosToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_USER_MGMT");
             rolesToolStripMenuItem.Visible = _session != null
@@ -82,6 +84,8 @@ namespace TrabajoFinal_DarioZubaray
                 && _session.HasPermission("FORM_CURSO_MGMT");
 
             integridadToolStripMenuItem.Visible = UserBLL.IsSysAdmin(_user);
+            respaldoToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_BACKUP_MGMT");
             soporteToolStripMenuItem.Visible = _session != null;
 
             bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
@@ -231,6 +235,11 @@ namespace TrabajoFinal_DarioZubaray
         private void informesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowChildForm(() => new ReportForm(_user), "ReportForm");
+        }
+
+        private void respaldoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(() => new BackupForm(_user), "BackupForm");
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
