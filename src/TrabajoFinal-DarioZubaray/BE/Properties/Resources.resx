@@ -1171,4 +1171,109 @@
   <data name="EvaluationForm_ValidationTitle" xml:space="preserve">
     <value>Validación</value>
   </data>
+  <data name="Main_MenuReports" xml:space="preserve">
+    <value>Reportes</value>
+  </data>
+  <data name="Main_MenuPerformance" xml:space="preserve">
+    <value>Rendimiento Académico</value>
+  </data>
+  <data name="Main_MenuReportsCustom" xml:space="preserve">
+    <value>Informes Personalizados</value>
+  </data>
+  <data name="PerformanceForm_Title" xml:space="preserve">
+    <value>Rendimiento Académico</value>
+  </data>
+  <data name="PerformanceForm_CourseLabel" xml:space="preserve">
+    <value>Curso:</value>
+  </data>
+  <data name="PerformanceForm_ConsultButton" xml:space="preserve">
+    <value>Consultar</value>
+  </data>
+  <data name="PerformanceForm_ColStudent" xml:space="preserve">
+    <value>Alumno</value>
+  </data>
+  <data name="PerformanceForm_ColAttendance" xml:space="preserve">
+    <value>Asistencia (%)</value>
+  </data>
+  <data name="PerformanceForm_ColGradesCount" xml:space="preserve">
+    <value>Notas cargadas</value>
+  </data>
+  <data name="PerformanceForm_ColAverage" xml:space="preserve">
+    <value>Promedio de notas</value>
+  </data>
+  <data name="PerformanceForm_NoCourses" xml:space="preserve">
+    <value>No hay cursos para consultar.</value>
+  </data>
+  <data name="PerformanceForm_NoStudents" xml:space="preserve">
+    <value>El curso seleccionado no tiene alumnos inscriptos.</value>
+  </data>
+  <data name="PerformanceForm_SelectCourse" xml:space="preserve">
+    <value>Seleccione un curso de la lista.</value>
+  </data>
+  <data name="PerformanceForm_ValidationTitle" xml:space="preserve">
+    <value>Validación</value>
+  </data>
+  <data name="ReportForm_Title" xml:space="preserve">
+    <value>Informes Personalizados</value>
+  </data>
+  <data name="ReportForm_TypeLabel" xml:space="preserve">
+    <value>Tipo de informe:</value>
+  </data>
+  <data name="ReportForm_CourseLabel" xml:space="preserve">
+    <value>Curso:</value>
+  </data>
+  <data name="ReportForm_GenerateButton" xml:space="preserve">
+    <value>Generar</value>
+  </data>
+  <data name="ReportForm_ExportButton" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="ReportForm_TypeAttendance" xml:space="preserve">
+    <value>Asistencia por curso</value>
+  </data>
+  <data name="ReportForm_TypeGrades" xml:space="preserve">
+    <value>Notas por curso</value>
+  </data>
+  <data name="ReportForm_ColStudent" xml:space="preserve">
+    <value>Alumno</value>
+  </data>
+  <data name="ReportForm_ColPlans" xml:space="preserve">
+    <value>Planillas</value>
+  </data>
+  <data name="ReportForm_ColPresent" xml:space="preserve">
+    <value>Presentes</value>
+  </data>
+  <data name="ReportForm_ColAttendancePercent" xml:space="preserve">
+    <value>Asistencia (%)</value>
+  </data>
+  <data name="ReportForm_ColEvaluations" xml:space="preserve">
+    <value>Evaluaciones</value>
+  </data>
+  <data name="ReportForm_ColGradesCount" xml:space="preserve">
+    <value>Notas cargadas</value>
+  </data>
+  <data name="ReportForm_ColAverage" xml:space="preserve">
+    <value>Promedio de notas</value>
+  </data>
+  <data name="ReportForm_NoCourses" xml:space="preserve">
+    <value>No hay cursos para consultar.</value>
+  </data>
+  <data name="ReportForm_NoData" xml:space="preserve">
+    <value>No hay datos para los criterios seleccionados.</value>
+  </data>
+  <data name="ReportForm_SelectType" xml:space="preserve">
+    <value>Seleccione el tipo de informe.</value>
+  </data>
+  <data name="ReportForm_SelectCourse" xml:space="preserve">
+    <value>Seleccione un curso de la lista.</value>
+  </data>
+  <data name="ReportForm_ExportBeforeGenerate" xml:space="preserve">
+    <value>Genere el informe antes de exportarlo.</value>
+  </data>
+  <data name="ReportForm_Exported" xml:space="preserve">
+    <value>Informe exportado correctamente.</value>
+  </data>
+  <data name="ReportForm_ValidationTitle" xml:space="preserve">
+    <value>Validación</value>
+  </data>
 </root>

@@ -54,6 +54,9 @@ namespace TrabajoFinal_DarioZubaray
             inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
             asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
             evaluacionesToolStripMenuItem.Text = Resources.Main_MenuEvaluations;
+            reportesToolStripMenuItem.Text = Resources.Main_MenuReports;
+            rendimientoToolStripMenuItem.Text = Resources.Main_MenuPerformance;
+            informesToolStripMenuItem.Text = Resources.Main_MenuReportsCustom;
             aulasToolStripMenuItem.Text = Resources.Main_MenuClassrooms;
             integridadToolStripMenuItem.Text = Resources.Integrity_Title;
             ticketsToolStripMenuItem.Text = Resources.Main_MenuTickets;
@@ -86,12 +89,17 @@ namespace TrabajoFinal_DarioZubaray
             bool canRegisterAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_MGMT");
             bool canViewAttendance = _session != null && _session.HasPermission("FORM_ASISTENCIA_VIEW");
             bool canManageEvaluations = _session != null && _session.HasPermission("FORM_EVAL_MGMT");
+            bool canViewReports = _session != null && _session.HasPermission("FORM_REPORTS");
+            bool canManageReportDetail = _session != null && _session.HasPermission("FORM_REPORT_DETAIL");
 
             académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance || canViewAttendance || canManageEvaluations;
             cursosToolStripMenuItem.Visible = canManageCourses;
             inscripcionesToolStripMenuItem.Visible = canViewEnrollments;
             asistenciaToolStripMenuItem.Visible = canRegisterAttendance || canViewAttendance;
             evaluacionesToolStripMenuItem.Visible = canManageEvaluations;
+            reportesToolStripMenuItem.Visible = canViewReports || canManageReportDetail;
+            rendimientoToolStripMenuItem.Visible = canViewReports;
+            informesToolStripMenuItem.Visible = canManageReportDetail;
         }
 
         private void UpdateFooter()
@@ -213,6 +221,16 @@ namespace TrabajoFinal_DarioZubaray
         private void evaluacionesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowChildForm(() => new EvaluationForm(_user), "EvaluationForm");
+        }
+
+        private void rendimientoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(() => new PerformanceForm(_user), "PerformanceForm");
+        }
+
+        private void informesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(() => new ReportForm(_user), "ReportForm");
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)

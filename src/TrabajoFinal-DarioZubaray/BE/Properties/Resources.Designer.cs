@@ -2639,5 +2639,215 @@ namespace BE.Properties {
                 return ResourceManager.GetString("EvaluationForm_ValidationTitle", resourceCulture);
             }
         }
+        
+        public static string Main_MenuReports {
+            get {
+                return ResourceManager.GetString("Main_MenuReports", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuPerformance {
+            get {
+                return ResourceManager.GetString("Main_MenuPerformance", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuReportsCustom {
+            get {
+                return ResourceManager.GetString("Main_MenuReportsCustom", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_Title {
+            get {
+                return ResourceManager.GetString("PerformanceForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_CourseLabel {
+            get {
+                return ResourceManager.GetString("PerformanceForm_CourseLabel", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ConsultButton {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ConsultButton", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ColStudent {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ColStudent", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ColAttendance {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ColAttendance", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ColGradesCount {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ColGradesCount", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ColAverage {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ColAverage", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_NoCourses {
+            get {
+                return ResourceManager.GetString("PerformanceForm_NoCourses", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_NoStudents {
+            get {
+                return ResourceManager.GetString("PerformanceForm_NoStudents", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_SelectCourse {
+            get {
+                return ResourceManager.GetString("PerformanceForm_SelectCourse", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_Title {
+            get {
+                return ResourceManager.GetString("ReportForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_TypeLabel {
+            get {
+                return ResourceManager.GetString("ReportForm_TypeLabel", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_CourseLabel {
+            get {
+                return ResourceManager.GetString("ReportForm_CourseLabel", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_GenerateButton {
+            get {
+                return ResourceManager.GetString("ReportForm_GenerateButton", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ExportButton {
+            get {
+                return ResourceManager.GetString("ReportForm_ExportButton", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_TypeAttendance {
+            get {
+                return ResourceManager.GetString("ReportForm_TypeAttendance", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_TypeGrades {
+            get {
+                return ResourceManager.GetString("ReportForm_TypeGrades", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColStudent {
+            get {
+                return ResourceManager.GetString("ReportForm_ColStudent", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColPlans {
+            get {
+                return ResourceManager.GetString("ReportForm_ColPlans", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColPresent {
+            get {
+                return ResourceManager.GetString("ReportForm_ColPresent", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColAttendancePercent {
+            get {
+                return ResourceManager.GetString("ReportForm_ColAttendancePercent", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColEvaluations {
+            get {
+                return ResourceManager.GetString("ReportForm_ColEvaluations", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColGradesCount {
+            get {
+                return ResourceManager.GetString("ReportForm_ColGradesCount", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ColAverage {
+            get {
+                return ResourceManager.GetString("ReportForm_ColAverage", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_NoCourses {
+            get {
+                return ResourceManager.GetString("ReportForm_NoCourses", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_NoData {
+            get {
+                return ResourceManager.GetString("ReportForm_NoData", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_SelectType {
+            get {
+                return ResourceManager.GetString("ReportForm_SelectType", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_SelectCourse {
+            get {
+                return ResourceManager.GetString("ReportForm_SelectCourse", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ExportBeforeGenerate {
+            get {
+                return ResourceManager.GetString("ReportForm_ExportBeforeGenerate", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_Exported {
+            get {
+                return ResourceManager.GetString("ReportForm_Exported", resourceCulture);
+            }
+        }
+        
+        public static string ReportForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("ReportForm_ValidationTitle", resourceCulture);
+            }
+        }
     }
 }

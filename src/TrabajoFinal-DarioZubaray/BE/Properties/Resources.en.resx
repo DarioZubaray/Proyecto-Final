@@ -1171,4 +1171,109 @@
   <data name="EvaluationForm_ValidationTitle" xml:space="preserve">
     <value>Validation</value>
   </data>
+  <data name="Main_MenuReports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Main_MenuPerformance" xml:space="preserve">
+    <value>Academic Performance</value>
+  </data>
+  <data name="Main_MenuReportsCustom" xml:space="preserve">
+    <value>Custom Reports</value>
+  </data>
+  <data name="PerformanceForm_Title" xml:space="preserve">
+    <value>Academic Performance</value>
+  </data>
+  <data name="PerformanceForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="PerformanceForm_ConsultButton" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="PerformanceForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="PerformanceForm_ColAttendance" xml:space="preserve">
+    <value>Attendance (%)</value>
+  </data>
+  <data name="PerformanceForm_ColGradesCount" xml:space="preserve">
+    <value>Grades entered</value>
+  </data>
+  <data name="PerformanceForm_ColAverage" xml:space="preserve">
+    <value>Grades average</value>
+  </data>
+  <data name="PerformanceForm_NoCourses" xml:space="preserve">
+    <value>There are no courses to query.</value>
+  </data>
+  <data name="PerformanceForm_NoStudents" xml:space="preserve">
+    <value>The selected course has no enrolled students.</value>
+  </data>
+  <data name="PerformanceForm_SelectCourse" xml:space="preserve">
+    <value>Select a course from the list.</value>
+  </data>
+  <data name="PerformanceForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="ReportForm_Title" xml:space="preserve">
+    <value>Custom Reports</value>
+  </data>
+  <data name="ReportForm_TypeLabel" xml:space="preserve">
+    <value>Report type:</value>
+  </data>
+  <data name="ReportForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="ReportForm_GenerateButton" xml:space="preserve">
+    <value>Generate</value>
+  </data>
+  <data name="ReportForm_ExportButton" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ReportForm_TypeAttendance" xml:space="preserve">
+    <value>Attendance by course</value>
+  </data>
+  <data name="ReportForm_TypeGrades" xml:space="preserve">
+    <value>Grades by course</value>
+  </data>
+  <data name="ReportForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="ReportForm_ColPlans" xml:space="preserve">
+    <value>Sheets</value>
+  </data>
+  <data name="ReportForm_ColPresent" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="ReportForm_ColAttendancePercent" xml:space="preserve">
+    <value>Attendance (%)</value>
+  </data>
+  <data name="ReportForm_ColEvaluations" xml:space="preserve">
+    <value>Evaluations</value>
+  </data>
+  <data name="ReportForm_ColGradesCount" xml:space="preserve">
+    <value>Grades entered</value>
+  </data>
+  <data name="ReportForm_ColAverage" xml:space="preserve">
+    <value>Grades average</value>
+  </data>
+  <data name="ReportForm_NoCourses" xml:space="preserve">
+    <value>There are no courses to query.</value>
+  </data>
+  <data name="ReportForm_NoData" xml:space="preserve">
+    <value>There is no data for the selected criteria.</value>
+  </data>
+  <data name="ReportForm_SelectType" xml:space="preserve">
+    <value>Select the report type.</value>
+  </data>
+  <data name="ReportForm_SelectCourse" xml:space="preserve">
+    <value>Select a course from the list.</value>
+  </data>
+  <data name="ReportForm_ExportBeforeGenerate" xml:space="preserve">
+    <value>Generate the report before exporting it.</value>
+  </data>
+  <data name="ReportForm_Exported" xml:space="preserve">
+    <value>Report exported successfully.</value>
+  </data>
+  <data name="ReportForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
 </root>
