@@ -1,0 +1,124 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: RoleBE, PermissionBE y UserBE transportan los datos entre capas
+    Note over Administrador,BD: CU-09 Roles y Permisos - flujos básicos y alternativos
+
+    Administrador->>GUI: Elige "Roles" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<RoleBE>
+    BLL->>MPP: FindAll(): List<RoleBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de roles y permisos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<RoleBE>
+    BLL-->>GUI: List<RoleBE>
+    GUI->>BLL: GetAllPermissions(): List<PermissionBE>
+    BLL->>MPP: GetAllPermissions(): List<PermissionBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta del catálogo de permisos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<PermissionBE>
+    BLL-->>GUI: List<PermissionBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
+
+    Administrador->>GUI: Selecciona un rol de la lista
+    GUI->>BLL: FindById(roleId: int): RoleBE
+    BLL->>MPP: FindById(roleId: int): RoleBE
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta del rol y de sus permisos asignados
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: RoleBE
+    BLL-->>GUI: RoleBE
+    GUI-->>Administrador: Muestra los permisos del rol en "Asignados" y los faltantes en "Disponibles"
+    Note over GUI: Los permisos de sistema no se listan en "Disponibles" y el botón "<<" queda deshabilitado para ellos
+
+    Administrador->>GUI: Selecciona un permiso en "Disponibles" y presiona ">>"
+    alt Sin rol o sin permiso seleccionado
+        Note over GUI: btnAdd no realiza ninguna operación
+    else Selección válida
+        GUI-->>Administrador: Agrega el permiso a la lista "Asignados"
+    end
+
+    Administrador->>GUI: Selecciona un permiso en "Asignados" y presiona "<<"
+    alt Permiso de sistema seleccionado
+        Note over GUI: btnRemove está deshabilitado para permisos de sistema
+    else Permiso no-sistema seleccionado
+        GUI-->>Administrador: Quita el permiso de la lista "Asignados" y lo devuelve a "Disponibles"
+    end
+
+    Administrador->>GUI: Presiona "Guardar" sin haber seleccionado un rol
+    GUI-->>Administrador: Muestra "Seleccione un rol para guardar sus permisos. (Código: VAL-005)"
+
+    Administrador->>GUI: Selecciona un rol y presiona "Guardar"
+    GUI->>BLL: SavePermissions(roleId: int, permissionIds: List<int>)
+    BLL->>MPP: GetPermissionsByRoleId(roleId: int): List<PermissionBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta de los permisos de sistema del rol
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<PermissionBE>
+    BLL-->>BLL: Re-agrega los permisos de sistema a la lista antes de guardar
+    BLL->>MPP: SavePermissions(roleId: int, permissionIds: List<int>)
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Reemplazo de los permisos asignados del rol
+    BD-->>DAL: Filas afectadas
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: void
+    GUI-->>Administrador: Muestra "Los permisos del rol se guardaron correctamente."
+
+    Administrador->>GUI: Completa el campo "Rol:" y presiona "Crear Rol"
+    alt Nombre de rol vacío
+        GUI-->>Administrador: Muestra "El nombre del rol es obligatorio. (Código: VAL-004)" y devuelve el foco al campo
+    else Nombre informado
+        GUI->>BLL: Save(role: RoleBE): int
+        BLL->>MPP: Save(role: RoleBE): int
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Alta del rol con retorno de identidad (SCOPE_IDENTITY)
+        BD-->>DAL: Fila con el nuevo id
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: int
+        BLL-->>GUI: int
+        GUI-->>Administrador: Agrega el rol a la lista, lo selecciona y limpia el campo "Rol:"
+    end
+
+    Administrador->>GUI: Presiona "Eliminar" sin haber seleccionado un rol
+    GUI-->>Administrador: Muestra "Seleccione un rol de la lista. (Código: VAL-005)"
+
+    Administrador->>GUI: Selecciona un rol y presiona "Eliminar"
+    GUI->>BLL: CountByRoleId(roleId: int): int
+    BLL->>MPP: CountByRoleId(roleId: int): int
+    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    DAL->>BD: Conteo de usuarios del rol
+    BD-->>DAL: Cantidad resultante
+    DAL-->>MPP: int
+    MPP-->>BLL: int
+    BLL-->>GUI: int
+    alt El rol tiene usuarios asociados
+        GUI-->>Administrador: Muestra "No se puede eliminar el rol. Tiene N usuario(s) asociado(s). (Código: BIZ-001)"
+    else Rol sin usuarios
+        GUI-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el rol?"
+        alt El usuario presiona "No"
+            Note over GUI: No se realiza ningún cambio
+        else El usuario presiona "Sí"
+            GUI->>BLL: Delete(roleId: int): bool
+            BLL->>MPP: Delete(roleId: int): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Baja de los permisos asignados y del rol
+            BD-->>DAL: Filas afectadas
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Administrador: Actualiza la lista de roles
+        end
+    end

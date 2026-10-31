@@ -51,6 +51,9 @@ namespace BLL.Helpers
             public const string StudentLastNameRequired = "BIZ-010";
             public const string StudentDocumentRequired = "BIZ-011";
             public const string StudentDocumentDuplicated = "BIZ-012";
+            public const string EvaluationNameRequired = "BIZ-013";
+            public const string CourseNotOwnedByTeacher = "BIZ-014";
+            public const string GradeOutOfRange = "BIZ-015";
         }
 
         public static class General
