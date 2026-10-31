@@ -37,11 +37,11 @@ Esta carpeta reúne material de documentación del trabajo final: **diagramas** 
 | [`4.8.8.secuencia-gestionar-roles.mmd`](mermaid-live/4.8.8.secuencia-gestionar-roles.mmd) | Secuencia simple de gestionar roles (vista de alto nivel). |
 | [`4.8.8.secuencia-gestionar-roles-completo.mmd`](mermaid-live/4.8.8.secuencia-gestionar-roles-completo.mmd) | Secuencia completa de roles y permisos: Administrador → RoleBLL → RoleMPP → AccessDAL → SQL Server. |
 | [`4.9.8.secuencia-evaluaciones.mmd`](mermaid-live/4.9.8.secuencia-evaluaciones.mmd) | Secuencia simple de registrar evaluación y notas (vista de alto nivel). |
-| [`4.9.8.secuencia-evaluaciones-completo.mmd`](mermaid-live/4.9.8.secuencia-evaluaciones-completo.mmd) | Secuencia completa de evaluaciones: Profesor → EvaluationBLL → EvaluationMPP → AccessDAL → SQL Server (módulo a implementar). |
+| [`4.9.8.secuencia-evaluaciones-completo.mmd`](mermaid-live/4.9.8.secuencia-evaluaciones-completo.mmd) | Secuencia completa de evaluaciones: Profesor → EvaluationBLL → EvaluationMPP → AccessDAL → SQL Server. |
 | [`4.10.8.secuencia-rendimiento.mmd`](mermaid-live/4.10.8.secuencia-rendimiento.mmd) | Secuencia simple de consultar rendimiento académico (vista de alto nivel). |
-| [`4.10.8.secuencia-rendimiento-completo.mmd`](mermaid-live/4.10.8.secuencia-rendimiento-completo.mmd) | Secuencia completa de rendimiento: Coordinador/Director/Profesor → ReportBLL → ReportMPP → AccessDAL → SQL Server (módulo a implementar). |
+| [`4.10.8.secuencia-rendimiento-completo.mmd`](mermaid-live/4.10.8.secuencia-rendimiento-completo.mmd) | Secuencia completa de rendimiento: Coordinador/Director/Profesor → ReportBLL → ReportMPP → AccessDAL → SQL Server. |
 | [`4.11.8.secuencia-informes.mmd`](mermaid-live/4.11.8.secuencia-informes.mmd) | Secuencia simple de generar informes personalizados (vista de alto nivel). |
-| [`4.11.8.secuencia-informes-completo.mmd`](mermaid-live/4.11.8.secuencia-informes-completo.mmd) | Secuencia completa de informes: Coordinador/Director → ReportBLL → ReportMPP → AccessDAL → SQL Server (módulo a implementar). |
+| [`4.11.8.secuencia-informes-completo.mmd`](mermaid-live/4.11.8.secuencia-informes-completo.mmd) | Secuencia completa de informes: Coordinador/Director → ReportBLL → ReportMPP → AccessDAL → SQL Server. |
 | [`6.1.8.secuencia-login.mmd`](mermaid-live/6.1.8.secuencia-login.mmd) | Secuencia simple del inicio de sesión (vista de alto nivel). |
 | [`6.1.8.secuencia-login-completo.mmd`](mermaid-live/6.1.8.secuencia-login-completo.mmd) | Secuencia completa del login: AuthBLL → UserMPP → AccessDAL → SQL Server, ActivityBLL → ActivityMPP, PermissionBLL → RoleMPP, SessionManagerBLL, AppPreferencesBLL. |
 | [`6.2.8.secuencia-logout.mmd`](mermaid-live/6.2.8.secuencia-logout.mmd) | Secuencia simple del cierre de sesión (vista de alto nivel). |
