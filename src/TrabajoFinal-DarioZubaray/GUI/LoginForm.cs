@@ -131,6 +131,10 @@ namespace TrabajoFinal_DarioZubaray
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
+                lblMessage.Text = ErrorFormatter.WithCode(
+                    Resources.Auth_RequiredFields,
+                    ErrorCodesBLL.Auth.RequiredFields);
+                lblMessage.Visible = true;
                 return;
             }
 
