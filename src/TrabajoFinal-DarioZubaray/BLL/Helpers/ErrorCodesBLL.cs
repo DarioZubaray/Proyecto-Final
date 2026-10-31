@@ -47,6 +47,10 @@ namespace BLL.Helpers
             public const string TicketSubjectRequired = "BIZ-006";
             public const string TicketDescriptionRequired = "BIZ-007";
             public const string TicketAlreadyClosed = "BIZ-008";
+            public const string StudentFirstNameRequired = "BIZ-009";
+            public const string StudentLastNameRequired = "BIZ-010";
+            public const string StudentDocumentRequired = "BIZ-011";
+            public const string StudentDocumentDuplicated = "BIZ-012";
         }
 
         public static class General

@@ -19,6 +19,8 @@ IF OBJECT_ID('dbo.classrooms', 'U') IS NOT NULL
     ALTER TABLE dbo.classrooms NOCHECK CONSTRAINT ALL;
 IF OBJECT_ID('dbo.activity_logs', 'U') IS NOT NULL
     ALTER TABLE dbo.activity_logs NOCHECK CONSTRAINT ALL;
+IF OBJECT_ID('dbo.students', 'U') IS NOT NULL
+    ALTER TABLE dbo.students NOCHECK CONSTRAINT ALL;
 IF OBJECT_ID('dbo.role_hierarchy', 'U') IS NOT NULL
     ALTER TABLE dbo.role_hierarchy NOCHECK CONSTRAINT ALL;
 IF OBJECT_ID('dbo.role_permissions', 'U') IS NOT NULL
@@ -34,6 +36,7 @@ IF OBJECT_ID('dbo.course_teachers', 'U') IS NOT NULL DROP TABLE dbo.course_teach
 IF OBJECT_ID('dbo.courses', 'U') IS NOT NULL DROP TABLE dbo.courses;
 IF OBJECT_ID('dbo.classrooms', 'U') IS NOT NULL DROP TABLE dbo.classrooms;
 IF OBJECT_ID('dbo.activity_logs', 'U') IS NOT NULL DROP TABLE dbo.activity_logs;
+IF OBJECT_ID('dbo.students', 'U') IS NOT NULL DROP TABLE dbo.students;
 IF OBJECT_ID('dbo.role_hierarchy', 'U') IS NOT NULL DROP TABLE dbo.role_hierarchy;
 IF OBJECT_ID('dbo.role_permissions', 'U') IS NOT NULL DROP TABLE dbo.role_permissions;
 IF OBJECT_ID('dbo.schema_versions', 'U') IS NOT NULL DROP TABLE dbo.schema_versions;

@@ -1650,6 +1650,30 @@ namespace BE.Properties {
             }
         }
         
+        public static string EnrollmentManagementForm_StudentLabel {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_StudentLabel", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_EnrollButton {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_EnrollButton", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_SelectStudent {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_SelectStudent", resourceCulture);
+            }
+        }
+        
+        public static string EnrollmentManagementForm_ConfirmEnrollMessage {
+            get {
+                return ResourceManager.GetString("EnrollmentManagementForm_ConfirmEnrollMessage", resourceCulture);
+            }
+        }
+        
         public static string CourseManagementForm_Title {
             get {
                 return ResourceManager.GetString("CourseManagementForm_Title", resourceCulture);
@@ -2331,6 +2355,198 @@ namespace BE.Properties {
         public static string TicketForm_ValidationTitle {
             get {
                 return ResourceManager.GetString("TicketForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string Main_MenuStudents {
+            get {
+                return ResourceManager.GetString("Main_MenuStudents", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_Title {
+            get {
+                return ResourceManager.GetString("StudentForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_FirstNameLabel {
+            get {
+                return ResourceManager.GetString("StudentForm_FirstNameLabel", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_LastNameLabel {
+            get {
+                return ResourceManager.GetString("StudentForm_LastNameLabel", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_DocumentLabel {
+            get {
+                return ResourceManager.GetString("StudentForm_DocumentLabel", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_EmailLabel {
+            get {
+                return ResourceManager.GetString("StudentForm_EmailLabel", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_PhoneLabel {
+            get {
+                return ResourceManager.GetString("StudentForm_PhoneLabel", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_BtnSave {
+            get {
+                return ResourceManager.GetString("StudentForm_BtnSave", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_BtnCancel {
+            get {
+                return ResourceManager.GetString("StudentForm_BtnCancel", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_FirstNameRequired {
+            get {
+                return ResourceManager.GetString("StudentForm_FirstNameRequired", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_LastNameRequired {
+            get {
+                return ResourceManager.GetString("StudentForm_LastNameRequired", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_DocumentRequired {
+            get {
+                return ResourceManager.GetString("StudentForm_DocumentRequired", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_SaveSuccess {
+            get {
+                return ResourceManager.GetString("StudentForm_SaveSuccess", resourceCulture);
+            }
+        }
+        
+        public static string StudentForm_ValidationTitle {
+            get {
+                return ResourceManager.GetString("StudentForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_Title {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_Title", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_SearchLabel {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_SearchLabel", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_SearchButton {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_SearchButton", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_NewButton {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_NewButton", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_EditButton {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_EditButton", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_DeleteButton {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_DeleteButton", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ColFirstName {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ColFirstName", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ColLastName {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ColLastName", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ColDocument {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ColDocument", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ColEmail {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ColEmail", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ColPhone {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ColPhone", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ColActive {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ColActive", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_SelectToEdit {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_SelectToEdit", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_SelectToDelete {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_SelectToDelete", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ConfirmDeleteTitle {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ConfirmDeleteTitle", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_ConfirmDeleteMessage {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_ConfirmDeleteMessage", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_DeleteSuccess {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_DeleteSuccess", resourceCulture);
+            }
+        }
+        
+        public static string StudentManagementForm_InfoTitle {
+            get {
+                return ResourceManager.GetString("StudentManagementForm_InfoTitle", resourceCulture);
             }
         }
     }

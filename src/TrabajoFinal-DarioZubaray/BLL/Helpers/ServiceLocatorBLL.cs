@@ -16,6 +16,7 @@ namespace BLL.Helpers
         private static IEnrollmentMPP _enrollmentMPP;
         private static IAttendanceMPP _attendanceMPP;
         private static ITicketMPP _ticketMPP;
+        private static IStudentMPP _studentMPP;
         #endregion
 
         #region Métodos
@@ -160,6 +161,21 @@ namespace BLL.Helpers
         public static ITicketBLL CreateTicketBLL()
         {
             return new TicketBLL(GetTicketMPP());
+        }
+
+        public static IStudentMPP GetStudentMPP()
+        {
+            if (_studentMPP == null)
+            {
+                _studentMPP = new StudentMPP();
+            }
+
+            return _studentMPP;
+        }
+
+        public static IStudentBLL CreateStudentBLL()
+        {
+            return new StudentBLL(GetStudentMPP());
         }
         #endregion
     }

@@ -99,6 +99,7 @@ namespace MPP.Tests.Setup
                     IF OBJECT_ID('dbo.courses', 'U') IS NOT NULL DROP TABLE dbo.courses;
                     IF OBJECT_ID('dbo.classrooms', 'U') IS NOT NULL DROP TABLE dbo.classrooms;
                     IF OBJECT_ID('dbo.activity_logs', 'U') IS NOT NULL DROP TABLE dbo.activity_logs;
+                    IF OBJECT_ID('dbo.students', 'U') IS NOT NULL DROP TABLE dbo.students;
                     IF OBJECT_ID('dbo.role_hierarchy', 'U') IS NOT NULL DROP TABLE dbo.role_hierarchy;
                     IF OBJECT_ID('dbo.role_permissions', 'U') IS NOT NULL DROP TABLE dbo.role_permissions;
                     IF OBJECT_ID('dbo.schema_versions', 'U') IS NOT NULL DROP TABLE dbo.schema_versions;
@@ -150,6 +151,19 @@ namespace MPP.Tests.Setup
                         CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[roles]([id])
                     );
                     ALTER TABLE [dbo].[users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
+
+                    CREATE TABLE [dbo].[students] (
+                        [id]           INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [first_name]   NVARCHAR(100)  NOT NULL,
+                        [last_name]    NVARCHAR(100)  NOT NULL,
+                        [document]     NVARCHAR(20)   NOT NULL,
+                        [email]        NVARCHAR(150)  NULL,
+                        [phone]        NVARCHAR(50)   NULL,
+                        [is_active]    BIT            NOT NULL DEFAULT 1,
+                        [created_at]   DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [last_update]  DATETIME       NOT NULL DEFAULT GETDATE()
+                    );
+                    ALTER TABLE [dbo].[students] ADD CONSTRAINT uq_students_document UNIQUE ([document]);
 
                     CREATE TABLE [dbo].[activity_logs] (
                         [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -204,7 +218,7 @@ namespace MPP.Tests.Setup
                         [is_active]    BIT      NOT NULL DEFAULT 1,
                         [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                         CONSTRAINT fk_course_students_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
-                        CONSTRAINT fk_course_students_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id])
+                        CONSTRAINT fk_course_students_students FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id])
                     );
 
                     CREATE TABLE [dbo].[attendance] (
@@ -215,7 +229,7 @@ namespace MPP.Tests.Setup
                         [is_present]   BIT      NOT NULL DEFAULT 0,
                         [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                         CONSTRAINT fk_attendance_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
-                        CONSTRAINT fk_attendance_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id]),
+                        CONSTRAINT fk_attendance_students FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]),
                         CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
                     );
 
@@ -274,6 +288,12 @@ namespace MPP.Tests.Setup
                         ('testuser',   'hashedpassword123', 1, 0, GETDATE(), GETDATE(), 'es',    'System', 1),
                         ('seconduser', 'hashedpassword456', 1, 0, GETDATE(), GETDATE(), 'en',    'Dark',   2),
                         ('thirduser',  'hashedpassword789', 0, 3, GETDATE(), GETDATE(), 'pt-BR', 'Light',  3);
+
+                    INSERT INTO [dbo].[students]
+                        (first_name, last_name, document, email, phone, is_active, created_at, last_update)
+                    VALUES
+                        ('Juan',  'Pérez', 'DNI-10000001', 'juan.perez@test.com',  '11111111', 1, GETDATE(), GETDATE()),
+                        ('María', 'Gómez', 'DNI-10000002', 'maria.gomez@test.com', '22222222', 1, GETDATE(), GETDATE());
                 ";
 
                 var cmd = new SqlCommand(sql, connection);
@@ -294,10 +314,12 @@ namespace MPP.Tests.Setup
                     DELETE FROM [dbo].[courses];
                     DELETE FROM [dbo].[classrooms];
                     DELETE FROM [dbo].[activity_logs];
+                    DELETE FROM [dbo].[students];
                     DELETE FROM [dbo].[role_permissions];
                     DELETE FROM [dbo].[role_hierarchy];
                     DELETE FROM [dbo].[users];
                     DBCC CHECKIDENT ('[dbo].[users]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[students]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[classrooms]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[courses]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[course_teachers]', RESEED, 0);

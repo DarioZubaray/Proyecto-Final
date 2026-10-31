@@ -676,6 +676,18 @@
   <data name="EnrollmentManagementForm_ColEnrollDate" xml:space="preserve">
     <value>Fecha Inscripción</value>
   </data>
+  <data name="EnrollmentManagementForm_StudentLabel" xml:space="preserve">
+    <value>Alumno a inscribir:</value>
+  </data>
+  <data name="EnrollmentManagementForm_EnrollButton" xml:space="preserve">
+    <value>Inscribir alumno</value>
+  </data>
+  <data name="EnrollmentManagementForm_SelectStudent" xml:space="preserve">
+    <value>Seleccione un alumno para inscribir.</value>
+  </data>
+  <data name="EnrollmentManagementForm_ConfirmEnrollMessage" xml:space="preserve">
+    <value>¿Desea inscribir a '{0}' en el curso '{1}'?</value>
+  </data>
   <data name="CourseManagementForm_Title" xml:space="preserve">
     <value>Gestión de Cursos</value>
   </data>
@@ -1017,5 +1029,101 @@
   </data>
   <data name="TicketForm_ValidationTitle" xml:space="preserve">
     <value>Validación</value>
+  </data>
+  <data name="Main_MenuStudents" xml:space="preserve">
+    <value>Alumnos</value>
+  </data>
+  <data name="StudentForm_Title" xml:space="preserve">
+    <value>Alumno</value>
+  </data>
+  <data name="StudentForm_FirstNameLabel" xml:space="preserve">
+    <value>Nombre:</value>
+  </data>
+  <data name="StudentForm_LastNameLabel" xml:space="preserve">
+    <value>Apellido:</value>
+  </data>
+  <data name="StudentForm_DocumentLabel" xml:space="preserve">
+    <value>Documento:</value>
+  </data>
+  <data name="StudentForm_EmailLabel" xml:space="preserve">
+    <value>E-mail:</value>
+  </data>
+  <data name="StudentForm_PhoneLabel" xml:space="preserve">
+    <value>Teléfono:</value>
+  </data>
+  <data name="StudentForm_BtnSave" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="StudentForm_BtnCancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="StudentForm_FirstNameRequired" xml:space="preserve">
+    <value>El nombre del alumno es obligatorio.</value>
+  </data>
+  <data name="StudentForm_LastNameRequired" xml:space="preserve">
+    <value>El apellido del alumno es obligatorio.</value>
+  </data>
+  <data name="StudentForm_DocumentRequired" xml:space="preserve">
+    <value>El documento del alumno es obligatorio.</value>
+  </data>
+  <data name="StudentForm_SaveSuccess" xml:space="preserve">
+    <value>Alumno guardado correctamente.</value>
+  </data>
+  <data name="StudentForm_ValidationTitle" xml:space="preserve">
+    <value>Validación</value>
+  </data>
+  <data name="StudentManagementForm_Title" xml:space="preserve">
+    <value>Gestión de Alumnos</value>
+  </data>
+  <data name="StudentManagementForm_SearchLabel" xml:space="preserve">
+    <value>Nombre, apellido o documento:</value>
+  </data>
+  <data name="StudentManagementForm_SearchButton" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="StudentManagementForm_NewButton" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="StudentManagementForm_EditButton" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="StudentManagementForm_DeleteButton" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
+  <data name="StudentManagementForm_ColFirstName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="StudentManagementForm_ColLastName" xml:space="preserve">
+    <value>Apellido</value>
+  </data>
+  <data name="StudentManagementForm_ColDocument" xml:space="preserve">
+    <value>Documento</value>
+  </data>
+  <data name="StudentManagementForm_ColEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="StudentManagementForm_ColPhone" xml:space="preserve">
+    <value>Teléfono</value>
+  </data>
+  <data name="StudentManagementForm_ColActive" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="StudentManagementForm_SelectToEdit" xml:space="preserve">
+    <value>Seleccione un alumno para editar.</value>
+  </data>
+  <data name="StudentManagementForm_SelectToDelete" xml:space="preserve">
+    <value>Seleccione un alumno para eliminar.</value>
+  </data>
+  <data name="StudentManagementForm_ConfirmDeleteTitle" xml:space="preserve">
+    <value>Confirmar eliminación</value>
+  </data>
+  <data name="StudentManagementForm_ConfirmDeleteMessage" xml:space="preserve">
+    <value>¿Está seguro que desea eliminar al alumno {0}?</value>
+  </data>
+  <data name="StudentManagementForm_DeleteSuccess" xml:space="preserve">
+    <value>Alumno eliminado correctamente.</value>
+  </data>
+  <data name="StudentManagementForm_InfoTitle" xml:space="preserve">
+    <value>Información</value>
   </data>
 </root>

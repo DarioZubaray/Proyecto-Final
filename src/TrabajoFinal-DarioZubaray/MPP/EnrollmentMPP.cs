@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -62,11 +62,11 @@ namespace MPP
             string query = @"SELECT cs.id, cs.course_id, cs.student_id, cs.is_active, cs.created_at,
                                     c.name AS course_name, c.day_of_week, c.start_time, c.end_time,
                                     cl.name AS classroom_name,
-                                    u.user_name AS student_name
+                                    (s.first_name + ' ' + s.last_name) AS student_name
                             FROM course_students cs
                             INNER JOIN courses c ON c.id = cs.course_id
                             LEFT JOIN classrooms cl ON cl.id = c.classroom_id
-                            INNER JOIN users u ON u.id = cs.student_id
+                            INNER JOIN students s ON s.id = cs.student_id
                             WHERE cs.id = @id";
 
             SqlParameter[] parameters = new SqlParameter[]
@@ -89,11 +89,11 @@ namespace MPP
             string query = @"SELECT cs.id, cs.course_id, cs.student_id, cs.is_active, cs.created_at,
                                     c.name AS course_name, c.day_of_week, c.start_time, c.end_time,
                                     cl.name AS classroom_name,
-                                    u.user_name AS student_name
+                                    (s.first_name + ' ' + s.last_name) AS student_name
                             FROM course_students cs
                             INNER JOIN courses c ON c.id = cs.course_id
                             LEFT JOIN classrooms cl ON cl.id = c.classroom_id
-                            INNER JOIN users u ON u.id = cs.student_id
+                            INNER JOIN students s ON s.id = cs.student_id
                             WHERE cs.student_id = @studentId AND cs.is_active = 1 AND c.is_active = 1
                             ORDER BY c.id";
 
@@ -110,13 +110,13 @@ namespace MPP
             string query = @"SELECT cs.id, cs.course_id, cs.student_id, cs.is_active, cs.created_at,
                                     c.name AS course_name, c.day_of_week, c.start_time, c.end_time,
                                     cl.name AS classroom_name,
-                                    u.user_name AS student_name
+                                    (s.first_name + ' ' + s.last_name) AS student_name
                             FROM course_students cs
                             INNER JOIN courses c ON c.id = cs.course_id
                             LEFT JOIN classrooms cl ON cl.id = c.classroom_id
-                            INNER JOIN users u ON u.id = cs.student_id
+                            INNER JOIN students s ON s.id = cs.student_id
                             WHERE cs.is_active = 1 AND c.is_active = 1
-                            ORDER BY u.user_name, c.name";
+                            ORDER BY s.last_name, s.first_name, c.name";
 
             return FindMany(query);
         }

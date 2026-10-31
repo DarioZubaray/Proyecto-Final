@@ -48,6 +48,7 @@ namespace TrabajoFinal_DarioZubaray
             administraciónToolStripMenuItem.Text = Resources.Main_MenuAdministration;
             usuariosToolStripMenuItem.Text = Resources.Main_MenuUsers;
             rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
+            alumnosToolStripMenuItem.Text = Resources.Main_MenuStudents;
             académicoToolStripMenuItem.Text = Resources.Main_MenuAcademic;
             cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
             inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
@@ -65,9 +66,14 @@ namespace TrabajoFinal_DarioZubaray
         private void ConfigureMenuVisibility()
         {
             administraciónToolStripMenuItem.Visible = _session != null
+                && (_session.HasPermission("FORM_USER_MGMT")
+                    || _session.HasPermission("FORM_STUDENT_MGMT"));
+            usuariosToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_USER_MGMT");
             rolesToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_ROLE_MGMT");
+            alumnosToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_STUDENT_MGMT");
             aulasToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_CURSO_MGMT");
 
@@ -154,6 +160,11 @@ namespace TrabajoFinal_DarioZubaray
             ShowChildForm(() => new RoleManagementForm(_user), "RoleManagementForm");
         }
 
+        private void alumnosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowChildForm(() => new StudentManagementForm(_user), "StudentManagementForm");
+        }
+
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowChildForm(() => new ClassroomManagementForm(_user), "ClassroomManagementForm");
@@ -181,14 +192,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void inscripcionesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_user.RoleId == 3)
-            {
-                ShowChildForm(() => new EnrollmentForm(_user), "EnrollmentForm");
-            }
-            else
-            {
-                ShowChildForm(() => new EnrollmentManagementForm(_user), "EnrollmentManagementForm");
-            }
+            ShowChildForm(() => new EnrollmentManagementForm(_user), "EnrollmentManagementForm");
         }
 
         private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)

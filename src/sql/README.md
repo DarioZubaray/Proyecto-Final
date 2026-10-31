@@ -17,12 +17,14 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | [`08_v1.3.0_DVH.sql`](08_v1.3.0_DVH.sql) | Migración v1.3.0: agrega la columna `users.dvh` (Dígito Verificador Horizontal) y calcula el hash SHA-256 de cada fila (columnas unidas por coma, sin espacios). |
 | [`09_v1.4.0_Tickets.sql`](09_v1.4.0_Tickets.sql) | Migración v1.4.0: crea la tabla `tickets` (reportes de usuarios con estados Abierto/Cerrado) y el permiso `FORM_TICKET_MGMT` (gestión administrativa, rol Admin). |
 | [`10_v1.4.1_AjusteActores.sql`](10_v1.4.1_AjusteActores.sql) | Migración v1.4.1: desactiva el login de los alumnos (`is_active = 0`; siguen como datos para inscripción/asistencia) y otorga `FORM_TICKET_MGMT` al rol Coordinador (listar todos los tickets y cerrarlos; Profesor solo crea). |
+| [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql) | Migración v1.5.0: crea la tabla `students` (entidad propia de alumnos, ya no son usuarios), migra los alumnos desde `users`, repunta las FK de `course_students` y `attendance`, elimina el rol Alumno, crea el rol Director (`FORM_REPORTS`) y el permiso `FORM_STUDENT_MGMT`, y ajusta los permisos de Admin/Profesor/Coordinador. |
 
 ## Instalación
 
-### Opción A — Script maestro (recomendada, un solo paso)
+### Opción A — Script maestro (recomendada)
 
-Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema completo (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0 + ajuste de actores v1.4.1) y carga todos los datos.
+1. Ejecutar [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema consolidado (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0 + ajuste de actores v1.4.1) y carga todos los datos.
+2. Ejecutar [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql). Migra los alumnos a la tabla `students`, ajusta los roles finales (sin Alumno, con Director) y agrega el permiso `FORM_STUDENT_MGMT`.
 
 ### Opción B — Scripts por pasos (migraciones)
 
@@ -51,7 +53,10 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 -- 8. Migración v1.4.1 (alumnos solo datos + FORM_TICKET_MGMT al Coordinador)
 10_v1.4.1_AjusteActores.sql
 
--- 9. (opcional) Consultas de verificación
+-- 9. Migración v1.5.0 (tabla students, rol Director, permiso FORM_STUDENT_MGMT)
+11_v1.5.0_EstudiantesYRoles.sql
+
+-- 10. (opcional) Consultas de verificación
 05_v1.1.0_Queries.sql
 ```
 
@@ -61,7 +66,7 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 `Roles`, `Permissions`, `RolePermissions`, `RoleHierarchy`, `Users`, `ActivityLogs`, `SchemaVersions`
 
 **Tablas v1.1.0+** (snake_case plural inglés):
-`classrooms`, `courses`, `course_teachers`, `course_students`, `attendance`, `tickets`
+`classrooms`, `courses`, `course_teachers`, `course_students`, `attendance`, `tickets`, `students`
 
 **Columnas**: Todas `snake_case` (`start_date`, `day_of_week`, `is_active`, etc.)
 
@@ -75,7 +80,8 @@ Ejecutar únicamente [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsoli
 | `dario` | `123` | Admin |
 | `coord_maria`, `coord_carlos`, `coord_laura` | `123` | Coordinador |
 | `prof_garcia` a `prof_fernandez` (5) | `123` | Profesor |
-| `alumno_perez` a `alumno_soto` (15) | `123` | Alumno |
+
+> Los alumnos **no son usuarios ni actores del sistema**: se gestionan en la tabla `students` (menú Administración → Alumnos, permiso `FORM_STUDENT_MGMT`). Tras la migración v1.5.0, los alumnos seed (`alumno_perez` a `alumno_soto`) quedaron migrados a `students` con los mismos IDs.
 
 ## Cursos de prueba (Ago-Dic 2026)
 
