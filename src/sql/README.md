@@ -6,74 +6,42 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 
 | Archivo | Descripción |
 |---------|-------------|
-| [`00_v0.0.1_PurgeDatabase.sql`](00_v0.0.1_PurgeDatabase.sql) | Elimina todas las tablas (reinicialización limpia). |
-| [`01_v1.0.0_CreateTables.sql`](01_v1.0.0_CreateTables.sql) | Esquema base: Roles, Permissions, RolePermissions, RoleHierarchy, Users, ActivityLogs, SchemaVersions. |
-| [`02_v1.0.0_SeedData.sql`](02_v1.0.0_SeedData.sql) | Datos iniciales: roles, permisos, 24 usuarios de prueba (los alumnos con `is_active = 0`: son datos, no actores del sistema). |
-| [`03_v1.1.0_AulasCursosInscripciones.sql`](03_v1.1.0_AulasCursosInscripciones.sql) | Migración consolidada: classrooms, courses, course_teachers, course_students, attendance. Permisos, rol Coordinador. Seed data completo. |
-| [`04_v1.1.0_Rollback.sql`](04_v1.1.0_Rollback.sql) | Rollback de v1.1.0. |
-| [`05_v1.1.0_Queries.sql`](05_v1.1.0_Queries.sql) | Consultas de verificación y desarrollo. |
-| [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql) | **Script maestro**: crea la base (si no existe), crea todas las tablas, inserta los datos y registra las versiones en un solo paso. |
-| [`07_v1.2.0_AdminPassword.sql`](07_v1.2.0_AdminPassword.sql) | Migración v1.2.0: cambia la contraseña del usuario `admin` a `admin` y resetea su estado (exento de bloqueo, 2FA). |
-| [`08_v1.3.0_DVH.sql`](08_v1.3.0_DVH.sql) | Migración v1.3.0: agrega la columna `users.dvh` (Dígito Verificador Horizontal) y calcula el hash SHA-256 de cada fila (columnas unidas por coma, sin espacios). |
-| [`09_v1.4.0_Tickets.sql`](09_v1.4.0_Tickets.sql) | Migración v1.4.0: crea la tabla `tickets` (reportes de usuarios con estados Abierto/Cerrado) y el permiso `FORM_TICKET_MGMT` (gestión administrativa, rol Admin). |
-| [`10_v1.4.1_AjusteActores.sql`](10_v1.4.1_AjusteActores.sql) | Migración v1.4.1: desactiva el login de los alumnos (`is_active = 0`; siguen como datos para inscripción/asistencia) y otorga `FORM_TICKET_MGMT` al rol Coordinador (listar todos los tickets y cerrarlos; Profesor solo crea). |
-| [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql) | Migración v1.5.0: crea la tabla `students` (entidad propia de alumnos, ya no son usuarios), migra los alumnos desde `users`, repunta las FK de `course_students` y `attendance`, elimina el rol Alumno, crea el rol Director (`FORM_REPORTS`) y el permiso `FORM_STUDENT_MGMT`, y ajusta los permisos de Admin/Profesor/Coordinador. |
-| [`12_v1.6.0_Evaluaciones.sql`](12_v1.6.0_Evaluaciones.sql) | Migración v1.6.0: crea las tablas `evaluations` y `grades` (notas 0–10 por alumno y evaluación) y el permiso `FORM_EVAL_MGMT` (menú Académico → Evaluaciones), otorgado al rol Profesor. |
-| [`13_v1.7.0_Informes.sql`](13_v1.7.0_Informes.sql) | Migración v1.7.0: crea el permiso `FORM_REPORT_DETAIL` (menú Reportes → Informes Personalizados, CU-12), otorgado a Coordinador y Director; asegura `FORM_REPORTS` (CU-11) en Admin, Coordinador, Director y Profesor. |
-| [`14_v1.8.0_Respaldo.sql`](14_v1.8.0_Respaldo.sql) | Migración v1.8.0: crea el permiso `FORM_BACKUP_MGMT` (menú Administración → Respaldo y Restauración, CU-13), otorgado solo al rol Admin. |
+| [`01_v1.0.0_CreateTables.sql`](01_v1.0.0_CreateTables.sql) | Esquema base: `roles`, `permissions`, `role_permissions`, `role_hierarchy`, `users`, `activity_logs`, `schema_versions`. |
+| [`02_v1.0.0_SeedData.sql`](02_v1.0.0_SeedData.sql) | Datos iniciales: 4 roles, 6 permisos, 25 usuarios de prueba (15 alumnos con `is_active = 0`: son datos, no actores del sistema) y la versión `1.0.0` en `schema_versions`. |
+| [`03_v1.3.0_Incremental.sql`](03_v1.3.0_Incremental.sql) | **Migración incremental a v1.3.0** (todo lo posterior a v1.0.0 en un solo paso idempotente): aulas/cursos/inscripciones/asistencia, permisos y rol Coordinador, DVH (`users.dvh` + backfill), tickets, alumnos pasan de `users` a la entidad `students` (rol Alumno eliminado, rol Director creado), `evaluations`/`grades`, permisos de informes y respaldo. Registra `1.3.0` en `schema_versions`. |
+| [`04_v1.3.0_Rollback.sql`](04_v1.3.0_Rollback.sql) | **Rollback de v1.3.0**: devuelve la base al estado v1 (esquema y seed de `01`+`02`). Ver notas abajo. |
+| [`05_v1.3.0_ScriptConsolidado.sql`](05_v1.3.0_ScriptConsolidado.sql) | **Script maestro**: crea la base (si no existe), purga las tablas, crea el esquema completo v1.3.0 (v1.0.0 + v1.3.0), carga todos los datos y registra `1.0.0` y `1.3.0`. |
 
 ## Instalación
 
 ### Opción A — Script maestro (recomendada)
 
-1. Ejecutar [`06_v1.1.0_ScriptConsolidado.sql`](06_v1.1.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, dropea las tablas existentes, crea el esquema consolidado (v1.0.0 + v1.1.0 + DVH v1.3.0 + tickets v1.4.0 + ajuste de actores v1.4.1) y carga todos los datos.
-2. Ejecutar [`11_v1.5.0_EstudiantesYRoles.sql`](11_v1.5.0_EstudiantesYRoles.sql). Migra los alumnos a la tabla `students`, ajusta los roles finales (sin Alumno, con Director) y agrega el permiso `FORM_STUDENT_MGMT`.
-3. Ejecutar [`12_v1.6.0_Evaluaciones.sql`](12_v1.6.0_Evaluaciones.sql). Crea `evaluations`/`grades` y el permiso `FORM_EVAL_MGMT` para el rol Profesor.
-4. Ejecutar [`13_v1.7.0_Informes.sql`](13_v1.7.0_Informes.sql). Crea el permiso `FORM_REPORT_DETAIL` (CU-12, solo Coordinador y Director) y asegura `FORM_REPORTS` (CU-11) en los roles con reportes.
-5. Ejecutar [`14_v1.8.0_Respaldo.sql`](14_v1.8.0_Respaldo.sql). Crea el permiso `FORM_BACKUP_MGMT` (CU-13, menú Administración → Respaldo y Restauración) solo para el rol Admin.
+1. Ejecutar [`05_v1.3.0_ScriptConsolidado.sql`](05_v1.3.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, la deja con el esquema y los datos finales (v1.3.0) en un solo paso.
 
 ### Opción B — Scripts por pasos (migraciones)
 
 ```sql
--- 1. Reinicializar
-00_v0.0.1_PurgeDatabase.sql
-
--- 2. Esquema base
+-- 1. Esquema base
 01_v1.0.0_CreateTables.sql
 
--- 3. Datos iniciales
+-- 2. Datos iniciales (v1.0.0)
 02_v1.0.0_SeedData.sql
 
--- 4. Migración v1.1.0 (aulas, cursos, inscripciones, asistencia)
-03_v1.1.0_AulasCursosInscripciones.sql
-
--- 5. Migración v1.2.0 (contraseña admin/admin)
-07_v1.2.0_AdminPassword.sql
-
--- 6. Migración v1.3.0 (DVH: columna users.dvh + backfill de hashes)
-08_v1.3.0_DVH.sql
-
--- 7. Migración v1.4.0 (tickets: tabla + permiso FORM_TICKET_MGMT)
-09_v1.4.0_Tickets.sql
-
--- 8. Migración v1.4.1 (alumnos solo datos + FORM_TICKET_MGMT al Coordinador)
-10_v1.4.1_AjusteActores.sql
-
--- 9. Migración v1.5.0 (tabla students, rol Director, permiso FORM_STUDENT_MGMT)
-11_v1.5.0_EstudiantesYRoles.sql
-
--- 10. Migración v1.6.0 (evaluations/grades + permiso FORM_EVAL_MGMT)
-12_v1.6.0_Evaluaciones.sql
-
--- 11. Migración v1.7.0 (permiso FORM_REPORT_DETAIL para CU-12 + FORM_REPORTS CU-11)
-13_v1.7.0_Informes.sql
-
--- 12. Migración v1.8.0 (permiso FORM_BACKUP_MGMT para CU-13, solo Admin)
-14_v1.8.0_Respaldo.sql
-
--- 13. (opcional) Consultas de verificación
-05_v1.1.0_Queries.sql
+-- 3. Migración incremental a v1.3.0
+03_v1.3.0_Incremental.sql
 ```
+
+Ambas opciones dejan la base en el mismo estado (16 tablas, 15 permisos, matriz de permisos por rol, DVH calculado). `03_v1.3.0_Incremental.sql` es idempotente: si la versión `1.3.0` ya fue aplicada por él mismo o por `05_v1.3.0_ScriptConsolidado.sql`, no vuelve a ejecutar.
+
+### Rollback
+
+[`04_v1.3.0_Rollback.sql`](04_v1.3.0_Rollback.sql) revierte la migración v1.3.0: elimina las tablas agregadas (`grades`, `evaluations`, `tickets`, `attendance`, `course_students`, `course_teachers`, `courses`, `classrooms`, `students`), la columna `users.dvh`, los 9 permisos agregados, el rol Director (sus usuarios pasan a Admin) y restaura el rol Alumno, la matriz de permisos y los 15 usuarios-alumno del seed v1. Registra `1.3.0-rollback` y libera la versión `1.3.0`.
+
+> **Advertencia**: el rollback es destructivo (borra tablas y datos académicos) y deja la base incompatible con la aplicación actual. Para volver a usarla hay que re-ejecutar `03_v1.3.0_Incremental.sql` (el ciclo rollback → incremental es seguro y probado).
+
+## Bases de datos legadas (cadenas anteriores)
+
+Las bases creadas con las versiones previas de los scripts (hasta `14_v1.8.0_Respaldo.sql`) **no necesitan recrearse**: `03_v1.3.0_Incremental.sql` detecta la fila legada `1.3.0` (distinto `script_name`) y aplica solo los cambios pendientes, además de corregir la matriz de permisos del rol Coordinador (8 permisos).
 
 ## Convención de nombres
 
@@ -87,6 +55,15 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 
 **Columna `users.dvh`**: Dígito Verificador Horizontal (SHA-256 en hex). Se regenera desde la aplicación en cada INSERT/UPDATE (la orquestación vive en `BLL.DVHHelperBLL`) y se valida al inicio de la aplicación. Debe calcularse con el mismo formato que `BLL.DVHHelperBLL` (valores en orden de columna unidos por `,`, fechas estilo `126` —sin fracción si ms = 0—, `role_id NULL` → vacío) y hashear el payload en **UTF-16LE**, igual que `HASHBYTES('SHA2_256', <NVARCHAR>)`.
 
+## Matriz de permisos por rol (estado final v1.3.0)
+
+| Rol | Permisos |
+|-----|----------|
+| Admin | los 15 |
+| Profesor | `FORM_COMPLAINTS`, `FORM_REPORTS`, `FORM_ASISTENCIA_MGMT`, `FORM_EVAL_MGMT` (4) |
+| Coordinador | `FORM_CURSO_MGMT`, `FORM_INSCRIPCION_MGMT`, `FORM_ASISTENCIA_VIEW`, `FORM_COMPLAINTS`, `FORM_REPORTS`, `FORM_TICKET_MGMT`, `FORM_STUDENT_MGMT`, `FORM_REPORT_DETAIL` (8) |
+| Director | `FORM_REPORTS`, `FORM_REPORT_DETAIL` (2) |
+
 ## Usuarios de prueba
 
 | Usuario | Contraseña | Rol |
@@ -96,7 +73,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | `coord_maria`, `coord_carlos`, `coord_laura` | `123` | Coordinador |
 | `prof_garcia` a `prof_fernandez` (5) | `123` | Profesor |
 
-> Los alumnos **no son usuarios ni actores del sistema**: se gestionan en la tabla `students` (menú Administración → Alumnos, permiso `FORM_STUDENT_MGMT`). Tras la migración v1.5.0, los alumnos seed (`alumno_perez` a `alumno_soto`) quedaron migrados a `students` con los mismos IDs.
+> Los alumnos **no son usuarios ni actores del sistema**: se gestionan en la tabla `students` (menú Administración → Alumnos, permiso `FORM_STUDENT_MGMT`). Los 15 alumnos seed (`alumno_perez` a `alumno_soto`) quedaron migrados de `users` a `students` con los mismos IDs (`11`–`25`).
 
 ## Cursos de prueba (Ago-Dic 2026)
 
