@@ -43,20 +43,19 @@ Además, aplica un **Dígito Verificador Horizontal (DVH)** sobre la tabla `user
 
 ### Base de datos (`src/sql/`)
 
-Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`, más un script maestro consolidado. Detalle completo en [`src/sql/README.md`](src/sql/README.md).
+Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`. Detalle completo en [`src/sql/README.md`](src/sql/README.md).
 
-Ejecutar los scripts en orden:
+**Opción A (recomendada)** — un solo paso:
 
-1. `00_v0.0.1_PurgeDatabase.sql` — elimina todas las tablas (reinicialización).
-2. `01_v1.0.0_CreateTables.sql` — crea el esquema base (Roles, Permissions, Users, etc.).
-3. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, 24 usuarios.
-4. `03_v1.1.0_AulasCursosInscripciones.sql` — migración v1.1.0: crea Aulas, Cursos, CursoDocentes, CursoAlumnos, permisos y rol Coordinador.
-5. `04_v1.1.0_Rollback.sql` — (opcional) deshace la migración v1.1.0.
-6. `05_v1.1.0_Queries.sql` — consultas de ejemplo / verificación.
-7. `07_v1.2.0_AdminPassword.sql` — migración v1.2.0: contraseña `admin` para el usuario `admin` (exento de bloqueo, requiere 2FA).
-8. `08_v1.3.0_DVH.sql` — migración v1.3.0: agrega la columna `dvh` (Dígito Verificador Horizontal, SHA-256 por fila) a `users` y calcula el hash de todas las filas existentes.
+1. `05_v1.3.0_ScriptConsolidado.sql` — crea la base `DarioZubaray_TF` (si no existe) y la deja con el esquema y los datos finales (v1.3.0).
 
-> **Alternativa (recomendada):** `06_v1.1.0_ScriptConsolidado.sql` es el **script maestro** que crea la base `DarioZubaray_TF` (si no existe) y deja el esquema completo con todos los datos en un solo paso.
+**Opción B** — scripts por pasos:
+
+1. `01_v1.0.0_CreateTables.sql` — crea el esquema base (Roles, Permissions, Users, etc.).
+2. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, usuarios.
+3. `03_v1.3.0_Incremental.sql` — migración incremental a v1.3.0: aulas/cursos/inscripciones/asistencia, tickets, entidad `students`, `evaluations`/`grades`, permisos de informes y respaldo, y el DVH (columna `users.dvh` + backfill SHA-256). Idempotente; también aplica sobre bases legadas creadas con los scripts anteriores.
+
+**Rollback:** `04_v1.3.0_Rollback.sql` devuelve la base al estado v1 (destructivo: borra las tablas y permisos agregados; para volver a usarla, re-ejecutar `03_v1.3.0_Incremental.sql`).
 
 #### Datos de prueba
 

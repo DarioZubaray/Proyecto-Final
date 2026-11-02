@@ -365,13 +365,13 @@ Toda escritura de la fila **regenera su `dvh`**: `UserBLL` y `AuthBLL` invocan `
 3. El sysadmin (tras su **2FA**) abre el formulario **Auditoría de Integridad** (`IntegrityAuditForm`), donde puede *Editar* la fila o *Aceptar y regenerar* su hash; el sistema vuelve a escanear y solo ingresa cuando no quedan discrepancias (o si el sysadmin confirma continuar con alertas). También puede reabrirla desde el menú principal.
 4. Diseño **multi-tabla**: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un `IDvhTableVerifierBLL` por tabla (hoy `UserDvhVerifierBLL` para `users`); agregar una tabla nueva consiste en sumar un verificador.
 
-La migración `sql/08_v1.3.0_DVH.sql` agrega la columna y calcula el backfill con la misma expresión T-SQL (verificada contra la app por el test `Dvh_BackfillExpression_MatchesApplicationHash`).
+La migración `sql/03_v1.3.0_Incremental.sql` agrega la columna y calcula el backfill con la misma expresión T-SQL (verificada contra la app por el test `Dvh_BackfillExpression_MatchesApplicationHash`).
 
 ## Cómo ejecutar
 
 1. Tener instalado el **.NET SDK 10** (o **Visual Studio 2022 17.12+**, que lo incluye, para poder editar el diseñador WinForms).
 2. Configurar la cadena de conexión `cadenaConexion` (proyecto **GUI**, archivo `App.config`) apuntando a una instancia de SQL Server con la base `DarioZubaray_TF`.
-3. Ejecutar los scripts de [`sql/`](../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_CreateTables.sql`).
+3. Ejecutar los scripts de [`sql/`](../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_v1.0.0_CreateTables.sql`).
 4. Compilar y ejecutar:
 
 ```
