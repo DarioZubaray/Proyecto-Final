@@ -1,0 +1,13 @@
+graph LR
+    ADM["Administrador"]@{ shape: person, lbl: "Administrador" }
+    COO["Coordinador"]@{ shape: person, lbl: "Coordinador" }
+    PRO["Profesor"]@{ shape: person, lbl: "Profesor" }
+    DIR["Director"]@{ shape: person, lbl: "Director" }
+
+    CU02(["CU-02: Logout"])
+
+    %% Módulo Base / Sesión: todos los roles autenticados
+    ADM --> CU02
+    COO --> CU02
+    PRO --> CU02
+    DIR --> CU02

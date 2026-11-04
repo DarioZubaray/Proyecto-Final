@@ -1,7 +1,7 @@
 # Texto para el Word — Secciones 1, 2 y 3 (3ra entrega)
 
 > Pegar este texto en el documento Word reemplazando las secciones 1, 2 y 3 actuales.
-> Numeración según `indice-documentacion.txt`. Imágenes referenciadas en `docs/mermaid-live/`.
+> Numeración según `indice-documentacion.md`. Imágenes referenciadas en `docs/mermaid-live/`.
 
 ---
 
@@ -122,13 +122,13 @@ El alcance del sistema abarca los siguientes módulos:
 
 Diagramas de los procesos que el sistema soporta con los roles Administrador, Coordinador, Profesor y Director:
 
-- Mantenimiento de Aplicativo (ABM): ![](../mermaid-live/3.1.3.actividad-abm.png)
-- Inscripción a Cursos: ![](../mermaid-live/3.1.3.actividad-inscripcion.png)
-- Registro de Asistencias: ![](../mermaid-live/3.1.3.actividad-asistencia.png)
-- Gestión de Tickets de Reclamo: ![](../mermaid-live/3.1.3.actividad-tickets.png)
-- Registro de Evaluaciones y Notas: ![](../mermaid-live/3.1.3.actividad-evaluaciones.png)
-- Consulta de Rendimiento e Informes Personalizados: ![](../mermaid-live/3.1.3.actividad-informes.png)
-- Respaldo y Restauración de la Base de Datos: ![](../mermaid-live/3.1.3.actividad-respaldo.png)
+- Mantenimiento de Aplicativo (ABM): ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-abm.png)
+- Inscripción a Cursos: ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-inscripcion.png)
+- Registro de Asistencias: ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-asistencia.png)
+- Gestión de Tickets de Reclamo: ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-tickets.png)
+- Registro de Evaluaciones y Notas: ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-evaluaciones.png)
+- Consulta de Rendimiento e Informes Personalizados: ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-informes.png)
+- Respaldo y Restauración de la Base de Datos: ![](../mermaid-live/3. diagramas-actividad/3.1.3.actividad-respaldo.png)
 
 #### 3.1.4. Modelo Conceptual
 

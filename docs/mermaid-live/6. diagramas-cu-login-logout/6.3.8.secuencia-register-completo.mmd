@@ -1,0 +1,41 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE transporta los datos entre las capas
+    Note over Usuario,BD: CU-03 Register - flujo básico y flujos alternativos
+
+    Usuario->>GUI: Abre la aplicación sin usuarios registrados en la base de datos
+    GUI-->>Usuario: Muestra el formulario de registro de la cuenta administrador
+    Usuario->>GUI: Completa "Usuario", "Contraseña" y "Reingreso Contraseña"
+    Usuario->>GUI: Selecciona "Idioma" y "Tema"
+    Usuario->>GUI: Presiona "Registrarse"
+
+    alt Contraseña vacía o reingreso no coincide
+        Note over GUI: La GUI valida usuario, contraseña y reingreso
+        GUI-->>Usuario: Muestra "La contraseña es obligatoria." o "Las contraseñas no coinciden." y devuelve el foco al campo observado
+    else Datos correctos
+        GUI->>BLL: Save(user: UserBE): bool
+        BLL->>MPP: Save(user: UserBE): bool
+        MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+        DAL->>BD: Alta del usuario administrador (rol Admin)
+        alt Usuario ya registrado en la base de datos
+            BD-->>DAL: 0 filas afectadas o excepción
+            DAL-->>MPP: false o excepción
+            MPP-->>BLL: false o excepción
+            BLL-->>GUI: false o excepción
+            GUI-->>Usuario: Muestra "El usuario ya existe." y mantiene el formulario abierto
+        else Operación exitosa
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Usuario: Muestra "Cuenta creada exitosamente." y avanza a la pantalla de inicio
+        end
+    end

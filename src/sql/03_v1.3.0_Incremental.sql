@@ -731,28 +731,14 @@ BEGIN
             WHERE rp.[role_id] = 1 AND rp.[permission_id] = p.[id]
         );
 
-        -- Coordinador (4): FORM_REPORTS (CU-11) y FORM_REPORT_DETAIL (CU-12)
-        IF NOT EXISTS (
-            SELECT 1 FROM [dbo].[role_permissions] rp
-            INNER JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
-            WHERE rp.[role_id] = 4 AND p.[name] = 'FORM_REPORTS'
-        )
-        BEGIN
-            INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
-            SELECT 4, p.[id] FROM [dbo].[permissions] p WHERE p.[name] = 'FORM_REPORTS';
-        END;
+        -- Coordinador (4): sin reportes (CU-13 y CU-14 son de Admin y Director)
+        DELETE rp
+        FROM [dbo].[role_permissions] rp
+        INNER JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
+        WHERE rp.[role_id] = 4
+          AND p.[name] IN ('FORM_REPORTS', 'FORM_REPORT_DETAIL');
 
-        IF NOT EXISTS (
-            SELECT 1 FROM [dbo].[role_permissions] rp
-            INNER JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
-            WHERE rp.[role_id] = 4 AND p.[name] = 'FORM_REPORT_DETAIL'
-        )
-        BEGIN
-            INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
-            SELECT 4, p.[id] FROM [dbo].[permissions] p WHERE p.[name] = 'FORM_REPORT_DETAIL';
-        END;
-
-        -- Director (5): consulta de reportes (CU-11 y CU-12)
+        -- Director (5): consulta de reportes (CU-13 y CU-14)
         IF NOT EXISTS (
             SELECT 1 FROM [dbo].[role_permissions] rp
             INNER JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
@@ -773,23 +759,12 @@ BEGIN
             SELECT 5, p.[id] FROM [dbo].[permissions] p WHERE p.[name] = 'FORM_REPORT_DETAIL';
         END;
 
-        -- Profesor (2): FORM_REPORTS (solo sus cursos)
-        IF NOT EXISTS (
-            SELECT 1 FROM [dbo].[role_permissions] rp
-            INNER JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
-            WHERE rp.[role_id] = 2 AND p.[name] = 'FORM_REPORTS'
-        )
-        BEGIN
-            INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
-            SELECT 2, p.[id] FROM [dbo].[permissions] p WHERE p.[name] = 'FORM_REPORTS';
-        END;
-
-        -- Profesor (2): sin FORM_REPORT_DETAIL (solo Coordinador y Director)
+        -- Profesor (2): sin reportes (CU-13 y CU-14 son de Admin y Director)
         DELETE rp
         FROM [dbo].[role_permissions] rp
         INNER JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
         WHERE rp.[role_id] = 2
-          AND p.[name] = 'FORM_REPORT_DETAIL';
+          AND p.[name] IN ('FORM_REPORTS', 'FORM_REPORT_DETAIL');
 
         -- =============================================
         -- 9. v1.8.0: respaldo y restauracion

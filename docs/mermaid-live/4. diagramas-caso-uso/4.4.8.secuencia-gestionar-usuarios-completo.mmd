@@ -1,0 +1,147 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE y RoleBE transportan los datos entre capas
+    Note over Administrador,BD: CU-04 Gestionar Usuarios - flujos básicos y alternativos
+
+    Administrador->>GUI: Elige "Usuarios" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL->>MPP: FindAll(): List<UserBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>GUI: Presiona el botón "Nuevo"
+    GUI->>BLL: FindAll(): List<RoleBE>
+    BLL-->>GUI: List<RoleBE>
+    GUI-->>Administrador: Muestra el formulario "Nuevo Usuario" con los campos y la lista de roles
+
+    Administrador->>GUI: Completa "Nombre de usuario" y presiona "Guardar"
+    alt Nombre de usuario vacío
+        Note over GUI: ValidateInputs() evalúa en orden: nombre y contraseña (alta)
+        GUI-->>Administrador: Muestra "El nombre de usuario es obligatorio. (Código: VAL-001)" y devuelve el foco al campo
+    else Nombre informado
+        Administrador->>GUI: Completa "Contraseña" y presiona "Guardar"
+        alt Contraseña vacía (alta)
+            GUI-->>Administrador: Muestra "La contraseña es obligatoria. (Código: VAL-002)" y devuelve el foco al campo
+        else Datos válidos
+            Administrador->>GUI: Selecciona "Rol" y presiona "Guardar"
+            GUI->>BLL: Save(user: UserBE): bool
+            alt La operación es rechazada por la capa de negocio
+                Note over BLL: UserBLL rechaza cambios protegidos del usuario admin
+                BLL-->>GUI: false
+            else Operación correcta
+                BLL->>MPP: Save(user: UserBE): bool
+                MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                DAL->>BD: Registro del usuario
+                BD-->>DAL: 1 fila afectada
+                DAL-->>MPP: true
+                MPP-->>BLL: true
+                BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+                MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                DAL->>BD: Registro del dígito verificador (DVH)
+                BD-->>DAL: 1 fila afectada
+                DAL-->>MPP: true
+                MPP-->>BLL: true
+                BLL-->>GUI: true
+                GUI-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+                GUI->>BLL: FindAll(): List<UserBE>
+                BLL-->>GUI: List<UserBE>
+                GUI-->>Administrador: Vuelve a la grilla con el usuario nuevo incluido
+            end
+        end
+    end
+
+    Administrador->>GUI: Presiona "Editar" sin seleccionar un usuario
+    GUI-->>Administrador: Muestra "Seleccione un usuario de la grilla. (Código: VAL-005)"
+
+    Administrador->>GUI: Selecciona el usuario admin y presiona "Editar"
+    Note over GUI: El formulario deja el nombre solo lectura y deshabilita rol y estado
+    GUI-->>Administrador: Muestra el formulario "Editar Usuario" con los campos de rol y estado deshabilitados
+    Administrador->>GUI: Modifica el nombre del usuario admin y presiona "Guardar"
+    GUI-->>Administrador: Muestra "El nombre del usuario administrador no puede modificarse. (Código: VAL-007)" y devuelve el foco al campo
+    Administrador->>GUI: Restaura el nombre original y presiona "Guardar"
+    GUI->>BLL: Save(user: UserBE): bool
+    BLL->>MPP: Save(user: UserBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Actualización del usuario
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro del dígito verificador (DVH)
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+
+    Administrador->>GUI: Presiona "Eliminar" sin seleccionar un usuario
+    GUI-->>Administrador: Muestra "Seleccione un usuario de la grilla. (Código: VAL-005)"
+
+    Administrador->>GUI: Selecciona el usuario admin y presiona "Eliminar"
+    GUI->>BLL: Delete(user: UserBE): bool
+    alt El usuario a eliminar es el admin
+        Note over BLL: UserBLL.Delete rechaza el usuario protegido
+        BLL-->>GUI: false
+        GUI-->>Administrador: Muestra "El usuario administrador no puede ser eliminado. (Código: BIZ-005)"
+    else Usuario no protegido
+        GUI-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el usuario?"
+        alt El usuario presiona "No"
+            Note over GUI: No se realiza ningún cambio
+        else El usuario presiona "Sí"
+            GUI->>BLL: Delete(user: UserBE): bool
+            BLL->>MPP: Delete(user: UserBE): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Baja lógica del usuario (is_active = 0)
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL->>MPP: FindById(user: UserBE): UserBE
+            MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+            DAL->>BD: Consulta del usuario por id
+            BD-->>DAL: Fila resultante
+            DAL-->>MPP: DataTable
+            MPP-->>BLL: UserBE
+            BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Registro del dígito verificador (DVH)
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Administrador: Muestra "Usuario eliminado correctamente."
+            GUI->>BLL: FindAll(): List<UserBE>
+            BLL-->>GUI: List<UserBE>
+            GUI-->>Administrador: Actualiza la grilla
+        end
+    end
+
+    Administrador->>GUI: Completa el campo de búsqueda y presiona "Buscar"
+    alt Texto de búsqueda vacío
+        GUI->>BLL: FindAll(): List<UserBE>
+        BLL-->>GUI: List<UserBE>
+        GUI-->>Administrador: Muestra la grilla completa de usuarios
+    else Texto de búsqueda informado
+        GUI->>BLL: FindByUserName(userName: string): List<UserBE>
+        BLL->>MPP: FindByUserName(userName: string): List<UserBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta parametrizada por nombre parcial
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<UserBE>
+        BLL-->>GUI: List<UserBE>
+        GUI-->>Administrador: Muestra en la grilla los usuarios coincidentes
+    end

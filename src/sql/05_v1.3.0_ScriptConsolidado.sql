@@ -292,15 +292,15 @@ BEGIN TRY
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 1, id FROM [dbo].[permissions];
 
-    -- Profesor (2): operador de asistencia/evaluaciones/quejas/reportes
+    -- Profesor (2): operador de asistencia/evaluaciones/quejas
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 2, id FROM [dbo].[permissions] WHERE name IN
-    ('FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_ASISTENCIA_MGMT', 'FORM_EVAL_MGMT');
+    ('FORM_COMPLAINTS', 'FORM_ASISTENCIA_MGMT', 'FORM_EVAL_MGMT');
 
-    -- Coordinador (4): tareas diarias (sin ABM de usuarios/roles, que son de Admin)
+    -- Coordinador (4): tareas diarias (sin ABM de usuarios/roles ni reportes)
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 4, id FROM [dbo].[permissions] WHERE name IN
-    ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_VIEW', 'FORM_COMPLAINTS', 'FORM_REPORTS', 'FORM_TICKET_MGMT', 'FORM_STUDENT_MGMT', 'FORM_REPORT_DETAIL');
+    ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_VIEW', 'FORM_COMPLAINTS', 'FORM_TICKET_MGMT', 'FORM_STUDENT_MGMT');
 
     -- Director (5): solo consulta de reportes
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
