@@ -36,7 +36,7 @@ namespace BLL.Tests
             });
             var supervisor = new RoleBE(2, "Supervisor", new List<PermissionBE>
             {
-                new PermissionBE(2, "FORM_COMPLAINTS", "Reclamos", null)
+                new PermissionBE(2, "FORM_STUDENT_MGMT", "Alumnos", null)
             });
 
             _mockRoleMPP.Setup(m => m.FindById(1)).Returns(admin);
@@ -49,7 +49,7 @@ namespace BLL.Tests
             Assert.AreEqual(1, tree.Id);
             Assert.AreEqual("Admin", tree.Name);
             Assert.IsTrue(tree.HasPermission("FORM_USER_MGMT"));
-            Assert.IsTrue(tree.HasPermission("FORM_COMPLAINTS"));
+            Assert.IsTrue(tree.HasPermission("FORM_STUDENT_MGMT"));
             Assert.IsFalse(tree.HasPermission("FORM_REPORTS"));
         }
 

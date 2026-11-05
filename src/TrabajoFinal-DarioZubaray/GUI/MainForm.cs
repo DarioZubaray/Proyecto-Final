@@ -50,8 +50,8 @@ namespace TrabajoFinal_DarioZubaray
             rolesToolStripMenuItem.Text = Resources.Main_MenuRoles;
             alumnosToolStripMenuItem.Text = Resources.Main_MenuStudents;
             académicoToolStripMenuItem.Text = Resources.Main_MenuAcademic;
-            cursosToolStripMenuItem.Text = Resources.Main_MenuCourses;
-            inscripcionesToolStripMenuItem.Text = Resources.Main_MenuEnrollments;
+            cursosToolStripMenuItem1.Text = Resources.Main_MenuCourses;
+            inscripcionesToolStripMenuItem1.Text = Resources.Main_MenuEnrollments;
             asistenciaToolStripMenuItem.Text = Resources.Main_MenuAttendance;
             evaluacionesToolStripMenuItem.Text = Resources.Main_MenuEvaluations;
             reportesToolStripMenuItem.Text = Resources.Main_MenuReports;
@@ -70,6 +70,18 @@ namespace TrabajoFinal_DarioZubaray
         #region Métodos
         private void ConfigureMenuVisibility()
         {
+            bool canPreferences = EnsurePermission("FORM_PREFERENCES");
+            bool canChangePassword = EnsurePermission("FORM_CHANGE_PASS");
+            bool canViewHistory = EnsurePermission("FORM_ACTIVITY_HISTORY");
+            bool canLogout = EnsurePermission("FORM_LOGOUT");
+            bool canAbout = EnsurePermission("FORM_ABOUT");
+
+            archivoToolStripMenuItem.Visible = canPreferences || canChangePassword || canViewHistory || canLogout;
+            preferenciasToolStripMenuItem.Visible = canPreferences;
+            cambiarContraseñaToolStripMenuItem.Visible = canChangePassword;
+            historialActividadToolStripMenuItem.Visible = canViewHistory;
+            cerrarSesiónToolStripMenuItem.Visible = canLogout;
+
             administraciónToolStripMenuItem.Visible = _session != null
                 && (_session.HasPermission("FORM_USER_MGMT")
                     || _session.HasPermission("FORM_STUDENT_MGMT")
@@ -86,7 +98,8 @@ namespace TrabajoFinal_DarioZubaray
             integridadToolStripMenuItem.Visible = UserBLL.IsSysAdmin(_user);
             respaldoToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_BACKUP_MGMT");
-            soporteToolStripMenuItem.Visible = _session != null;
+            soporteToolStripMenuItem.Visible = _session != null
+                && _session.HasPermission("FORM_TICKET_CREATE");
 
             bool canManageCourses = _session != null && _session.HasPermission("FORM_CURSO_MGMT");
             bool canViewEnrollments = _session != null && _session.HasPermission("FORM_INSCRIPCION_MGMT");
@@ -97,13 +110,21 @@ namespace TrabajoFinal_DarioZubaray
             bool canManageReportDetail = _session != null && _session.HasPermission("FORM_REPORT_DETAIL");
 
             académicoToolStripMenuItem.Visible = canManageCourses || canViewEnrollments || canRegisterAttendance || canViewAttendance || canManageEvaluations;
-            cursosToolStripMenuItem.Visible = canManageCourses;
-            inscripcionesToolStripMenuItem.Visible = canViewEnrollments;
+            cursosToolStripMenuItem1.Visible = canManageCourses;
+            inscripcionesToolStripMenuItem1.Visible = canViewEnrollments;
             asistenciaToolStripMenuItem.Visible = canRegisterAttendance || canViewAttendance;
             evaluacionesToolStripMenuItem.Visible = canManageEvaluations;
             reportesToolStripMenuItem.Visible = canViewReports || canManageReportDetail;
             rendimientoToolStripMenuItem.Visible = canViewReports;
             informesToolStripMenuItem.Visible = canManageReportDetail;
+
+            ayudaToolStripMenuItem.Visible = canAbout;
+            acercaDeToolStripMenuItem.Visible = canAbout;
+        }
+
+        private bool EnsurePermission(string permission)
+        {
+            return _session != null && _session.HasPermission(permission);
         }
 
         private void UpdateFooter()
@@ -149,6 +170,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private void cerrarSesiónToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_LOGOUT"))
+            {
+                return;
+            }
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -157,41 +183,81 @@ namespace TrabajoFinal_DarioZubaray
         #region MenuItem_Click
         private void historialActividadToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_ACTIVITY_HISTORY"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new ActivityHistoryForm(_user));
         }
 
         private void preferenciasToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_PREFERENCES"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new PreferencesForm(_user, this), "PreferencesForm");
         }
 
         private void usuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_USER_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new UserManagementForm(_user), "UserManagementForm");
         }
 
         private void rolesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_ROLE_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new RoleManagementForm(_user), "RoleManagementForm");
         }
 
         private void alumnosToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_STUDENT_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new StudentManagementForm(_user), "StudentManagementForm");
         }
 
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_CURSO_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new ClassroomManagementForm(_user), "ClassroomManagementForm");
         }
 
         private void ticketsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_TICKET_CREATE"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new TicketManagementForm(_user), "TicketManagementForm");
         }
 
         private void integridadToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!UserBLL.IsSysAdmin(_user))
+            {
+                return;
+            }
+
             LogFormAccess("IntegrityAuditForm");
 
             using (var form = new IntegrityAuditForm(_user))
@@ -200,23 +266,34 @@ namespace TrabajoFinal_DarioZubaray
             }
         }
 
-        private void cursosToolStripMenuItem_Click(object sender, EventArgs e)
+        private void cursosToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_CURSO_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new CourseManagementForm(_user), "CourseManagementForm");
         }
 
-        private void inscripcionesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void inscripcionesToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_INSCRIPCION_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new EnrollmentManagementForm(_user), "EnrollmentManagementForm");
+
         }
 
         private void asistenciaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_session.HasPermission("FORM_ASISTENCIA_MGMT"))
+            if (EnsurePermission("FORM_ASISTENCIA_MGMT"))
             {
                 ShowChildForm(() => new AttendanceForm(_user), "AttendanceForm");
             }
-            else if (_session.HasPermission("FORM_ASISTENCIA_VIEW"))
+            else if (EnsurePermission("FORM_ASISTENCIA_VIEW"))
             {
                 ShowChildForm(() => new AttendanceViewForm(_user), "AttendanceViewForm");
             }
@@ -224,31 +301,61 @@ namespace TrabajoFinal_DarioZubaray
 
         private void evaluacionesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_EVAL_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new EvaluationForm(_user), "EvaluationForm");
         }
 
         private void rendimientoToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_REPORTS"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new PerformanceForm(_user), "PerformanceForm");
         }
 
         private void informesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_REPORT_DETAIL"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new ReportForm(_user), "ReportForm");
         }
 
         private void respaldoToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_BACKUP_MGMT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new BackupForm(_user), "BackupForm");
         }
 
         private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_CHANGE_PASS"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new ChangePasswordForm(_user), "ChangePasswordForm");
         }
 
         private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!EnsurePermission("FORM_ABOUT"))
+            {
+                return;
+            }
+
             ShowChildForm(() => new AboutForm(_user), "AboutForm");
         }
 
@@ -295,5 +402,6 @@ namespace TrabajoFinal_DarioZubaray
             }
         }
         #endregion
+
     }
 }

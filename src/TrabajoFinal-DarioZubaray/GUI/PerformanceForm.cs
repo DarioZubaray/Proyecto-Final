@@ -13,7 +13,6 @@ namespace TrabajoFinal_DarioZubaray
     public partial class PerformanceForm : Form
     {
         #region Propiedades
-        private const int ROLE_PROFESOR = 2;
         private readonly UserBE _currentUser;
         private readonly ICourseBLL _courseBLL;
         private readonly IReportBLL _reportBLL;
@@ -42,9 +41,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void LoadCourses()
         {
-            List<CourseBE> courses = _currentUser.RoleId == ROLE_PROFESOR
-                ? _courseBLL.FindByTeacherId(_currentUser.Id)
-                : _courseBLL.FindAll();
+            List<CourseBE> courses = _courseBLL.FindAll();
 
             cboCourse.DataSource = null;
             cboCourse.DataSource = courses;
@@ -89,7 +86,7 @@ namespace TrabajoFinal_DarioZubaray
                     line.StudentName,
                     line.AttendancePercent.HasValue ? line.AttendancePercent.Value.ToString() : "—",
                     line.GradesCount > 0 ? line.GradesCount.ToString() : "—",
-                    line.Average.HasValue ? line.Average.Value.ToString("0.##") : "—");
+                    line.Average.HasValue ? line.Average.Value.ToString("0.00") : "—");
             }
 
             dgvPerformance.DataSource = dt;

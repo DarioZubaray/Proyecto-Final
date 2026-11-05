@@ -96,6 +96,7 @@ namespace TrabajoFinal_DarioZubaray
                 _user.RetriesCount = 0;
                 _user.CreatedAt = DateTime.Now;
                 _user.Language = "es";
+                _user.Theme = "System";
             }
 
             _user.LastUpdate = DateTime.Now;

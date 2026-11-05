@@ -134,6 +134,45 @@ namespace MPP.Tests
             Assert.IsFalse(exists);
         }
 
+        [TestMethod]
+        public void ExistsScheduleOverlap_Overlap_ReturnsTrue()
+        {
+            int courseId = CreateTestCourse();
+            int studentId = GetStudentId();
+            _enrollmentMPP.Enroll(courseId, studentId);
+
+            bool result = _enrollmentMPP.ExistsScheduleOverlap(
+                studentId, 1, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0), 0);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ExistsScheduleOverlap_NoOverlap_ReturnsFalse()
+        {
+            int courseId = CreateTestCourse();
+            int studentId = GetStudentId();
+            _enrollmentMPP.Enroll(courseId, studentId);
+
+            bool result = _enrollmentMPP.ExistsScheduleOverlap(
+                studentId, 3, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0), 0);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ExistsScheduleOverlap_ExcludesGivenCourse_ReturnsFalse()
+        {
+            int courseId = CreateTestCourse();
+            int studentId = GetStudentId();
+            _enrollmentMPP.Enroll(courseId, studentId);
+
+            bool result = _enrollmentMPP.ExistsScheduleOverlap(
+                studentId, 1, new TimeSpan(8, 0, 0), new TimeSpan(12, 0, 0), courseId);
+
+            Assert.IsFalse(result);
+        }
+
         private int GetStudentId()
         {
             using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_connectionString))

@@ -76,7 +76,7 @@ namespace MPP.Tests
             Assert.IsNotNull(perms);
             Assert.AreEqual(2, perms.Count);
             Assert.IsTrue(perms.Exists(p => p.Name == "FORM_USER_MGMT"));
-            Assert.IsTrue(perms.Exists(p => p.Name == "FORM_COMPLAINTS"));
+            Assert.IsTrue(perms.Exists(p => p.Name == "FORM_STUDENT_MGMT"));
         }
 
         [TestMethod]
@@ -85,7 +85,7 @@ namespace MPP.Tests
             List<PermissionBE> perms = _roleMPP.GetPermissionsByRoleId(1);
 
             Assert.IsTrue(perms.Exists(p => p.Name == "FORM_USER_MGMT" && p.IsSystem));
-            Assert.IsTrue(perms.Exists(p => p.Name == "FORM_COMPLAINTS" && !p.IsSystem));
+            Assert.IsTrue(perms.Exists(p => p.Name == "FORM_STUDENT_MGMT" && !p.IsSystem));
         }
 
         [TestMethod]
@@ -153,7 +153,7 @@ namespace MPP.Tests
             List<PermissionBE> perms = _roleMPP.GetPermissionsByRoleId(1);
 
             Assert.AreEqual(1, perms.Count);
-            Assert.AreEqual("FORM_COMPLAINTS", perms[0].Name);
+            Assert.AreEqual("FORM_STUDENT_MGMT", perms[0].Name);
         }
 
         [TestMethod]

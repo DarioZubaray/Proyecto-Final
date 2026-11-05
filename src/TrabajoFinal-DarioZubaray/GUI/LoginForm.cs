@@ -169,7 +169,12 @@ namespace TrabajoFinal_DarioZubaray
 
                 AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
                 SessionManagerBLL.RemoveSession(result.User.Id);
-                LogLogout(result.User.Id, result.User.UserName);
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    LogLogout(result.User.Id, result.User.UserName);
+                }
+
                 CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
                 ApplyResources();
                 ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);

@@ -15,6 +15,7 @@ namespace MPP.Interfaces
         bool Save(UserBE user);
         UserBE FindById(UserBE user);
         List<UserBE> FindAll();
+        List<UserBE> FindAllActives();
         List<UserBE> FindByUserName(string userName);
         bool UpdateLanguage(int userId, string language);
         bool UpdateTheme(int userId, string theme);

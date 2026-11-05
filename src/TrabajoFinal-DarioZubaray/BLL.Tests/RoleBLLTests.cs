@@ -125,7 +125,7 @@ namespace BLL.Tests
             {
                 new PermissionBE(1, "FORM_USER_MGMT", "Usuarios", null, isSystem: true),
                 new PermissionBE(2, "FORM_ROLE_MGMT", "Roles", null, isSystem: true),
-                new PermissionBE(3, "FORM_COMPLAINTS", "Reclamos", null, isSystem: false)
+                new PermissionBE(3, "FORM_STUDENT_MGMT", "Alumnos", null, isSystem: false)
             };
             _mockRoleMPP.Setup(m => m.GetPermissionsByRoleId(10)).Returns(currentPerms);
 
@@ -165,7 +165,7 @@ namespace BLL.Tests
         {
             var currentPerms = new List<PermissionBE>
             {
-                new PermissionBE(3, "FORM_COMPLAINTS", "Reclamos", null, isSystem: false)
+                new PermissionBE(3, "FORM_STUDENT_MGMT", "Alumnos", null, isSystem: false)
             };
             _mockRoleMPP.Setup(m => m.GetPermissionsByRoleId(10)).Returns(currentPerms);
 

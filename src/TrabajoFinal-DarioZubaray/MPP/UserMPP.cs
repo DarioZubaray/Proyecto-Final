@@ -103,6 +103,17 @@ namespace MPP
             return FindMany(query);
         }
 
+        public List<UserBE> FindAllActives()
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at,
+                                   language, theme, role_id, dvh
+                            FROM users
+                            WHERE is_active = 1";
+
+            return FindMany(query);
+        }
+
         public List<UserBE> FindByUserName(string userName)
         {
             string query = @"SELECT id, user_name, password_hash, is_active,

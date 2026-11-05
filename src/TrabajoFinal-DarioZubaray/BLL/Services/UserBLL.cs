@@ -87,6 +87,11 @@ namespace BLL.Services
             return _userMPP.FindAll();
         }
 
+        public List<UserBE> FindAllActives()
+        {
+            return _userMPP.FindAllActives();
+        }
+
         public List<UserBE> FindByUserName(string userName)
         {
             return _userMPP.FindByUserName(userName);

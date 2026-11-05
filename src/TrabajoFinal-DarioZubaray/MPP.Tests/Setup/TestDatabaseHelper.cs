@@ -295,7 +295,7 @@ namespace MPP.Tests.Setup
                     INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
                         ('FORM_USER_MGMT', 'Usuarios', 'Gestión de usuarios', 1),
                         ('FORM_ROLE_MGMT', 'Roles', 'Gestión de roles', 1),
-                        ('FORM_COMPLAINTS', 'Reclamos', 'Gestión de reclamos', 0),
+                        ('FORM_STUDENT_MGMT', 'Alumnos', 'Gestión de alumnos', 0),
                         ('FORM_REPORTS', 'Reportes', 'Reportes', 0);
 
                     INSERT INTO [dbo].[role_permissions] (role_id, permission_id) VALUES

@@ -118,15 +118,20 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `MainForm` | Menú principal (MDI). Muestra el usuario/rol en el pie y **oculta o muestra opciones según los permisos** del árbol Composite de la sesión. |
 | `UserManagementForm` / `UserForm` | ABM de usuarios: listado, búsqueda, alta, edición y baja lógica. |
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
-| `AulaManagementForm` / `AulaForm` | ABM de aulas: listado, búsqueda, alta, edición y baja lógica. |
-| `CursoManagementForm` / `CursoForm` | ABM de cursos: listado, búsqueda, alta, edición y baja lógica. Incluye selección de docentes (N:N) y validación de disponibilidad de aula. Si no hay aulas creadas, muestra un mensaje inline. |
-| `InscripcionManagementForm` / `InscripcionForm` | ABM de inscripciones (admin) / autoinscripción de alumnos. Valida traslape de horario y duplicado. |
-| `AsistenciaForm` / `AsistenciaViewForm` | Registro de asistencia (docente) / visualización de asistencia (alumno). |
+| `ClassroomManagementForm` / `ClassroomForm` | ABM de aulas: listado, búsqueda, alta, edición y baja lógica. |
+| `CourseManagementForm` / `CourseForm` | ABM de cursos: listado, búsqueda, alta, edición y baja lógica. Incluye selección de docentes (N:N) y validación de disponibilidad de aula. Si no hay aulas creadas, muestra un mensaje inline. |
+| `EnrollmentManagementForm` | Inscripciones: el Coordinador inscribe alumnos a cursos activos y puede desinscribir. Valida duplicado y traslape de horario. |
+| `AttendanceForm` / `AttendanceViewForm` | Registro de asistencia (docente) / visualización de asistencia (alumno). |
 | `PreferencesForm` | Cambio de idioma y tema; actualiza la sesión y refresca los recursos de la UI. También persiste lo seleccionado en `AppPreferencesBLL`. |
 | `ChangePasswordForm` | Cambio de contraseña validando la actual. |
 | `ActivityHistoryForm` | **Historial de Actividad** (dentro del menú Archivo): lista paginada de las actividades del usuario autenticado. |
 | `IntegrityAuditForm` | **Auditoría de Integridad (DVH)**: grilla de filas alteradas (tabla, id, hash almacenado vs recalculado) con acciones *Editar*, *Aceptar y regenerar*, *Refrescar* y *Cerrar*. Accesible desde el login (si el escaneo falló) y desde el menú principal (solo sysadmin). |
-| `TestComplaintsForm` / `TestReportsForm` | Formularios de ejemplo (quejas/reportes) usados por los permisos `FORM_COMPLAINTS` y `FORM_REPORTS`. |
+| `StudentManagementForm` / `StudentForm` | ABM de alumnos (entidad `students`; no son usuarios del sistema). |
+| `TicketManagementForm` / `TicketForm` | Tickets de soporte: alta (Coordinador y Profesor) y listado con cierre (Coordinador). |
+| `EvaluationForm` | Evaluaciones y notas de los cursos del docente. |
+| `PerformanceForm` / `ReportForm` | Reportes: rendimiento académico por curso e informes personalizados con exportación CSV. |
+| `BackupForm` | Respaldo y restauración de la base de datos. |
+| `TwoFactorForm` | Segundo factor de autenticación (código 2FA) para el usuario `admin`. |
 | `AboutForm` | Diálogo Acerca de. |
 
 ## Patrones de diseño destacados
@@ -180,7 +185,7 @@ public static class ServiceLocatorBLL
 ```
 
 - Garantiza **una sola instancia** de cada servicio de persistencia durante todo el ciclo de vida de la aplicación (*singleton*).
-- **Descarga la responsabilidad** de instanciación de las formas de la GUI: `LoginForm`, `UserForm`, `UserManagementForm`, `RoleManagementForm`, `ChangePasswordForm`, `PreferencesForm`, `ClassroomForm`, `ClassroomManagementForm`, `CourseForm`, `CourseManagementForm`, `EnrollmentForm`, `EnrollmentManagementForm`, `AttendanceForm` y `AttendanceViewForm` obtienen sus servicios a través de `ServiceLocatorBLL`.
+- **Descarga la responsabilidad** de instanciación de las formas de la GUI: `LoginForm`, `UserForm`, `UserManagementForm`, `RoleManagementForm`, `ChangePasswordForm`, `PreferencesForm`, `ClassroomForm`, `ClassroomManagementForm`, `CourseForm`, `CourseManagementForm`, `EnrollmentManagementForm`, `AttendanceForm` y `AttendanceViewForm` obtienen sus servicios a través de `ServiceLocatorBLL`.
 
 ### 3) Multiton — `SessionManagerBLL`
 
@@ -311,9 +316,9 @@ Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón
 | Prefijo | Dominio | Códigos |
 |---------|---------|---------|
 | `DB-` | `Database` | `Unavailable DB-001`, `Configuration DB-002`, `QueryFailed DB-003` |
-| `AUTH-` | `Auth` | `RequiredFields AUTH-001`, `InvalidCredentials AUTH-002`, `UserBlocked AUTH-003`, `MaxRetriesExceeded AUTH-004`, `RetryAttemptsLeft AUTH-005` |
-| `VAL-` | `Validation` | `UsernameRequired VAL-001`, `PasswordRequired VAL-002`, `PasswordsMismatch VAL-003`, `NameRequired VAL-004`, `NoSelection VAL-005`, `LanguageThemeRequired VAL-006` |
-| `BIZ-` | `Business` | `RoleHasUsers BIZ-001`, `InvalidCurrentPassword BIZ-002` |
+| `AUTH-` | `Auth` | `RequiredFields AUTH-001`, `InvalidCredentials AUTH-002`, `UserBlocked AUTH-003`, `MaxRetriesExceeded AUTH-004`, `RetryAttemptsLeft AUTH-005`, `TwoFactorInvalid AUTH-006` |
+| `VAL-` | `Validation` | `UsernameRequired VAL-001`, `PasswordRequired VAL-002`, `PasswordsMismatch VAL-003`, `NameRequired VAL-004`, `NoSelection VAL-005`, `LanguageThemeRequired VAL-006`, `AdminUsernameLocked VAL-007` |
+| `BIZ-` | `Business` | `RoleHasUsers BIZ-001`, `InvalidCurrentPassword BIZ-002`, `TraslapeHorario BIZ-003`, `YaInscripto BIZ-004`, `AdminProtected BIZ-005`, `TicketSubjectRequired BIZ-006`, `TicketDescriptionRequired BIZ-007`, `TicketAlreadyClosed BIZ-008`, `StudentFirstNameRequired BIZ-009`, `StudentLastNameRequired BIZ-010`, `StudentDocumentRequired BIZ-011`, `StudentDocumentDuplicated BIZ-012`, `EvaluationNameRequired BIZ-013`, `CourseNotOwnedByTeacher BIZ-014`, `GradeOutOfRange BIZ-015` |
 | `INT-` | `Integrity` | `Blocked INT-001`, `ResolveFailed INT-002`, `ScanFailed INT-003` |
 | `GEN-` | `General` | `Unhandled GEN-001` |
 
@@ -330,9 +335,12 @@ Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón
 | `LoginForm` / `AuthBLL` | `DB-001`, `AUTH-001` a `AUTH-006` |
 | `ChangePasswordForm` / `UserBLL.ChangePassword` | `VAL-002`, `VAL-003`, `BIZ-002` |
 | `UserForm` | `VAL-001`, `VAL-002` |
-| `UserManagementForm` | `VAL-005` (+ título `Common_Confirm`) |
+| `UserManagementForm` | `VAL-005`, `BIZ-005` (+ título `Common_Confirm`) |
 | `RoleManagementForm` | `VAL-004`, `VAL-005`, `BIZ-001` |
 | `PreferencesForm` | `VAL-006` |
+| `StudentForm` | `BIZ-009` a `BIZ-011` |
+| `TicketForm` | `BIZ-006`, `BIZ-007` |
+| `EvaluationForm` / `EvaluationBLL` | `BIZ-013` a `BIZ-015` |
 | `LoginForm` / `IntegrityBLL` (auditoría DVH) | `INT-001` a `INT-003` |
 
 ### Excepciones inesperadas (handler global)
@@ -379,7 +387,7 @@ dotnet build TrabajoFinal-DarioZubaray.slnx -c Debug
 dotnet run --project GUI\GUI.csproj
 ```
 
-Usuarios de prueba: `admin` / `123` (rol Admin), `pepe` / `123` (rol Alumno).
+Usuarios de prueba: `admin` / `admin` (rol Admin, código 2FA `123`), `dario` / `123` (Admin), `coord_maria` / `123` (Coordinador), `prof_garcia` / `123` (Profesor). La lista completa está en `src/sql/README.md`.
 
 El **acceso a datos** usa `Microsoft.Data.SqlClient` (SQL Server) y `System.Configuration.ConfigurationManager` para leer `cadenaConexion` desde el `App.config`.
 

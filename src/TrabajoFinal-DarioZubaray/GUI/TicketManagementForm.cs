@@ -28,6 +28,7 @@ namespace TrabajoFinal_DarioZubaray
         #region Propiedades
         private readonly UserBE _currentUser;
         private readonly ITicketBLL _ticketBLL;
+        private readonly bool _canCreate;
         private readonly bool _canManage;
         #endregion
 
@@ -39,10 +40,11 @@ namespace TrabajoFinal_DarioZubaray
             _ticketBLL = ServiceLocatorBLL.CreateTicketBLL();
 
             SessionManagerBLL session = SessionManagerBLL.GetInstance(user.Id);
-            _canManage = UserBLL.IsSysAdmin(user)
-                || (session != null && session.HasPermission("FORM_TICKET_MGMT"));
+            _canCreate = session != null && session.HasPermission("FORM_TICKET_CREATE");
+            _canManage = session != null && session.HasPermission("FORM_TICKET_MGMT");
 
             ApplyResources();
+            btnNew.Visible = _canCreate;
             btnClose.Visible = _canManage;
             LoadTickets();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
@@ -126,6 +128,11 @@ namespace TrabajoFinal_DarioZubaray
         #region Eventos
         private void btnNew_Click(object sender, EventArgs e)
         {
+            if (!_canCreate)
+            {
+                return;
+            }
+
             string theme = _currentUser.Theme ?? ThemeHelper.DefaultTheme;
             using (var form = new TicketForm(_currentUser, theme))
             {
@@ -138,6 +145,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private void btnClose_Click(object sender, EventArgs e)
         {
+            if (!_canManage)
+            {
+                return;
+            }
+
             TicketBE ticket = SelectedTicket();
 
             if (ticket == null)

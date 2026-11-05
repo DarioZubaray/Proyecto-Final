@@ -5,6 +5,7 @@ using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
+using BLL.Services;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -41,7 +42,7 @@ namespace TrabajoFinal_DarioZubaray
         private void LoadUsers()
         {
             dgvUsers.DataSource = null;
-            dgvUsers.DataSource = _userBLL.FindAll();
+            dgvUsers.DataSource = _userBLL.FindAllActives();
             ConfigureGrid();
         }
 
@@ -124,6 +125,14 @@ namespace TrabajoFinal_DarioZubaray
                 MessageBox.Show(ErrorFormatter.WithCode(
                     Resources.UserManagement_SelectUser,
                     ErrorCodesBLL.Validation.NoSelection));
+                return;
+            }
+
+            if (UserBLL.IsAdminName(user.UserName))
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserManagement_DeleteDenied,
+                    ErrorCodesBLL.Business.AdminProtected));
                 return;
             }
 
