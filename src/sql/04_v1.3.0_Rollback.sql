@@ -15,7 +15,7 @@ GO
 --      classrooms y students.
 --   2. Elimina la columna users.dvh (DVH).
 --   3. Elimina los permisos agregados por el
---      incremental (9) y restaura la matriz de
+--      incremental (10) y restaura la matriz de
 --      permisos del seed.
 --   4. Elimina el rol Director (sus usuarios pasan
 --      a Admin) y recrea el rol Alumno (id 3).
@@ -88,11 +88,19 @@ BEGIN TRY
         'FORM_ASISTENCIA_MGMT',
         'FORM_ASISTENCIA_VIEW',
         'FORM_TICKET_MGMT',
+        'FORM_TICKET_CREATE',
         'FORM_STUDENT_MGMT',
         'FORM_EVAL_MGMT',
         'FORM_REPORT_DETAIL',
-        'FORM_BACKUP_MGMT'
+        'FORM_BACKUP_MGMT',
+        'FORM_ACTIVITY_HISTORY',
+        'FORM_LOGOUT',
+        'FORM_ABOUT'
     );
+
+    UPDATE [dbo].[permissions]
+    SET [is_system] = 1
+    WHERE [name] IN ('FORM_CHANGE_PASS', 'FORM_PREFERENCES');
 
     -- =============================================
     -- 4. Rol Director: sus usuarios pasan a Admin

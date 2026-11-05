@@ -22,6 +22,8 @@ GO
 --      (FORM_REPORT_DETAIL)
 --   9. v1.8.0 Respaldo y restauracion
 --      (FORM_BACKUP_MGMT)
+--  10. v1.9.0 Alta de tickets
+--      (FORM_TICKET_CREATE: Coordinador y Profesor)
 --
 -- Todas las secciones son idempotentes: el script puede
 -- ejecutarse sobre una base v1, sobre una base con
@@ -796,7 +798,43 @@ BEGIN
           AND p.[name] = 'FORM_BACKUP_MGMT';
 
         -- =============================================
-        -- 10. Registro de la migracion
+        -- 10. v1.9.0: permiso de alta de tickets
+        --    (FORM_TICKET_CREATE). Crean tickets
+        --    Coordinador y Profesor; Admin y Director
+        --    quedan sin acceso a Tickets. El cierre
+        --    sigue en FORM_TICKET_MGMT (Coordinador).
+        -- =============================================
+        IF NOT EXISTS (SELECT 1 FROM [dbo].[permissions] WHERE [name] = 'FORM_TICKET_CREATE')
+        BEGIN
+            INSERT INTO [dbo].[permissions] ([name], [label], [description], [is_system])
+            VALUES ('FORM_TICKET_CREATE', 'Crear Tickets', 'Alta de tickets de soporte (Coordinador y Profesor)', 0);
+        END;
+
+        -- Coordinador (4): alta de tickets
+        IF NOT EXISTS (
+            SELECT 1 FROM [dbo].[role_permissions] rp
+            JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
+            WHERE rp.[role_id] = 4 AND p.[name] = 'FORM_TICKET_CREATE'
+        )
+            INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
+            SELECT 4, p.[id] FROM [dbo].[permissions] p WHERE p.[name] = 'FORM_TICKET_CREATE';
+
+        -- Profesor (2): alta de tickets
+        IF NOT EXISTS (
+            SELECT 1 FROM [dbo].[role_permissions] rp
+            JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
+            WHERE rp.[role_id] = 2 AND p.[name] = 'FORM_TICKET_CREATE'
+        )
+            INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
+            SELECT 2, p.[id] FROM [dbo].[permissions] p WHERE p.[name] = 'FORM_TICKET_CREATE';
+
+        -- Ningun otro rol (ni Admin ni Director) tiene alta de tickets
+        DELETE FROM [dbo].[role_permissions]
+        WHERE [permission_id] = (SELECT id FROM [dbo].[permissions] WHERE name = 'FORM_TICKET_CREATE')
+          AND [role_id] NOT IN (2, 4);
+
+        -- =============================================
+        -- 11. Registro de la migracion
         -- =============================================
         INSERT INTO [dbo].[schema_versions] ([version], [script_name], [applied_at])
         VALUES ('1.3.0', '03_v1.3.0_Incremental.sql', GETDATE());
@@ -823,5 +861,46 @@ END
 ELSE
 BEGIN
     PRINT 'La migracion v1.3.0 (incremental) ya fue aplicada.';
+END
+GO
+
+-- =============================================
+-- Alineacion final de permisos (idempotente,
+-- corre siempre): permisos base de Archivo y
+-- Ayuda, y baja del permiso FORM_COMPLAINTS.
+-- Se resuelve por nombre de rol, sin ids fijos.
+-- =============================================
+IF OBJECT_ID('dbo.permissions', 'U') IS NOT NULL
+BEGIN
+    INSERT INTO [dbo].[permissions] ([name], [label], [description], [is_system])
+    SELECT v.[name], v.[label], v.[description], 0
+    FROM (VALUES
+        ('FORM_ACTIVITY_HISTORY', 'Historial de Actividad', 'Bitacora de actividad del usuario'),
+        ('FORM_LOGOUT',           'Cerrar Sesion',          'Cierre de sesion desde el menu principal'),
+        ('FORM_ABOUT',            'Acerca de',              'Ventana acerca de la aplicacion')
+    ) AS v([name], [label], [description])
+    WHERE NOT EXISTS (SELECT 1 FROM [dbo].[permissions] p WHERE p.[name] = v.[name]);
+
+    UPDATE [dbo].[permissions]
+    SET [is_system] = 0
+    WHERE [name] IN ('FORM_CHANGE_PASS', 'FORM_PREFERENCES');
+
+    INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
+    SELECT r.[id], p.[id]
+    FROM [dbo].[roles] r
+    JOIN [dbo].[permissions] p ON p.[name] IN
+    ('FORM_CHANGE_PASS', 'FORM_PREFERENCES', 'FORM_ACTIVITY_HISTORY', 'FORM_LOGOUT', 'FORM_ABOUT')
+    WHERE NOT EXISTS (
+        SELECT 1 FROM [dbo].[role_permissions] rp
+        WHERE rp.[role_id] = r.[id] AND rp.[permission_id] = p.[id]
+    );
+
+    DELETE rp
+    FROM [dbo].[role_permissions] rp
+    JOIN [dbo].[permissions] p ON p.[id] = rp.[permission_id]
+    WHERE p.[name] = 'FORM_COMPLAINTS';
+
+    DELETE FROM [dbo].[permissions]
+    WHERE [name] = 'FORM_COMPLAINTS';
 END
 GO
