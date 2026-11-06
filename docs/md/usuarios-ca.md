@@ -8,16 +8,19 @@ Administrador (rol Admin) - alto: tareas de inicio / excepcionales
 	dario|123
 
 Coordinador (rol Coordinador) - medio: tareas diarias de la academia
-	coord_maria|123
-	coord_carlos|123
-	coord_laura|123
+	coord1|123
+	coord2|123
+	coord3|123
 
 Profesor (rol Profesor) - bajo: operador de input (asistencia / notas)
-	prof_garcia|123
-	prof_lopez|123
-	prof_martinez|123
-	prof_rodriguez|123
-	prof_fernandez|123
+	prof_brooks|123
+	prof_omh|123
+	prof_conway|123
+	prof_pareto|123
+	prof_amdahl|123
+	prof_kirchhoff|123
+	prof_murphy|123
+	prof_newton|123
 
 Director (rol Director) - solo lectura de reportes
 	sin usuarios seed de prueba; crear desde CU-04 si hace falta

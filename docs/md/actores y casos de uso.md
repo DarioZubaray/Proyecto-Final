@@ -71,12 +71,12 @@ Leyenda: "sin CU" = funcionalidad auxiliar sin caso de uso propio; "-" = sin per
 | Administración | Usuarios | Ctrl+U | CU-04 Gestionar Usuarios | FORM_USER_MGMT | Admin |
 | Administración | Roles y permisos | Ctrl+R | CU-05 Gestionar Roles y Permisos | FORM_ROLE_MGMT | Admin |
 | Administración | Alumnos | Ctrl+A | CU-08 Crear Alumno | FORM_STUDENT_MGMT | Admin, Coordinador |
-| Administración | Aulas | Ctrl+X | CU-06 Crear Aula | FORM_CURSO_MGMT (compartido con Cursos) | Admin, Coordinador |
+| Administración | Aulas | Ctrl+X | CU-06 Crear Aula | FORM_CLASSROOM_MGMT | Admin, Coordinador |
 | Administración | Cursos | Ctrl+C | CU-07 Crear Curso | FORM_CURSO_MGMT | Admin, Coordinador |
 | Administración | Inscripciones | Ctrl+I | CU-09 Crear Inscripción | FORM_INSCRIPCION_MGMT | Admin, Coordinador |
 | Administración | Auditoría de integridad | - | sin CU | - (gate duro `UserBLL.IsSysAdmin`, no es permiso) | solo sysadmin (admin id 1) |
 | Administración | Respaldo y restauración | - | CU-15 Gestionar Respaldo y Restauración de la base de datos | FORM_BACKUP_MGMT | Admin |
-| Soporte | Tickets | - | CU-10 Crear Tickets | FORM_TICKET_CREATE + FORM_TICKET_MGMT (un mismo formulario con caminos alternativos) | CREATE: Coordinador, Profesor / MGMT: Admin, Coordinador |
+| Soporte | Tickets | - | CU-10 Crear Tickets | FORM_TICKET_CREATE + FORM_TICKET_MGMT (un mismo formulario con caminos alternativos) | CREATE: Admin, Coordinador, Profesor / MGMT: Admin, Coordinador |
 | Académico | Asistencia | - | CU-11 Registrar Asistencia | FORM_ASISTENCIA_MGMT + FORM_ASISTENCIA_VIEW (dos formularios, un ítem de menú) | MGMT: Admin, Profesor / VIEW: Admin, Coordinador |
 | Académico | Evaluaciones | - | CU-12 Registrar Evaluación y Notas | FORM_EVAL_MGMT | Admin, Profesor |
 | Reportes | Rendimiento académico | - | CU-13 Consultar Rendimiento Académico | FORM_REPORTS | Admin, Director |
@@ -91,6 +91,16 @@ Notas:
 
 ### Usuarios por Role:
 - Administrador
+	- dario
 - Coordinador
+	- coord1
+	- coord2
 - Profesor
+	- prof_brooks
+	- prof_omh
 - Director
+	- dir_schwarzenegger
+- Especiales
+	- user_blocked
+	- user_1retry
+	- user_2retry

@@ -47,16 +47,15 @@ Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`. D
 
 **Opción A (recomendada)** — un solo paso:
 
-1. `05_v1.3.0_ScriptConsolidado.sql` — crea la base `DarioZubaray_TF` (si no existe) y la deja con el esquema y los datos finales (v1.3.1).
+1. `05_v1.3.0_ScriptConsolidado.sql` — crea la base `DarioZubaray_TF` (si no existe) y la deja con el esquema y los datos finales (v1.3.0).
 
 **Opción B** — scripts por pasos:
 
 1. `01_v1.0.0_CreateTables.sql` — crea el esquema base (Roles, Permissions, Users, etc.).
 2. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, usuarios.
 3. `03_v1.3.0_Incremental.sql` — migración incremental a v1.3.0: aulas/cursos/inscripciones/asistencia, tickets, entidad `students`, `evaluations`/`grades`, permisos de informes y respaldo, y el DVH (columna `users.dvh` + backfill SHA-256). Idempotente; también aplica sobre bases legadas creadas con los scripts anteriores.
-4. `06_v1.3.1_RemoveComplaints.sql` — migración incremental a v1.3.1: elimina el permiso huérfano `FORM_COMPLAINTS`. Idempotente.
 
-**Rollback:** `04_v1.3.0_Rollback.sql` devuelve la base al estado v1 (destructivo: borra las tablas y permisos agregados; para volver a usarla, re-ejecutar `03_v1.3.0_Incremental.sql` y luego `06_v1.3.1_RemoveComplaints.sql`).
+**Rollback:** `04_v1.3.0_Rollback.sql` devuelve la base al estado v1 (destructivo: borra las tablas y permisos agregados; para volver a usarla, re-ejecutar `03_v1.3.0_Incremental.sql`).
 
 #### Datos de prueba
 
@@ -64,14 +63,9 @@ Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`. D
 |---------|-----------|-----|
 | `admin` | `admin` | Admin (todos los permisos) — exento de bloqueo por intentos, pide código 2FA `123` |
 | `dario` | `123` | Admin (todos los permisos) |
-| `coord_maria` | `123` | Coordinador (ABMs) |
-| `coord_carlos` | `123` | Coordinador (ABMs) |
-| `coord_laura` | `123` | Coordinador (ABMs) |
-| `prof_garcia` | `123` | Profesor (asistencia, evaluaciones, tickets) |
-| `prof_lopez` | `123` | Profesor (asistencia, evaluaciones, tickets) |
-| `prof_martinez` | `123` | Profesor (asistencia, evaluaciones, tickets) |
-| `prof_rodriguez` | `123` | Profesor (asistencia, evaluaciones, tickets) |
-| `prof_fernandez` | `123` | Profesor (asistencia, evaluaciones, tickets) |
+| `coord1`, `coord2`, `coord3` | `123` | Coordinador (ABMs) |
+| `prof_brooks`, `prof_omh`, `prof_conway`, `prof_pareto`, `prof_amdahl`, `prof_kirchhoff`, `prof_murphy`, `prof_newton` | `123` | Profesor (asistencia, evaluaciones, tickets) |
+| `user_blocked`, `user_1retry`, `user_2retry` | `admin` / `123` | Datos de prueba de bloqueo de login (inactive / reintentos) |
 
 ### Diagramas (`docs/mermaid-live/`)
 
