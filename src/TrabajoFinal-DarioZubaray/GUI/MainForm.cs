@@ -85,6 +85,7 @@ namespace TrabajoFinal_DarioZubaray
             administraciónToolStripMenuItem.Visible = _session != null
                 && (_session.HasPermission("FORM_USER_MGMT")
                     || _session.HasPermission("FORM_STUDENT_MGMT")
+                    || _session.HasPermission("FORM_CLASSROOM_MGMT")
                     || _session.HasPermission("FORM_BACKUP_MGMT"));
             usuariosToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_USER_MGMT");
@@ -93,7 +94,7 @@ namespace TrabajoFinal_DarioZubaray
             alumnosToolStripMenuItem.Visible = _session != null
                 && _session.HasPermission("FORM_STUDENT_MGMT");
             aulasToolStripMenuItem.Visible = _session != null
-                && _session.HasPermission("FORM_CURSO_MGMT");
+                && _session.HasPermission("FORM_CLASSROOM_MGMT");
 
             integridadToolStripMenuItem.Visible = UserBLL.IsSysAdmin(_user);
             respaldoToolStripMenuItem.Visible = _session != null
@@ -233,7 +234,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void aulasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!EnsurePermission("FORM_CURSO_MGMT"))
+            if (!EnsurePermission("FORM_CLASSROOM_MGMT"))
             {
                 return;
             }

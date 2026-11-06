@@ -81,6 +81,15 @@ namespace TrabajoFinal_DarioZubaray
                 return false;
             }
 
+            if (!_isNewUser && !_user.UserName.Equals(txtUserName.Text.Trim()) && _userBLL.IsUsernameTaken(txtUserName.Text.Trim()))
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserForm_UserNameTaken,
+                    ErrorCodesBLL.Validation.PasswordRequired));
+                txtPassword.Focus();
+                return false;
+            }
+
             return true;
         }
 

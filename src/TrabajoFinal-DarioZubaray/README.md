@@ -387,7 +387,7 @@ dotnet build TrabajoFinal-DarioZubaray.slnx -c Debug
 dotnet run --project GUI\GUI.csproj
 ```
 
-Usuarios de prueba: `admin` / `admin` (rol Admin, código 2FA `123`), `dario` / `123` (Admin), `coord_maria` / `123` (Coordinador), `prof_garcia` / `123` (Profesor). La lista completa está en `src/sql/README.md`.
+Usuarios de prueba: `admin` / `admin` (rol Admin, código 2FA `123`), `dario` / `123` (Admin), `coord1` / `123` (Coordinador), `prof_brooks` / `123` (Profesor). La lista completa está en `src/sql/README.md`.
 
 El **acceso a datos** usa `Microsoft.Data.SqlClient` (SQL Server) y `System.Configuration.ConfigurationManager` para leer `cadenaConexion` desde el `App.config`.
 

@@ -1,9 +1,8 @@
-using System.Collections.Generic;
-
 using BE.Entities;
 using BLL.Helpers;
 using BLL.Interfaces;
 using MPP.Interfaces;
+using System.Collections.Generic;
 
 namespace BLL.Services
 {
@@ -63,6 +62,12 @@ namespace BLL.Services
         public static bool IsSysAdmin(UserBE user)
         {
             return user != null && user.Id == SYSADMIN_ID && IsAdminName(user.UserName);
+        }
+
+        public bool IsUsernameTaken(string userName)
+        {
+            List<UserBE> users = FindByUserName(userName);
+            return users.Count > 0;
         }
 
         private bool IsAdminProtectedChange(UserBE user)

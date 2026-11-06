@@ -8,6 +8,7 @@ namespace BLL.Interfaces
     {
         bool Delete(UserBE user);
         bool Save(UserBE user);
+        bool IsUsernameTaken(string userName);
         UserBE FindById(UserBE user);
         List<UserBE> FindAll();
         List<UserBE> FindAllActives();
