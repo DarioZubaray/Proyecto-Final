@@ -29,11 +29,13 @@ namespace TrabajoFinal_DarioZubaray
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             menuStrip1 = new System.Windows.Forms.MenuStrip();
             archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             preferenciasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             cambiarContraseñaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             historialActividadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             administraciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,7 +61,6 @@ namespace TrabajoFinal_DarioZubaray
             statusStrip1 = new System.Windows.Forms.StatusStrip();
             lblUserInfo = new System.Windows.Forms.ToolStripStatusLabel();
             lblRoleInfo = new System.Windows.Forms.ToolStripStatusLabel();
-            toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             menuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             SuspendLayout();
@@ -101,6 +102,11 @@ namespace TrabajoFinal_DarioZubaray
             historialActividadToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             historialActividadToolStripMenuItem.Text = "Historial de Actividad";
             historialActividadToolStripMenuItem.Click += historialActividadToolStripMenuItem_Click;
+            // 
+            // toolStripMenuItem3
+            // 
+            toolStripMenuItem3.Name = "toolStripMenuItem3";
+            toolStripMenuItem3.Size = new System.Drawing.Size(184, 6);
             // 
             // cerrarSesiónToolStripMenuItem
             // 
@@ -198,7 +204,7 @@ namespace TrabajoFinal_DarioZubaray
             // ticketsToolStripMenuItem
             // 
             ticketsToolStripMenuItem.Name = "ticketsToolStripMenuItem";
-            ticketsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            ticketsToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             ticketsToolStripMenuItem.Text = "Tickets";
             ticketsToolStripMenuItem.Click += ticketsToolStripMenuItem_Click;
             // 
@@ -212,14 +218,14 @@ namespace TrabajoFinal_DarioZubaray
             // asistenciaToolStripMenuItem
             // 
             asistenciaToolStripMenuItem.Name = "asistenciaToolStripMenuItem";
-            asistenciaToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            asistenciaToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             asistenciaToolStripMenuItem.Text = "Asistencia";
             asistenciaToolStripMenuItem.Click += asistenciaToolStripMenuItem_Click;
             // 
             // evaluacionesToolStripMenuItem
             // 
             evaluacionesToolStripMenuItem.Name = "evaluacionesToolStripMenuItem";
-            evaluacionesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            evaluacionesToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             evaluacionesToolStripMenuItem.Text = "Evaluaciones";
             evaluacionesToolStripMenuItem.Click += evaluacionesToolStripMenuItem_Click;
             // 
@@ -254,7 +260,7 @@ namespace TrabajoFinal_DarioZubaray
             // acercaDeToolStripMenuItem
             // 
             acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            acercaDeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            acercaDeToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             acercaDeToolStripMenuItem.Text = "Acerca de";
             acercaDeToolStripMenuItem.Click += acercaDeToolStripMenuItem_Click;
             // 
@@ -278,11 +284,6 @@ namespace TrabajoFinal_DarioZubaray
             lblRoleInfo.Name = "lblRoleInfo";
             lblRoleInfo.Size = new System.Drawing.Size(0, 17);
             // 
-            // toolStripMenuItem3
-            // 
-            toolStripMenuItem3.Name = "toolStripMenuItem3";
-            toolStripMenuItem3.Size = new System.Drawing.Size(184, 6);
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -290,6 +291,7 @@ namespace TrabajoFinal_DarioZubaray
             ClientSize = new System.Drawing.Size(1241, 740);
             Controls.Add(statusStrip1);
             Controls.Add(menuStrip1);
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);

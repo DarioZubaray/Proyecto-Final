@@ -29,6 +29,7 @@ namespace TrabajoFinal_DarioZubaray
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginForm));
             lblUser = new System.Windows.Forms.Label();
             txtUser = new System.Windows.Forms.TextBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
@@ -183,6 +184,7 @@ namespace TrabajoFinal_DarioZubaray
             ClientSize = new System.Drawing.Size(617, 370);
             Controls.Add(groupBox1);
             FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
             Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             MaximizeBox = false;
             Name = "LoginForm";
