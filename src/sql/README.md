@@ -31,7 +31,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 03_v1.3.0_Incremental.sql
 ```
 
-Ambas opciones dejan la base en el mismo esquema (16 tablas) y con la misma matriz final de permisos por rol (18 permisos); `03_v1.3.0_Incremental.sql` es idempotente: su lote de migración no se re-ejecuta si `1.3.0` ya fue aplicada, y su lote final de alineación de permisos corre siempre sin duplicar filas. Los datos de prueba difieren entre ambas opciones (el seed de `02` conserva los usuarios y cursos originales; `05` trae el seed actualizado).
+Ambas opciones dejan la base en el mismo esquema (16 tablas) y con la misma matriz final de permisos por rol (19 permisos); `03_v1.3.0_Incremental.sql` es idempotente: su lote de migración no se re-ejecuta si `1.3.0` ya fue aplicada, y su lote final de alineación de permisos corre siempre sin duplicar filas. Los datos de prueba difieren entre ambas opciones (el seed de `02` conserva los usuarios y cursos originales; `05` trae el seed actualizado).
 
 ### Rollback
 
@@ -55,12 +55,12 @@ Las bases creadas con las versiones previas de los scripts (hasta `14_v1.8.0_Res
 
 **Columna `users.dvh`**: Dígito Verificador Horizontal (SHA-256 en hex). Se regenera desde la aplicación en cada INSERT/UPDATE (la orquestación vive en `BLL.DVHHelperBLL`) y se valida al inicio de la aplicación. Debe calcularse con el mismo formato que `BLL.DVHHelperBLL` (valores en orden de columna unidos por `,`, fechas estilo `126` —sin fracción si ms = 0—, `role_id NULL` → vacío) y hashear el payload en **UTF-16LE**, igual que `HASHBYTES('SHA2_256', <NVARCHAR>)`.
 
-## Matriz de permisos por rol (estado final v1.3.0 — 18 permisos)
+## Matriz de permisos por rol (estado final v1.3.0 — 19 permisos)
 
 | Rol | Permisos |
 |-----|----------|
-| Admin | todos excepto `FORM_TICKET_CREATE` (17) |
-| Coordinador | `FORM_CURSO_MGMT`, `FORM_INSCRIPCION_MGMT`, `FORM_ASISTENCIA_VIEW`, `FORM_TICKET_MGMT`, `FORM_STUDENT_MGMT`, `FORM_TICKET_CREATE` + los 5 base (11) |
+| Admin | todos (19) |
+| Coordinador | `FORM_STUDENT_MGMT`, `FORM_CURSO_MGMT`, `FORM_CLASSROOM_MGMT`, `FORM_INSCRIPCION_MGMT`, `FORM_ASISTENCIA_VIEW`, `FORM_TICKET_MGMT`, `FORM_TICKET_CREATE` + los 5 base (12) |
 | Profesor | `FORM_ASISTENCIA_MGMT`, `FORM_EVAL_MGMT`, `FORM_TICKET_CREATE` + los 5 base (8) |
 | Director | `FORM_REPORTS`, `FORM_REPORT_DETAIL` + los 5 base (7) |
 
@@ -74,6 +74,8 @@ Los 5 permisos base (menú Archivo y Ayuda, `is_system = 0`, otorgados a **todos
 | `dario` | `123` | Admin |
 | `coord1`, `coord2`, `coord3` | `123` | Coordinador |
 | `prof_brooks`, `prof_omh`, `prof_conway`, `prof_pareto`, `prof_amdahl`, `prof_kirchhoff`, `prof_murphy`, `prof_newton` | `123` | Profesor |
+| `user_blocked` | `admin` | Profesor — `is_active = 0` (prueba de login bloqueado) |
+| `user_1retry`, `user_2retry` | `123` | Coordinador / Admin — con reintentos fallidos acumulados (prueba de bloqueo por contraseña) |
 
 > Los alumnos **no son usuarios ni actores del sistema**: se gestionan en la tabla `students` (menú Administración → Alumnos, permiso `FORM_STUDENT_MGMT`). El seed trae 15 filas (`ids` 1–15, nombres `juan` a `enzo`).
 

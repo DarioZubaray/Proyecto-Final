@@ -877,7 +877,8 @@ BEGIN
     FROM (VALUES
         ('FORM_ACTIVITY_HISTORY', 'Historial de Actividad', 'Bitacora de actividad del usuario'),
         ('FORM_LOGOUT',           'Cerrar Sesion',          'Cierre de sesion desde el menu principal'),
-        ('FORM_ABOUT',            'Acerca de',              'Ventana acerca de la aplicacion')
+        ('FORM_ABOUT',            'Acerca de',              'Ventana acerca de la aplicacion'),
+        ('FORM_CLASSROOM_MGMT',   'ABM Aulas',              'Formulario de gestion de aulas')
     ) AS v([name], [label], [description])
     WHERE NOT EXISTS (SELECT 1 FROM [dbo].[permissions] p WHERE p.[name] = v.[name]);
 
@@ -891,6 +892,16 @@ BEGIN
     JOIN [dbo].[permissions] p ON p.[name] IN
     ('FORM_CHANGE_PASS', 'FORM_PREFERENCES', 'FORM_ACTIVITY_HISTORY', 'FORM_LOGOUT', 'FORM_ABOUT')
     WHERE NOT EXISTS (
+        SELECT 1 FROM [dbo].[role_permissions] rp
+        WHERE rp.[role_id] = r.[id] AND rp.[permission_id] = p.[id]
+    );
+
+    INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
+    SELECT r.[id], p.[id]
+    FROM [dbo].[roles] r
+    JOIN [dbo].[permissions] p ON p.[name] = 'FORM_CLASSROOM_MGMT'
+    WHERE r.[name] IN ('Admin', 'Coordinador')
+      AND NOT EXISTS (
         SELECT 1 FROM [dbo].[role_permissions] rp
         WHERE rp.[role_id] = r.[id] AND rp.[permission_id] = p.[id]
     );

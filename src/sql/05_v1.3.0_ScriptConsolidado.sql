@@ -265,59 +265,57 @@ BEGIN TRY
     -- 6. INSERT: permisos
     -- =============================================
     INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
-    ('FORM_USER_MGMT',        'ABM Usuarios',            'Formulario de gestion de usuarios',                           0),
-    ('FORM_ROLE_MGMT',        'ABM Roles',               'Formulario de gestion de roles',                              0),
-    ('FORM_REPORTS',          'Reportes',                'Formulario de reportes',                                      0),
-    ('FORM_CHANGE_PASS',      'Cambiar Contrasena',      'Formulario de cambio de contrasena',                          0),
-    ('FORM_PREFERENCES',      'Preferencias',            'Formulario de preferencias/idioma',                           0),
+    ('FORM_PREFERENCES',      'Preferencias',            'Formulario de idioma/tema',                                   0),
+    ('FORM_CHANGE_PASS',      'Cambiar Contraseña',      'Formulario de cambio de contraseña',                          0),
     ('FORM_ACTIVITY_HISTORY', 'Historial de Actividad',  'Bitacora de actividad del usuario',                           0),
     ('FORM_LOGOUT',           'Cerrar Sesion',           'Cierre de sesion desde el menu principal',                    0),
-    ('FORM_ABOUT',            'Acerca de',               'Ventana acerca de la aplicacion',                             0),
+
+    ('FORM_USER_MGMT',        'ABM Usuarios',            'Formulario de gestion de usuarios',                           0),
+    ('FORM_ROLE_MGMT',        'ABM Roles',               'Formulario de gestion de roles',                              0),
+    ('FORM_STUDENT_MGMT',     'ABM Alumnos',             'Formulario de gestion de alumnos',                            0),
+    ('FORM_CLASSROOM_MGMT',   'ABM Aulas',               'Formulario de gestion de aulas',                              0),
     ('FORM_CURSO_MGMT',       'ABM Cursos',              'Formulario de gestion de cursos',                             0),
-    ('FORM_INSCRIPCION_MGMT', 'Inscripciones',           'Gestion de inscripciones de alumnos a cursos',                0),
-    ('FORM_ASISTENCIA_MGMT',  'Asistencia',              'Registro de asistencia de alumnos en clases',                 0),
-    ('FORM_ASISTENCIA_VIEW',  'Ver Asistencia',          'Consulta de asistencia de alumnos',                           0),
+    ('FORM_INSCRIPCION_MGMT', 'ABM Inscripciones',       'Formulario de gestion de inscripciones de alumnos a cursos',  0),
+    ('FORM_BACKUP_MGMT',      'Respaldo y Restauracion', 'Generacion de respaldos y restauración de la base de datos',  0),
+    
     ('FORM_TICKET_MGMT',      'Gestion de Tickets',      'Listar y cerrar tickets de todos los usuarios',               0),
     ('FORM_TICKET_CREATE',    'Crear Tickets',           'Alta de tickets de soporte (Coordinador y Profesor)',         0),
-    ('FORM_STUDENT_MGMT',     'ABM Alumnos',             'Gestion de alumnos (entidad, no usuarios)',                   0),
+    
+    ('FORM_ASISTENCIA_MGMT',  'Asistencia',              'Registro de asistencia de alumnos en clases',                 0),
+    ('FORM_ASISTENCIA_VIEW',  'Ver Asistencia',          'Consulta de asistencia de alumnos',                           0),
     ('FORM_EVAL_MGMT',        'Evaluaciones',            'Registro de evaluaciones y notas de los cursos del profesor', 0),
+    
+    ('FORM_REPORTS',          'Reportes',                'Formulario de reportes',                                      0),
     ('FORM_REPORT_DETAIL',    'Informes Personalizados', 'Generacion y exportacion de informes academicos por curso',   0),
-    ('FORM_BACKUP_MGMT',      'Respaldo y Restauracion', 'Generacion de respaldos y restauracion de la base de datos',  0);
+    
+    ('FORM_ABOUT',            'Acerca de',               'Ventana acerca de la aplicacion',                             0);
 
     -- =============================================
     -- 7. INSERT: asignacion de permisos por rol
     -- =============================================
 
-    -- Admin (1): todos los permisos excepto FORM_TICKET_CREATE (el alta de tickets es exclusiva de Coordinador y Profesor)
+    -- Admin (1): todos los permisos
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
-    SELECT 1, id FROM [dbo].[permissions]
-    WHERE name <> 'FORM_TICKET_CREATE';
+    SELECT 1, id FROM [dbo].[permissions];
 
     -- Coordinador (2): tareas diarias (sin ABM de usuarios/roles ni reportes)
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 2, id FROM [dbo].[permissions] WHERE name IN
-    ('FORM_CURSO_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_VIEW', 'FORM_TICKET_MGMT', 'FORM_STUDENT_MGMT', 'FORM_TICKET_CREATE');
+    ('FORM_STUDENT_MGMT', 'FORM_CURSO_MGMT', 'FORM_CLASSROOM_MGMT', 'FORM_INSCRIPCION_MGMT', 'FORM_ASISTENCIA_VIEW', 'FORM_TICKET_MGMT', 'FORM_TICKET_CREATE',
+    'FORM_PREFERENCES', 'FORM_CHANGE_PASS', 'FORM_ACTIVITY_HISTORY', 'FORM_LOGOUT', 'FORM_ABOUT');
 
     -- Profesor (3): operador de asistencia/evaluaciones + creacion de tickets
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 3, id FROM [dbo].[permissions] WHERE name IN
-    ('FORM_ASISTENCIA_MGMT', 'FORM_EVAL_MGMT', 'FORM_TICKET_CREATE');
+    ('FORM_ASISTENCIA_MGMT', 'FORM_EVAL_MGMT', 'FORM_TICKET_CREATE',
+    'FORM_PREFERENCES', 'FORM_CHANGE_PASS', 'FORM_ACTIVITY_HISTORY', 'FORM_LOGOUT', 'FORM_ABOUT');
 
     -- Director (4): solo consulta de reportes
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
     SELECT 4, id FROM [dbo].[permissions] WHERE name IN
-    ('FORM_REPORTS', 'FORM_REPORT_DETAIL');
+    ('FORM_REPORTS', 'FORM_REPORT_DETAIL',
+    'FORM_PREFERENCES', 'FORM_CHANGE_PASS', 'FORM_ACTIVITY_HISTORY', 'FORM_LOGOUT', 'FORM_ABOUT');
 
-    -- Permisos base (Archivo y Ayuda): todos los roles
-    INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
-    SELECT r.id, p.id
-    FROM [dbo].[roles] r
-    JOIN [dbo].[permissions] p ON p.name IN
-    ('FORM_CHANGE_PASS', 'FORM_PREFERENCES', 'FORM_ACTIVITY_HISTORY', 'FORM_LOGOUT', 'FORM_ABOUT')
-    WHERE NOT EXISTS (
-        SELECT 1 FROM [dbo].[role_permissions] rp
-        WHERE rp.role_id = r.id AND rp.permission_id = p.id
-    );
 
     -- =============================================
     -- 8. INSERT: usuarios (contrasena: 123 para todos, excepto admin: admin)
@@ -344,6 +342,16 @@ BEGIN TRY
     ('prof_kirchhoff','$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy',  1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
     ('prof_murphy',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy',  1, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
     ('prof_newton',   '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy',  1, 0, GETDATE(), GETDATE(), 3, 'es', 'System');
+
+    -- Director (rol 4)
+    INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
+    ('dir_schwarzenegger', '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 0, GETDATE(), GETDATE(), 4, 'es', 'System');
+
+    -- Usuario bloqueados
+    INSERT INTO [dbo].[users] (user_name, password_hash, is_active, retries_count, last_update, created_at, role_id, language, theme) VALUES
+    ('user_blocked',  '$2a$11$h9OQXeWvXFC29T2cytB8HemgdlZQG35mnA6bmyZMTx3RNOMahmI0G', 0, 0, GETDATE(), GETDATE(), 3, 'es', 'System'),
+    ('user_1retry',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 1, GETDATE(), GETDATE(), 2, 'es', 'System'),
+    ('user_2retry',  '$2a$11$W5VIDAKnapRa9s7EksbNresgKwgSIgse6G5eJyt2MeErQOEji5Czy', 1, 2, GETDATE(), GETDATE(), 1, 'es', 'System');
 
     -- =============================================
     -- 9. INSERT: alumnos 

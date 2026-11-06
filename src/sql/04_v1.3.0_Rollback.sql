@@ -95,7 +95,8 @@ BEGIN TRY
         'FORM_BACKUP_MGMT',
         'FORM_ACTIVITY_HISTORY',
         'FORM_LOGOUT',
-        'FORM_ABOUT'
+        'FORM_ABOUT',
+        'FORM_CLASSROOM_MGMT'
     );
 
     UPDATE [dbo].[permissions]
