@@ -85,8 +85,8 @@ namespace TrabajoFinal_DarioZubaray
             {
                 MessageBox.Show(ErrorFormatter.WithCode(
                     Resources.UserForm_UserNameTaken,
-                    ErrorCodesBLL.Validation.PasswordRequired));
-                txtPassword.Focus();
+                    ErrorCodesBLL.Validation.UsernameTaken));
+                txtUserName.Focus();
                 return false;
             }
 

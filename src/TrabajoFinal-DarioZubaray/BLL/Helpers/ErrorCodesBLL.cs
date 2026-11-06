@@ -35,6 +35,7 @@ namespace BLL.Helpers
             public const string NoSelection = "VAL-005";
             public const string LanguageThemeRequired = "VAL-006";
             public const string AdminUsernameLocked = "VAL-007";
+            public const string UsernameTaken = "VAL-008";
         }
 
         public static class Business
