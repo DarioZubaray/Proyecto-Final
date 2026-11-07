@@ -2920,5 +2920,29 @@ namespace BE.Properties {
                 return ResourceManager.GetString("BackupForm_InfoLabel", resourceCulture);
             }
         }
+        
+        public static string Register_Title {
+            get {
+                return ResourceManager.GetString("Register_Title", resourceCulture);
+            }
+        }
+        
+        public static string Register_Button {
+            get {
+                return ResourceManager.GetString("Register_Button", resourceCulture);
+            }
+        }
+        
+        public static string Register_ConfirmLabel {
+            get {
+                return ResourceManager.GetString("Register_ConfirmLabel", resourceCulture);
+            }
+        }
+        
+        public static string Register_Success {
+            get {
+                return ResourceManager.GetString("Register_Success", resourceCulture);
+            }
+        }
     }
 }

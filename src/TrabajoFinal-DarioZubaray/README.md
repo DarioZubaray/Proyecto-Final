@@ -115,6 +115,7 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | Formulario | Responsabilidad |
 |------------|-----------------|
 | `LoginForm` | Autenticación. Crea la sesión (`SessionManagerBLL.CreateSession`), abre el menú principal y la limpia al cerrar (`RemoveSession`). Al iniciar y al cerrar sesión aplica el idioma y tema "último usado" (`AppPreferencesBLL`). Si el login requiere 2FA (`RequiresTwoFactor`, usuario `admin`), pide el código en `TwoFactorForm` antes de crear la sesión. Al conectar con la base y en **cada intento de login** ejecuta el **escaneo de integridad (DVH)** en segundo plano; si al lanzar hay filas alteradas muestra un aviso modal. Con filas alteradas, los usuarios no-sysadmin quedan bloqueados (`INT-001`) y el sysadmin (tras el 2FA) pasa por la auditoría antes de entrar. |
+| `RegisterForm` | **Alta de la cuenta administradora (CU-03)**, mostrada por el arranque cuando la base no tiene usuarios. Valida usuario/contraseña/reingreso (`VAL-001`, `VAL-002`, `VAL-003`, `VAL-008`), asigna el rol Admin, guarda con hash y abre `MainForm` con la sesión creada; al cerrar la sesión vuelve a `LoginForm`. |
 | `MainForm` | Menú principal (MDI). Muestra el usuario/rol en el pie y **oculta o muestra opciones según los permisos** del árbol Composite de la sesión. |
 | `UserManagementForm` / `UserForm` | ABM de usuarios: listado, búsqueda, alta, edición y baja lógica. |
 | `RoleManagementForm` | ABM de roles y asignación de permisos (manteniendo los de sistema). |
@@ -379,24 +380,37 @@ La migración `sql/03_v1.3.0_Incremental.sql` agrega la columna y calcula el bac
 
 1. Tener instalado el **.NET SDK 10** (o **Visual Studio 2022 17.12+**, que lo incluye, para poder editar el diseñador WinForms).
 2. Configurar la cadena de conexión `cadenaConexion` (proyecto **GUI**, archivo `App.config`) apuntando a una instancia de SQL Server con la base `DarioZubaray_TF`.
-3. Ejecutar los scripts de [`sql/`](../sql/) en orden (véase el README global). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_v1.0.0_CreateTables.sql`).
+3. Crear la base con los scripts de [`sql/`](../sql/) en orden (véase el README global), con el instalador, o con la CLI `--bootstrap` (más abajo). El esquema incluye la tabla `ActivityLogs` del **Historial de Actividad**; si la base ya existía, ejecutar el `CREATE TABLE [dbo].[ActivityLogs]` correspondiente (ver `01_v1.0.0_CreateTables.sql`).
 4. Compilar y ejecutar:
 
 ```
-dotnet build TrabajoFinal-DarioZubaray.slnx -c Debug
+dotnet build TrabajoFinal-DarioZubaray.sln -c Debug
 dotnet run --project GUI\GUI.csproj
 ```
+
+Al arrancar, `Program.cs` verifica la conexión (`DB-001`, con reintentos) y decide la primera pantalla: si la base **no tiene usuarios** muestra `RegisterForm` (CU-03) para crear la cuenta administradora; si ya hay usuarios, muestra `LoginForm` (CU-01).
 
 Usuarios de prueba: `admin` / `admin` (rol Admin, código 2FA `123`), `dario` / `123` (Admin), `coord1` / `123` (Coordinador), `prof_brooks` / `123` (Profesor). La lista completa está en `src/sql/README.md`.
 
 El **acceso a datos** usa `Microsoft.Data.SqlClient` (SQL Server) y `System.Configuration.ConfigurationManager` para leer `cadenaConexion` desde el `App.config`.
+
+### CLI de mantenimiento
+
+La aplicación acepta argumentos de línea de comandos (usados por el instalador):
+
+```
+TrabajoFinal-DarioZubaray.exe --test-connection   # 0 = OK, 2 = sin conexión
+TrabajoFinal-DarioZubaray.exe --bootstrap [--sql-dir <ruta>]   # corre 01 + 03; 0 = OK, 1 = error, 2 = sin conexión, 3 = sin scripts
+```
+
+`--bootstrap` crea la base si no existe y ejecuta los scripts en orden (excluye `02`, `04` y `05`), de forma idempotente. La traza se guarda en `%TEMP%\TrabajoFinal-DarioZubaray_bootstrap.log`.
 
 ## Pruebas
 
 Los proyectos **BLL.Tests** y **MPP.Tests** (MSTest + Moq) cubren la autenticación, el cifrado de contraseñas, la gestión de idioma, la lógica de usuarios, roles y permisos, el historial de actividad (Decorator y paginación), las preferencias locales, la estrategia de hash de contraseñas, la gestión de aulas, cursos, inscripciones y asistencia, y el **Dígito Verificador Horizontal** (serialización/normalización, bloqueo de login, auditoría y paridad con el backfill T-SQL). Para ejecutarlos:
 
 ```
-dotnet test TrabajoFinal-DarioZubaray.slnx
+dotnet test TrabajoFinal-DarioZubaray.sln
 ```
 
 > **Nota:** `BLL.Tests` corre sin base de datos (usa mocks). `MPP.Tests` son pruebas de integración y requieren una instancia local de SQL Server (`PAPI-RYZEN3\SQLEXPRESS`).

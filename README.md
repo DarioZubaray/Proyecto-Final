@@ -11,6 +11,7 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 | **Aplicación .NET** | [`src/TrabajoFinal-DarioZubaray/`](src/TrabajoFinal-DarioZubaray/) | Solución de escritorio (WinForms, **.NET 10**, `net10.0-windows`) con arquitectura en capas. Incluye su propio README. |
 | **Aplicación .NET — README** | [`src/TrabajoFinal-DarioZubaray/README.md`](src/TrabajoFinal-DarioZubaray/README.md) | Documentación del proyecto .NET: clases, capas, responsabilidades, patrones (Composite, Singleton/Multiton, Decorator, Strategy) y principios SOLID. |
 | **Base de datos — scripts SQL** | [`src/sql/`](src/sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `DarioZubaray_TF`. Ver [`src/sql/README.md`](src/sql/README.md). |
+| **Instalador** | [`installer/`](installer/) | Instalador de escritorio (Inno Setup) en dos modos: offline (self-contained) y online (descarga .NET 10 Desktop Runtime). Ver [Instalación](#instalación-exe). |
 | **Diagramas (Mermaid Live)** | [`docs/mermaid-live/`](docs/mermaid-live/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencias de login/logout. |
 | **Modelos Enterprise Architect** | [`docs/ea/`](docs/ea/) | Archivos de modelado UML creados con Enterprise Architect. |
 | **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
@@ -56,6 +57,25 @@ Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`. D
 3. `03_v1.3.0_Incremental.sql` — migración incremental a v1.3.0: aulas/cursos/inscripciones/asistencia, tickets, entidad `students`, `evaluations`/`grades`, permisos de informes y respaldo, y el DVH (columna `users.dvh` + backfill SHA-256). Idempotente; también aplica sobre bases legadas creadas con los scripts anteriores.
 
 **Rollback:** `04_v1.3.0_Rollback.sql` devuelve la base al estado v1 (destructivo: borra las tablas y permisos agregados; para volver a usarla, re-ejecutar `03_v1.3.0_Incremental.sql`).
+
+### Instalación (`.exe`)
+
+El repositorio incluye un instalador de escritorio (Inno Setup, sin elevación de privilegios) en `installer/Output/`:
+
+| Instalador | Descripción |
+|------------|-------------|
+| `Setup-TrabajoFinal-offline.exe` | Recomendado. Incluye .NET 10 runtime (no requiere internet ni .NET previo). |
+| `Setup-TrabajoFinal-online.exe` | Instalador liviano; descarga e instala .NET 10 Desktop Runtime si el equipo no lo tiene. |
+
+El asistente:
+
+1. Pide la cadena de conexión (servidor y base de datos; por defecto `localhost\SQLEXPRESS` / `DarioZubaray_TF`) y la guarda en el `App.config` de la aplicación instalada.
+2. Ejecuta los scripts `01` + `03` (crea la base y el esquema si no existen) — nunca `02` ni `05`.
+3. Ofrece lanzar la aplicación. Si la base quedó sin usuarios, la aplicación muestra el formulario de registro (CU-03) para crear la cuenta administradora; si ya hay usuarios, muestra el login (CU-01).
+
+La instalación deja el administrador por defecto `admin` / `admin` (primer inicio y, si hace falta, desbloqueo de la auditoría DVH).
+
+Para mantenimiento, la aplicación expone una CLI: `TrabajoFinal-DarioZubaray.exe --test-connection` (verifica la conexión, sale con 0/2) y `--bootstrap [--sql-dir <ruta>]` (ejecuta `01` + `03` idempotentes, sale con 0/1/2/3). El detalle de scripts y datos de prueba está en [`src/sql/README.md`](src/sql/README.md).
 
 #### Datos de prueba
 

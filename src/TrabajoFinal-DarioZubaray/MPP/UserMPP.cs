@@ -139,6 +139,16 @@ namespace MPP
             return _access.ReadScalar(query, parameters);
         }
 
+        public int CountExceptUserName(string userName)
+        {
+            string query = @"SELECT COUNT(*) FROM users WHERE user_name <> @userName";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@userName", userName)
+            };
+            return _access.ReadScalar(query, parameters);
+        }
+
         public bool TestConnection()
         {
             return _access.TestConnection();

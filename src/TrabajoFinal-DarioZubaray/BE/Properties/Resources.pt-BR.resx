@@ -1368,4 +1368,16 @@
   <data name="UserForm_UserNameTaken" xml:space="preserve">
     <value>O nome de usuário não está disponível.</value>
   </data>
+  <data name="Register_Title" xml:space="preserve">
+    <value>Registro de conta</value>
+  </data>
+  <data name="Register_Button" xml:space="preserve">
+    <value>Registrar-se</value>
+  </data>
+  <data name="Register_ConfirmLabel" xml:space="preserve">
+    <value>Confirmar senha</value>
+  </data>
+  <data name="Register_Success" xml:space="preserve">
+    <value>Conta criada com sucesso.</value>
+  </data>
 </root>

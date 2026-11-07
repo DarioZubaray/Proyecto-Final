@@ -1,14 +1,19 @@
 -- ============================================================
--- SCRIPT CONSOLIDADO v1.3.0
+-- SCRIPT CONSOLIDADO v1.3.0 (atajo dev / demo)
 -- Instalacion completa de la base DarioZubaray_TF en un solo paso:
 -- 
 --   1. Crear la base si no existe
---   2. Eliminar todas las tablas (purge)
+--   2. Eliminar todas las tablas (purge) -- destructive
 --   3. Crear el esquema completo (estado final v1.3.0)
 --   4. Insertar datos iniciales, seed academico y backfill DVH
 --   5. Registrar las versiones 1.0.0 y 1.3.0 en schema_versions
 --
 -- Equivale a ejecutar 01 + 02 + 03 en un solo script.
+--
+-- NOTA: no es el script del instalador. El instalador ejecuta
+-- la cadena 01 -> 03 (sin datos demo). Este consolidado es un
+-- atajo para desarrollo/demostracion y BORRA el contenido
+-- existente de la base.
 -- ============================================================
 
 USE master;

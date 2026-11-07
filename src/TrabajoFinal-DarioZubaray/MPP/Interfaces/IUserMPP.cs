@@ -22,6 +22,7 @@ namespace MPP.Interfaces
         bool UpdatePassword(int userId, string passwordHash);
         bool UpdateDvh(int userId, string dvh);
         int CountByRoleId(int roleId);
+        int CountExceptUserName(string userName);
         bool TestConnection();
     }
 }

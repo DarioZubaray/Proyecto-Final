@@ -1,4 +1,4 @@
-sequenceDiagram
+﻿sequenceDiagram
     autonumber
     actor Usuario
     participant GUI as GUI
@@ -36,6 +36,6 @@ sequenceDiagram
             DAL-->>MPP: true
             MPP-->>BLL: true
             BLL-->>GUI: true
-            GUI-->>Usuario: Muestra "Cuenta creada exitosamente." y avanza a la pantalla de inicio
+            GUI-->>Usuario: Muestra "Cuenta creada exitosamente." y avanza a la pantalla principal (MainForm)
         end
     end

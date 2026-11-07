@@ -16,6 +16,9 @@
 
   <ItemGroup>
     <Content Include="DarioZubaray_TF.ico" />
+    <Content Include="..\..\sql\*.sql" Link="sql\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

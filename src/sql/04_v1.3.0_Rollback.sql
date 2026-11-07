@@ -6,8 +6,7 @@ GO
 --
 -- Revierte el script incremental
 -- (03_v1.3.0_Incremental.sql) y devuelve la base al
--- estado v1 (01_v1.0.0_CreateTables +
--- 02_v1.0.0_SeedData):
+-- estado v1 (01_v1.0.0_CreateTables):
 --
 --   1. Elimina las tablas agregadas: grades,
 --      evaluations, tickets, attendance,
@@ -77,7 +76,9 @@ BEGIN TRY
     -- =============================================
     -- 3. Permisos: primero las asignaciones (wipe
     --    completo) y luego los permisos agregados.
-    --    Quedan solo los 6 permisos del seed v1.
+    --    Quedan solo los 5 permisos del seed v1
+    --    (sin FORM_COMPLAINTS: dado de baja por la
+    --    alineacion del incremental).
     -- =============================================
     DELETE FROM [dbo].[role_permissions];
 
@@ -100,7 +101,7 @@ BEGIN TRY
     );
 
     UPDATE [dbo].[permissions]
-    SET [is_system] = 1
+    SET [is_system] = 0
     WHERE [name] IN ('FORM_CHANGE_PASS', 'FORM_PREFERENCES');
 
     -- =============================================
@@ -148,7 +149,7 @@ BEGIN TRY
     BEGIN
         INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
         SELECT @profesorId, id FROM [dbo].[permissions]
-        WHERE name IN ('FORM_USER_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS');
+        WHERE name IN ('FORM_CHANGE_PASS', 'FORM_PREFERENCES');
     END;
 
     -- Alumno (3)
@@ -156,7 +157,7 @@ BEGIN TRY
     BEGIN
         INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
         SELECT @alumnoId, id FROM [dbo].[permissions]
-        WHERE name IN ('FORM_COMPLAINTS');
+        WHERE name IN ('FORM_CHANGE_PASS', 'FORM_PREFERENCES');
     END;
 
     -- Coordinador (4)
@@ -164,7 +165,7 @@ BEGIN TRY
     BEGIN
         INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
         SELECT @coordinadorId, id FROM [dbo].[permissions]
-        WHERE name IN ('FORM_USER_MGMT', 'FORM_ROLE_MGMT', 'FORM_COMPLAINTS', 'FORM_REPORTS');
+        WHERE name IN ('FORM_CHANGE_PASS', 'FORM_PREFERENCES');
     END;
 
     -- =============================================

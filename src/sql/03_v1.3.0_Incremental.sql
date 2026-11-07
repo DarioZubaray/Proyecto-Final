@@ -4,8 +4,9 @@ GO
 -- =============================================
 -- MIGRACION v1.3.0 (incremental)
 --
--- Aplica sobre la base v1 (01_v1.0.0_CreateTables +
--- 02_v1.0.0_SeedData) todas las mejoras de esquema y
+-- Aplica sobre la base v1 (01_v1.0.0_CreateTables, con
+-- datos core: roles, permisos y usuario admin; el seed
+-- demo 02 es opcional) todas las mejoras de esquema y
 -- datos del sistema, consolidando en un solo script las
 -- migraciones historicas:
 --
@@ -23,14 +24,19 @@ GO
 --   9. v1.8.0 Respaldo y restauracion
 --      (FORM_BACKUP_MGMT)
 --  10. v1.9.0 Alta de tickets
---      (FORM_TICKET_CREATE: Coordinador y Profesor)
+--      (FORM_TICKET_CREATE: Admin, Coordinador y
+--       Profesor - CU-10; la seccion solo asignaba
+--       Coordinador y Profesor y excluia a Admin,
+--       el lote de alineacion final lo corrige)
 --
 -- Todas las secciones son idempotentes: el script puede
 -- ejecutarse sobre una base v1, sobre una base con
 -- migraciones legadas o repetirse sin efecto. Registra la
 -- version '1.3.0' en [schema_versions].
 --
--- Uso: 01 -> 02 -> 03   (o el consolidado 05 en un paso)
+-- Uso: 01 -> 03   (instalacion / actualizacion)
+--      01 -> 02 -> 03   (demo, con datos de prueba)
+--      05 consolidado en un paso (atajo dev)
 -- Rollback: 04_v1.3.0_Rollback.sql
 -- =============================================
 
@@ -537,23 +543,34 @@ BEGIN
               AND NOT EXISTS (SELECT 1 FROM [dbo].[students] s WHERE s.[id] = u.[id]);
 
             SET IDENTITY_INSERT [dbo].[students] OFF;
+        END;
 
-            -- Repuntar FKs de course_students/attendance
-            IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_course_students_users')
-                ALTER TABLE [dbo].[course_students] DROP CONSTRAINT [fk_course_students_users];
+        -- 6.2b Repuntar FKs de course_students y attendance a students
+        --     (corre siempre, idempotente): en instalacion fresca las
+        --     tablas estan vacias; en demo se ejecuta con students ya
+        --     poblado y antes de eliminar los usuarios-alumno; en bases
+        --     ya migradas es no-op. Sin esto, una base recien instalada
+        --     quedaria con FK hacia users y el alta de
+        --     inscripciones/asistencia fallaria en runtime.
+        IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_course_students_users')
+            ALTER TABLE [dbo].[course_students] DROP CONSTRAINT [fk_course_students_users];
 
-            IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_attendance_users')
-                ALTER TABLE [dbo].[attendance] DROP CONSTRAINT [fk_attendance_users];
+        IF EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_attendance_users')
+            ALTER TABLE [dbo].[attendance] DROP CONSTRAINT [fk_attendance_users];
 
-            IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_course_students_students')
-                ALTER TABLE [dbo].[course_students] WITH CHECK
-                    ADD CONSTRAINT [fk_course_students_students] FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]);
+        IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_course_students_students')
+            ALTER TABLE [dbo].[course_students] WITH CHECK
+                ADD CONSTRAINT [fk_course_students_students] FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]);
 
-            IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_attendance_students')
-                ALTER TABLE [dbo].[attendance] WITH CHECK
-                    ADD CONSTRAINT [fk_attendance_students] FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]);
+        IF NOT EXISTS (SELECT 1 FROM sys.foreign_keys WHERE [name] = 'fk_attendance_students')
+            ALTER TABLE [dbo].[attendance] WITH CHECK
+                ADD CONSTRAINT [fk_attendance_students] FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]);
 
-            -- Eliminar usuarios-alumno y rol Alumno
+        -- 6.2c Eliminar usuarios-alumno y rol Alumno
+        --     (solo si existen; en instalacion fresca no hay)
+        IF EXISTS (SELECT 1 FROM [dbo].[roles] WHERE [id] = 3 AND [name] = 'Alumno')
+        AND EXISTS (SELECT 1 FROM [dbo].[users] WHERE [role_id] = 3)
+        BEGIN
             -- (dependencias FK primero: tickets y bitacora)
             DELETE t
             FROM [dbo].[tickets] t
@@ -902,9 +919,22 @@ BEGIN
     JOIN [dbo].[permissions] p ON p.[name] = 'FORM_CLASSROOM_MGMT'
     WHERE r.[name] IN ('Admin', 'Coordinador')
       AND NOT EXISTS (
-        SELECT 1 FROM [dbo].[role_permissions] rp
-        WHERE rp.[role_id] = r.[id] AND rp.[permission_id] = p.[id]
-    );
+          SELECT 1 FROM [dbo].[role_permissions] rp
+          WHERE rp.[role_id] = r.[id] AND rp.[permission_id] = p.[id]
+      );
+
+    -- CU-10: Admin tambien crea tickets (CREATE: Admin,
+    -- Coordinador y Profesor). La seccion v1.9 del cuerpo
+    -- lo excluia; Director queda sin alta de tickets.
+    INSERT INTO [dbo].[role_permissions] ([role_id], [permission_id])
+    SELECT r.[id], p.[id]
+    FROM [dbo].[roles] r
+    JOIN [dbo].[permissions] p ON p.[name] = 'FORM_TICKET_CREATE'
+    WHERE r.[name] = 'Admin'
+      AND NOT EXISTS (
+          SELECT 1 FROM [dbo].[role_permissions] rp
+          WHERE rp.[role_id] = r.[id] AND rp.[permission_id] = p.[id]
+      );
 
     DELETE rp
     FROM [dbo].[role_permissions] rp

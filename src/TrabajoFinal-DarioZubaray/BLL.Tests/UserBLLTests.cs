@@ -409,6 +409,27 @@ namespace BLL.Tests
             Assert.IsFalse(user.IsActive);
             Assert.AreEqual(3, user.RetriesCount);
         }
+
+        [TestMethod]
+        public void HasRegisteredUsers_WhenOtherUsersExist_ReturnsTrue()
+        {
+            _mockUserMPP
+                .Setup(m => m.CountExceptUserName(UserBLL.ADMIN_USERNAME))
+                .Returns(3);
+
+            Assert.IsTrue(_userBLL.HasRegisteredUsers());
+            _mockUserMPP.Verify(m => m.CountExceptUserName(UserBLL.ADMIN_USERNAME), Times.Once);
+        }
+
+        [TestMethod]
+        public void HasRegisteredUsers_WhenOnlyDefaultAdmin_ReturnsFalse()
+        {
+            _mockUserMPP
+                .Setup(m => m.CountExceptUserName(UserBLL.ADMIN_USERNAME))
+                .Returns(0);
+
+            Assert.IsFalse(_userBLL.HasRegisteredUsers());
+        }
         #endregion
     }
 }

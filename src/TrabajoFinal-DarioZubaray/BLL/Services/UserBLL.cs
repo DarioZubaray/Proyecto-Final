@@ -139,6 +139,11 @@ namespace BLL.Services
         {
             return _userMPP.CountByRoleId(roleId);
         }
+
+        public bool HasRegisteredUsers()
+        {
+            return _userMPP.CountExceptUserName(ADMIN_USERNAME) > 0;
+        }
         #endregion
     }
 }

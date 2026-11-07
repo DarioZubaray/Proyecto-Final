@@ -14,11 +14,19 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 
 ## Instalación
 
-### Opción A — Script maestro (recomendada)
+### Opción A — Instalador `.exe` (recomendada)
+
+El instalador de escritorio (`installer/Output/Setup-TrabajoFinal-offline.exe` o `Setup-TrabajoFinal-online.exe`) crea la base automáticamente: ejecuta `01` + `03` sobre la base indicada en el asistente (por defecto `DarioZubaray_TF`). **No ejecuta `02` ni `05`** (`05` es un script maestro destructivo pensado para demo/manual, no para el instalador).
+
+La instalación deja el **administrador por defecto** `admin` / `admin` (creado por `01`), que sirve para el primer inicio de sesión; es además la cuenta que puede desbloquear la auditoría de integridad (DVH) si el sistema detecta filas alteradas fuera de la aplicación.
+
+Para desarrollo manual existen dos caminos:
+
+### Opción B — Script maestro (un solo paso)
 
 1. Ejecutar [`05_v1.3.0_ScriptConsolidado.sql`](05_v1.3.0_ScriptConsolidado.sql). Crea la base `DarioZubaray_TF` si no existe, la deja con el esquema y los datos finales (v1.3.0) en un solo paso.
 
-### Opción B — Scripts por pasos (migraciones)
+### Opción C — Scripts por pasos (migraciones)
 
 ```sql
 -- 1. Esquema base
@@ -31,7 +39,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 03_v1.3.0_Incremental.sql
 ```
 
-Ambas opciones dejan la base en el mismo esquema (16 tablas) y con la misma matriz final de permisos por rol (19 permisos); `03_v1.3.0_Incremental.sql` es idempotente: su lote de migración no se re-ejecuta si `1.3.0` ya fue aplicada, y su lote final de alineación de permisos corre siempre sin duplicar filas. Los datos de prueba difieren entre ambas opciones (el seed de `02` conserva los usuarios y cursos originales; `05` trae el seed actualizado).
+Las tres opciones dejan la base en el mismo esquema (16 tablas) y con la misma matriz final de permisos por rol (19 permisos); `03_v1.3.0_Incremental.sql` es idempotente: su lote de migración no se re-ejecuta si `1.3.0` ya fue aplicada, y su lote final de alineación de permisos corre siempre sin duplicar filas. Los datos de prueba difieren entre las opciones manuales (el seed de `02` conserva los usuarios y cursos originales; `05` trae el seed actualizado); el instalador no carga datos de prueba más allá del administrador por defecto.
 
 ### Rollback
 

@@ -17,5 +17,6 @@ namespace BLL.Interfaces
         bool UpdateTheme(int userId, string theme);
         bool ChangePassword(int userId, string currentPassword, string newPassword);
         int CountByRoleId(int roleId);
+        bool HasRegisteredUsers();
     }
 }
