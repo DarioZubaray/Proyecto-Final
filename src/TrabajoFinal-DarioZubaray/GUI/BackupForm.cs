@@ -1,10 +1,10 @@
-using System;
-using System.Windows.Forms;
-
 using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
+using System;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -30,9 +30,11 @@ namespace TrabajoFinal_DarioZubaray
         private void ApplyResources()
         {
             this.Text = Resources.BackupForm_Title;
+            groupBox1.Text = Resources.BackupForm_Title;
             lblInfo.Text = Resources.BackupForm_InfoLabel;
             btnGenerate.Text = Resources.BackupForm_GenerateButton;
             btnRestore.Text = Resources.BackupForm_RestoreButton;
+            btnRestoreScript.Text = Resources.BackupForm_RestoreScriptButton;
         }
         #endregion
 
@@ -89,6 +91,34 @@ namespace TrabajoFinal_DarioZubaray
                 catch (Exception ex)
                 {
                     MessageBox.Show(Resources.BackupForm_RestoreError + " " + ex.Message,
+                        this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void btnRestoreScript_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Filter = Resources.BackupForm_ScriptFilter;
+                dialog.DefaultExt = "sql";
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    if (_backupBLL.RestoreFromScript(dialog.FileName))
+                    {
+                        MessageBox.Show(Resources.BackupForm_ScriptRestored, this.Text,
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(Resources.BackupForm_RestoreScriptError + " " + ex.Message,
                         this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }

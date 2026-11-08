@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using Microsoft.Data.SqlClient;
 
+using DAL;
 using MPP.Interfaces;
 
 namespace MPP
@@ -82,6 +83,14 @@ namespace MPP
 
                 return true;
             }
+        }
+
+        public bool RestoreFromScript(string scriptPath)
+        {
+            var runner = new SqlScriptRunner(_connectionString);
+            runner.EnsureDatabase();
+            runner.RunFile(scriptPath);
+            return true;
         }
         #endregion
 

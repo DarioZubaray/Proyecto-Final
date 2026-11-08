@@ -4,5 +4,6 @@ namespace BLL.Interfaces
     {
         bool CreateBackup(string filePath);
         bool RestoreBackup(string filePath);
+        bool RestoreFromScript(string scriptPath);
     }
 }

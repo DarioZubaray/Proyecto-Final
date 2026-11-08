@@ -64,5 +64,26 @@ namespace BLL.Tests
 
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void RestoreFromScript_DelegatesToMPP_AndReturnsTrue()
+        {
+            _mockBackupMPP.Setup(m => m.RestoreFromScript("C:\\scripts\\seed.sql")).Returns(true);
+
+            bool result = _backupBLL.RestoreFromScript("C:\\scripts\\seed.sql");
+
+            Assert.IsTrue(result);
+            _mockBackupMPP.Verify(m => m.RestoreFromScript("C:\\scripts\\seed.sql"), Times.Once);
+        }
+
+        [TestMethod]
+        public void RestoreFromScript_ReturnsFalse_WhenMPPFails()
+        {
+            _mockBackupMPP.Setup(m => m.RestoreFromScript(It.IsAny<string>())).Returns(false);
+
+            bool result = _backupBLL.RestoreFromScript("C:\\scripts\\seed.sql");
+
+            Assert.IsFalse(result);
+        }
     }
 }

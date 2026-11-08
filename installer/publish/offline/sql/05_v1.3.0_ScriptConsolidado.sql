@@ -417,7 +417,7 @@ BEGIN TRY
     INNER JOIN [dbo].[courses] c ON c.id = t.course_num
     INNER JOIN [dbo].[users] u ON u.user_name = t.user_name;
 
-    -- 10.4 Inscripciones (los alumnos son la entidad students)
+    -- 10.4 Inscripciones
     INSERT INTO [dbo].[course_students] (course_id, student_id, is_active, created_at)
     SELECT c.id, s.id, 1, GETDATE()
     FROM (VALUES

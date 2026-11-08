@@ -1362,8 +1362,20 @@
   <data name="BackupForm_Filter" xml:space="preserve">
     <value>Backup SQL (*.bak)|*.bak</value>
   </data>
+  <data name="BackupForm_RestoreScriptButton" xml:space="preserve">
+    <value>Restaurar a partir de script</value>
+  </data>
+  <data name="BackupForm_ScriptFilter" xml:space="preserve">
+    <value>Script SQL (*.sql)|*.sql</value>
+  </data>
+  <data name="BackupForm_ScriptRestored" xml:space="preserve">
+    <value>Script executado com sucesso. Dados de demonstração carregados.</value>
+  </data>
+  <data name="BackupForm_RestoreScriptError" xml:space="preserve">
+    <value>Erro ao executar o script:</value>
+  </data>
   <data name="BackupForm_InfoLabel" xml:space="preserve">
-    <value>Gere um backup do banco de dados ou restaure a partir de um arquivo .bak</value>
+    <value>Gere um backup, restaure a partir de um arquivo .bak ou carregue um script .sql</value>
   </data>
   <data name="UserForm_UserNameTaken" xml:space="preserve">
     <value>O nome de usuário não está disponível.</value>

@@ -4,5 +4,6 @@ namespace MPP.Interfaces
     {
         bool CreateBackup(string filePath);
         bool RestoreBackup(string filePath);
+        bool RestoreFromScript(string scriptPath);
     }
 }

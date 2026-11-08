@@ -2921,6 +2921,30 @@ namespace BE.Properties {
             }
         }
         
+        public static string BackupForm_RestoreScriptButton {
+            get {
+                return ResourceManager.GetString("BackupForm_RestoreScriptButton", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_ScriptFilter {
+            get {
+                return ResourceManager.GetString("BackupForm_ScriptFilter", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_ScriptRestored {
+            get {
+                return ResourceManager.GetString("BackupForm_ScriptRestored", resourceCulture);
+            }
+        }
+        
+        public static string BackupForm_RestoreScriptError {
+            get {
+                return ResourceManager.GetString("BackupForm_RestoreScriptError", resourceCulture);
+            }
+        }
+        
         public static string Register_Title {
             get {
                 return ResourceManager.GetString("Register_Title", resourceCulture);

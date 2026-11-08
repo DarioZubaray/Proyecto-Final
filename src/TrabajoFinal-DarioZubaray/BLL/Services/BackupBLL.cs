@@ -26,6 +26,11 @@ namespace BLL.Services
         {
             return _backupMPP.RestoreBackup(filePath);
         }
+
+        public bool RestoreFromScript(string scriptPath)
+        {
+            return _backupMPP.RestoreFromScript(scriptPath);
+        }
         #endregion
     }
 }

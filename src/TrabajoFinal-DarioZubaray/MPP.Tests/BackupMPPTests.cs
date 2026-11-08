@@ -111,5 +111,38 @@ namespace MPP.Tests
             object gradesAfterRestore = ExecuteScalar("SELECT COUNT(*) FROM grades");
             Assert.AreEqual(2, Convert.ToInt32(gradesAfterRestore));
         }
+
+        [TestMethod]
+        public void RestoreFromScript_ExecutesScriptAndLoadsData()
+        {
+            string scriptPath = Path.Combine(Path.GetTempPath(), "TF_DarioZubaray_TestSeed.sql");
+            File.WriteAllText(scriptPath,
+                "INSERT INTO classrooms (name, capacity, is_active, created_at, last_update) VALUES ('Aula Script', 25, 1, GETDATE(), GETDATE());" +
+                Environment.NewLine + "GO",
+                System.Text.Encoding.UTF8);
+
+            try
+            {
+                bool result = _backupMPP.RestoreFromScript(scriptPath);
+
+                Assert.IsTrue(result);
+                object count = ExecuteScalar(
+                    "SELECT COUNT(*) FROM classrooms WHERE name = 'Aula Script'");
+                Assert.AreEqual(1, Convert.ToInt32(count));
+            }
+            finally
+            {
+                File.Delete(scriptPath);
+            }
+        }
+
+        [TestMethod]
+        public void RestoreFromScript_Throws_WhenScriptFileDoesNotExist()
+        {
+            string missingPath = Path.Combine(Path.GetTempPath(), "TF_DarioZubaray_NoExiste.sql");
+
+            Assert.ThrowsException<FileNotFoundException>(
+                () => _backupMPP.RestoreFromScript(missingPath));
+        }
     }
 }
