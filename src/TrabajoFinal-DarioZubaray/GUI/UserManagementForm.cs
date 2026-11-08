@@ -178,6 +178,35 @@ namespace TrabajoFinal_DarioZubaray
                 e.SuppressKeyPress = true;
             }
         }
+
+        private void dgvUsersRoleCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvUsers.Columns[e.ColumnIndex].Name == "RoleId" && e.Value != null)
+            {
+                if (int.TryParse(e.Value.ToString(), out int roleId))
+                {
+                    switch (roleId)
+                    {
+                        case 1:
+                            e.Value = "ADMIN";
+                            break;
+                        case 2:
+                            e.Value = "COOR";
+                            break;
+                        case 3:
+                            e.Value = "PROF";
+                            break;
+                        case 4:
+                            e.Value = "DIR";
+                            break;
+                        default:
+                            e.Value = "UNKOWN";
+                            break;
+                    }
+                    e.FormattingApplied = true;
+                }
+            }
+        }
         #endregion
     }
 }
