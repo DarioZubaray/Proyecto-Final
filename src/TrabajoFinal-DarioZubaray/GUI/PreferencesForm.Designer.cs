@@ -1,4 +1,4 @@
-﻿
+
 namespace TrabajoFinal_DarioZubaray
 {
     partial class PreferencesForm
@@ -29,84 +29,94 @@ namespace TrabajoFinal_DarioZubaray
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.cbLanguage = new System.Windows.Forms.ComboBox();
-            this.lblLanguage = new System.Windows.Forms.Label();
-            this.lblTheme = new System.Windows.Forms.Label();
-            this.cbTheme = new System.Windows.Forms.ComboBox();
-            this.groupBox1.SuspendLayout();
-            this.SuspendLayout();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            lblTheme = new System.Windows.Forms.Label();
+            cbTheme = new System.Windows.Forms.ComboBox();
+            btnSave = new System.Windows.Forms.Button();
+            cbLanguage = new System.Windows.Forms.ComboBox();
+            lblLanguage = new System.Windows.Forms.Label();
+            groupBox1.SuspendLayout();
+            SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.lblTheme);
-            this.groupBox1.Controls.Add(this.cbTheme);
-            this.groupBox1.Controls.Add(this.btnSave);
-            this.groupBox1.Controls.Add(this.cbLanguage);
-            this.groupBox1.Controls.Add(this.lblLanguage);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(360, 220);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "☺";
-            // 
-            // btnSave
-            // 
-            this.btnSave.Location = new System.Drawing.Point(140, 175);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 4;
-            this.btnSave.Text = "Guardar";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // cbLanguage
-            // 
-            this.cbLanguage.FormattingEnabled = true;
-            this.cbLanguage.Location = new System.Drawing.Point(140, 26);
-            this.cbLanguage.Name = "cbLanguage";
-            this.cbLanguage.Size = new System.Drawing.Size(200, 21);
-            this.cbLanguage.TabIndex = 1;
-            // 
-            // lblLanguage
-            // 
-            this.lblLanguage.AutoSize = true;
-            this.lblLanguage.Location = new System.Drawing.Point(18, 29);
-            this.lblLanguage.Name = "lblLanguage";
-            this.lblLanguage.Size = new System.Drawing.Size(38, 13);
-            this.lblLanguage.TabIndex = 0;
-            this.lblLanguage.Text = "Idioma";
+            groupBox1.Controls.Add(lblTheme);
+            groupBox1.Controls.Add(cbTheme);
+            groupBox1.Controls.Add(btnSave);
+            groupBox1.Controls.Add(cbLanguage);
+            groupBox1.Controls.Add(lblLanguage);
+            groupBox1.Location = new System.Drawing.Point(14, 14);
+            groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            groupBox1.Size = new System.Drawing.Size(420, 196);
+            groupBox1.TabIndex = 0;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "☺";
             // 
             // lblTheme
             // 
-            this.lblTheme.AutoSize = true;
-            this.lblTheme.Location = new System.Drawing.Point(18, 75);
-            this.lblTheme.Name = "lblTheme";
-            this.lblTheme.Size = new System.Drawing.Size(32, 13);
-            this.lblTheme.TabIndex = 2;
-            this.lblTheme.Text = "Tema";
+            lblTheme.AutoSize = true;
+            lblTheme.Location = new System.Drawing.Point(21, 87);
+            lblTheme.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblTheme.Name = "lblTheme";
+            lblTheme.Size = new System.Drawing.Size(35, 15);
+            lblTheme.TabIndex = 2;
+            lblTheme.Text = "Tema";
             // 
             // cbTheme
             // 
-            this.cbTheme.FormattingEnabled = true;
-            this.cbTheme.Location = new System.Drawing.Point(140, 72);
-            this.cbTheme.Name = "cbTheme";
-            this.cbTheme.Size = new System.Drawing.Size(200, 21);
-            this.cbTheme.TabIndex = 3;
+            cbTheme.FormattingEnabled = true;
+            cbTheme.Location = new System.Drawing.Point(163, 83);
+            cbTheme.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbTheme.Name = "cbTheme";
+            cbTheme.Size = new System.Drawing.Size(233, 23);
+            cbTheme.TabIndex = 3;
+            // 
+            // btnSave
+            // 
+            btnSave.Location = new System.Drawing.Point(163, 153);
+            btnSave.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSave.Name = "btnSave";
+            btnSave.Size = new System.Drawing.Size(88, 27);
+            btnSave.TabIndex = 4;
+            btnSave.Text = "Guardar";
+            btnSave.UseVisualStyleBackColor = true;
+            btnSave.Click += btnSave_Click;
+            // 
+            // cbLanguage
+            // 
+            cbLanguage.FormattingEnabled = true;
+            cbLanguage.Location = new System.Drawing.Point(163, 30);
+            cbLanguage.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            cbLanguage.Name = "cbLanguage";
+            cbLanguage.Size = new System.Drawing.Size(233, 23);
+            cbLanguage.TabIndex = 1;
+            // 
+            // lblLanguage
+            // 
+            lblLanguage.AutoSize = true;
+            lblLanguage.Location = new System.Drawing.Point(21, 33);
+            lblLanguage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblLanguage.Name = "lblLanguage";
+            lblLanguage.Size = new System.Drawing.Size(44, 15);
+            lblLanguage.TabIndex = 0;
+            lblLanguage.Text = "Idioma";
             // 
             // PreferencesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(384, 241);
-            this.Controls.Add(this.groupBox1);
-            this.Name = "PreferencesForm";
-            this.Text = "Preferences";
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(449, 231);
+            Controls.Add(groupBox1);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            MaximizeBox = false;
+            MinimizeBox = false;
+            Name = "PreferencesForm";
+            Text = "Preferences";
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
+            ResumeLayout(false);
 
         }
 

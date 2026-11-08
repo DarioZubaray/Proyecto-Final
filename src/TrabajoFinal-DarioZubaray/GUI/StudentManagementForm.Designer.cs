@@ -18,127 +18,137 @@ namespace TrabajoFinal_DarioZubaray
 
         private void InitializeComponent()
         {
-            this.dgvStudents = new System.Windows.Forms.DataGridView();
-            this.btnNew = new System.Windows.Forms.Button();
-            this.btnEdit = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.txtSearch = new System.Windows.Forms.TextBox();
-            this.lblSearch = new System.Windows.Forms.Label();
-            this.btnSearch = new System.Windows.Forms.Button();
-            this.panelTop = new System.Windows.Forms.Panel();
-            this.panelButtons = new System.Windows.Forms.Panel();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).BeginInit();
-            this.panelTop.SuspendLayout();
-            this.panelButtons.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // panelTop
-            // 
-            this.panelTop.Controls.Add(this.lblSearch);
-            this.panelTop.Controls.Add(this.txtSearch);
-            this.panelTop.Controls.Add(this.btnSearch);
-            this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTop.Location = new System.Drawing.Point(0, 0);
-            this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(750, 40);
-            this.panelTop.TabIndex = 0;
-            // 
-            // lblSearch
-            // 
-            this.lblSearch.AutoSize = true;
-            this.lblSearch.Location = new System.Drawing.Point(12, 12);
-            this.lblSearch.Name = "lblSearch";
-            this.lblSearch.Size = new System.Drawing.Size(130, 13);
-            this.lblSearch.TabIndex = 0;
-            this.lblSearch.Text = "Nombre, apellido o DNI:";
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Location = new System.Drawing.Point(160, 9);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(200, 20);
-            this.txtSearch.TabIndex = 1;
-            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.Location = new System.Drawing.Point(370, 7);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 23);
-            this.btnSearch.TabIndex = 2;
-            this.btnSearch.Text = "Buscar";
-            this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
-            // 
-            // panelButtons
-            // 
-            this.panelButtons.Controls.Add(this.btnNew);
-            this.panelButtons.Controls.Add(this.btnEdit);
-            this.panelButtons.Controls.Add(this.btnDelete);
-            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 360);
-            this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(750, 40);
-            this.panelButtons.TabIndex = 1;
-            // 
-            // btnNew
-            // 
-            this.btnNew.Location = new System.Drawing.Point(12, 8);
-            this.btnNew.Name = "btnNew";
-            this.btnNew.Size = new System.Drawing.Size(75, 23);
-            this.btnNew.TabIndex = 0;
-            this.btnNew.Text = "Nuevo";
-            this.btnNew.UseVisualStyleBackColor = true;
-            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
-            // 
-            // btnEdit
-            // 
-            this.btnEdit.Location = new System.Drawing.Point(93, 8);
-            this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(75, 23);
-            this.btnEdit.TabIndex = 1;
-            this.btnEdit.Text = "Editar";
-            this.btnEdit.UseVisualStyleBackColor = true;
-            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(174, 8);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(75, 23);
-            this.btnDelete.TabIndex = 2;
-            this.btnDelete.Text = "Eliminar";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            dgvStudents = new System.Windows.Forms.DataGridView();
+            btnNew = new System.Windows.Forms.Button();
+            btnEdit = new System.Windows.Forms.Button();
+            btnDelete = new System.Windows.Forms.Button();
+            txtSearch = new System.Windows.Forms.TextBox();
+            lblSearch = new System.Windows.Forms.Label();
+            btnSearch = new System.Windows.Forms.Button();
+            panelTop = new System.Windows.Forms.Panel();
+            panelButtons = new System.Windows.Forms.Panel();
+            ((System.ComponentModel.ISupportInitialize)dgvStudents).BeginInit();
+            panelTop.SuspendLayout();
+            panelButtons.SuspendLayout();
+            SuspendLayout();
             // 
             // dgvStudents
             // 
-            this.dgvStudents.AllowUserToAddRows = false;
-            this.dgvStudents.AllowUserToDeleteRows = false;
-            this.dgvStudents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStudents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvStudents.Location = new System.Drawing.Point(0, 40);
-            this.dgvStudents.Name = "dgvStudents";
-            this.dgvStudents.ReadOnly = true;
-            this.dgvStudents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvStudents.Size = new System.Drawing.Size(750, 320);
-            this.dgvStudents.TabIndex = 2;
+            dgvStudents.AllowUserToAddRows = false;
+            dgvStudents.AllowUserToDeleteRows = false;
+            dgvStudents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvStudents.Dock = System.Windows.Forms.DockStyle.Fill;
+            dgvStudents.Location = new System.Drawing.Point(0, 46);
+            dgvStudents.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            dgvStudents.Name = "dgvStudents";
+            dgvStudents.ReadOnly = true;
+            dgvStudents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            dgvStudents.Size = new System.Drawing.Size(875, 370);
+            dgvStudents.TabIndex = 2;
+            // 
+            // btnNew
+            // 
+            btnNew.Location = new System.Drawing.Point(14, 9);
+            btnNew.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnNew.Name = "btnNew";
+            btnNew.Size = new System.Drawing.Size(88, 27);
+            btnNew.TabIndex = 0;
+            btnNew.Text = "Nuevo";
+            btnNew.UseVisualStyleBackColor = true;
+            btnNew.Click += btnNew_Click;
+            // 
+            // btnEdit
+            // 
+            btnEdit.Location = new System.Drawing.Point(108, 9);
+            btnEdit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new System.Drawing.Size(88, 27);
+            btnEdit.TabIndex = 1;
+            btnEdit.Text = "Editar";
+            btnEdit.UseVisualStyleBackColor = true;
+            btnEdit.Click += btnEdit_Click;
+            // 
+            // btnDelete
+            // 
+            btnDelete.Location = new System.Drawing.Point(203, 9);
+            btnDelete.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new System.Drawing.Size(88, 27);
+            btnDelete.TabIndex = 2;
+            btnDelete.Text = "Eliminar";
+            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.Click += btnDelete_Click;
+            // 
+            // txtSearch
+            // 
+            txtSearch.Location = new System.Drawing.Point(187, 10);
+            txtSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            txtSearch.Name = "txtSearch";
+            txtSearch.Size = new System.Drawing.Size(233, 23);
+            txtSearch.TabIndex = 1;
+            txtSearch.KeyDown += txtSearch_KeyDown;
+            // 
+            // lblSearch
+            // 
+            lblSearch.AutoSize = true;
+            lblSearch.Location = new System.Drawing.Point(14, 14);
+            lblSearch.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblSearch.Name = "lblSearch";
+            lblSearch.Size = new System.Drawing.Size(135, 15);
+            lblSearch.TabIndex = 0;
+            lblSearch.Text = "Nombre, apellido o DNI:";
+            // 
+            // btnSearch
+            // 
+            btnSearch.Location = new System.Drawing.Point(432, 8);
+            btnSearch.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnSearch.Name = "btnSearch";
+            btnSearch.Size = new System.Drawing.Size(88, 27);
+            btnSearch.TabIndex = 2;
+            btnSearch.Text = "Buscar";
+            btnSearch.UseVisualStyleBackColor = true;
+            btnSearch.Click += btnSearch_Click;
+            // 
+            // panelTop
+            // 
+            panelTop.Controls.Add(lblSearch);
+            panelTop.Controls.Add(txtSearch);
+            panelTop.Controls.Add(btnSearch);
+            panelTop.Dock = System.Windows.Forms.DockStyle.Top;
+            panelTop.Location = new System.Drawing.Point(0, 0);
+            panelTop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelTop.Name = "panelTop";
+            panelTop.Size = new System.Drawing.Size(875, 46);
+            panelTop.TabIndex = 0;
+            // 
+            // panelButtons
+            // 
+            panelButtons.Controls.Add(btnNew);
+            panelButtons.Controls.Add(btnEdit);
+            panelButtons.Controls.Add(btnDelete);
+            panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            panelButtons.Location = new System.Drawing.Point(0, 416);
+            panelButtons.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            panelButtons.Name = "panelButtons";
+            panelButtons.Size = new System.Drawing.Size(875, 46);
+            panelButtons.TabIndex = 1;
             // 
             // StudentManagementForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(750, 400);
-            this.Controls.Add(this.dgvStudents);
-            this.Controls.Add(this.panelButtons);
-            this.Controls.Add(this.panelTop);
-            this.Name = "StudentManagementForm";
-            this.Text = "Gestión de Alumnos";
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStudents)).EndInit();
-            this.panelTop.ResumeLayout(false);
-            this.panelTop.PerformLayout();
-            this.panelButtons.ResumeLayout(false);
-            this.ResumeLayout(false);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(875, 462);
+            Controls.Add(dgvStudents);
+            Controls.Add(panelButtons);
+            Controls.Add(panelTop);
+            Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            Name = "StudentManagementForm";
+            Text = "Gestión de Alumnos";
+            ((System.ComponentModel.ISupportInitialize)dgvStudents).EndInit();
+            panelTop.ResumeLayout(false);
+            panelTop.PerformLayout();
+            panelButtons.ResumeLayout(false);
+            ResumeLayout(false);
 
         }
 

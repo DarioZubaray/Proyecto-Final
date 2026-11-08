@@ -1135,7 +1135,7 @@
     <value>Gestão de Alunos</value>
   </data>
   <data name="StudentManagementForm_SearchLabel" xml:space="preserve">
-    <value>Nome, sobrenome ou documento:</value>
+    <value>Nome ou documento:</value>
   </data>
   <data name="StudentManagementForm_SearchButton" xml:space="preserve">
     <value>Buscar</value>
