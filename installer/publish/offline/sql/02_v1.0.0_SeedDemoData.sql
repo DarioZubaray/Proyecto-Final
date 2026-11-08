@@ -181,6 +181,6 @@ INNER JOIN [dbo].[courses] c ON c.id = a.course_num
 INNER JOIN [dbo].[students] s ON (s.[first_name] + '_' + s.[last_name]) = a.student_name;
 
 -- Ticket
-INSERT INTO [dbo].[tickets] (user_id, subject, description, is_closed, closed_at, closed_by) VALUES
+INSERT INTO [dbo].[tickets] (user_id, subject, description, is_closed, created_at, closed_at, closed_by) VALUES
 (2, 'Open Ticket', 'This is an example of an open ticket created', 0, GETDATE(), NULL, NULL),
 (2, 'Closed ticket', 'this ticket was closed due to missing information', 1, GETDATE(), GETDATE(), 1);
