@@ -475,6 +475,118 @@ BEGIN TRY
     INNER JOIN [dbo].[courses] c ON c.id = a.course_num
     INNER JOIN [dbo].[students] s ON (s.[first_name] + '_' + s.[last_name]) = a.student_name;
 
+    -- 10.6 Asistencia - sesiones semanales (ago-oct)
+    -- 8 fechas por curso, alineadas al dia del curso y
+    -- dentro del rango 2026-08-01 .. 2026-12-31.
+    -- Presencia deterministica (~80%) por alumno y fecha.
+    ;WITH fechas AS (
+        SELECT 1 AS course_num, CAST('2026-08-17' AS DATE) AS d UNION ALL
+        SELECT 1, '2026-08-24' UNION ALL
+        SELECT 1, '2026-08-31' UNION ALL
+        SELECT 1, '2026-09-07' UNION ALL
+        SELECT 1, '2026-09-14' UNION ALL
+        SELECT 1, '2026-09-21' UNION ALL
+        SELECT 1, '2026-09-28' UNION ALL
+        SELECT 1, '2026-10-05' UNION ALL
+        SELECT 2, '2026-08-19' UNION ALL
+        SELECT 2, '2026-08-26' UNION ALL
+        SELECT 2, '2026-09-02' UNION ALL
+        SELECT 2, '2026-09-09' UNION ALL
+        SELECT 2, '2026-09-16' UNION ALL
+        SELECT 2, '2026-09-23' UNION ALL
+        SELECT 2, '2026-09-30' UNION ALL
+        SELECT 2, '2026-10-07' UNION ALL
+        SELECT 3, '2026-08-11' UNION ALL
+        SELECT 3, '2026-08-18' UNION ALL
+        SELECT 3, '2026-08-25' UNION ALL
+        SELECT 3, '2026-09-01' UNION ALL
+        SELECT 3, '2026-09-08' UNION ALL
+        SELECT 3, '2026-09-15' UNION ALL
+        SELECT 3, '2026-09-22' UNION ALL
+        SELECT 3, '2026-09-29' UNION ALL
+        SELECT 4, '2026-08-13' UNION ALL
+        SELECT 4, '2026-08-20' UNION ALL
+        SELECT 4, '2026-08-27' UNION ALL
+        SELECT 4, '2026-09-03' UNION ALL
+        SELECT 4, '2026-09-10' UNION ALL
+        SELECT 4, '2026-09-17' UNION ALL
+        SELECT 4, '2026-09-24' UNION ALL
+        SELECT 4, '2026-10-01' UNION ALL
+        SELECT 5, '2026-08-14' UNION ALL
+        SELECT 5, '2026-08-21' UNION ALL
+        SELECT 5, '2026-08-28' UNION ALL
+        SELECT 5, '2026-09-04' UNION ALL
+        SELECT 5, '2026-09-11' UNION ALL
+        SELECT 5, '2026-09-18' UNION ALL
+        SELECT 5, '2026-09-25' UNION ALL
+        SELECT 5, '2026-10-02'
+    )
+    INSERT INTO [dbo].[attendance] (course_id, student_id, date, is_present, created_at)
+    SELECT cs.course_id, cs.student_id, f.d,
+           CASE WHEN ((cs.student_id * 7 + cs.course_id * 3 + DATEDIFF(DAY, '2026-01-01', f.d)) % 10) < 8
+                THEN 1 ELSE 0 END,
+           GETDATE()
+    FROM fechas f
+    INNER JOIN [dbo].[course_students] cs
+            ON cs.course_id = f.course_num AND cs.is_active = 1
+    WHERE NOT EXISTS (
+        SELECT 1 FROM [dbo].[attendance] a
+        WHERE a.course_id = cs.course_id
+          AND a.student_id = cs.student_id
+          AND a.date = f.d
+    );
+
+    -- 10.7 Evaluaciones (3 por curso)
+    -- Creadas por el docente del curso, en el dia del
+    -- curso y dentro del rango 2026-08-01 .. 2026-12-31.
+    INSERT INTO [dbo].[evaluations] (course_id, name, date, created_by, created_at, last_update)
+    SELECT c.id, v.name, CAST(v.date AS DATE), u.id, GETDATE(), GETDATE()
+    FROM (VALUES
+        (1, 'Parcial 1', '2026-09-14', 'prof_brooks'),
+        (1, 'Parcial 2', '2026-10-19', 'prof_brooks'),
+        (1, 'Final',      '2026-12-14', 'prof_brooks'),
+        (2, 'Parcial 1', '2026-09-16', 'prof_conway'),
+        (2, 'Parcial 2', '2026-10-21', 'prof_conway'),
+        (2, 'Final',      '2026-12-16', 'prof_conway'),
+        (3, 'Parcial 1', '2026-09-15', 'prof_pareto'),
+        (3, 'Parcial 2', '2026-10-20', 'prof_pareto'),
+        (3, 'Final',      '2026-12-15', 'prof_pareto'),
+        (4, 'Parcial 1', '2026-09-17', 'prof_amdahl'),
+        (4, 'Parcial 2', '2026-10-22', 'prof_amdahl'),
+        (4, 'Final',      '2026-12-17', 'prof_amdahl'),
+        (5, 'Parcial 1', '2026-09-18', 'prof_murphy'),
+        (5, 'Parcial 2', '2026-10-23', 'prof_murphy'),
+        (5, 'Final',      '2026-12-18', 'prof_murphy')
+    ) AS v(course_num, name, date, teacher)
+    INNER JOIN [dbo].[courses] c ON c.id = v.course_num
+    INNER JOIN [dbo].[users] u ON u.user_name = v.teacher
+    WHERE NOT EXISTS (
+        SELECT 1 FROM [dbo].[evaluations] e
+        WHERE e.course_id = c.id
+          AND e.name = v.name
+    );
+
+    -- 10.8 Notas - una por alumno inscripto y evaluacion
+    -- Rango 4.00 a 10.00 (respeta ck_grades_range).
+    -- Se omiten 4 notas para mostrar alumnos con menos
+    -- notas que cantidad de evaluaciones en los informes.
+    INSERT INTO [dbo].[grades] (evaluation_id, student_id, grade)
+    SELECT e.id, cs.student_id,
+           CAST(4 + ((e.id * 13 + cs.student_id * 7) % 61) / 10.0 AS DECIMAL(4,2))
+    FROM [dbo].[evaluations] e
+    INNER JOIN [dbo].[course_students] cs
+            ON cs.course_id = e.course_id AND cs.is_active = 1
+    WHERE e.name IN ('Parcial 1', 'Parcial 2', 'Final')
+      AND NOT (
+            (e.name = 'Parcial 1' AND cs.student_id IN (3, 11)) OR
+            (e.name = 'Final'     AND cs.student_id IN (8, 14))
+      )
+      AND NOT EXISTS (
+            SELECT 1 FROM [dbo].[grades] g
+            WHERE g.evaluation_id = e.id
+              AND g.student_id = cs.student_id
+      );
+
     -- =============================================
     -- 11. Registrar versiones
     -- =============================================

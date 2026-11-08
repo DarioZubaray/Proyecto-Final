@@ -7,7 +7,7 @@ Scripts para crear, poblar y consultar la base de datos **`DarioZubaray_TF`** (S
 | Archivo | Descripción |
 |---------|-------------|
 | [`01_v1.0.0_CreateTables.sql`](01_v1.0.0_CreateTables.sql) | Esquema base: `roles`, `permissions`, `role_permissions`, `role_hierarchy`, `users`, `activity_logs`, `schema_versions`. |
-| [`02_v1.0.0_SeedData.sql`](02_v1.0.0_SeedData.sql) | Datos iniciales: 4 roles, 6 permisos, 25 usuarios de prueba (15 alumnos con `is_active = 0`: son datos, no actores del sistema) y la versión `1.0.0` en `schema_versions`. |
+| [`02_v1.0.0_SeedDemoData.sql`](02_v1.0.0_SeedDemoData.sql) | Datos demo: usuarios de prueba (dev, coordinadores, profesores y director), 15 alumnos, aulas, cursos con horario y docentes, inscripciones, asistencia semanal, evaluaciones (3 por curso) y notas. Idempotente por bloque: puede re-ejecutarse (p. ej. desde *Respaldo y Restauración → Restaurar desde script*). |
 | [`03_v1.3.0_Incremental.sql`](03_v1.3.0_Incremental.sql) | **Migración incremental a v1.3.0** (todo lo posterior a v1.0.0 en un solo paso idempotente): aulas/cursos/inscripciones/asistencia, permisos y rol Coordinador, DVH (`users.dvh` + backfill), tickets, alumnos pasan de `users` a la entidad `students` (rol Alumno eliminado, rol Director creado), `evaluations`/`grades`, permisos de informes, respaldo y alta de tickets. Registra `1.3.0` en `schema_versions`. |
 | [`04_v1.3.0_Rollback.sql`](04_v1.3.0_Rollback.sql) | **Rollback de v1.3.0**: devuelve la base al estado v1 (esquema y seed de `01`+`02`). Ver notas abajo. |
 | [`05_v1.3.0_ScriptConsolidado.sql`](05_v1.3.0_ScriptConsolidado.sql) | **Script maestro**: crea la base (si no existe), purga las tablas, crea el esquema completo (estado final v1.3.0), carga todos los datos y registra `1.0.0` y `1.3.0`. |
@@ -33,13 +33,13 @@ Para desarrollo manual existen dos caminos:
 01_v1.0.0_CreateTables.sql
 
 -- 2. Datos iniciales (v1.0.0)
-02_v1.0.0_SeedData.sql
+02_v1.0.0_SeedDemoData.sql
 
 -- 3. Migración incremental a v1.3.0
 03_v1.3.0_Incremental.sql
 ```
 
-Las tres opciones dejan la base en el mismo esquema (16 tablas) y con la misma matriz final de permisos por rol (19 permisos); `03_v1.3.0_Incremental.sql` es idempotente: su lote de migración no se re-ejecuta si `1.3.0` ya fue aplicada, y su lote final de alineación de permisos corre siempre sin duplicar filas. Los datos de prueba difieren entre las opciones manuales (el seed de `02` conserva los usuarios y cursos originales; `05` trae el seed actualizado); el instalador no carga datos de prueba más allá del administrador por defecto.
+Las tres opciones dejan la base en el mismo esquema (16 tablas) y con la misma matriz final de permisos por rol (19 permisos); `03_v1.3.0_Incremental.sql` es idempotente: su lote de migración no se re-ejecuta si `1.3.0` ya fue aplicada, y su lote final de alineación de permisos corre siempre sin duplicar filas. Los datos académicos de `02` y `05` son los mismos (alumnos, cursos, asistencia, evaluaciones y notas); `05` agrega además usuarios de prueba de bloqueo/reintentos; el instalador no carga datos de prueba más allá del administrador por defecto.
 
 ### Rollback
 
@@ -96,3 +96,15 @@ Los 5 permisos base (menú Archivo y Ayuda, `is_system = 0`, otorgados a **todos
 | Frances A1 | Aula 201 | Martes | 14:00-16:00 | pareto | 4 |
 | Portugues A1 | Laboratorio 1 | Jueves | 18:00-20:00 | amdahl, kirchhoff | 3 |
 | Italiano A1 | Aula 101 | Viernes | 09:00-11:00 | murphy | 2 |
+
+## Datos académicos del seed (informes del director)
+
+`02` y `05` cargan los mismos datos académicos que alimentan los informes (Rendimiento Académico, Asistencia por curso y Notas por curso):
+
+| Dato | Filas | Detalle |
+|------|-------|---------|
+| Asistencia | 161 | 2–10 sesiones por curso (ago–oct 2026), fechas alineadas al día del curso; presencia determinística (~80 %). |
+| Evaluaciones | 15 | `Parcial 1`, `Parcial 2` y `Final` por curso, creadas por el docente del curso. |
+| Notas | 47 | Una por alumno inscripto y evaluación (rango 4.00–10.00); se omiten 4 para mostrar alumnos con menos notas que evaluaciones. |
+
+Con esto los informes muestran porcentajes de asistencia, cantidades de notas y promedios desde la primera carga.
