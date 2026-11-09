@@ -32,10 +32,6 @@ namespace DAL
         #endregion
 
         #region Métodos
-        /// <summary>
-        /// Quita las sentencias USE (la base destino la define la cadena
-        /// de conexion) y divide el script en lotes por lineas GO.
-        /// </summary>
         public static List<string> SplitBatches(string script)
         {
             var batches = new List<string>();
@@ -80,10 +76,6 @@ namespace DAL
             current.Clear();
         }
 
-        /// <summary>
-        /// Crea la base de destino si no existe (01 asume que la base
-        /// ya esta creada). Lanza la excepcion original ante cualquier fallo.
-        /// </summary>
         public void EnsureDatabase()
         {
             var builder = new SqlConnectionStringBuilder(_connectionString);
@@ -112,10 +104,6 @@ namespace DAL
             }
         }
 
-        /// <summary>
-        /// Ejecuta un archivo .sql completo. Devuelve la cantidad de lotes
-        /// ejecutados. Lanza la excepcion original ante cualquier fallo.
-        /// </summary>
         public int RunFile(string path)
         {
             string script = File.ReadAllText(path, Encoding.UTF8);

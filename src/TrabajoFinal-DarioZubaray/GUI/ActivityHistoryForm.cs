@@ -39,7 +39,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
-        #region UI
+        #region Métodos UI
         private void InitializeControls()
         {
             this.Text = "Historial de Actividad";
@@ -153,7 +153,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
-        #region Data
+        #region Métodos
         private void LoadPage()
         {
             if (_user == null)

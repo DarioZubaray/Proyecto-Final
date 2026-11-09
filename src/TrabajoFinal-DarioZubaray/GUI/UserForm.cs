@@ -59,8 +59,6 @@ namespace TrabajoFinal_DarioZubaray
                 return false;
             }
 
-            // El admin no se renombra. Se valida antes de MapUserFromUI,
-            // porque este metodo pisa _user.UserName con el valor de la UI.
             if (!_isNewUser
                 && UserBLL.IsAdminName(_user.UserName)
                 && !UserBLL.IsAdminName(txtUserName.Text.Trim()))
@@ -143,13 +141,9 @@ namespace TrabajoFinal_DarioZubaray
             chkIsActive.Checked = _user.IsActive;
             cbRole.SelectedValue = _user.RoleId;
 
-            // El nombre del admin es fijo: no se puede renombrar desde la UI.
             if (UserBLL.IsAdminName(_user.UserName))
             {
                 txtUserName.ReadOnly = true;
-
-                // El rol define los permisos del admin y el estado es forzado
-                // por la BLL: no se modifican desde la UI.
                 cbRole.Enabled = false;
                 chkIsActive.Enabled = false;
             }

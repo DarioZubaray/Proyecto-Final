@@ -139,10 +139,14 @@ namespace TrabajoFinal_DarioZubaray
             }
 
             if (!ParseHorario(mtbStartTime, out TimeSpan horaInicio))
+            {
                 return false;
+            }
 
             if (!ParseHorario(mtbEndTime, out TimeSpan horaFin))
+            {
                 return false;
+            }
 
             if (horaInicio >= horaFin)
             {

@@ -5,12 +5,9 @@ using BE.Properties;
 
 namespace TrabajoFinal_DarioZubaray
 {
-    // Dialogo modal que solicita el codigo 2FA. La validacion la realiza la BLL
-    // (IAuthBLL.ValidateTwoFactor), delegando en ServiceLocatorBLL.CreateTwoFactorBLL().
     public partial class TwoFactorForm : Form
     {
         #region Propiedades
-        // Codigo ingresado por el usuario. Solo es valido si DialogResult == OK.
         public string Code { get; private set; }
         #endregion
 

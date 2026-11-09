@@ -62,7 +62,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private string GetDayOfWeekName(int? dia)
         {
-            if (!dia.HasValue) return "-";
+            if (!dia.HasValue)
+            {
+                return "-";
+            }
+
             switch (dia.Value)
             {
                 case 1: return Resources.Day_Monday;
@@ -98,7 +102,10 @@ namespace TrabajoFinal_DarioZubaray
 
         private void ConfigureGrid()
         {
-            if (dgvEnrollments.Columns.Count == 0) return;
+            if (dgvEnrollments.Columns.Count == 0)
+            {
+                return;
+            }
 
             dgvEnrollments.Columns["Alumno"].HeaderText = Resources.EnrollmentManagementForm_ColStudent;
             dgvEnrollments.Columns["Curso"].HeaderText = Resources.EnrollmentManagementForm_ColCourse;

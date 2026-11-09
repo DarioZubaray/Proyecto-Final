@@ -32,6 +32,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
+        #region Métodos
         public void ApplyTheme()
         {
             ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
@@ -67,7 +68,6 @@ namespace TrabajoFinal_DarioZubaray
             UpdateFooter();
         }
 
-        #region Métodos
         private void ConfigureMenuVisibility()
         {
             bool canPreferences = EnsurePermission("FORM_PREFERENCES");
@@ -181,7 +181,7 @@ namespace TrabajoFinal_DarioZubaray
         }
         #endregion
 
-        #region MenuItem_Click
+        #region Eventos MenuItem_Click
         private void historialActividadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EnsurePermission("FORM_ACTIVITY_HISTORY"))
