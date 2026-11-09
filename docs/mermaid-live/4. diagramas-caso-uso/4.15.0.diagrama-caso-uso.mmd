@@ -1,4 +1,6 @@
-graph LR
-    ADM["Administrador"]@{ shape: person, lbl: "Administrador" }
-    CU15(["CU-15 Gestionar Respaldo y Restauración de la Base de Datos"])
-    ADM --> CU15
+usecase-beta
+actor Administrador("Administrador")
+
+UC15(CU-15 Gestionar Respaldo y Restauración de BD)
+
+Administrador --> UC15

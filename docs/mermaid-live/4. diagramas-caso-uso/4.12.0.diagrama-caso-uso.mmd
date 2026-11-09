@@ -1,4 +1,6 @@
-graph LR
-    PRO["Profesor"]@{ shape: person, lbl: "Profesor" }
-    CU12(["CU-12 Registrar Evaluación y Notas"])
-    PRO --> CU12
+usecase-beta
+actor Profesor("Profesor")
+
+UC12(CU-12 Registrar Evaluación y Notas)
+
+Profesor --> UC12

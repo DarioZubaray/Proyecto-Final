@@ -1,6 +1,10 @@
-graph LR
-    COO["Coordinador"]@{ shape: person, lbl: "Coordinador" }
-    PRO["Profesor"]@{ shape: person, lbl: "Profesor" }
-    CU10(["CU-10 Crear Tickets"])
-    COO --> CU10
-    PRO --> CU10
+usecase-beta
+actor Admin("Admin")
+actor Coordinador("Coordinador")
+actor Profesor("Profesor")
+
+UC10(CU-10 Crear Tickets)
+
+Admin --> UC10
+Coordinador --> UC10
+Profesor --> UC10

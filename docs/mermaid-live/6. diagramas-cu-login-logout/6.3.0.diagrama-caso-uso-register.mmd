@@ -1,7 +1,6 @@
-graph LR
-    ADM["Administrador"]@{ shape: person, lbl: "Administrador" }
+usecase-beta
+actor Administrador("Administrador")
 
-    CU03(["CU-03: Register"])
+UC3(CU-3 Register)
 
-    %% Módulo Base / Sesión: todos los roles autenticados
-    ADM --> CU03
+Administrador --> UC3

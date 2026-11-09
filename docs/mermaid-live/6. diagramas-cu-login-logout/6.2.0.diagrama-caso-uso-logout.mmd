@@ -1,13 +1,12 @@
-graph LR
-    ADM["Administrador"]@{ shape: person, lbl: "Administrador" }
-    COO["Coordinador"]@{ shape: person, lbl: "Coordinador" }
-    PRO["Profesor"]@{ shape: person, lbl: "Profesor" }
-    DIR["Director"]@{ shape: person, lbl: "Director" }
+usecase-beta
+actor Administrador("Administrador")
+actor Coordinador("Coordinador")
+actor Profesor("Profesor")
+actor Director("Director")
 
-    CU02(["CU-02: Logout"])
+UC2(CU-2 Logout)
 
-    %% Módulo Base / Sesión: todos los roles autenticados
-    ADM --> CU02
-    COO --> CU02
-    PRO --> CU02
-    DIR --> CU02
+Administrador --> UC2
+Coordinador --> UC2
+Profesor --> UC2
+Director --> UC2

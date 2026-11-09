@@ -1,4 +1,6 @@
-graph LR
-    DIR["Director"]@{ shape: person, lbl: "Director" }
-    CU13(["CU-13 Consultar Rendimiento Académico"])
-    DIR --> CU13
+usecase-beta
+actor Director("Director")
+
+UC13(CU-13 Consultar Rendimiento Académico)
+
+Director --> UC13
