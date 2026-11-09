@@ -9,7 +9,7 @@ namespace BLL.Tests
     [TestClass]
     public class AppPreferencesBLLTests
     {
-        #region Campos
+        #region Propiedades
         private string _tempDirectory;
         private string _filePath;
         #endregion

@@ -23,6 +23,7 @@ namespace BLL.Tests
         }
         #endregion
 
+        #region Tests
         [TestMethod]
         public void CreateBackup_DelegatesToMPP_AndReturnsTrue()
         {
@@ -85,5 +86,6 @@ namespace BLL.Tests
 
             Assert.IsFalse(result);
         }
+        #endregion
     }
 }

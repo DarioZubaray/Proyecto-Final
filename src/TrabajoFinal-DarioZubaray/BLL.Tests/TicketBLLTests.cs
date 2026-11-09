@@ -13,16 +13,21 @@ namespace BLL.Tests
     [TestClass]
     public class TicketBLLTests
     {
+        #region Propiedades
         private Mock<ITicketMPP> _mockTicketMPP;
         private TicketBLL _ticketBLL;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
             _mockTicketMPP = new Mock<ITicketMPP>();
             _ticketBLL = new TicketBLL(_mockTicketMPP.Object);
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Create_ValidTicket_ReturnsTrue()
         {
@@ -107,5 +112,6 @@ namespace BLL.Tests
             Assert.IsFalse(_ticketBLL.Close(5, 0));
             _mockTicketMPP.Verify(m => m.Close(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime>()), Times.Never);
         }
+        #endregion
     }
 }

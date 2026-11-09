@@ -25,6 +25,7 @@ namespace BLL.Tests
         }
         #endregion
 
+        #region Tests
         [TestMethod]
         public void GetCoursePerformance_DelegatesToMPP()
         {
@@ -72,5 +73,6 @@ namespace BLL.Tests
             Assert.AreEqual(7.25m, result[0].Average);
             _mockReportMPP.Verify(m => m.GetGradesReport(10), Times.Once);
         }
+        #endregion
     }
 }
