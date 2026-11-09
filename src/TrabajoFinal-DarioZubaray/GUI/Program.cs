@@ -143,9 +143,6 @@ namespace TrabajoFinal_DarioZubaray
                     return ExitBootstrapFailed;
                 }
 
-                // Cadena de instalacion: todos los scripts NN_*.sql, excepto
-                // los de desarrollo/demo (02_* y "Consolidado") y los
-                // de reversa ("Rollback").
                 string[] files = Directory.GetFiles(sqlDir, "*.sql");
                 Array.Sort(files, StringComparer.OrdinalIgnoreCase);
 

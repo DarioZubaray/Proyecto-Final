@@ -9,11 +9,14 @@ namespace MPP.Tests
     [TestClass]
     public class EvaluationMPPTests
     {
+        #region Propiedades
         private ClassroomMPP _classroomMPP;
         private CourseMPP _courseMPP;
         private EvaluationMPP _evaluationMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -31,7 +34,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Métodos
         private int CreateTestCourse()
         {
             var classroom = new ClassroomBE
@@ -89,7 +94,9 @@ namespace MPP.Tests
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Save_Insert_ReturnsNewId()
         {
@@ -177,5 +184,6 @@ namespace MPP.Tests
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
         }
+        #endregion
     }
 }

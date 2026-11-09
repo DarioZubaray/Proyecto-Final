@@ -10,10 +10,14 @@ namespace MPP.Tests
     [TestClass]
     public class BackupMPPTests
     {
+        #region Propiedades
         private BackupMPP _backupMPP;
         private string _connectionString;
         private string _backupFilePath;
 
+        #endregion
+
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -30,6 +34,7 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
         #region Métodos auxiliares
         private string GetDefaultBackupDirectory()
@@ -76,6 +81,7 @@ namespace MPP.Tests
         }
         #endregion
 
+        #region Tests
         [TestMethod]
         public void CreateBackup_ReturnsTrue()
         {
@@ -144,5 +150,6 @@ namespace MPP.Tests
             Assert.ThrowsException<FileNotFoundException>(
                 () => _backupMPP.RestoreFromScript(missingPath));
         }
+        #endregion
     }
 }

@@ -9,11 +9,14 @@ namespace MPP.Tests
     [TestClass]
     public class EnrollmentMPPTests
     {
+        #region Propiedades
         private ClassroomMPP _classroomMPP;
         private CourseMPP _courseMPP;
         private EnrollmentMPP _enrollmentMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -63,7 +66,9 @@ namespace MPP.Tests
             List<CourseBE> courses = _courseMPP.FindAll();
             return courses[courses.Count - 1].Id;
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Enroll_ReturnsTrue()
         {
@@ -172,7 +177,9 @@ namespace MPP.Tests
 
             Assert.IsFalse(result);
         }
+        #endregion
 
+        #region Métodos
         private int GetStudentId()
         {
             using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_connectionString))
@@ -185,5 +192,6 @@ namespace MPP.Tests
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        #endregion
     }
 }

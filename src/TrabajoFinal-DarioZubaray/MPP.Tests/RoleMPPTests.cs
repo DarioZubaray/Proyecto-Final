@@ -8,9 +8,12 @@ namespace MPP.Tests
     [TestClass]
     public class RoleMPPTests
     {
+        #region Propiedades
         private RoleMPP _roleMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -26,7 +29,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void FindById_ExistingRole_ReturnsRoleWithPermissions()
         {
@@ -194,5 +199,6 @@ namespace MPP.Tests
             Assert.IsNotNull(perms);
             Assert.AreEqual(4, perms.Count);
         }
+        #endregion
     }
 }

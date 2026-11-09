@@ -9,9 +9,12 @@ namespace MPP.Tests
     [TestClass]
     public class ClassroomMPPTests
     {
+        #region Propiedades
         private ClassroomMPP _classroomMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -27,7 +30,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Save_NewClassroom_ReturnsTrue()
         {
@@ -157,5 +162,6 @@ namespace MPP.Tests
 
             Assert.IsTrue(count >= 1);
         }
+        #endregion
     }
 }

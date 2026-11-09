@@ -9,9 +9,12 @@ namespace MPP.Tests
     [TestClass]
     public class ReportMPPTests
     {
+        #region Propiedades
         private ReportMPP _reportMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -27,6 +30,7 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
         #region Métodos auxiliares
         private void Execute(string sql)
@@ -73,6 +77,7 @@ namespace MPP.Tests
         }
         #endregion
 
+        #region Tests
         [TestMethod]
         public void GetCoursePerformance_ReturnsRowPerEnrolledStudent()
         {
@@ -176,5 +181,6 @@ namespace MPP.Tests
             Assert.AreEqual(0, result[0].GradesCount);
             Assert.IsNull(result[0].Average);
         }
+        #endregion
     }
 }

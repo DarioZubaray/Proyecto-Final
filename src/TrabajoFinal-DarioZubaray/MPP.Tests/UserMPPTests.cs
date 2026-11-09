@@ -9,9 +9,12 @@ namespace MPP.Tests
     [TestClass]
     public class UserMPPTests
     {
+        #region Propiedades
         private UserMPP _userMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -27,7 +30,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void GetByUserName_ExistingUser_ReturnsUser()
         {
@@ -311,5 +316,6 @@ namespace MPP.Tests
 
             Assert.AreEqual("abc123dvh", persisted.Dvh);
         }
+        #endregion
     }
 }

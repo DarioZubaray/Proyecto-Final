@@ -13,10 +13,13 @@ namespace MPP.Tests
     [TestClass]
     public class TicketIntegrationTests
     {
+        #region Propiedades
         private TicketMPP _ticketMPP;
         private TicketBLL _ticketBLL;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -33,7 +36,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Create_NewTicket_PersistsAndFindsByUser()
         {
@@ -88,5 +93,6 @@ namespace MPP.Tests
 
             Assert.IsFalse(_ticketBLL.Close(ticket.Id, 2));
         }
+        #endregion
     }
 }

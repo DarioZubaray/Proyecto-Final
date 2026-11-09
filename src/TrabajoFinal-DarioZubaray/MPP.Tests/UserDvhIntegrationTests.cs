@@ -11,10 +11,13 @@ namespace MPP.Tests
     [TestClass]
     public class UserDvhIntegrationTests
     {
+        #region Propiedades
         private UserMPP _userMPP;
         private UserBLL _userBLL;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -31,7 +34,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Save_NewUser_RegeneratesDvh()
         {
@@ -216,5 +221,6 @@ namespace MPP.Tests
                     "Paridad DVH fallida para dvhparity" + i);
             }
         }
+        #endregion
     }
 }

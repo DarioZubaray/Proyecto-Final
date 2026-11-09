@@ -9,8 +9,11 @@ namespace MPP.Tests
     [TestClass]
     public class StudentMPPTests
     {
+        #region Propiedades
         private StudentMPP _studentMPP;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -25,7 +28,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Métodos
         private StudentBE CreateStudent(string document, string firstName = "Test", string lastName = "Student", bool isActive = true)
         {
             var student = new StudentBE
@@ -42,7 +47,9 @@ namespace MPP.Tests
             _studentMPP.Insert(student);
             return _studentMPP.FindByDocument(document);
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Insert_NewStudent_ReturnsTrue()
         {
@@ -164,5 +171,6 @@ namespace MPP.Tests
             Assert.IsNotNull(found);
             Assert.IsFalse(found.IsActive);
         }
+        #endregion
     }
 }
