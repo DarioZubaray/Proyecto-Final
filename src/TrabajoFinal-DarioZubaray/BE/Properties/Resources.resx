@@ -514,7 +514,7 @@
     <value>Asignados</value>
   </data>
   <data name="CourseForm_TeachersSection" xml:space="preserve">
-    <value>Docentes</value>
+    <value>Profesores</value>
   </data>
   <data name="CourseForm_Save" xml:space="preserve">
     <value>Guardar</value>
@@ -559,10 +559,10 @@
     <value>Debe seleccionar un aula.</value>
   </data>
   <data name="CourseForm_TeacherRequired" xml:space="preserve">
-    <value>Debe asignar al menos un docente.</value>
+    <value>Debe asignar al menos un profesor.</value>
   </data>
   <data name="CourseForm_TeacherOverlap" xml:space="preserve">
-    <value>Uno o más docentes tienen un curso asignado en el mismo día y horario.</value>
+    <value>Uno o más profesores tienen un curso asignado en el mismo día y horario.</value>
   </data>
   <data name="CourseForm_CreatedSuccess" xml:space="preserve">
     <value>Curso creado exitosamente.</value>
