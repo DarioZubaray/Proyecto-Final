@@ -19,7 +19,7 @@ namespace BLL.Services
         }
         #endregion
 
-        #region Métodos Públicos
+        #region Métodos
         public List<StudentPerformanceBE> GetCoursePerformance(int courseId)
         {
             return _reportMPP.GetCoursePerformance(courseId);

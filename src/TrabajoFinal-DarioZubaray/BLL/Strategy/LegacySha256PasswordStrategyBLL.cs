@@ -6,6 +6,7 @@ namespace BLL.Strategy
 {
     public class LegacySha256PasswordStrategyBLL : IPasswordStrategyBLL
     {
+        #region Métodos
         public bool Matches(string storedHash)
         {
             return IsLegacyHash(storedHash);
@@ -52,5 +53,6 @@ namespace BLL.Strategy
 
             return true;
         }
+        #endregion
     }
 }

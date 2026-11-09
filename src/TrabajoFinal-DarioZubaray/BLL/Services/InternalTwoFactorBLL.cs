@@ -2,8 +2,8 @@ using BLL.Interfaces;
 
 namespace BLL.Services
 {
-    // Implementacion interna (hardcodeada) del 2FA: codigo valido = "123".
-    // Futuro: reemplazar por implementaciones reales (Google/Microsoft, etc.)
+    // Implementacion interna hardcodeada del 2FA: codigo valido = "123".
+    // TODO: reemplazar por implementaciones reales (Google/Microsoft, etc.)
     // que cumplan ITwoFactorBLL, configurandolas en ServiceLocatorBLL.CreateTwoFactorBLL().
     public class InternalTwoFactorBLL : ITwoFactorBLL
     {
@@ -15,7 +15,7 @@ namespace BLL.Services
         public string ProviderName => "Internal";
         #endregion
 
-        #region Métodos Públicos
+        #region Métodos
         public bool Verify(string userName, string code)
         {
             return code == ValidCode;

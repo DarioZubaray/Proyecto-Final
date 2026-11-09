@@ -20,7 +20,7 @@ namespace BLL.Services
         }
         #endregion
 
-        #region Métodos Públicos
+        #region Métodos
         public bool Create(TicketBE ticket)
         {
             if (ticket == null)

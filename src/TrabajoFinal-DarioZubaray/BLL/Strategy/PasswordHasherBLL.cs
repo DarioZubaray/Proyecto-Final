@@ -5,11 +5,14 @@ namespace BLL.Strategy
 {
     public class PasswordHasherBLL
     {
+        #region Propiedades
         private static readonly Lazy<PasswordHasherBLL> _default = new Lazy<PasswordHasherBLL>(() => new PasswordHasherBLL());
 
         private readonly IPasswordStrategyBLL _defaultStrategy;
         private readonly IReadOnlyList<IPasswordStrategyBLL> _strategies;
+        #endregion
 
+        #region Contructor
         public PasswordHasherBLL()
             : this(new BcryptPasswordStrategyBLL(), new IPasswordStrategyBLL[]
             {
@@ -24,9 +27,11 @@ namespace BLL.Strategy
             _defaultStrategy = defaultStrategy;
             _strategies = strategies;
         }
+        #endregion
 
         public static PasswordHasherBLL Default => _default.Value;
 
+        #region Métodos
         public string Hash(string password)
         {
             return _defaultStrategy.Hash(password);
@@ -45,5 +50,6 @@ namespace BLL.Strategy
 
             return _defaultStrategy.Verify(plain, stored);
         }
+        #endregion
     }
 }

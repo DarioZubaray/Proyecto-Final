@@ -6,6 +6,7 @@ namespace BLL.Helpers
 {
     public static class CultureHelperBLL
     {
+        #region Propiedades
         private static readonly Dictionary<string, CultureInfo> _cultures =
             new Dictionary<string, CultureInfo>
             {
@@ -15,7 +16,9 @@ namespace BLL.Helpers
             };
 
         public const string DefaultLanguage = "es";
+        #endregion
 
+        #region Métodos
         public static void SetCulture(string languageCode)
         {
             if (string.IsNullOrEmpty(languageCode) || !_cultures.ContainsKey(languageCode))
@@ -37,16 +40,21 @@ namespace BLL.Helpers
                 new LanguageItemBLL { Code = "pt-BR", DisplayName = "Português (Brasil)" }
             };
         }
+        #endregion
     }
 
     public class LanguageItemBLL
     {
+        #region Propiedades
         public string Code { get; set; }
         public string DisplayName { get; set; }
+        #endregion
 
+        #region Métodos
         public override string ToString()
         {
             return DisplayName;
         }
+        #endregion
     }
 }
