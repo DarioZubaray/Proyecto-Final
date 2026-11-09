@@ -301,7 +301,8 @@ BEGIN TRY
 
     -- Admin (1): todos los permisos
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
-    SELECT 1, id FROM [dbo].[permissions];
+    SELECT 1, id FROM [dbo].[permissions] WHERE name NOT IN
+	('FORM_ASISTENCIA_MGMT', 'FORM_EVAL_MGMT');
 
     -- Coordinador (2): tareas diarias (sin ABM de usuarios/roles ni reportes)
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
