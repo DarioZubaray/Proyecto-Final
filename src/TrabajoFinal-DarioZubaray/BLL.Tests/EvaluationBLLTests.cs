@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BE.Entities;
+using BLL.Helpers;
 using BLL.Services;
 using Moq;
 using MPP.Interfaces;
@@ -168,6 +169,112 @@ namespace BLL.Tests
 
             Assert.AreEqual(1, result.Count);
             _mockEvaluationMPP.Verify(m => m.FindGradesByEvaluationId(5), Times.Once);
+        }
+        #endregion
+
+        #region Tests - DVH
+        [TestMethod]
+        public void Save_RegeneratesEvaluationAndGradeDvh()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            SetupTeacherCourses(10);
+            _mockEvaluationMPP.Setup(m => m.Save(It.IsAny<EvaluationBE>())).Returns(55);
+
+            EvaluationBE persisted = CreateValidEvaluation();
+            persisted.Id = 55;
+            _mockEvaluationMPP.Setup(m => m.FindById(55)).Returns(persisted);
+            _mockEvaluationMPP.Setup(m => m.UpdateDvh(55, It.IsAny<string>())).Returns(true);
+
+            GradeBE persistedGrade = new GradeBE
+            {
+                Id = 7,
+                EvaluationId = 55,
+                StudentId = 1,
+                Grade = 7.3m
+            };
+            _mockEvaluationMPP.Setup(m => m.FindGradesByEvaluationId(55))
+                .Returns(new List<GradeBE> { persistedGrade });
+            _mockEvaluationMPP.Setup(m => m.UpdateGradeDvh(7, It.IsAny<string>())).Returns(true);
+
+            var grades = new List<GradeBE>
+            {
+                new GradeBE { StudentId = 1, Grade = 7.3m }
+            };
+
+            bool result = _evaluationBLL.Save(evaluation, grades);
+
+            Assert.IsTrue(result);
+            _mockEvaluationMPP.Verify(
+                m => m.UpdateDvh(55, DVHHelperBLL.Compute(persisted.GetDvhValues())),
+                Times.Once);
+            _mockEvaluationMPP.Verify(
+                m => m.UpdateGradeDvh(7, DVHHelperBLL.Compute(persistedGrade.GetDvhValues())),
+                Times.Once);
+        }
+
+        [TestMethod]
+        public void Save_NoGrades_StillRegeneratesEvaluationDvh()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            SetupTeacherCourses(10);
+            _mockEvaluationMPP.Setup(m => m.Save(It.IsAny<EvaluationBE>())).Returns(55);
+
+            EvaluationBE persisted = CreateValidEvaluation();
+            persisted.Id = 55;
+            _mockEvaluationMPP.Setup(m => m.FindById(55)).Returns(persisted);
+            _mockEvaluationMPP.Setup(m => m.UpdateDvh(55, It.IsAny<string>())).Returns(true);
+            _mockEvaluationMPP.Setup(m => m.FindGradesByEvaluationId(55))
+                .Returns(new List<GradeBE>());
+
+            bool result = _evaluationBLL.Save(evaluation, new List<GradeBE>());
+
+            Assert.IsTrue(result);
+            _mockEvaluationMPP.Verify(
+                m => m.UpdateDvh(55, DVHHelperBLL.Compute(persisted.GetDvhValues())),
+                Times.Once);
+            _mockEvaluationMPP.Verify(
+                m => m.UpdateGradeDvh(It.IsAny<int>(), It.IsAny<string>()),
+                Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_EvaluationDvhUpdateFails_ReturnsFalse()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            SetupTeacherCourses(10);
+            _mockEvaluationMPP.Setup(m => m.Save(It.IsAny<EvaluationBE>())).Returns(55);
+            EvaluationBE persisted = CreateValidEvaluation();
+            persisted.Id = 55;
+            _mockEvaluationMPP.Setup(m => m.FindById(55)).Returns(persisted);
+            _mockEvaluationMPP.Setup(m => m.UpdateDvh(55, It.IsAny<string>())).Returns(false);
+
+            bool result = _evaluationBLL.Save(evaluation, new List<GradeBE>());
+
+            Assert.IsFalse(result);
+            _mockEvaluationMPP.Verify(m => m.FindGradesByEvaluationId(It.IsAny<int>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_GradeDvhUpdateFails_ReturnsFalse()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            SetupTeacherCourses(10);
+            _mockEvaluationMPP.Setup(m => m.Save(It.IsAny<EvaluationBE>())).Returns(55);
+            EvaluationBE persistedForGrade = CreateValidEvaluation();
+            persistedForGrade.Id = 55;
+            _mockEvaluationMPP.Setup(m => m.FindById(55)).Returns(persistedForGrade);
+            _mockEvaluationMPP.Setup(m => m.UpdateDvh(55, It.IsAny<string>())).Returns(true);
+
+            GradeBE persistedGrade = new GradeBE { Id = 7, EvaluationId = 55, StudentId = 1, Grade = 8 };
+            _mockEvaluationMPP.Setup(m => m.FindGradesByEvaluationId(55))
+                .Returns(new List<GradeBE> { persistedGrade });
+            _mockEvaluationMPP.Setup(m => m.UpdateGradeDvh(7, It.IsAny<string>())).Returns(false);
+
+            var grades = new List<GradeBE> { new GradeBE { StudentId = 1, Grade = 8 } };
+
+            bool result = _evaluationBLL.Save(evaluation, grades);
+
+            Assert.IsFalse(result);
         }
         #endregion
     }

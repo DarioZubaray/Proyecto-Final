@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BE.Entities;
+using BLL.Helpers;
 using BLL.Interfaces;
 using MPP.Interfaces;
 
@@ -74,6 +75,23 @@ namespace BLL.Services
             }
 
             _evaluationMPP.SaveGrades(evaluationId, grades);
+
+            if (!DVHHelperBLL.RegenerateEvaluation(_evaluationMPP, evaluationId))
+            {
+                return false;
+            }
+
+            List<GradeBE> savedGrades = _evaluationMPP.FindGradesByEvaluationId(evaluationId)
+                ?? new List<GradeBE>();
+
+            foreach (GradeBE grade in savedGrades)
+            {
+                if (!DVHHelperBLL.Regenerate(_evaluationMPP, grade))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 

@@ -5,12 +5,13 @@ GO
 -- CREATE v1.0.0: Esquema base de tablas + datos core
 --
 -- Cadena de instalacion / actualizacion:
---   01 -> 03 -> updates...       (instalador)
---   01 -> 02 -> 03               (demo / desarrollo, con datos de prueba)
---   05 consolidado en un paso    (atajo dev, incluye datos demo)
+--   01 -> 06                   (instalador)
+--   01 -> 02 -> 03 -> 06        (demo / desarrollo, con datos de prueba)
+--   05 consolidado en un paso   (atajo dev, incluye datos demo)
 --
 -- Contenido:
---   a) 7 tablas base del sistema
+--   a) 16 tablas del sistema (con las columnas dvh de
+--      users, evaluations y grades)
 --   b) Seed estructural: roles, permisos y matriz de permisos
 --   c) Usuario administrador por defecto (user: admin / pass: admin)
 --   d) Registro de la version 1.0.0 en [schema_versions]
@@ -20,7 +21,7 @@ GO
 -- =============================================
 
 -- =============================================
--- 3. CREATE: esquema base (01) + columna DVH
+-- 3. CREATE: esquema completo (01) + columnas DVH
 -- =============================================
 
 -- 3.1 Roles
@@ -191,7 +192,7 @@ CREATE TABLE [dbo].[tickets] (
 CREATE INDEX ix_tickets_user_created ON [dbo].[tickets] ([user_id], [created_at] DESC);
 CREATE INDEX ix_tickets_is_closed ON [dbo].[tickets] ([is_closed], [created_at] DESC);
 
--- 4.8 Evaluaciones
+-- 4.8 Evaluaciones (con DVH, estado final)
 CREATE TABLE [dbo].[evaluations] (
 	[id]           INT            IDENTITY(1,1) NOT NULL,
 	[course_id]    INT            NOT NULL,
@@ -200,21 +201,23 @@ CREATE TABLE [dbo].[evaluations] (
 	[created_by]   INT            NOT NULL,
 	[created_at]   DATETIME       NOT NULL,
 	[last_update]  DATETIME       NOT NULL,
+	[dvh]          NVARCHAR(64)   NULL,
 	CONSTRAINT [pk_evaluations] PRIMARY KEY ([id]),
 	CONSTRAINT [fk_evaluations_courses] FOREIGN KEY ([course_id]) REFERENCES [dbo].[courses]([id]),
 	CONSTRAINT [fk_evaluations_users] FOREIGN KEY ([created_by]) REFERENCES [dbo].[users]([id])
 );
 CREATE INDEX ix_evaluations_course ON [dbo].[evaluations] ([course_id], [date]);
 
--- 4.9 Notas (0 a 10, unica por alumno y evaluacion)
+-- 4.9 Notas (0 a 10, unica por alumno y evaluacion; con DVH)
 CREATE TABLE [dbo].[grades] (
 	[id]             INT           IDENTITY(1,1) NOT NULL,
 	[evaluation_id]  INT           NOT NULL,
 	[student_id]     INT           NOT NULL,
 	[grade]          DECIMAL(4,2)  NOT NULL,
+	[dvh]            NVARCHAR(64)  NULL,
 	CONSTRAINT [pk_grades] PRIMARY KEY ([id]),
 	CONSTRAINT [fk_grades_evaluations] FOREIGN KEY ([evaluation_id]) REFERENCES [dbo].[evaluations]([id]),
-	CONSTRAINT [fk_grades_students] FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]),
+	CONSTRAINT [fk_grades_students]    FOREIGN KEY ([student_id])    REFERENCES [dbo].[students]([id]),
 	CONSTRAINT [uq_grades_evaluation_student] UNIQUE ([evaluation_id], [student_id]),
 	CONSTRAINT [ck_grades_range] CHECK ([grade] >= 0 AND [grade] <= 10)
 );

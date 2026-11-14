@@ -216,5 +216,161 @@ namespace BLL.Tests
             };
         }
         #endregion
+
+        #region Tests: EvaluationBE / GradeBE + Regenerate
+        [TestMethod]
+        public void Evaluation_GetDvhValues_ExcludesDvhColumn()
+        {
+            EvaluationBE evaluation = CreateSampleEvaluation();
+            evaluation.Dvh = "valor-que-no-debe-entrar-al-hash";
+
+            object[] values = evaluation.GetDvhValues();
+
+            Assert.AreEqual(7, values.Length);
+
+            foreach (object value in values)
+            {
+                Assert.AreNotEqual(evaluation.Dvh, DVHHelperBLL.Normalize(value));
+            }
+
+            Assert.AreNotEqual(evaluation.Dvh, DVHHelperBLL.Compute(values));
+        }
+
+        [TestMethod]
+        public void Grade_GetDvhValues_ExcludesDvhColumn()
+        {
+            GradeBE grade = CreateSampleGrade();
+            grade.Dvh = "valor-que-no-debe-entrar-al-hash";
+
+            object[] values = grade.GetDvhValues();
+
+            Assert.AreEqual(4, values.Length);
+
+            foreach (object value in values)
+            {
+                Assert.AreNotEqual(grade.Dvh, DVHHelperBLL.Normalize(value));
+            }
+
+            Assert.AreNotEqual(grade.Dvh, DVHHelperBLL.Compute(values));
+        }
+
+        [TestMethod]
+        public void Grade_AnyFieldChange_ChangesHash()
+        {
+            GradeBE grade = CreateSampleGrade();
+            string baseline = DVHHelperBLL.Compute(grade.GetDvhValues());
+
+            grade.Grade = 9.9m;
+            Assert.AreNotEqual(baseline, DVHHelperBLL.Compute(grade.GetDvhValues()));
+
+            GradeBE other = CreateSampleGrade();
+            other.StudentId = 99;
+            Assert.AreNotEqual(baseline, DVHHelperBLL.Compute(other.GetDvhValues()));
+        }
+
+        [TestMethod]
+        public void Normalize_Decimal_UsesInvariantWithScale()
+        {
+            Assert.AreEqual("7.30", DVHHelperBLL.Normalize(7.30m));
+            Assert.AreEqual("10.00", DVHHelperBLL.Normalize(10.00m));
+        }
+
+        [TestMethod]
+        public void Regenerate_Evaluation_PersistsComputedHash()
+        {
+            EvaluationBE evaluation = CreateSampleEvaluation();
+            var mpp = new Mock<IEvaluationMPP>();
+            mpp.Setup(m => m.UpdateDvh(evaluation.Id, It.IsAny<string>())).Returns(true);
+
+            bool result = DVHHelperBLL.Regenerate(mpp.Object, evaluation);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(DVHHelperBLL.Compute(evaluation.GetDvhValues()), evaluation.Dvh);
+            mpp.Verify(m => m.UpdateDvh(evaluation.Id, evaluation.Dvh), Times.Once);
+        }
+
+        [TestMethod]
+        public void Regenerate_Grade_PersistsComputedHash()
+        {
+            GradeBE grade = CreateSampleGrade();
+            var mpp = new Mock<IEvaluationMPP>();
+            mpp.Setup(m => m.UpdateGradeDvh(grade.Id, It.IsAny<string>())).Returns(true);
+
+            bool result = DVHHelperBLL.Regenerate(mpp.Object, grade);
+
+            Assert.IsTrue(result);
+            Assert.AreEqual(DVHHelperBLL.Compute(grade.GetDvhValues()), grade.Dvh);
+            mpp.Verify(m => m.UpdateGradeDvh(grade.Id, grade.Dvh), Times.Once);
+        }
+
+        [TestMethod]
+        public void RegenerateEvaluation_RereadsRowBeforeComputing()
+        {
+            EvaluationBE stored = CreateSampleEvaluation();
+            stored.Dvh = "hash-previo";
+
+            var mpp = new Mock<IEvaluationMPP>();
+            mpp.Setup(m => m.FindById(stored.Id)).Returns(stored);
+            mpp.Setup(m => m.UpdateDvh(stored.Id, It.IsAny<string>())).Returns(true);
+
+            bool result = DVHHelperBLL.RegenerateEvaluation(mpp.Object, stored.Id);
+
+            Assert.IsTrue(result);
+            mpp.Verify(m => m.FindById(stored.Id), Times.Once);
+            mpp.Verify(m => m.UpdateDvh(stored.Id, DVHHelperBLL.Compute(stored.GetDvhValues())), Times.Once);
+        }
+
+        [TestMethod]
+        public void RegenerateGrade_RereadsRowBeforeComputing()
+        {
+            GradeBE stored = CreateSampleGrade();
+            stored.Dvh = "hash-previo";
+
+            var mpp = new Mock<IEvaluationMPP>();
+            mpp.Setup(m => m.FindGradeById(stored.Id)).Returns(stored);
+            mpp.Setup(m => m.UpdateGradeDvh(stored.Id, It.IsAny<string>())).Returns(true);
+
+            bool result = DVHHelperBLL.RegenerateGrade(mpp.Object, stored.Id);
+
+            Assert.IsTrue(result);
+            mpp.Verify(m => m.FindGradeById(stored.Id), Times.Once);
+            mpp.Verify(m => m.UpdateGradeDvh(stored.Id, DVHHelperBLL.Compute(stored.GetDvhValues())), Times.Once);
+        }
+
+        [TestMethod]
+        public void RegenerateEvaluation_RowNotFound_ReturnsTrueWithoutWriting()
+        {
+            var mpp = new Mock<IEvaluationMPP>();
+            mpp.Setup(m => m.FindById(99)).Returns((EvaluationBE)null);
+
+            Assert.IsTrue(DVHHelperBLL.RegenerateEvaluation(mpp.Object, 99));
+            mpp.Verify(m => m.UpdateDvh(It.IsAny<int>(), It.IsAny<string>()), Times.Never);
+        }
+
+        private EvaluationBE CreateSampleEvaluation()
+        {
+            return new EvaluationBE
+            {
+                Id = 5,
+                CourseId = 2,
+                Name = "Parcial 1",
+                Date = new DateTime(2026, 9, 15),
+                CreatedBy = 3,
+                CreatedAt = new DateTime(2026, 9, 1, 10, 30, 0),
+                LastUpdate = new DateTime(2026, 9, 2, 11, 45, 30, 500)
+            };
+        }
+
+        private GradeBE CreateSampleGrade()
+        {
+            return new GradeBE
+            {
+                Id = 11,
+                EvaluationId = 5,
+                StudentId = 4,
+                Grade = 7.30m
+            };
+        }
+        #endregion
     }
 }

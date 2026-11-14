@@ -2,6 +2,8 @@
 
 Repositorio de la materia **Proyecto Final** de la carrera **Analista Programador a Distancia**, Facultad de Tecnología Informática, Universidad Abierta Interamericana (UAI).
 
+![demostracion](demo.gif)
+
 ## Contenido del repositorio
 
 Este repositorio agrupa **todas las partes** que conforman el trabajo final. A continuación se describe cada una y dónde encontrarla.
@@ -40,7 +42,7 @@ Para el detalle completo de clases, capas, responsabilidades y patrones, ver [`s
 
 La aplicación también centraliza un **catálogo de códigos de error** por dominio (`ErrorCodesBLL`, prefijos `DB-`, `AUTH-`, `VAL-`, `BIZ-`, `GEN-`, `INT-`) con un **handler global** de excepciones en `Program.cs`. Ver la sección *"Manejo de errores y códigos de error"* en el README del proyecto .NET.
 
-Además, aplica un **Dígito Verificador Horizontal (DVH)** sobre la tabla `users`: cada fila guarda su SHA-256 en la columna `dvh`; al iniciar, la aplicación recalcula los hashes y **bloquea el acceso** si detecta filas alteradas fuera de la app (solo el sysadmin puede auditarlas y regenerarlas). Ver la sección *"Integridad de datos (DVH)"* en el README del proyecto .NET.
+Además, aplica un **Dígito Verificador Horizontal (DVH)** sobre las tablas `users`, `evaluations` y `grades`: cada fila guarda su SHA-256 en la columna `dvh`; al iniciar, la aplicación recalcula los hashes y **bloquea el acceso** si detecta filas alteradas fuera de la app (solo el sysadmin puede auditarlas y regenerarlas). Ver la sección *"Integridad de datos (DVH)"* en el README del proyecto .NET.
 
 ### Base de datos (`src/sql/`)
 
@@ -48,15 +50,16 @@ Contiene los scripts para crear, poblar y consultar la base `DarioZubaray_TF`. D
 
 **Opción A (recomendada)** — un solo paso:
 
-1. `05_v1.3.0_ScriptConsolidado.sql` — crea la base `DarioZubaray_TF` (si no existe) y la deja con el esquema y los datos finales (v1.3.0).
+1. `05_v1.3.0_ScriptConsolidado.sql` — crea la base `DarioZubaray_TF` (si no existe) y la deja con el esquema y los datos finales (v1.4.0).
 
 **Opción B** — scripts por pasos:
 
-1. `01_v1.0.0_CreateTables.sql` — crea el esquema base (Roles, Permissions, Users, etc.).
-2. `02_v1.0.0_SeedData.sql` — carga datos iniciales: roles, permisos, usuarios.
+1. `01_v1.0.0_CreateTables.sql` — crea el esquema completo (16 tablas, con las columnas `dvh` de `users`, `evaluations` y `grades`).
+2. `02_v1.0.0_SeedDemoData.sql` — carga datos iniciales: roles, permisos, usuarios (con backfill del DVH).
 3. `03_v1.3.0_Incremental.sql` — migración incremental a v1.3.0: aulas/cursos/inscripciones/asistencia, tickets, entidad `students`, `evaluations`/`grades`, permisos de informes y respaldo, y el DVH (columna `users.dvh` + backfill SHA-256). Idempotente; también aplica sobre bases legadas creadas con los scripts anteriores.
+4. `06_v1.4.0_DVHGradesEvaluations.sql` — migración incremental a v1.4.0: agrega `evaluations.dvh` y `grades.dvh` y calcula el backfill SHA-256 de las filas existentes. Idempotente.
 
-**Rollback:** `04_v1.3.0_Rollback.sql` devuelve la base al estado v1 (destructivo: borra las tablas y permisos agregados; para volver a usarla, re-ejecutar `03_v1.3.0_Incremental.sql`).
+**Rollback:** `04_v1.3.0_Rollback.sql` devuelve la base al estado v1 (destructivo: borra las tablas y permisos agregados; para volver a usarla, re-ejecutar `03_v1.3.0_Incremental.sql`). `07_v1.4.0_Rollback.sql` revierte la v1.4.0: elimina solo las columnas `dvh` de `evaluations` y `grades` (conservando tablas y datos); para volver a la v1.4.0, re-ejecutar `06`.
 
 ### Instalación (`.exe`)
 
@@ -70,12 +73,12 @@ El repositorio incluye un instalador de escritorio (Inno Setup, sin elevación d
 El asistente:
 
 1. Pide la cadena de conexión (servidor y base de datos; por defecto `localhost\SQLEXPRESS` / `DarioZubaray_TF`) y la guarda en el `App.config` de la aplicación instalada.
-2. Ejecuta los scripts `01` + `03` (crea la base y el esquema si no existen) — nunca `02` ni `05`.
+2. Ejecuta los scripts `01` + `06` (crea la base y el esquema si no existen; en bases nuevas `06` solo registra la versión `1.4.0`) — nunca `02` ni `05`.
 3. Ofrece lanzar la aplicación. Si la base quedó sin usuarios, la aplicación muestra el formulario de registro (CU-03) para crear la cuenta administradora; si ya hay usuarios, muestra el login (CU-01).
 
 La instalación deja el administrador por defecto `admin` / `admin` (primer inicio y, si hace falta, desbloqueo de la auditoría DVH).
 
-Para mantenimiento, la aplicación expone una CLI: `TrabajoFinal-DarioZubaray.exe --test-connection` (verifica la conexión, sale con 0/2) y `--bootstrap [--sql-dir <ruta>]` (ejecuta `01` + `03` idempotentes, sale con 0/1/2/3). El detalle de scripts y datos de prueba está en [`src/sql/README.md`](src/sql/README.md).
+Para mantenimiento, la aplicación expone una CLI: `TrabajoFinal-DarioZubaray.exe --test-connection` (verifica la conexión, sale con 0/2) y `--bootstrap [--sql-dir <ruta>]` (ejecuta los scripts del directorio — `01` + `06` en la instalación; en desarrollo además `03` — omitiendo `02`, rollback y consolidado; sale con 0/1/2/3). El detalle de scripts y datos de prueba está en [`src/sql/README.md`](src/sql/README.md).
 
 #### Datos de prueba
 

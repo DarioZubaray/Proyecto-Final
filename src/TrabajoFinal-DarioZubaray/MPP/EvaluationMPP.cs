@@ -93,7 +93,7 @@ namespace MPP
 
         public List<EvaluationBE> FindByCourseId(int courseId)
         {
-            string query = @"SELECT id, course_id, name, date, created_by, created_at, last_update
+            string query = @"SELECT id, course_id, name, date, created_by, created_at, last_update, dvh
                             FROM evaluations
                             WHERE course_id = @courseId
                             ORDER BY date DESC, id DESC";
@@ -116,7 +116,7 @@ namespace MPP
 
         public List<GradeBE> FindGradesByEvaluationId(int evaluationId)
         {
-            string query = @"SELECT id, evaluation_id, student_id, grade
+            string query = @"SELECT id, evaluation_id, student_id, grade, dvh
                             FROM grades
                             WHERE evaluation_id = @evaluationId
                             ORDER BY id";
@@ -136,6 +136,112 @@ namespace MPP
 
             return grades;
         }
+
+        public List<EvaluationBE> FindAll()
+        {
+            string query = @"SELECT id, course_id, name, date, created_by, created_at, last_update, dvh
+                            FROM evaluations
+                            ORDER BY id";
+
+            List<EvaluationBE> evaluations = new List<EvaluationBE>();
+            DataTable table = _access.Read(query);
+
+            foreach (DataRow row in table.Rows)
+            {
+                evaluations.Add(MapEvaluation(row));
+            }
+
+            return evaluations;
+        }
+
+        public List<GradeBE> FindAllGrades()
+        {
+            string query = @"SELECT id, evaluation_id, student_id, grade, dvh
+                            FROM grades
+                            ORDER BY id";
+
+            List<GradeBE> grades = new List<GradeBE>();
+            DataTable table = _access.Read(query);
+
+            foreach (DataRow row in table.Rows)
+            {
+                grades.Add(MapGrade(row));
+            }
+
+            return grades;
+        }
+
+        public EvaluationBE FindById(int id)
+        {
+            string query = @"SELECT id, course_id, name, date, created_by, created_at, last_update, dvh
+                            FROM evaluations
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@id", id)
+            };
+
+            DataTable table = _access.Read(query, parameters);
+
+            if (table.Rows.Count == 0)
+            {
+                return null;
+            }
+
+            return MapEvaluation(table.Rows[0]);
+        }
+
+        public GradeBE FindGradeById(int id)
+        {
+            string query = @"SELECT id, evaluation_id, student_id, grade, dvh
+                            FROM grades
+                            WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@id", id)
+            };
+
+            DataTable table = _access.Read(query, parameters);
+
+            if (table.Rows.Count == 0)
+            {
+                return null;
+            }
+
+            return MapGrade(table.Rows[0]);
+        }
+
+        public bool UpdateDvh(int evaluationId, string dvh)
+        {
+            string query = @"UPDATE evaluations
+                             SET dvh = @dvh
+                             WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@dvh", dvh),
+                new SqlParameter("@id", evaluationId)
+            };
+
+            return _access.Save(query, parameters);
+        }
+
+        public bool UpdateGradeDvh(int gradeId, string dvh)
+        {
+            string query = @"UPDATE grades
+                             SET dvh = @dvh
+                             WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@dvh", dvh),
+                new SqlParameter("@id", gradeId)
+            };
+
+            return _access.Save(query, parameters);
+        }
         #endregion
 
         #region Métodos Privados
@@ -149,7 +255,8 @@ namespace MPP
                 Date = (DateTime)row["date"],
                 CreatedBy = Convert.ToInt32(row["created_by"]),
                 CreatedAt = (DateTime)row["created_at"],
-                LastUpdate = (DateTime)row["last_update"]
+                LastUpdate = (DateTime)row["last_update"],
+                Dvh = row["dvh"] != DBNull.Value ? row["dvh"].ToString() : null
             };
         }
 
@@ -160,7 +267,8 @@ namespace MPP
                 Id = Convert.ToInt32(row["id"]),
                 EvaluationId = Convert.ToInt32(row["evaluation_id"]),
                 StudentId = Convert.ToInt32(row["student_id"]),
-                Grade = Convert.ToDecimal(row["grade"])
+                Grade = Convert.ToDecimal(row["grade"]),
+                Dvh = row["dvh"] != DBNull.Value ? row["dvh"].ToString() : null
             };
         }
         #endregion

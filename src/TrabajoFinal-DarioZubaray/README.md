@@ -106,8 +106,8 @@ La solución está estructurada como una arquitectura en capas clásica. Cada ca
 | `SessionManagerBLL` | **Multiton de sesiones.** Mantiene el estado de la sesión por usuario (multiton: una instancia por `userId`). |
 | `AppPreferencesBLL` (static) | Persistencia local de preferencias de la UI (`language`, `theme`) en `%LocalAppData%\TrabajoFinal-DarioZubaray\preferences.json`. Conserva lo "último usado" entre sesiones. |
 | `IIntegrityBLL` / `IntegrityBLL` | Servicio de **auditoría de integridad (DVH)**: `Scan()` recorre todos los verificadores registrados y guarda el resultado en `IntegrityStateBLL`; `GetViolations()` lista las filas alteradas; `AcceptAndRegenerate(violation)` reacepta una fila (vuelve a escanear). |
-| `IDvhTableVerifierBLL` / `UserDvhVerifierBLL` | Verificador por tabla (hoy `users`): recalcula el DVH de cada fila (`DVHHelperBLL.Compute`) y compara contra el persistido; `AcceptAndRegenerate` regenera el hash de una fila aceptada. Diseño multi-tabla: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un verificador por cada tabla soportada. |
-| `DVHHelperBLL` (static) | Helper del **Dígito Verificador Horizontal**: serializa los valores que declara la entidad (coma como separador, fechas estilo 126, `NULL` → `''`), calcula el **SHA-256** en hex (UTF-16LE, igual que `HASHBYTES` sobre `NVARCHAR`) y orquesta la regeneración (`Regenerate(mpp, user/id)`) tras cada escritura. |
+| `IDvhTableVerifierBLL` / `UserDvhVerifierBLL` / `EvaluationDvhVerifierBLL` / `GradeDvhVerifierBLL` | Verificadores por tabla (`users`, `evaluations` y `grades`): recalculan el DVH de cada fila (`DVHHelperBLL.Compute`) y comparan contra el persistido; `AcceptAndRegenerate` regenera el hash de una fila aceptada. Diseño multi-tabla: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un verificador por cada tabla soportada. |
+| `DVHHelperBLL` (static) | Helper del **Dígito Verificador Horizontal**: serializa los valores que declara la entidad (coma como separador, fechas estilo 126, `NULL` → `''`), calcula el **SHA-256** en hex (UTF-16LE, igual que `HASHBYTES` sobre `NVARCHAR`) y orquesta la regeneración (`Regenerate(mpp, user/evaluation/grade)`, `RegenerateEvaluation(mpp, id)`, `RegenerateGrade(mpp, id)`) tras cada escritura. |
 | `IntegrityStateBLL` (static) | Memoria de la sesión con el resultado del último escaneo (`LastScanHasFailures`, `RecordScan`, `Reset`), consumida por `LoginForm` y `MainForm`. |
 
 ### GUI — Interfaz gráfica
@@ -355,11 +355,11 @@ Ambas muestran un mensaje amigable con el código genérico **(Código: GEN-001)
 
 ## Integridad de datos (Dígito Verificador Horizontal — DVH)
 
-La aplicación protege la tabla `users` (y en el futuro otras tablas) con un **Dígito Verificador Horizontal**: cada fila guarda en la columna `dvh` el **SHA-256** de todos sus valores (menos el propio hash).
+La aplicación protege las tablas `users`, `evaluations` y `grades` con un **Dígito Verificador Horizontal**: cada fila guarda en la columna `dvh` el **SHA-256** de todos sus valores (menos el propio hash).
 
 ### Algoritmo (`BLL\Helpers\DVHHelperBLL.cs`)
 
-- **Composición de la fila:** la entidad declara qué valores y en qué orden entran al hash (`UserBE.GetDvhValues()`, incluido `id`, excluido `dvh`); `role_id` `0`/`NULL` se declara como `NULL`.
+- **Composición de la fila:** la entidad declara qué valores y en qué orden entran al hash (`UserBE.GetDvhValues()` con `id`…`theme`; `EvaluationBE.GetDvhValues()` con `id`, `course_id`, `name`, `date`, `created_by`, `created_at`, `last_update`; `GradeBE.GetDvhValues()` con `id`, `evaluation_id`, `student_id`, `grade`; siempre excluido `dvh`); `role_id` `0`/`NULL` se declara como `NULL`.
 - **Serialización canónica:** la helper normaliza cada valor y los une por **coma `,` sin espacios**: `NULL` → `''` (`role_id` `0`/`NULL` → `''`), `bool` → `1`/`0`, fechas en formato estilo 126 (`yyyy-MM-ddTHH:mm:ss.fff`, **sin fracción cuando los milisegundos son 0**, igual que `CONVERT(..., 126)` de T-SQL).
 - **Hash:** SHA-256 en hex **minúsculas** (64 caracteres) del payload codificado en **UTF-16LE** (`Encoding.Unicode`), para coincidir byte a byte con `HASHBYTES('SHA2_256', <NVARCHAR>)` de SQL Server.
 
@@ -367,14 +367,16 @@ La aplicación protege la tabla `users` (y en el futuro otras tablas) con un **D
 
 Toda escritura de la fila **regenera su `dvh`**: `UserBLL` y `AuthBLL` invocan `DVHHelperBLL.Regenerate(...)` tras cada mutación (`Save`, `Delete`, idioma, tema, contraseña, reintentos, último acceso, desactivación). La helper recalcula el hash sobre la fila **releída** desde la base (no sobre los valores en memoria, porque `DATETIME` redondea a 1/300 s al escribir) y lo persiste con `IUserMPP.UpdateDvh(id, dvh)`. `UserMPP` solo escribe y relee la fila: no calcula hashes.
 
+`EvaluationBLL.Save` hace lo propio con evaluaciones y notas: tras insertar/actualizar, relee la evaluación (`RegenerateEvaluation`) y cada nota (`Regenerate`) y persiste los hashes vía `IEvaluationMPP.UpdateDvh` / `UpdateGradeDvh`. `EvaluationMPP` tampoco calcula hashes.
+
 ### Verificación al inicio y auditoría
 
 1. Al conectar con la base y en cada intento de login, `LoginForm` ejecuta `IntegrityBLL.Scan()` en segundo plano: recalcula el DVH de cada fila registrada y lo compara con el persistido (`IntegrityStateBLL`). Si al lanzar la aplicación hay discrepancias, se muestra un aviso modal (mensaje `INT-001`); el re-escaneo del click de login es silencioso porque el bloqueo/auditoría ya informa en ese momento.
 2. Si hay discrepancias, `AuthBLL.Login` **bloquea** a todo usuario que no sea el sysadmin (`admin`, id 1) con el código **`INT-001`**.
 3. El sysadmin (tras su **2FA**) abre el formulario **Auditoría de Integridad** (`IntegrityAuditForm`), donde puede *Editar* la fila o *Aceptar y regenerar* su hash; el sistema vuelve a escanear y solo ingresa cuando no quedan discrepancias (o si el sysadmin confirma continuar con alertas). También puede reabrirla desde el menú principal.
-4. Diseño **multi-tabla**: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un `IDvhTableVerifierBLL` por tabla (hoy `UserDvhVerifierBLL` para `users`); agregar una tabla nueva consiste en sumar un verificador.
+4. Diseño **multi-tabla**: `ServiceLocatorBLL.CreateIntegrityBLL()` registra un `IDvhTableVerifierBLL` por tabla (`UserDvhVerifierBLL` para `users`, `EvaluationDvhVerifierBLL` para `evaluations` y `GradeDvhVerifierBLL` para `grades`); agregar una tabla nueva consiste en sumar un verificador.
 
-La migración `sql/03_v1.3.0_Incremental.sql` agrega la columna y calcula el backfill con la misma expresión T-SQL (verificada contra la app por el test `Dvh_BackfillExpression_MatchesApplicationHash`).
+La migración `sql/03_v1.3.0_Incremental.sql` agrega la columna `users.dvh` y calcula el backfill con la misma expresión T-SQL (verificada contra la app por el test `Dvh_BackfillExpression_MatchesApplicationHash`); `sql/06_v1.4.0_DVHGradesEvaluations.sql` hace lo propio con `evaluations.dvh` y `grades.dvh` (mismo contrato de serialización, con `CAST(date AS DATETIME)` antes del estilo `126` para igualar a la app), verificado por los tests `EvaluationDvhIntegrationTests` y `GradeDvhVerifierBLLTests`.
 
 ## Cómo ejecutar
 

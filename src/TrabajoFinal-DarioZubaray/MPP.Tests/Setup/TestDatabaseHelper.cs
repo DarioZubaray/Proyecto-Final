@@ -243,6 +243,7 @@ namespace MPP.Tests.Setup
                         [created_by]   INT            NOT NULL,
                         [created_at]   DATETIME       NOT NULL DEFAULT GETDATE(),
                         [last_update]  DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [dvh]          NVARCHAR(64)   NULL,
                         CONSTRAINT fk_evaluations_courses FOREIGN KEY ([course_id]) REFERENCES [dbo].[courses]([id]),
                         CONSTRAINT fk_evaluations_users   FOREIGN KEY ([created_by]) REFERENCES [dbo].[users]([id])
                     );
@@ -252,6 +253,7 @@ namespace MPP.Tests.Setup
                         [evaluation_id]  INT           NOT NULL,
                         [student_id]     INT           NOT NULL,
                         [grade]          DECIMAL(4,2)  NOT NULL,
+                        [dvh]            NVARCHAR(64)  NULL,
                         CONSTRAINT fk_grades_evaluations FOREIGN KEY ([evaluation_id]) REFERENCES [dbo].[evaluations]([id]),
                         CONSTRAINT fk_grades_students    FOREIGN KEY ([student_id])    REFERENCES [dbo].[students]([id]),
                         CONSTRAINT uq_grades_evaluation_student UNIQUE ([evaluation_id], [student_id])

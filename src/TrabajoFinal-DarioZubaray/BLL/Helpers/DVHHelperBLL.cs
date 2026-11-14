@@ -108,6 +108,64 @@ namespace BLL.Helpers
 
             return Regenerate(mpp, user);
         }
+
+        public static bool Regenerate(IEvaluationMPP mpp, EvaluationBE evaluation)
+        {
+            if (mpp == null || evaluation == null)
+            {
+                return false;
+            }
+
+            evaluation.Dvh = Compute(evaluation.GetDvhValues());
+
+            return mpp.UpdateDvh(evaluation.Id, evaluation.Dvh);
+        }
+
+        public static bool RegenerateEvaluation(IEvaluationMPP mpp, int evaluationId)
+        {
+            if (mpp == null)
+            {
+                return false;
+            }
+
+            EvaluationBE evaluation = mpp.FindById(evaluationId);
+
+            if (evaluation == null)
+            {
+                return true;
+            }
+
+            return Regenerate(mpp, evaluation);
+        }
+
+        public static bool Regenerate(IEvaluationMPP mpp, GradeBE grade)
+        {
+            if (mpp == null || grade == null)
+            {
+                return false;
+            }
+
+            grade.Dvh = Compute(grade.GetDvhValues());
+
+            return mpp.UpdateGradeDvh(grade.Id, grade.Dvh);
+        }
+
+        public static bool RegenerateGrade(IEvaluationMPP mpp, int gradeId)
+        {
+            if (mpp == null)
+            {
+                return false;
+            }
+
+            GradeBE grade = mpp.FindGradeById(gradeId);
+
+            if (grade == null)
+            {
+                return true;
+            }
+
+            return Regenerate(mpp, grade);
+        }
         #endregion
     }
 }

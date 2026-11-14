@@ -12,6 +12,23 @@ namespace BE.Entities
         public int CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
+        public string Dvh { get; set; }
+        #endregion
+
+        #region Métodos
+        public object[] GetDvhValues()
+        {
+            return new object[]
+            {
+                Id,          // 0
+                CourseId,    // 1
+                Name,        // 2
+                Date,        // 3
+                CreatedBy,   // 4
+                CreatedAt,   // 5
+                LastUpdate   // 6
+            };
+        }
         #endregion
     }
 }

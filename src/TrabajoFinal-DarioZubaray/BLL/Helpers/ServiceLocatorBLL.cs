@@ -147,7 +147,9 @@ namespace BLL.Helpers
         {
             return new IntegrityBLL(new IDvhTableVerifierBLL[]
             {
-                new UserDvhVerifierBLL(CreateUserBLL())
+                new UserDvhVerifierBLL(CreateUserBLL()),
+                new EvaluationDvhVerifierBLL(GetEvaluationMPP()),
+                new GradeDvhVerifierBLL(GetEvaluationMPP())
             });
         }
 

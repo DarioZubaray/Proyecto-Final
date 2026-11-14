@@ -13,7 +13,7 @@
 ;
 ; Flujo: wizard (conexion) -> copia de archivos -> escribe
 ; TrabajoFinal-DarioZubaray.dll.config -> --bootstrap (crea la BD
-; si falta y aplica 01 -> 03) -> --test-connection -> finish.
+; si falta y aplica 01 -> 06) -> --test-connection -> finish.
 ; ============================================================
 
 #ifndef Mode
@@ -66,6 +66,7 @@ Source: "publish\online\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdir
 Source: "publish\offline\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Excludes: "sql\*"
 #endif
 Source: "..\src\sql\01_*.sql"; DestDir: "{app}\sql"; Flags: ignoreversion
+Source: "..\src\sql\06_*.sql"; DestDir: "{app}\sql"; Flags: ignoreversion
 ;Source: "..\src\sql\03_*.sql"; DestDir: "{app}\sql"; Flags: ignoreversion
 ;Source: "..\src\sql\04_*.sql"; DestDir: "{app}\sql"; Flags: ignoreversion
 
