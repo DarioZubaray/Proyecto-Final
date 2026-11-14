@@ -16,6 +16,14 @@ namespace BLL.Helpers
             public const string UserBlocked = "AUTH-003";
             public const string MaxRetriesExceeded = "AUTH-004";
             public const string RetryAttemptsLeft = "AUTH-005";
+            public const string TwoFactorInvalid = "AUTH-006";
+        }
+
+        public static class Integrity
+        {
+            public const string Blocked = "INT-001";
+            public const string ResolveFailed = "INT-002";
+            public const string ScanFailed = "INT-003";
         }
 
         public static class Validation
@@ -26,6 +34,8 @@ namespace BLL.Helpers
             public const string NameRequired = "VAL-004";
             public const string NoSelection = "VAL-005";
             public const string LanguageThemeRequired = "VAL-006";
+            public const string AdminUsernameLocked = "VAL-007";
+            public const string UsernameTaken = "VAL-008";
         }
 
         public static class Business
@@ -34,6 +44,17 @@ namespace BLL.Helpers
             public const string InvalidCurrentPassword = "BIZ-002";
             public const string TraslapeHorario = "BIZ-003";
             public const string YaInscripto = "BIZ-004";
+            public const string AdminProtected = "BIZ-005";
+            public const string TicketSubjectRequired = "BIZ-006";
+            public const string TicketDescriptionRequired = "BIZ-007";
+            public const string TicketAlreadyClosed = "BIZ-008";
+            public const string StudentFirstNameRequired = "BIZ-009";
+            public const string StudentLastNameRequired = "BIZ-010";
+            public const string StudentDocumentRequired = "BIZ-011";
+            public const string StudentDocumentDuplicated = "BIZ-012";
+            public const string EvaluationNameRequired = "BIZ-013";
+            public const string CourseNotOwnedByTeacher = "BIZ-014";
+            public const string GradeOutOfRange = "BIZ-015";
         }
 
         public static class General

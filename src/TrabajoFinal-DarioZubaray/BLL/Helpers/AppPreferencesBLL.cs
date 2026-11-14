@@ -12,7 +12,7 @@ namespace BLL.Helpers
         private const string FileName = "preferences.json";
         #endregion
 
-        #region Campos
+        #region Propiedades
         private static string _filePath = BuildDefaultFilePath();
         private static bool _loaded;
         private static string _language = CultureHelperBLL.DefaultLanguage;

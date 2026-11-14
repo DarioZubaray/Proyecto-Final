@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph ALM[Alumno]
+        direction TB
+        A1([Inicio])
+        A2[Acude a la academia y solicita la inscripción a un curso]
+        A3[Recibe la confirmación de la inscripción]
+        A4([Fin])
+    end
+    subgraph COO[Coordinador]
+        direction TB
+        C1[Registra la solicitud en el sistema]
+        C2[Selecciona el curso y el alumno]
+        C3{¿El alumno ya está inscripto y hay cupo?}
+        C4[Confirma la inscripción]
+    end
+    subgraph SIS[Sistema]
+        direction TB
+        S1[Valida duplicados, cupo y traslape de horario]
+        S2[Registra la inscripción en la base de datos]
+    end
+    A1 --> A2 --> C1 --> C2 --> S1
+    S1 --> C3
+    C3 -->|No| C5[Muestra el motivo del rechazo] --> A3 --> A4
+    C3 -->|Sí| S2 --> C4 --> A3

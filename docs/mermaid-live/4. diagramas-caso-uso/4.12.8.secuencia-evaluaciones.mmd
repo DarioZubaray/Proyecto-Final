@@ -1,0 +1,60 @@
+sequenceDiagram
+    autonumber
+    actor Profesor
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: CourseBE, EnrollmentBE, EvaluationBE y GradeBE transportan los datos entre capas
+    Note over Profesor,BD: CU-12 Registrar Evaluación y Cargar Notas - flujo básico
+
+    Profesor->>GUI: Elige "Evaluaciones" en el menú "Académico"
+    GUI->>BLL: FindByTeacherId(teacherId: int): List<CourseBE>
+    BLL->>MPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de los cursos del docente
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<CourseBE>
+    BLL-->>GUI: List<CourseBE>
+    GUI-->>Profesor: Muestra el formulario "Evaluaciones" con la lista de cursos y los campos
+
+    Profesor->>GUI: Selecciona el campo "Curso", completa "Nombre" y "Fecha"
+    Profesor->>GUI: Presiona el botón "Cargar alumnos"
+    GUI->>BLL: FindAll(): List<EnrollmentBE>
+    BLL->>MPP: FindAll(): List<EnrollmentBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de inscripciones con nombre de alumno
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<EnrollmentBE>
+    BLL-->>GUI: List<EnrollmentBE>
+    Note over GUI: Filtra las inscripciones activas del curso seleccionado
+    GUI-->>Profesor: Muestra la grilla con los alumnos inscriptos y la columna "Nota" editable
+
+    Profesor->>GUI: Completa la "Nota" de cada alumno y presiona "Guardar"
+    GUI->>BLL: Save(evaluation: EvaluationBE, grades: List<GradeBE>): bool
+    BLL->>MPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de los cursos del docente
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<CourseBE>
+    BLL-->>BLL: Verifica que el curso de la evaluación esté en la lista del docente
+    BLL->>MPP: Save(evaluation: EvaluationBE): int
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Alta de la evaluación con retorno de identidad (SCOPE_IDENTITY)
+    BD-->>DAL: Fila con el nuevo id
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: int
+    BLL->>MPP: SaveGrades(evaluationId: int, grades: List<GradeBE>): void
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Alta de una fila de nota por alumno con valor cargado
+    BD-->>DAL: Filas afectadas
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI-->>Profesor: Muestra "Evaluación registrada correctamente." y limpia el formulario

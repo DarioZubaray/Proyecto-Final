@@ -10,9 +10,12 @@ namespace TrabajoFinal_DarioZubaray
 {
     public partial class ChangePasswordForm : Form
     {
+        #region Propiedades
         private readonly UserBE _user;
         private readonly IUserBLL _userBLL;
+        #endregion
 
+        #region Contructor
         public ChangePasswordForm(UserBE user)
         {
             InitializeComponent();
@@ -21,7 +24,9 @@ namespace TrabajoFinal_DarioZubaray
             ApplyResources();
             ThemeHelper.ApplyTheme(this, _user.Theme ?? ThemeHelper.DefaultTheme);
         }
+        #endregion
 
+        #region Métodos
         private void ApplyResources()
         {
             this.Text = Resources.ChangePassword_Title;
@@ -69,5 +74,6 @@ namespace TrabajoFinal_DarioZubaray
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
+        #endregion
     }
 }

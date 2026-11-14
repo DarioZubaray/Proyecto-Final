@@ -7,6 +7,7 @@ using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
+using BLL.Services;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -58,12 +59,32 @@ namespace TrabajoFinal_DarioZubaray
                 return false;
             }
 
+            if (!_isNewUser
+                && UserBLL.IsAdminName(_user.UserName)
+                && !UserBLL.IsAdminName(txtUserName.Text.Trim()))
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserForm_UserNameAdminLocked,
+                    ErrorCodesBLL.Validation.AdminUsernameLocked));
+                txtUserName.Focus();
+                return false;
+            }
+
             if (_isNewUser && string.IsNullOrEmpty(txtPassword.Text))
             {
                 MessageBox.Show(ErrorFormatter.WithCode(
                     Resources.UserForm_PasswordRequired,
                     ErrorCodesBLL.Validation.PasswordRequired));
                 txtPassword.Focus();
+                return false;
+            }
+
+            if (!_isNewUser && !_user.UserName.Equals(txtUserName.Text.Trim()) && _userBLL.IsUsernameTaken(txtUserName.Text.Trim()))
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserForm_UserNameTaken,
+                    ErrorCodesBLL.Validation.UsernameTaken));
+                txtUserName.Focus();
                 return false;
             }
 
@@ -82,6 +103,7 @@ namespace TrabajoFinal_DarioZubaray
                 _user.RetriesCount = 0;
                 _user.CreatedAt = DateTime.Now;
                 _user.Language = "es";
+                _user.Theme = "System";
             }
 
             _user.LastUpdate = DateTime.Now;
@@ -118,6 +140,13 @@ namespace TrabajoFinal_DarioZubaray
             txtUserName.Text = _user.UserName;
             chkIsActive.Checked = _user.IsActive;
             cbRole.SelectedValue = _user.RoleId;
+
+            if (UserBLL.IsAdminName(_user.UserName))
+            {
+                txtUserName.ReadOnly = true;
+                cbRole.Enabled = false;
+                chkIsActive.Enabled = false;
+            }
 
             if (_isNewUser)
             {

@@ -11,7 +11,15 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <ApplicationIcon>DarioZubaray_TF.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="DarioZubaray_TF.ico" />
+    <Content Include="..\..\sql\*.sql" Link="sql\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BE\BE.csproj" />

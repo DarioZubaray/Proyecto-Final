@@ -1,0 +1,19 @@
+flowchart LR
+    subgraph COO[Coordinador]
+        direction TB
+        C1([Inicio])
+        C2[Recibe la novedad: alta, baja o modificación de un registro]
+        C3[Completa el formulario del sistema con los datos del cambio]
+        C4{¿El formulario es válido?}
+        C5[Confirma y guarda el registro]
+        C6([Fin])
+    end
+    subgraph SIS[Sistema]
+        direction TB
+        S1[Valida los datos ingresados]
+        S2[Registra el cambio en la base de datos]
+    end
+    C1 --> C2 --> C3 --> S1
+    S1 --> C4
+    C4 -->|No| C7[Muestra el mensaje de validación] --> C3
+    C4 -->|Sí| S2 --> C5 --> C6

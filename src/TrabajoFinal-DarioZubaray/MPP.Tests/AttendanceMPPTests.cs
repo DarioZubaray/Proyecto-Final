@@ -9,11 +9,14 @@ namespace MPP.Tests
     [TestClass]
     public class AttendanceMPPTests
     {
+        #region Propiedades
         private ClassroomMPP _classroomMPP;
         private CourseMPP _courseMPP;
         private AttendanceMPP _attendanceMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -70,13 +73,15 @@ namespace MPP.Tests
             {
                 connection.Open();
                 var cmd = new Microsoft.Data.SqlClient.SqlCommand(
-                    @"INSERT INTO users (user_name, password_hash, is_active, retries_count, last_update, created_at, language, theme, role_id)
-                      VALUES ('test_attendance_student', 'hash', 1, 0, GETDATE(), GETDATE(), 'es', 'System', NULL);
+                    @"INSERT INTO students (first_name, last_name, document, email, phone, is_active, created_at, last_update)
+                      VALUES ('Test', 'Attendance', 'DNI-ATT-1', NULL, NULL, 1, GETDATE(), GETDATE());
                       SELECT SCOPE_IDENTITY();", connection);
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void RegisterAttendanceBulk_ReturnsTrue()
         {
@@ -146,7 +151,9 @@ namespace MPP.Tests
 
             Assert.IsFalse(result);
         }
+        #endregion
 
+        #region Metódos auxiliares
         private int CreateTestTeacher()
         {
             using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_connectionString))
@@ -159,5 +166,6 @@ namespace MPP.Tests
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        #endregion
     }
 }

@@ -15,6 +15,7 @@ namespace BE.Entities
         public int RoleId { get; set; }
         public string Language { get; set; }
         public string Theme { get; set; }
+        public string Dvh { get; set; }
         #endregion
 
         #region Constructor
@@ -48,6 +49,23 @@ namespace BE.Entities
         #endregion
 
         #region Métodos
+        public object[] GetDvhValues()
+        {
+            return new object[]
+            {
+                Id,
+                UserName,
+                PasswordHash,
+                IsActive,
+                RetriesCount,
+                LastUpdate,
+                CreatedAt,
+                RoleId == 0 ? null : (object)RoleId,
+                Language,
+                Theme
+            };
+        }
+
         public override string ToString()
         {
             return $"{Id}, {UserName}, {IsActive}, {LastUpdate}";

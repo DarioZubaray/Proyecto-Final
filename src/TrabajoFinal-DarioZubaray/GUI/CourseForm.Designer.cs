@@ -184,9 +184,9 @@ namespace TrabajoFinal_DarioZubaray
             lblTeachers.Location = new System.Drawing.Point(14, 304);
             lblTeachers.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblTeachers.Name = "lblTeachers";
-            lblTeachers.Size = new System.Drawing.Size(59, 15);
+            lblTeachers.Size = new System.Drawing.Size(65, 15);
             lblTeachers.TabIndex = 16;
-            lblTeachers.Text = "Docentes:";
+            lblTeachers.Text = "Profesores:";
             // 
             // lstAvailableTeachers
             // 

@@ -139,10 +139,14 @@ namespace TrabajoFinal_DarioZubaray
             }
 
             if (!ParseHorario(mtbStartTime, out TimeSpan horaInicio))
+            {
                 return false;
+            }
 
             if (!ParseHorario(mtbEndTime, out TimeSpan horaFin))
+            {
                 return false;
+            }
 
             if (horaInicio >= horaFin)
             {
@@ -231,7 +235,7 @@ namespace TrabajoFinal_DarioZubaray
         private void LoadTeachers()
         {
             List<UserBE> allUsers = _userBLL.FindAll();
-            _availableTeachers = allUsers.Where(u => u.IsActive && u.RoleId == 2).ToList();
+            _availableTeachers = allUsers.Where(u => u.IsActive && u.RoleId == RoleIds.Profesor).ToList();
 
             RefreshTeacherLists();
         }
@@ -274,7 +278,7 @@ namespace TrabajoFinal_DarioZubaray
 
         private void ConfigureButtons()
         {
-            bool isAdmin = _currentUser != null && _currentUser.RoleId == 1;
+            bool isAdmin = _currentUser != null && _currentUser.RoleId == RoleIds.Admin;
             btnToggleActive.Visible = isAdmin && !_isNewCourse;
 
             if (btnToggleActive.Visible && !_course.IsActive)

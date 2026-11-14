@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -14,6 +15,8 @@ namespace TrabajoFinal_DarioZubaray
         #region Propiedades
         private readonly UserBE _currentUser;
         private readonly IEnrollmentBLL _enrollmentBLL;
+        private readonly ICourseBLL _courseBLL;
+        private readonly IStudentBLL _studentBLL;
         #endregion
 
         #region Constructores
@@ -22,7 +25,10 @@ namespace TrabajoFinal_DarioZubaray
             InitializeComponent();
             _currentUser = user;
             _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL();
+            _courseBLL = ServiceLocatorBLL.CreateCourseBLL();
+            _studentBLL = ServiceLocatorBLL.CreateStudentBLL();
             ApplyResources();
+            LoadEnrollmentOptions();
             LoadEnrollments();
             ThemeHelper.ApplyTheme(this, _currentUser.Theme ?? ThemeHelper.DefaultTheme);
         }
@@ -34,11 +40,33 @@ namespace TrabajoFinal_DarioZubaray
             this.Text = Resources.EnrollmentManagementForm_Title;
             lblSearch.Text = Resources.EnrollmentManagementForm_SearchLabel;
             btnSearch.Text = Resources.EnrollmentManagementForm_SearchButton;
+            lblStudent.Text = Resources.EnrollmentManagementForm_StudentLabel;
+            lblCourse.Text = Resources.AttendanceForm_CourseLabel;
+            btnEnroll.Text = Resources.EnrollmentManagementForm_EnrollButton;
+        }
+
+        private void LoadEnrollmentOptions()
+        {
+            List<StudentBE> students = _studentBLL.FindAllActive();
+
+            cboStudent.DisplayMember = "FullName";
+            cboStudent.ValueMember = "Id";
+            cboStudent.DataSource = students;
+
+            List<CourseBE> courses = _courseBLL.FindAll();
+
+            cboCourse.DisplayMember = "Name";
+            cboCourse.ValueMember = "Id";
+            cboCourse.DataSource = courses;
         }
 
         private string GetDayOfWeekName(int? dia)
         {
-            if (!dia.HasValue) return "-";
+            if (!dia.HasValue)
+            {
+                return "-";
+            }
+
             switch (dia.Value)
             {
                 case 1: return Resources.Day_Monday;
@@ -74,7 +102,10 @@ namespace TrabajoFinal_DarioZubaray
 
         private void ConfigureGrid()
         {
-            if (dgvEnrollments.Columns.Count == 0) return;
+            if (dgvEnrollments.Columns.Count == 0)
+            {
+                return;
+            }
 
             dgvEnrollments.Columns["Alumno"].HeaderText = Resources.EnrollmentManagementForm_ColStudent;
             dgvEnrollments.Columns["Curso"].HeaderText = Resources.EnrollmentManagementForm_ColCourse;
@@ -136,6 +167,68 @@ namespace TrabajoFinal_DarioZubaray
             {
                 btnSearch.PerformClick();
                 e.SuppressKeyPress = true;
+            }
+        }
+
+        private void btnEnroll_Click(object sender, EventArgs e)
+        {
+            if (cboStudent.SelectedValue == null)
+            {
+                MessageBox.Show(
+                    Resources.EnrollmentManagementForm_SelectStudent,
+                    Resources.EnrollmentForm_InfoTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            if (cboCourse.SelectedValue == null)
+            {
+                MessageBox.Show(
+                    Resources.AttendanceForm_SelectCourse,
+                    Resources.EnrollmentForm_InfoTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            int studentId = (int)cboStudent.SelectedValue;
+            int courseId = (int)cboCourse.SelectedValue;
+
+            DialogResult confirm = MessageBox.Show(
+                string.Format(Resources.EnrollmentManagementForm_ConfirmEnrollMessage, cboStudent.Text, cboCourse.Text),
+                Resources.EnrollmentForm_ConfirmEnrollTitle,
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (confirm != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                _enrollmentBLL.Enroll(courseId, studentId);
+
+                MessageBox.Show(
+                    Resources.EnrollmentForm_EnrollSuccess,
+                    Resources.EnrollmentForm_SuccessTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                LoadEnrollments();
+            }
+            catch (InvalidOperationException ex)
+            {
+                MessageBox.Show(ex.Message, Resources.EnrollmentForm_ValidationTitle, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    string.Format(Resources.EnrollmentForm_EnrollError, ex.Message),
+                    Resources.EnrollmentForm_ErrorTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
         #endregion

@@ -191,7 +191,10 @@ namespace TrabajoFinal_DarioZubaray
 
                 foreach (DataGridViewRow row in dgvAttendance.Rows)
                 {
-                    if (row.Cells["StudentId"].Value == null) continue;
+                    if (row.Cells["StudentId"].Value == null)
+                    {
+                        continue;
+                    }
 
                     int studentId = Convert.ToInt32(row.Cells["StudentId"].Value);
                     bool isPresent = Convert.ToBoolean(row.Cells["IsPresent"].Value);

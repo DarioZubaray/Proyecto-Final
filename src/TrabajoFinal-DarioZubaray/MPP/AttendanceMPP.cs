@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
@@ -55,13 +55,13 @@ namespace MPP
         public List<AttendanceBE> FindByCourseIdAndDate(int courseId, DateTime date)
         {
             string query = @"SELECT a.id, a.course_id, a.student_id, a.date, a.is_present, a.created_at,
-                                    u.user_name AS student_name,
+                                    (s.first_name + ' ' + s.last_name) AS student_name,
                                     c.name AS course_name
                             FROM attendance a
-                            INNER JOIN users u ON u.id = a.student_id
+                            INNER JOIN students s ON s.id = a.student_id
                             INNER JOIN courses c ON c.id = a.course_id
                             WHERE a.course_id = @courseId AND a.date = @date
-                            ORDER BY u.user_name";
+                            ORDER BY s.last_name, s.first_name";
 
             SqlParameter[] parameters = new SqlParameter[]
             {

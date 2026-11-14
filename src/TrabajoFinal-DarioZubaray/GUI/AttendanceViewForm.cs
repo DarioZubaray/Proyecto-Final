@@ -59,7 +59,10 @@ namespace TrabajoFinal_DarioZubaray
 
         private void LoadStudents()
         {
-            if (cboCourse.SelectedValue == null) return;
+            if (cboCourse.SelectedValue == null)
+            {
+                return;
+            }
 
             int courseId = (int)cboCourse.SelectedValue;
             DateTime date = dtpDate.Value.Date;
@@ -99,7 +102,10 @@ namespace TrabajoFinal_DarioZubaray
 
         private void ConfigureGrid()
         {
-            if (dgvAttendance.Columns.Count == 0) return;
+            if (dgvAttendance.Columns.Count == 0)
+            {
+                return;
+            }
 
             dgvAttendance.Columns["StudentId"].Visible = false;
             dgvAttendance.Columns["Student"].HeaderText = Resources.AttendanceForm_ColStudent;

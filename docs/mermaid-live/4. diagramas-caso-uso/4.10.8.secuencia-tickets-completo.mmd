@@ -1,0 +1,91 @@
+﻿sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: TicketBE y UserBE transportan los datos entre las capas
+    Note over Usuario,BD: CU-10 Crear Tickets - flujos básicos y alternativos
+
+    Usuario->>GUI: Elige "Tickets" en el menú principal
+    alt Coordinador (permiso de gestión de tickets)
+        GUI->>BLL: FindAll(): List<TicketBE>
+        BLL->>MPP: FindAll(): List<TicketBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta parametrizada de todos los tickets
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<TicketBE>
+        BLL-->>GUI: List<TicketBE>
+    else Resto de los usuarios
+        GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+        BLL->>MPP: FindByUser(userId: int): List<TicketBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta parametrizada de tickets del usuario
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<TicketBE>
+        BLL-->>GUI: List<TicketBE>
+    end
+    GUI-->>Usuario: Muestra la ventana "Gestión de Tickets" con la grilla
+
+    Usuario->>GUI: Presiona el botón "Nuevo"
+    GUI-->>Usuario: Muestra el formulario "Nuevo Ticket" con Asunto y Descripción
+    Usuario->>GUI: Completa el campo "Asunto"
+    Usuario->>GUI: Completa el campo "Descripción"
+    Usuario->>GUI: Presiona el botón "Guardar"
+    alt Asunto vacío
+        GUI-->>Usuario: Muestra "El asunto del ticket es obligatorio. (Código: BIZ-006)" y devuelve el foco a Asunto
+    else Descripción vacía
+        GUI-->>Usuario: Muestra "La descripción del ticket es obligatoria. (Código: BIZ-007)" y devuelve el foco a Descripción
+    else Datos válidos
+        GUI->>BLL: Create(ticket: TicketBE): bool
+        BLL->>MPP: Insert(ticket: TicketBE): bool
+        MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+        DAL->>BD: Registro del ticket (estado Abierto, usuario logueado)
+        BD-->>DAL: 1 fila afectada
+        DAL-->>MPP: true
+        MPP-->>BLL: true
+        BLL-->>GUI: true
+        GUI-->>Usuario: Muestra "Ticket creado correctamente."
+        alt Coordinador (permiso de gestión de tickets)
+            GUI->>BLL: FindAll(): List<TicketBE>
+            BLL-->>GUI: List<TicketBE>
+        else Resto de los usuarios
+            GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+            BLL-->>GUI: List<TicketBE>
+        end
+        GUI-->>Usuario: Vuelve a la grilla con el ticket nuevo incluido
+    end
+
+    Usuario->>GUI: Selecciona un ticket en la grilla y presiona "Cerrar"
+    alt Ticket seleccionado ya cerrado
+        GUI-->>Usuario: Muestra "Seleccione un ticket abierto."
+    else Ticket en estado Abierto
+        GUI-->>Usuario: Muestra la confirmación "¿Cerrar el ticket seleccionado?"
+        alt El usuario presiona "Sí"
+            GUI->>BLL: Close(ticketId: int, closedBy: int): bool
+            BLL->>MPP: Close(ticketId: int, closedBy: int, closedAt: DateTime): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Registro del cierre (fecha y autor del cierre)
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Usuario: Muestra "Ticket cerrado correctamente."
+            alt Coordinador (permiso de gestión de tickets)
+                GUI->>BLL: FindAll(): List<TicketBE>
+                BLL-->>GUI: List<TicketBE>
+            else Resto de los usuarios
+                GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+                BLL-->>GUI: List<TicketBE>
+            end
+            GUI-->>Usuario: Actualiza la grilla con el ticket en estado Cerrado
+        else El usuario presiona "No"
+            Note over GUI: No se realizan cambios en el ticket
+        end
+    end

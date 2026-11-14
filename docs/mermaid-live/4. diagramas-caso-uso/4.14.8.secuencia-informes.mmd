@@ -1,0 +1,52 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: CourseBE, AttendanceReportLineBE y GradeReportLineBE transportan los datos entre capas
+    Note over Usuario,BD: CU-14 Consultar Informe Personalizado - flujos básicos
+
+    Usuario->>GUI: Elige "Informes Personalizados" en el menú "Reportes"
+    GUI->>BLL: FindAll(): List<CourseBE>
+    BLL->>MPP: FindAll(): List<CourseBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de cursos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<CourseBE>
+    BLL-->>GUI: List<CourseBE>
+    GUI-->>Usuario: Muestra el formulario "Informes Personalizados" con los tipos, los cursos y los botones
+
+    Usuario->>GUI: Selecciona el campo "Tipo de informe" y el campo "Curso"
+    Usuario->>GUI: Presiona el botón "Generar"
+    alt Tipo de informe = Asistencia por curso
+        GUI->>BLL: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
+        BLL->>MPP: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta que cruza inscripciones y asistencia del curso
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<AttendanceReportLineBE>
+        BLL-->>GUI: List<AttendanceReportLineBE>
+    else Tipo de informe = Notas por curso
+        GUI->>BLL: GetGradesReport(courseId: int): List<GradeReportLineBE>
+        BLL->>MPP: GetGradesReport(courseId: int): List<GradeReportLineBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta que cruza inscripciones, evaluaciones y notas del curso
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<GradeReportLineBE>
+        BLL-->>GUI: List<GradeReportLineBE>
+    end
+    GUI-->>Usuario: Muestra la grilla con el informe del curso
+
+    Usuario->>GUI: Presiona el botón "Exportar"
+    GUI-->>Usuario: Muestra el diálogo "Guardar como" en formato CSV
+    Usuario->>GUI: Confirma el nombre y la ubicación del archivo
+    GUI->>GUI: Exporta el contenido del informe al archivo CSV
+    GUI-->>Usuario: Muestra "Informe exportado correctamente."

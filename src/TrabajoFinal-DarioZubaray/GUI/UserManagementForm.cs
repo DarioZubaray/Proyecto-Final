@@ -5,6 +5,7 @@ using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
+using BLL.Services;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -41,7 +42,7 @@ namespace TrabajoFinal_DarioZubaray
         private void LoadUsers()
         {
             dgvUsers.DataSource = null;
-            dgvUsers.DataSource = _userBLL.FindAll();
+            dgvUsers.DataSource = _userBLL.FindAllActives();
             ConfigureGrid();
         }
 
@@ -127,6 +128,14 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
+            if (UserBLL.IsAdminName(user.UserName))
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserManagement_DeleteDenied,
+                    ErrorCodesBLL.Business.AdminProtected));
+                return;
+            }
+
             string message = string.Format(Resources.UserManagement_DeleteConfirm, user.UserName);
             DialogResult result = MessageBox.Show(message, Resources.Common_Confirm, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
@@ -137,6 +146,12 @@ namespace TrabajoFinal_DarioZubaray
                 {
                     MessageBox.Show(Resources.UserManagement_DeleteSuccess);
                     LoadUsers();
+                }
+                else
+                {
+                    MessageBox.Show(ErrorFormatter.WithCode(
+                        Resources.UserManagement_DeleteDenied,
+                        ErrorCodesBLL.Business.AdminProtected));
                 }
             }
         }
@@ -161,6 +176,35 @@ namespace TrabajoFinal_DarioZubaray
             {
                 btnSearch.PerformClick();
                 e.SuppressKeyPress = true;
+            }
+        }
+
+        private void dgvUsersRoleCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvUsers.Columns[e.ColumnIndex].Name == "RoleId" && e.Value != null)
+            {
+                if (int.TryParse(e.Value.ToString(), out int roleId))
+                {
+                    switch (roleId)
+                    {
+                        case 1:
+                            e.Value = "ADMIN";
+                            break;
+                        case 2:
+                            e.Value = "COOR";
+                            break;
+                        case 3:
+                            e.Value = "PROF";
+                            break;
+                        case 4:
+                            e.Value = "DIR";
+                            break;
+                        default:
+                            e.Value = "UNKOWN";
+                            break;
+                    }
+                    e.FormattingApplied = true;
+                }
             }
         }
         #endregion

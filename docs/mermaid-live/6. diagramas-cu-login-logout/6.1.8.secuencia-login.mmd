@@ -1,0 +1,43 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE y LoginResultBE (DTO) transportan los datos entre capas
+    Note over Usuario,BD: CU-01 Login - flujo básico (pasos 1 a 5)
+
+    Usuario->>GUI: Completa "Usuario" y "Contraseña" y presiona "Ingresar"
+    GUI->>BLL: TestConnection(): bool
+    BLL->>MPP: TestConnection(): bool
+    MPP->>DAL: TestConnection(): bool
+    DAL->>BD: Abrir conexión
+    BD-->>DAL: Conexión establecida
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI->>BLL: Login(userName: string, password: string): LoginResultBE
+    BLL->>MPP: GetByUserName(userName: string): UserBE
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: UserBE
+    BLL->>BLL: VerifyPassword(password: string, passwordHash: string): bool
+    BLL->>MPP: UpdateLastUpdate(userId: int, lastUpdate: DateTime): bool
+    BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+    BLL-->>GUI: LoginResultBE (Success = true)
+    GUI->>BLL: LogLogin(userId: int, description: string): void
+    BLL->>MPP: Save(log: ActivityLogBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro de auditoría de acceso
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    GUI->>BLL: CreateSession(user: UserBE): SessionManagerBLL
+    GUI->>BLL: SavePreferences(language: string, theme: string): void
+    GUI-->>Usuario: Muestra la pantalla principal con las opciones de su rol

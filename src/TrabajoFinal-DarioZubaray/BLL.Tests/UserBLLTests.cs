@@ -22,6 +22,9 @@ namespace BLL.Tests
         public void Setup()
         {
             _mockUserMPP = new Mock<IUserMPP>();
+            _mockUserMPP
+                .Setup(m => m.UpdateDvh(It.IsAny<int>(), It.IsAny<string>()))
+                .Returns(true);
             _userBLL = new UserBLL(_mockUserMPP.Object);
         }
         #endregion
@@ -116,6 +119,41 @@ namespace BLL.Tests
         }
 
         [TestMethod]
+        public void Save_RegeneratesDvh()
+        {
+            var user = new UserBE { Id = 5, UserName = "newuser" };
+            _mockUserMPP
+                .Setup(m => m.Save(user))
+                .Returns(true);
+
+            var result = _userBLL.Save(user);
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(
+                m => m.UpdateDvh(user.Id, DVHHelperBLL.Compute(user.GetDvhValues())),
+                Times.Once);
+        }
+
+        [TestMethod]
+        public void UpdateLanguage_RegeneratesDvh()
+        {
+            var persisted = new UserBE { Id = 3, UserName = "user3", Language = "es" };
+            _mockUserMPP
+                .Setup(m => m.UpdateLanguage(3, "en"))
+                .Returns(true);
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 3)))
+                .Returns(persisted);
+
+            var result = _userBLL.UpdateLanguage(3, "en");
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(
+                m => m.UpdateDvh(3, DVHHelperBLL.Compute(persisted.GetDvhValues())),
+                Times.Once);
+        }
+
+        [TestMethod]
         public void Delete_DelegatesToMPP()
         {
             var user = new UserBE { Id = 1, UserName = "userToDelete" };
@@ -200,6 +238,197 @@ namespace BLL.Tests
 
             Assert.AreEqual(5, result);
             _mockUserMPP.Verify(m => m.CountByRoleId(2), Times.Once);
+        }
+
+        [TestMethod]
+        public void Delete_Admin_ReturnsFalseWithoutPersisting()
+        {
+            var admin = new UserBE { Id = 1, UserName = "admin" };
+
+            var result = _userBLL.Delete(admin);
+
+            Assert.IsFalse(result);
+            _mockUserMPP.Verify(m => m.Delete(It.IsAny<UserBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Delete_Admin_IgnoresUserNameCase()
+        {
+            var admin = new UserBE { Id = 1, UserName = "Admin" };
+
+            var result = _userBLL.Delete(admin);
+
+            Assert.IsFalse(result);
+            _mockUserMPP.Verify(m => m.Delete(It.IsAny<UserBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_Admin_ForcesActiveAndZeroRetries()
+        {
+            var admin = new UserBE
+            {
+                Id = 1,
+                UserName = "admin",
+                RoleId = 1,
+                IsActive = false,
+                RetriesCount = 3
+            };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 1)))
+                .Returns(new UserBE { Id = 1, UserName = "admin", RoleId = 1, IsActive = true });
+            _mockUserMPP
+                .Setup(m => m.Save(admin))
+                .Returns(true);
+
+            var result = _userBLL.Save(admin);
+
+            Assert.IsTrue(result);
+            Assert.IsTrue(admin.IsActive);
+            Assert.AreEqual(0, admin.RetriesCount);
+            _mockUserMPP.Verify(m => m.Save(admin), Times.Once);
+        }
+
+        [TestMethod]
+        public void Save_AdminRoleChange_BlockedReturnsFalseWithoutPersisting()
+        {
+            var admin = new UserBE
+            {
+                Id = 1,
+                UserName = "admin",
+                RoleId = 2
+            };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 1)))
+                .Returns(new UserBE { Id = 1, UserName = "admin", RoleId = 1 });
+
+            var result = _userBLL.Save(admin);
+
+            Assert.IsFalse(result);
+            _mockUserMPP.Verify(m => m.Save(It.IsAny<UserBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_NormalUserRoleChange_Allowed()
+        {
+            var user = new UserBE { Id = 2, UserName = "dario", RoleId = 4 };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 2)))
+                .Returns(new UserBE { Id = 2, UserName = "dario", RoleId = 2 });
+            _mockUserMPP
+                .Setup(m => m.Save(user))
+                .Returns(true);
+
+            var result = _userBLL.Save(user);
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(m => m.Save(user), Times.Once);
+        }
+
+        [TestMethod]
+        public void Save_AdminRename_BlockedReturnsFalseWithoutPersisting()
+        {
+            var admin = new UserBE
+            {
+                Id = 1,
+                UserName = "nuevoNombre",
+                IsActive = true,
+                RetriesCount = 0
+            };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 1)))
+                .Returns(new UserBE { Id = 1, UserName = "admin", IsActive = true });
+
+            var result = _userBLL.Save(admin);
+
+            Assert.IsFalse(result);
+            _mockUserMPP.Verify(m => m.Save(It.IsAny<UserBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_AdminRename_IgnoresUserNameCase()
+        {
+            var admin = new UserBE { Id = 1, UserName = "pepe" };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 1)))
+                .Returns(new UserBE { Id = 1, UserName = "Admin" });
+
+            var result = _userBLL.Save(admin);
+
+            Assert.IsFalse(result);
+            _mockUserMPP.Verify(m => m.Save(It.IsAny<UserBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_NormalUserRename_Allowed()
+        {
+            var user = new UserBE { Id = 2, UserName = "nombreNuevo" };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 2)))
+                .Returns(new UserBE { Id = 2, UserName = "nombreViejo" });
+            _mockUserMPP
+                .Setup(m => m.Save(user))
+                .Returns(true);
+
+            var result = _userBLL.Save(user);
+
+            Assert.IsTrue(result);
+            _mockUserMPP.Verify(m => m.Save(user), Times.Once);
+        }
+
+        [TestMethod]
+        public void IsAdminName_ComparesCaseInsensitive()
+        {
+            Assert.IsTrue(UserBLL.IsAdminName("admin"));
+            Assert.IsTrue(UserBLL.IsAdminName("Admin"));
+            Assert.IsTrue(UserBLL.IsAdminName("ADMIN"));
+            Assert.IsFalse(UserBLL.IsAdminName("dario"));
+            Assert.IsFalse(UserBLL.IsAdminName(""));
+            Assert.IsFalse(UserBLL.IsAdminName(null));
+        }
+
+        [TestMethod]
+        public void Save_NormalUser_KeepsInactiveState()
+        {
+            var user = new UserBE
+            {
+                Id = 2,
+                UserName = "userToDelete",
+                IsActive = false,
+                RetriesCount = 3
+            };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 2)))
+                .Returns(new UserBE { Id = 2, UserName = "userToDelete" });
+            _mockUserMPP
+                .Setup(m => m.Save(user))
+                .Returns(true);
+
+            var result = _userBLL.Save(user);
+
+            Assert.IsTrue(result);
+            Assert.IsFalse(user.IsActive);
+            Assert.AreEqual(3, user.RetriesCount);
+        }
+
+        [TestMethod]
+        public void HasRegisteredUsers_WhenOtherUsersExist_ReturnsTrue()
+        {
+            _mockUserMPP
+                .Setup(m => m.CountExceptUserName(UserBLL.ADMIN_USERNAME))
+                .Returns(3);
+
+            Assert.IsTrue(_userBLL.HasRegisteredUsers());
+            _mockUserMPP.Verify(m => m.CountExceptUserName(UserBLL.ADMIN_USERNAME), Times.Once);
+        }
+
+        [TestMethod]
+        public void HasRegisteredUsers_WhenOnlyDefaultAdmin_ReturnsFalse()
+        {
+            _mockUserMPP
+                .Setup(m => m.CountExceptUserName(UserBLL.ADMIN_USERNAME))
+                .Returns(0);
+
+            Assert.IsFalse(_userBLL.HasRegisteredUsers());
         }
         #endregion
     }

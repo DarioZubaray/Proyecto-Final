@@ -1,0 +1,24 @@
+flowchart LR
+    subgraph USR[Usuario]
+        direction TB
+        U1([Inicio])
+        U2[Plantea el reclamo o solicitud en el sistema]
+        U3[Recibe la constancia con el número de ticket]
+        U4[Recibe la respuesta al reclamo]
+        U5([Fin])
+    end
+    subgraph SIS[Sistema]
+        direction TB
+        S1[Registra el ticket en estado Abierto]
+        S2[Envía el ticket a la bandeja del Coordinador]
+    end
+    subgraph COO[Coordinador]
+        direction TB
+        C1[Analiza el reclamo]
+        C2{¿Cómo se resuelve?}
+        C3[Resuelve y cierra el ticket]
+    end
+    U1 --> U2 --> S1 --> S2 --> U3
+    S2 --> C1 --> C2
+    C2 -->|Responde| C3 --> S3[Marca el ticket como Cerrado] --> U4 --> U5
+    C2 -->|Requiere gestión| C4[Deriva la gestión y mantiene el ticket abierto] --> C1

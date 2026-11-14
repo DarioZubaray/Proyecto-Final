@@ -1,0 +1,26 @@
+﻿sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: ClassroomBE transporta los datos entre las capas
+    Note over Usuario,BD: CU-06 Crear Aula - flujo básico (pasos 1 a 7)
+
+    Usuario->>GUI: Accede a "Aulas" y presiona "Nuevo"
+    GUI-->>Usuario: Muestra el formulario de alta de aula con sus campos
+    Usuario->>GUI: Completa "Nombre" y "Capacidad"
+    Usuario->>GUI: Presiona "Guardar"
+    GUI->>BLL: Save(classroom: ClassroomBE): bool
+    BLL->>MPP: Save(classroom: ClassroomBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro del aula
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI-->>Usuario: Muestra "Aula creada exitosamente." y cierra el formulario

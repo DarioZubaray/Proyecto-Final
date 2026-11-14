@@ -1,0 +1,155 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE y LoginResultBE (DTO) transportan los datos entre capas
+    Note over Usuario,BD: CU-01 Login - flujo básico y flujos alternativos
+
+    Usuario->>GUI: Completa "Usuario" y "Contraseña" y presiona "Ingresar"
+
+    alt Campos "Usuario" o "Contraseña" vacíos
+        GUI-->>Usuario: Muestra "Usuario y contraseña son obligatorios. (AUTH-001)"
+    else Campos completos
+        GUI->>BLL: TestConnection(): bool
+        BLL->>MPP: TestConnection(): bool
+        MPP->>DAL: TestConnection(): bool
+        DAL->>BD: Abrir conexión
+        BD-->>DAL: Conexión establecida
+        DAL-->>MPP: true
+        MPP-->>BLL: true
+        BLL-->>GUI: true
+
+        alt Base de datos no disponible
+            GUI-->>Usuario: Muestra "Base de datos no disponible. Contacte al administrador. (DB-001)"
+        else Base de datos disponible
+            GUI->>BLL: Scan(): List<IntegrityViolationBE>
+            loop Por cada tabla protegida (IDvhTableVerifierBLL)
+                BLL->>MPP: FindAll(): List<UserBE>
+                MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                DAL->>BD: Consulta parametrizada de usuarios
+                BD-->>DAL: Filas resultantes
+                DAL-->>MPP: DataTable
+                MPP-->>BLL: List<UserBE>
+            end
+            BLL-->>GUI: List<IntegrityViolationBE>
+
+            GUI->>BLL: Login(userName: string, password: string): LoginResultBE
+
+            alt Integridad violada y userName no es el Administrador
+                BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = INT-001)
+                GUI-->>Usuario: Muestra "Acceso bloqueado: se detectaron inconsistencias en la base de datos. Solo el administrador del sistema puede ingresar. (INT-001)"
+            else userName válido o integridad correcta
+                BLL->>MPP: GetByUserName(userName: string): UserBE
+                MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                DAL->>BD: Consulta parametrizada de usuarios
+                BD-->>DAL: Filas resultantes
+                DAL-->>MPP: DataTable
+                MPP-->>BLL: UserBE
+
+                alt Usuario inexistente
+                    BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = AUTH-002)
+                    GUI-->>Usuario: Muestra "Usuario o contraseña incorrectos. (AUTH-002)"
+                else Integridad violada y el usuario recuperado no es el sysadmin
+                    BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = INT-001)
+                    GUI-->>Usuario: Muestra "Acceso bloqueado: se detectaron inconsistencias en la base de datos. Solo el administrador del sistema puede ingresar. (INT-001)"
+                else Cuenta inactiva (distinta del Administrador)
+                    BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = AUTH-003)
+                    GUI-->>Usuario: Muestra "Usuario bloqueado. Contacte al administrador. (AUTH-003)"
+                else Cuenta activa
+                    BLL->>BLL: VerifyPassword(password: string, passwordHash: string): bool
+
+                    alt Contraseña inválida
+                        alt El usuario es el Administrador
+                            BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = AUTH-002)
+                            GUI-->>Usuario: Muestra "Usuario o contraseña incorrectos. (AUTH-002)"
+                        else Usuario normal con reintentos disponibles
+                            BLL->>MPP: UpdateRetries(userId: int, retriesCount: int): bool
+                            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                            DAL->>BD: Actualización del contador de reintentos
+                            BD-->>DAL: 1 fila afectada
+                            DAL-->>MPP: true
+                            MPP-->>BLL: true
+                            BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+                            BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = AUTH-005)
+                            GUI-->>Usuario: Muestra "Usuario o contraseña incorrectos. Intentos restantes: N. (AUTH-005)"
+                        else Tercer intento fallido
+                            BLL->>MPP: Deactivate(userId: int): bool
+                            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                            DAL->>BD: Desactivación de la cuenta
+                            BD-->>DAL: 1 fila afectada
+                            DAL-->>MPP: true
+                            MPP-->>BLL: true
+                            BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+                            BLL-->>GUI: LoginResultBE (Success = false, ErrorCode = AUTH-004)
+                            GUI-->>Usuario: Muestra "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador. (AUTH-004)"
+                        end
+                    else Contraseña válida
+                        BLL->>MPP: UpdateLastUpdate(userId: int, lastUpdate: DateTime): bool
+                        alt Cuenta con reintentos acumulados
+                            BLL->>MPP: UpdateRetries(userId: int, retriesCount: 0): bool
+                        end
+                        BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+                        BLL-->>GUI: LoginResultBE (Success = true, RequiresTwoFactor = true si es Administrador)
+
+                        alt Cuenta con segundo factor (Administrador)
+                            GUI-->>Usuario: Muestra el diálogo "Doble Factor de Autenticación"
+                            alt El usuario cancela el diálogo
+                                GUI-->>Usuario: Vuelve a la pantalla de inicio de sesión sin autenticar
+                            else El usuario ingresa un código
+                                Usuario->>GUI: Ingresa el código y presiona "Aceptar"
+                                GUI->>BLL: ValidateTwoFactor(user: UserBE, code: string): bool
+                                BLL->>BLL: Verify(userName: string, code: string): bool
+                                alt Código inválido
+                                    BLL-->>GUI: false
+                                    GUI-->>Usuario: Muestra "Código de doble factor inválido. (AUTH-006)" y vuelve al diálogo
+                                else Código correcto
+                                    BLL-->>GUI: true
+                                end
+                            end
+                        end
+
+                        alt Violaciones de integridad pendientes (solo Administrador)
+                            GUI->>BLL: GetViolations(): List<IntegrityViolationBE>
+                            BLL-->>GUI: List<IntegrityViolationBE>
+                            GUI-->>Usuario: Muestra la pantalla "Auditoría de Integridad (DVH)" con las violaciones detectadas
+                            Usuario->>GUI: Selecciona una fila y presiona "Aceptar y regenerar hash"
+                            GUI->>BLL: AcceptAndRegenerate(violation: IntegrityViolationBE): bool
+                            BLL->>MPP: FindById(user: UserBE): UserBE
+                            MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                            DAL->>BD: Consulta parametrizada de usuarios
+                            BD-->>DAL: Filas resultantes
+                            DAL-->>MPP: DataTable
+                            MPP-->>BLL: UserBE
+                            BLL->>MPP: Save(user: UserBE): bool
+                            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                            DAL->>BD: Actualización de la fila afectada
+                            BD-->>DAL: 1 fila afectada
+                            DAL-->>MPP: true
+                            MPP-->>BLL: true
+                            BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+                            BLL-->>GUI: true
+                            GUI-->>Usuario: Muestra "Hash regenerado correctamente."
+                            Note over GUI,Usuario: Mientras queden violaciones el Administrador puede repararlas o elegir continuar igual
+                        end
+
+                        GUI->>BLL: LogLogin(userId: int, description: string): void
+                        BLL->>MPP: Save(log: ActivityLogBE): bool
+                        MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                        DAL->>BD: Registro de auditoría de acceso
+                        BD-->>DAL: 1 fila afectada
+                        DAL-->>MPP: true
+                        MPP-->>BLL: true
+                        GUI->>BLL: CreateSession(user: UserBE): SessionManagerBLL
+                        GUI->>BLL: SavePreferences(language: string, theme: string): void
+                        GUI-->>Usuario: Muestra la pantalla principal con las opciones de su rol
+                    end
+                end
+            end
+        end
+    end

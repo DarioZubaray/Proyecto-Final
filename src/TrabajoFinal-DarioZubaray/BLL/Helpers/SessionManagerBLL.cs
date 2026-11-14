@@ -23,7 +23,7 @@ namespace BLL.Helpers
         }
         #endregion
 
-        #region Métodos Públicos
+        #region Métodos
         public static SessionManagerBLL GetInstance(int userId)
         {
             if (!_instances.ContainsKey(userId))

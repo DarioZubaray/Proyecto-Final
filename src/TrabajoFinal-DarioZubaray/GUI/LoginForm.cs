@@ -14,6 +14,7 @@ namespace TrabajoFinal_DarioZubaray
     {
         #region Propiedades
         private IAuthBLL _authBLL;
+        private IIntegrityBLL _integrityBLL;
         #endregion
 
         #region Constructor
@@ -21,6 +22,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             InitializeComponent();
             _authBLL = ServiceLocatorBLL.CreateAuthBLL();
+            _integrityBLL = ServiceLocatorBLL.CreateIntegrityBLL();
             CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
             ApplyResources();
             ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
@@ -48,6 +50,31 @@ namespace TrabajoFinal_DarioZubaray
             SetCheckingStatus();
             bool connected = await Task.Run(() => TryTestConnection());
             SetDatabaseStatus(connected);
+
+            if (connected)
+            {
+                await TryRunIntegrityScanAsync(true);
+            }
+        }
+
+        private async Task TryRunIntegrityScanAsync(bool warnIfViolations)
+        {
+            try
+            {
+                await Task.Run(() => _integrityBLL.Scan());
+
+                if (warnIfViolations && IntegrityStateBLL.LastScanHasFailures)
+                {
+                    MessageBox.Show(
+                        Resources.Auth_IntegrityBlocked,
+                        Resources.Integrity_Title,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
+            }
+            catch
+            {
+            }
         }
 
         private bool TryTestConnection()
@@ -96,7 +123,7 @@ namespace TrabajoFinal_DarioZubaray
             btnRetry.Enabled = true;
         }
 
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
             lblMessage.Visible = false;
             var username = txtUser.Text;
@@ -104,6 +131,10 @@ namespace TrabajoFinal_DarioZubaray
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
+                lblMessage.Text = ErrorFormatter.WithCode(
+                    Resources.Auth_RequiredFields,
+                    ErrorCodesBLL.Auth.RequiredFields);
+                lblMessage.Visible = true;
                 return;
             }
 
@@ -113,10 +144,22 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
+            await TryRunIntegrityScanAsync(false);
+
             LoginResultBE result = _authBLL.Login(username, password);
+
+            if (result.Success && result.RequiresTwoFactor)
+            {
+                if (!PromptTwoFactor(result.User))
+                {
+                    return;
+                }
+            }
 
             if (result.Success)
             {
+                RunIntegrityAuditIfRequired(result.User);
+
                 LogLogin(result.User);
                 SessionManagerBLL.CreateSession(result.User);
                 AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
@@ -126,7 +169,12 @@ namespace TrabajoFinal_DarioZubaray
 
                 AppPreferencesBLL.SavePreferences(result.User.Language, result.User.Theme);
                 SessionManagerBLL.RemoveSession(result.User.Id);
-                LogLogout(result.User.Id, result.User.UserName);
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    LogLogout(result.User.Id, result.User.UserName);
+                }
+
                 CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
                 ApplyResources();
                 ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
@@ -149,6 +197,60 @@ namespace TrabajoFinal_DarioZubaray
             lblMessage.Text = string.Format(Resources.Auth_DbUnavailable, ErrorCodesBLL.Database.Unavailable);
             lblMessage.Visible = true;
             SetDatabaseStatus(false);
+        }
+
+        private void RunIntegrityAuditIfRequired(UserBE user)
+        {
+            while (IntegrityStateBLL.LastScanHasFailures)
+            {
+                using (var form = new IntegrityAuditForm(user))
+                {
+                    form.ShowDialog(this);
+                }
+
+                if (!IntegrityStateBLL.LastScanHasFailures)
+                {
+                    return;
+                }
+
+                DialogResult decision = MessageBox.Show(
+                    this,
+                    Resources.Integrity_PendingContinueMessage,
+                    Resources.Integrity_Title,
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (decision == DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+        }
+
+        private bool PromptTwoFactor(UserBE user)
+        {
+            while (true)
+            {
+                using (var form = new TwoFactorForm())
+                {
+                    if (form.ShowDialog(this) != DialogResult.OK)
+                    {
+                        lblMessage.Visible = false;
+                        return false;
+                    }
+
+                    if (_authBLL.ValidateTwoFactor(user, form.Code))
+                    {
+                        lblMessage.Visible = false;
+                        return true;
+                    }
+
+                    lblMessage.Text = ErrorFormatter.WithCode(
+                        Resources.Auth_TwoFactorInvalid,
+                        ErrorCodesBLL.Auth.TwoFactorInvalid);
+                    lblMessage.Visible = true;
+                }
+            }
         }
 
         private void txtUser_KeyDown(object sender, KeyEventArgs e)
