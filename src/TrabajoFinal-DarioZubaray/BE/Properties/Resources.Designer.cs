@@ -1943,6 +1943,30 @@ namespace BE.Properties {
             }
         }
         
+        public static string AttendanceForm_DateOutOfRange {
+            get {
+                return ResourceManager.GetString("AttendanceForm_DateOutOfRange", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_PeriodPrefix {
+            get {
+                return ResourceManager.GetString("AttendanceForm_PeriodPrefix", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_ClassroomPrefix {
+            get {
+                return ResourceManager.GetString("AttendanceForm_ClassroomPrefix", resourceCulture);
+            }
+        }
+        
+        public static string AttendanceForm_SchedulePrefix {
+            get {
+                return ResourceManager.GetString("AttendanceForm_SchedulePrefix", resourceCulture);
+            }
+        }
+        
         public static string AttendanceViewForm_Title {
             get {
                 return ResourceManager.GetString("AttendanceViewForm_Title", resourceCulture);
@@ -2639,6 +2663,12 @@ namespace BE.Properties {
             }
         }
         
+        public static string EvaluationForm_DateOutOfRange {
+            get {
+                return ResourceManager.GetString("EvaluationForm_DateOutOfRange", resourceCulture);
+            }
+        }
+        
         public static string EvaluationForm_Saved {
             get {
                 return ResourceManager.GetString("EvaluationForm_Saved", resourceCulture);
@@ -2732,6 +2762,36 @@ namespace BE.Properties {
         public static string PerformanceForm_ValidationTitle {
             get {
                 return ResourceManager.GetString("PerformanceForm_ValidationTitle", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_Stats {
+            get {
+                return ResourceManager.GetString("PerformanceForm_Stats", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_ColStatus {
+            get {
+                return ResourceManager.GetString("PerformanceForm_ColStatus", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_Pass {
+            get {
+                return ResourceManager.GetString("PerformanceForm_Pass", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_Fail {
+            get {
+                return ResourceManager.GetString("PerformanceForm_Fail", resourceCulture);
+            }
+        }
+        
+        public static string PerformanceForm_NoGrades {
+            get {
+                return ResourceManager.GetString("PerformanceForm_NoGrades", resourceCulture);
             }
         }
         

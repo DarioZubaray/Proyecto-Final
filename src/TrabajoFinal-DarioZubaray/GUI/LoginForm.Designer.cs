@@ -33,8 +33,10 @@ namespace TrabajoFinal_DarioZubaray
             lblUser = new System.Windows.Forms.Label();
             txtUser = new System.Windows.Forms.TextBox();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            lblAppTitle = new System.Windows.Forms.Label();
             lblDbStatus = new System.Windows.Forms.Label();
             btnRetry = new System.Windows.Forms.Button();
+            btnConfig = new System.Windows.Forms.Button();
             lblMessage = new System.Windows.Forms.Label();
             panel1 = new System.Windows.Forms.Panel();
             btnLogin = new System.Windows.Forms.Button();
@@ -48,31 +50,34 @@ namespace TrabajoFinal_DarioZubaray
             // lblUser
             // 
             lblUser.AutoSize = true;
-            lblUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            lblUser.Location = new System.Drawing.Point(5, 15);
+            lblUser.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblUser.Location = new System.Drawing.Point(8, 20);
             lblUser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblUser.Name = "lblUser";
-            lblUser.Size = new System.Drawing.Size(57, 17);
+            lblUser.Size = new System.Drawing.Size(59, 20);
             lblUser.TabIndex = 0;
             lblUser.Text = "Usuario";
             // 
             // txtUser
             // 
-            txtUser.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            txtUser.Location = new System.Drawing.Point(121, 15);
+            txtUser.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            txtUser.Location = new System.Drawing.Point(118, 17);
             txtUser.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtUser.Name = "txtUser";
-            txtUser.Size = new System.Drawing.Size(174, 23);
+            txtUser.Size = new System.Drawing.Size(224, 27);
             txtUser.TabIndex = 1;
             txtUser.KeyDown += txtUser_KeyDown;
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(lblAppTitle);
             groupBox1.Controls.Add(lblDbStatus);
             groupBox1.Controls.Add(btnRetry);
+            groupBox1.Controls.Add(btnConfig);
             groupBox1.Controls.Add(lblMessage);
             groupBox1.Controls.Add(panel1);
             groupBox1.Controls.Add(lblDeveloper);
+            groupBox1.Font = new System.Drawing.Font("Segoe UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
             groupBox1.Location = new System.Drawing.Point(14, 14);
             groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             groupBox1.Name = "groupBox1";
@@ -82,34 +87,59 @@ namespace TrabajoFinal_DarioZubaray
             groupBox1.TabStop = false;
             groupBox1.Text = "☻";
             // 
+            // lblAppTitle
+            // 
+            lblAppTitle.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            lblAppTitle.Location = new System.Drawing.Point(6, 20);
+            lblAppTitle.Name = "lblAppTitle";
+            lblAppTitle.Size = new System.Drawing.Size(571, 34);
+            lblAppTitle.TabIndex = 11;
+            lblAppTitle.Text = "Aplicativo Académico";
+            lblAppTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblDbStatus
             // 
             lblDbStatus.AutoSize = true;
-            lblDbStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            lblDbStatus.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             lblDbStatus.ForeColor = System.Drawing.Color.SeaGreen;
-            lblDbStatus.Location = new System.Drawing.Point(8, 330);
+            lblDbStatus.Location = new System.Drawing.Point(10, 331);
             lblDbStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblDbStatus.Name = "lblDbStatus";
-            lblDbStatus.Size = new System.Drawing.Size(100, 13);
+            lblDbStatus.Size = new System.Drawing.Size(109, 15);
             lblDbStatus.TabIndex = 8;
             lblDbStatus.Text = "Servidor conectado";
             // 
             // btnRetry
             // 
+            btnRetry.Font = new System.Drawing.Font("Segoe UI", 9F);
             btnRetry.Location = new System.Drawing.Point(20, 300);
             btnRetry.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnRetry.Name = "btnRetry";
-            btnRetry.Size = new System.Drawing.Size(71, 27);
+            btnRetry.Size = new System.Drawing.Size(75, 28);
             btnRetry.TabIndex = 9;
             btnRetry.Text = "Reintentar";
             btnRetry.UseVisualStyleBackColor = true;
             btnRetry.Visible = false;
             btnRetry.Click += btnRetry_Click;
             // 
+            // btnConfig
+            // 
+            btnConfig.Font = new System.Drawing.Font("Segoe UI", 9F);
+            btnConfig.Location = new System.Drawing.Point(103, 300);
+            btnConfig.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            btnConfig.Name = "btnConfig";
+            btnConfig.Size = new System.Drawing.Size(155, 28);
+            btnConfig.TabIndex = 10;
+            btnConfig.Text = "Configurar conexión";
+            btnConfig.UseVisualStyleBackColor = true;
+            btnConfig.Visible = false;
+            btnConfig.Click += btnConfig_Click;
+            // 
             // lblMessage
             // 
+            lblMessage.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
             lblMessage.ForeColor = System.Drawing.Color.IndianRed;
-            lblMessage.Location = new System.Drawing.Point(0, 218);
+            lblMessage.Location = new System.Drawing.Point(0, 205);
             lblMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblMessage.Name = "lblMessage";
             lblMessage.Size = new System.Drawing.Size(583, 20);
@@ -126,19 +156,20 @@ namespace TrabajoFinal_DarioZubaray
             panel1.Controls.Add(lblPass);
             panel1.Controls.Add(txtPass);
             panel1.ForeColor = System.Drawing.SystemColors.ControlText;
-            panel1.Location = new System.Drawing.Point(137, 99);
+            panel1.Location = new System.Drawing.Point(117, 62);
             panel1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panel1.Name = "panel1";
-            panel1.Size = new System.Drawing.Size(306, 115);
+            panel1.Size = new System.Drawing.Size(350, 130);
             panel1.TabIndex = 6;
             // 
             // btnLogin
             // 
-            btnLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            btnLogin.Location = new System.Drawing.Point(180, 84);
+            btnLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            btnLogin.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            btnLogin.Location = new System.Drawing.Point(118, 94);
             btnLogin.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new System.Drawing.Size(117, 27);
+            btnLogin.Size = new System.Drawing.Size(224, 32);
             btnLogin.TabIndex = 4;
             btnLogin.Text = "Iniciar Sesión";
             btnLogin.UseVisualStyleBackColor = true;
@@ -147,33 +178,33 @@ namespace TrabajoFinal_DarioZubaray
             // lblPass
             // 
             lblPass.AutoSize = true;
-            lblPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            lblPass.Location = new System.Drawing.Point(5, 50);
+            lblPass.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            lblPass.Location = new System.Drawing.Point(8, 58);
             lblPass.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblPass.Name = "lblPass";
-            lblPass.Size = new System.Drawing.Size(81, 17);
+            lblPass.Size = new System.Drawing.Size(83, 20);
             lblPass.TabIndex = 2;
             lblPass.Text = "Contraseña";
             // 
             // txtPass
             // 
-            txtPass.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
-            txtPass.Location = new System.Drawing.Point(121, 50);
+            txtPass.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            txtPass.Location = new System.Drawing.Point(118, 55);
             txtPass.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             txtPass.Name = "txtPass";
-            txtPass.PasswordChar = '*';
-            txtPass.Size = new System.Drawing.Size(174, 23);
+            txtPass.PasswordChar = '•';
+            txtPass.Size = new System.Drawing.Size(224, 27);
             txtPass.TabIndex = 3;
             txtPass.KeyDown += txtPass_KeyDown;
             // 
             // lblDeveloper
             // 
             lblDeveloper.AutoSize = true;
-            lblDeveloper.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            lblDeveloper.Location = new System.Drawing.Point(429, 330);
+            lblDeveloper.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Italic);
+            lblDeveloper.Location = new System.Drawing.Point(400, 331);
             lblDeveloper.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblDeveloper.Name = "lblDeveloper";
-            lblDeveloper.Size = new System.Drawing.Size(154, 13);
+            lblDeveloper.Size = new System.Drawing.Size(172, 15);
             lblDeveloper.TabIndex = 5;
             lblDeveloper.Text = "desarrollado por Darío Zubaray";
             // 
@@ -211,5 +242,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Label lblMessage;
         private System.Windows.Forms.Label lblDbStatus;
         private System.Windows.Forms.Button btnRetry;
+        private System.Windows.Forms.Button btnConfig;
+        private System.Windows.Forms.Label lblAppTitle;
     }
 }

@@ -136,7 +136,51 @@ namespace TrabajoFinal_DarioZubaray
                 return false;
             }
 
+            if (cboCourse.SelectedItem is CourseBE course &&
+                (dtpDate.Value.Date < course.StartDate.Date ||
+                 dtpDate.Value.Date > course.EndDate.Date))
+            {
+                MessageBox.Show(
+                    ErrorFormatter.WithCode(Resources.EvaluationForm_DateOutOfRange, ErrorCodesBLL.Business.EvaluationDateOutOfRange),
+                    Resources.EvaluationForm_ValidationTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                dtpDate.Focus();
+                return false;
+            }
+
             return true;
+        }
+
+        private void ClampDateToCourse()
+        {
+            if (!(cboCourse.SelectedItem is CourseBE course))
+            {
+                return;
+            }
+
+            DateTime min = course.StartDate.Date;
+            DateTime max = course.EndDate.Date;
+
+            if (min > max)
+            {
+                return;
+            }
+
+            dtpDate.MinDate = new DateTime(1753, 1, 1);
+            dtpDate.MaxDate = new DateTime(9998, 12, 31);
+
+            if (dtpDate.Value.Date < min)
+            {
+                dtpDate.Value = min;
+            }
+            else if (dtpDate.Value.Date > max)
+            {
+                dtpDate.Value = max;
+            }
+
+            dtpDate.MinDate = min;
+            dtpDate.MaxDate = max;
         }
 
         private List<GradeBE> CollectGrades()
@@ -182,6 +226,11 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region Eventos
+        private void cboCourse_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ClampDateToCourse();
+        }
+
         private void btnLoadStudents_Click(object sender, EventArgs e)
         {
             LoadStudents();

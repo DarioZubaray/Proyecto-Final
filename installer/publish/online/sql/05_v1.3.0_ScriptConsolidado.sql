@@ -4,11 +4,12 @@
 -- 
 --   1. Crear la base si no existe
 --   2. Eliminar todas las tablas (purge) -- destructive
---   3. Crear el esquema completo (estado final v1.3.0)
+--   3. Crear el esquema completo (estado final v1.4.0)
 --   4. Insertar datos iniciales, seed academico y backfill DVH
---   5. Registrar las versiones 1.0.0 y 1.3.0 en schema_versions
+--      (users, evaluations y grades)
+--   5. Registrar las versiones 1.0.0, 1.3.0 y 1.4.0 en schema_versions
 --
--- Equivale a ejecutar 01 + 02 + 03 en un solo script.
+-- Equivale a ejecutar 01 + 02 + 03 + 06 en un solo script.
 --
 -- NOTA: no es el script del instalador. El instalador ejecuta
 -- la cadena 01 -> 03 (sin datos demo). Este consolidado es un
@@ -225,7 +226,7 @@ BEGIN TRY
     CREATE INDEX ix_tickets_user_created ON [dbo].[tickets] ([user_id], [created_at] DESC);
     CREATE INDEX ix_tickets_is_closed ON [dbo].[tickets] ([is_closed], [created_at] DESC);
 
-    -- 4.8 Evaluaciones
+    -- 4.8 Evaluaciones (con DVH)
     CREATE TABLE [dbo].[evaluations] (
         [id]           INT            IDENTITY(1,1) NOT NULL,
         [course_id]    INT            NOT NULL,
@@ -234,21 +235,23 @@ BEGIN TRY
         [created_by]   INT            NOT NULL,
         [created_at]   DATETIME       NOT NULL,
         [last_update]  DATETIME       NOT NULL,
+        [dvh]          NVARCHAR(64)   NULL,
         CONSTRAINT [pk_evaluations] PRIMARY KEY ([id]),
         CONSTRAINT [fk_evaluations_courses] FOREIGN KEY ([course_id]) REFERENCES [dbo].[courses]([id]),
         CONSTRAINT [fk_evaluations_users] FOREIGN KEY ([created_by]) REFERENCES [dbo].[users]([id])
     );
     CREATE INDEX ix_evaluations_course ON [dbo].[evaluations] ([course_id], [date]);
 
-    -- 4.9 Notas (0 a 10, unica por alumno y evaluacion)
+    -- 4.9 Notas (0 a 10, unica por alumno y evaluacion; con DVH)
     CREATE TABLE [dbo].[grades] (
         [id]             INT           IDENTITY(1,1) NOT NULL,
         [evaluation_id]  INT           NOT NULL,
         [student_id]     INT           NOT NULL,
         [grade]          DECIMAL(4,2)  NOT NULL,
+        [dvh]            NVARCHAR(64)  NULL,
         CONSTRAINT [pk_grades] PRIMARY KEY ([id]),
         CONSTRAINT [fk_grades_evaluations] FOREIGN KEY ([evaluation_id]) REFERENCES [dbo].[evaluations]([id]),
-        CONSTRAINT [fk_grades_students] FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]),
+        CONSTRAINT [fk_grades_students]    FOREIGN KEY ([student_id])    REFERENCES [dbo].[students]([id]),
         CONSTRAINT [uq_grades_evaluation_student] UNIQUE ([evaluation_id], [student_id]),
         CONSTRAINT [ck_grades_range] CHECK ([grade] >= 0 AND [grade] <= 10)
     );
@@ -301,7 +304,8 @@ BEGIN TRY
 
     -- Admin (1): todos los permisos
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
-    SELECT 1, id FROM [dbo].[permissions];
+    SELECT 1, id FROM [dbo].[permissions] WHERE name NOT IN
+	('FORM_ASISTENCIA_MGMT', 'FORM_EVAL_MGMT');
 
     -- Coordinador (2): tareas diarias (sin ABM de usuarios/roles ni reportes)
     INSERT INTO [dbo].[role_permissions] (role_id, permission_id)
@@ -592,14 +596,15 @@ BEGIN TRY
     -- =============================================
     INSERT INTO [dbo].[schema_versions] (version, script_name, applied_at) VALUES
     ('1.0.0', '05_v1.3.0_ScriptConsolidado.sql', GETDATE()),
-    ('1.3.0', '05_v1.3.0_ScriptConsolidado.sql', GETDATE());
+    ('1.3.0', '05_v1.3.0_ScriptConsolidado.sql', GETDATE()),
+    ('1.4.0', '05_v1.3.0_ScriptConsolidado.sql', GETDATE());
 
     -- =============================================
     -- 12. Confirmar
     -- =============================================
     COMMIT TRANSACTION;
 
-    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.3.0.';
+    PRINT 'Script consolidado aplicado exitosamente. Base DarioZubaray_TF lista con esquema v1.4.0.';
 
 END TRY
 BEGIN CATCH
@@ -632,5 +637,50 @@ BEGIN
         ), 2))
     FROM [dbo].[users] u
     WHERE u.[dvh] IS NULL;
+END
+GO
+
+-- =============================================
+-- DVH: backfill de evaluaciones y notas
+-- (misma serializacion canonica que
+-- BLL.DVHHelperBLL; DATE convertido a DATETIME
+-- para igualar el estilo 126 de la app)
+-- =============================================
+IF OBJECT_ID('dbo.evaluations', 'U') IS NOT NULL
+   AND COL_LENGTH('dbo.evaluations', 'dvh') IS NOT NULL
+BEGIN
+    UPDATE e
+    SET e.[dvh] = LOWER(CONVERT(VARCHAR(64),
+        HASHBYTES('SHA2_256',
+            CONCAT(
+                CONVERT(NVARCHAR(MAX), e.[id]),                ',',
+                CONVERT(NVARCHAR(MAX), e.[course_id]),         ',',
+                e.[name],                                      ',',
+                CONVERT(NVARCHAR(30), CAST(e.[date] AS DATETIME), 126), ',',
+                CONVERT(NVARCHAR(MAX), e.[created_by]),        ',',
+                CONVERT(NVARCHAR(30), e.[created_at], 126),    ',',
+                CONVERT(NVARCHAR(30), e.[last_update], 126)
+            )
+        ), 2))
+    FROM [dbo].[evaluations] e
+    WHERE e.[dvh] IS NULL;
+END
+GO
+
+IF OBJECT_ID('dbo.grades', 'U') IS NOT NULL
+   AND COL_LENGTH('dbo.grades', 'dvh') IS NOT NULL
+BEGIN
+    UPDATE g
+    SET g.[dvh] = LOWER(CONVERT(VARCHAR(64),
+        HASHBYTES('SHA2_256',
+            CONCAT(
+                CONVERT(NVARCHAR(MAX), g.[id]),             ',',
+                CONVERT(NVARCHAR(MAX), g.[evaluation_id]),  ',',
+                CONVERT(NVARCHAR(MAX), g.[student_id]),     ',',
+                CONVERT(NVARCHAR(MAX), g.[grade])
+            )
+        ), 2))
+    FROM [dbo].[grades] g
+    WHERE g.[dvh] IS NULL;
 END
 GO

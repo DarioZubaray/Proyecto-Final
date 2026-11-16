@@ -40,9 +40,20 @@ namespace BLL.Services
                 return false;
             }
 
-            if (user.Id != 0 && IsAdminProtectedChange(user))
+            if (user.Id != 0)
             {
-                return false;
+                UserBE persisted = _userMPP.FindById(new UserBE { Id = user.Id });
+
+                if (persisted != null && IsAdminName(persisted.UserName)
+                    && (!IsAdminName(user.UserName) || persisted.RoleId != user.RoleId))
+                {
+                    return false;
+                }
+
+                if (persisted != null && !persisted.IsActive && user.IsActive)
+                {
+                    user.RetriesCount = 0;
+                }
             }
 
             if (IsAdminName(user.UserName))
@@ -70,18 +81,6 @@ namespace BLL.Services
             return users.Count > 0;
         }
 
-        private bool IsAdminProtectedChange(UserBE user)
-        {
-            UserBE persisted = _userMPP.FindById(new UserBE { Id = user.Id });
-
-            if (persisted == null || !IsAdminName(persisted.UserName))
-            {
-                return false;
-            }
-
-            return !IsAdminName(user.UserName) || persisted.RoleId != user.RoleId;
-        }
-
         public UserBE FindById(UserBE user)
         {
             return _userMPP.FindById(user);
@@ -90,11 +89,6 @@ namespace BLL.Services
         public List<UserBE> FindAll()
         {
             return _userMPP.FindAll();
-        }
-
-        public List<UserBE> FindAllActives()
-        {
-            return _userMPP.FindAllActives();
         }
 
         public List<UserBE> FindByUserName(string userName)

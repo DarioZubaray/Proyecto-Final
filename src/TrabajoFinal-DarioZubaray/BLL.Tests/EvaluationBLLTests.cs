@@ -46,7 +46,13 @@ namespace BLL.Tests
             var courses = new List<CourseBE>();
             foreach (int courseId in courseIds)
             {
-                courses.Add(new CourseBE { Id = courseId, Name = "Curso " + courseId });
+                courses.Add(new CourseBE
+                {
+                    Id = courseId,
+                    Name = "Curso " + courseId,
+                    StartDate = new DateTime(2026, 1, 1),
+                    EndDate = new DateTime(2026, 12, 31)
+                });
             }
 
             _mockCourseMPP.Setup(m => m.FindByTeacherId(2)).Returns(courses);
@@ -102,6 +108,62 @@ namespace BLL.Tests
             SetupTeacherCourses(99);
 
             Assert.ThrowsException<InvalidOperationException>(() => _evaluationBLL.Save(evaluation, new List<GradeBE>()));
+        }
+
+        [TestMethod]
+        public void Save_DateBeforeCourseStart_Throws()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            evaluation.Date = new DateTime(2025, 12, 31);
+            SetupTeacherCourses(10);
+
+            InvalidOperationException ex = Assert.ThrowsException<InvalidOperationException>(
+                () => _evaluationBLL.Save(evaluation, new List<GradeBE>()));
+
+            Assert.IsTrue(ex.Message.Contains(ErrorCodesBLL.Business.EvaluationDateOutOfRange));
+            _mockEvaluationMPP.Verify(m => m.Save(It.IsAny<EvaluationBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_DateAfterCourseEnd_Throws()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            evaluation.Date = new DateTime(2027, 1, 1);
+            SetupTeacherCourses(10);
+
+            InvalidOperationException ex = Assert.ThrowsException<InvalidOperationException>(
+                () => _evaluationBLL.Save(evaluation, new List<GradeBE>()));
+
+            Assert.IsTrue(ex.Message.Contains(ErrorCodesBLL.Business.EvaluationDateOutOfRange));
+            _mockEvaluationMPP.Verify(m => m.Save(It.IsAny<EvaluationBE>()), Times.Never);
+        }
+
+        [TestMethod]
+        public void Save_DateOnCourseStartBoundary_ReturnsTrue()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            evaluation.Date = new DateTime(2026, 1, 1);
+            SetupTeacherCourses(10);
+            _mockEvaluationMPP.Setup(m => m.Save(It.IsAny<EvaluationBE>())).Returns(55);
+
+            bool result = _evaluationBLL.Save(evaluation, new List<GradeBE>());
+
+            Assert.IsTrue(result);
+            _mockEvaluationMPP.Verify(m => m.Save(It.IsAny<EvaluationBE>()), Times.Once);
+        }
+
+        [TestMethod]
+        public void Save_DateOnCourseEndBoundary_ReturnsTrue()
+        {
+            EvaluationBE evaluation = CreateValidEvaluation();
+            evaluation.Date = new DateTime(2026, 12, 31);
+            SetupTeacherCourses(10);
+            _mockEvaluationMPP.Setup(m => m.Save(It.IsAny<EvaluationBE>())).Returns(55);
+
+            bool result = _evaluationBLL.Save(evaluation, new List<GradeBE>());
+
+            Assert.IsTrue(result);
+            _mockEvaluationMPP.Verify(m => m.Save(It.IsAny<EvaluationBE>()), Times.Once);
         }
 
         [TestMethod]

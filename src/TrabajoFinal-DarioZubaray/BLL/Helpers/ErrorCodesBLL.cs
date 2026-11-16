@@ -55,6 +55,8 @@ namespace BLL.Helpers
             public const string EvaluationNameRequired = "BIZ-013";
             public const string CourseNotOwnedByTeacher = "BIZ-014";
             public const string GradeOutOfRange = "BIZ-015";
+            public const string EvaluationDateOutOfRange = "BIZ-016";
+            public const string AttendanceDateOutOfRange = "BIZ-017";
         }
 
         public static class General

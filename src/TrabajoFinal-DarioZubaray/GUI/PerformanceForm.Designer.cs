@@ -22,6 +22,7 @@ namespace TrabajoFinal_DarioZubaray
             this.lblCourse = new System.Windows.Forms.Label();
             this.cboCourse = new System.Windows.Forms.ComboBox();
             this.btnConsult = new System.Windows.Forms.Button();
+            this.lblStats = new System.Windows.Forms.Label();
             this.dgvPerformance = new System.Windows.Forms.DataGridView();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerformance)).BeginInit();
@@ -32,10 +33,11 @@ namespace TrabajoFinal_DarioZubaray
             this.panelTop.Controls.Add(this.lblCourse);
             this.panelTop.Controls.Add(this.cboCourse);
             this.panelTop.Controls.Add(this.btnConsult);
+            this.panelTop.Controls.Add(this.lblStats);
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(850, 50);
+            this.panelTop.Size = new System.Drawing.Size(850, 94);
             this.panelTop.TabIndex = 0;
             //
             // lblCourse
@@ -65,13 +67,24 @@ namespace TrabajoFinal_DarioZubaray
             this.btnConsult.UseVisualStyleBackColor = true;
             this.btnConsult.Click += new System.EventHandler(this.btnConsult_Click);
             //
+            // lblStats
+            //
+            this.lblStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblStats.Location = new System.Drawing.Point(4, 50);
+            this.lblStats.Name = "lblStats";
+            this.lblStats.Padding = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.lblStats.Size = new System.Drawing.Size(842, 38);
+            this.lblStats.TabIndex = 3;
+            this.lblStats.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblStats.Visible = false;
+            //
             // dgvPerformance
             //
             this.dgvPerformance.AllowUserToAddRows = false;
             this.dgvPerformance.AllowUserToDeleteRows = false;
             this.dgvPerformance.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvPerformance.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvPerformance.Location = new System.Drawing.Point(0, 50);
+            this.dgvPerformance.Location = new System.Drawing.Point(0, 94);
             this.dgvPerformance.Name = "dgvPerformance";
             this.dgvPerformance.Size = new System.Drawing.Size(850, 450);
             this.dgvPerformance.TabIndex = 1;
@@ -98,6 +111,7 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Label lblCourse;
         private System.Windows.Forms.ComboBox cboCourse;
         private System.Windows.Forms.Button btnConsult;
+        private System.Windows.Forms.Label lblStats;
         private System.Windows.Forms.DataGridView dgvPerformance;
     }
 }

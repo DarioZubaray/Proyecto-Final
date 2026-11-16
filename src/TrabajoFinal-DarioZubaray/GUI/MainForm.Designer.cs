@@ -36,6 +36,7 @@ namespace TrabajoFinal_DarioZubaray
             cambiarContraseñaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             historialActividadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+            configurarConexiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             administraciónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,7 +78,7 @@ namespace TrabajoFinal_DarioZubaray
             // 
             // archivoToolStripMenuItem
             // 
-            archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { preferenciasToolStripMenuItem, cambiarContraseñaToolStripMenuItem, historialActividadToolStripMenuItem, toolStripMenuItem3, cerrarSesiónToolStripMenuItem });
+            archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { preferenciasToolStripMenuItem, cambiarContraseñaToolStripMenuItem, historialActividadToolStripMenuItem, toolStripMenuItem3, configurarConexiónToolStripMenuItem, cerrarSesiónToolStripMenuItem });
             archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
             archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             archivoToolStripMenuItem.Text = "Archivo";
@@ -107,6 +108,13 @@ namespace TrabajoFinal_DarioZubaray
             // 
             toolStripMenuItem3.Name = "toolStripMenuItem3";
             toolStripMenuItem3.Size = new System.Drawing.Size(184, 6);
+            // 
+            // configurarConexiónToolStripMenuItem
+            // 
+            configurarConexiónToolStripMenuItem.Name = "configurarConexiónToolStripMenuItem";
+            configurarConexiónToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            configurarConexiónToolStripMenuItem.Text = "Configurar Conexión...";
+            configurarConexiónToolStripMenuItem.Click += configurarConexiónToolStripMenuItem_Click;
             // 
             // cerrarSesiónToolStripMenuItem
             // 
@@ -340,5 +348,6 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.ToolStripMenuItem inscripcionesToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem configurarConexiónToolStripMenuItem;
     }
 }

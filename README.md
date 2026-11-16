@@ -15,8 +15,6 @@ Este repositorio agrupa **todas las partes** que conforman el trabajo final. A c
 | **Base de datos — scripts SQL** | [`src/sql/`](src/sql/) | Scripts ordenados para crear, poblar y consultar la base de datos `DarioZubaray_TF`. Ver [`src/sql/README.md`](src/sql/README.md). |
 | **Instalador** | [`installer/`](installer/) | Instalador de escritorio (Inno Setup) en dos modos: offline (self-contained) y online (descarga .NET 10 Desktop Runtime). Ver [Instalación](#instalación-exe). |
 | **Diagramas (Mermaid Live)** | [`docs/mermaid-live/`](docs/mermaid-live/) | Diagramas en formato Mermaid: casos de uso, clases, ER y secuencias de login/logout. |
-| **Modelos Enterprise Architect** | [`docs/ea/`](docs/ea/) | Archivos de modelado UML creados con Enterprise Architect. |
-| **Documentación de la materia (MDS2)** | [`docs/MDS2/`](docs/MDS2/) | Examen final de la cursada Metodologías de Desarrollo 2. |
 | **Documentación general (`docs/`)** | [`docs/README.md`](docs/README.md) | Guía de navegación del material de documentación (diagramas, modelos EA y cursada). |
 
 ### Aplicación .NET (`src/TrabajoFinal-DarioZubaray/`)

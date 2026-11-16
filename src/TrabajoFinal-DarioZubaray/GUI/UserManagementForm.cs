@@ -42,7 +42,7 @@ namespace TrabajoFinal_DarioZubaray
         private void LoadUsers()
         {
             dgvUsers.DataSource = null;
-            dgvUsers.DataSource = _userBLL.FindAllActives();
+            dgvUsers.DataSource = _userBLL.FindAll();
             ConfigureGrid();
         }
 

@@ -202,6 +202,23 @@ namespace TrabajoFinal_DarioZubaray
             ShowChildForm(() => new PreferencesForm(_user, this), "PreferencesForm");
         }
 
+        private void configurarConexiónToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var form = new ConnectionConfigForm())
+            {
+                if (form.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+
+            MessageBox.Show(this,
+                "La configuración de conexión se guardó correctamente. Reinicie la aplicación para que los cambios tomen efecto.",
+                "Configuración de conexión",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+
         private void usuariosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!EnsurePermission("FORM_USER_MGMT"))

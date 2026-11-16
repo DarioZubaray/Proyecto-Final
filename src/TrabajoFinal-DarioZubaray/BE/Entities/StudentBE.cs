@@ -15,6 +15,10 @@ namespace BE.Entities
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdate { get; set; }
         public string FullName => $"{FirstName} {LastName}".Trim();
+        public string FullNameWithDocument =>
+            string.IsNullOrWhiteSpace(Document)
+                ? FullName
+                : $"{FullName} ({Document})";
         #endregion
 
         #region Constructor

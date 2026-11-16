@@ -52,7 +52,9 @@ namespace TrabajoFinal_DarioZubaray
             {
                 try
                 {
-                    if (ServiceLocatorBLL.CreateAuthBLL().TestConnection())
+                    // AccessDAL relea la configuracion en cada iteracion:
+                    // tras guardar una nueva cadena, el siguiente intento la usa.
+                    if (new AccessDAL().TestConnection())
                     {
                         bool hasRegisteredUsers = ServiceLocatorBLL
                             .CreateUserBLL()
@@ -68,16 +70,19 @@ namespace TrabajoFinal_DarioZubaray
                     // Conexion caida o esquema ausente: se trata como DB-001.
                 }
 
-                DialogResult decision = MessageBox.Show(
-                    string.Format(Resources.Auth_DbUnavailable, ErrorCodesBLL.Database.Unavailable),
-                    Resources.Main_Title,
-                    MessageBoxButtons.RetryCancel,
-                    MessageBoxIcon.Error);
-
-                if (decision != DialogResult.Retry)
+                using (var configForm = new ConnectionConfigForm())
                 {
-                    return null;
+                    configForm.SetInitialMessage(string.Format(
+                        Resources.Auth_DbUnavailable,
+                        ErrorCodesBLL.Database.Unavailable));
+
+                    if (configForm.ShowDialog() != DialogResult.OK)
+                    {
+                        return null;
+                    }
                 }
+
+                ServiceLocatorBLL.Reset();
             }
         }
 
@@ -137,59 +142,8 @@ namespace TrabajoFinal_DarioZubaray
                     sqlDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "sql");
                 }
 
-                if (!Directory.Exists(sqlDir))
-                {
-                    CliLog("--bootstrap: FAIL - directorio SQL inexistente: " + sqlDir);
-                    return ExitBootstrapFailed;
-                }
-
-                string[] files = Directory.GetFiles(sqlDir, "*.sql");
-                Array.Sort(files, StringComparer.OrdinalIgnoreCase);
-
                 var runner = new SqlScriptRunner();
-                runner.EnsureDatabase();
-                CliLog("--bootstrap: base verificada");
-                int applied = 0;
-
-                foreach (string file in files)
-                {
-                    string name = Path.GetFileName(file);
-
-                    if (name.StartsWith("02_", StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue;
-                    }
-
-                    if (name.IndexOf("Rollback", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        continue;
-                    }
-
-                    if (name.IndexOf("Consolidado", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        continue;
-                    }
-
-                    try
-                    {
-                        int batches = runner.RunFile(file);
-                        applied++;
-                        CliLog("--bootstrap: OK " + name + " (" + batches + " lotes)");
-                    }
-                    catch (Exception ex)
-                    {
-                        CliLog("--bootstrap: FAIL " + name + " - " + ex.Message);
-                        return ExitBootstrapFailed;
-                    }
-                }
-
-                if (applied == 0)
-                {
-                    CliLog("--bootstrap: FAIL - sin scripts en " + sqlDir);
-                    return ExitBootstrapFailed;
-                }
-
-                CliLog("--bootstrap: OK (" + applied + " scripts)");
+                runner.RunDirectory(sqlDir, message => CliLog("--bootstrap: " + message));
                 return ExitOk;
             }
             catch (Exception ex)

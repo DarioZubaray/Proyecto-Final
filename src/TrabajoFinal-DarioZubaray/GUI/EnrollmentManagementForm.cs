@@ -49,7 +49,7 @@ namespace TrabajoFinal_DarioZubaray
         {
             List<StudentBE> students = _studentBLL.FindAllActive();
 
-            cboStudent.DisplayMember = "FullName";
+            cboStudent.DisplayMember = "FullNameWithDocument";
             cboStudent.ValueMember = "Id";
             cboStudent.DataSource = students;
 

@@ -140,7 +140,7 @@ namespace BLL.Helpers
 
         public static IAttendanceBLL CreateAttendanceBLL()
         {
-            return new AttendanceBLL(GetAttendanceMPP());
+            return new AttendanceBLL(GetAttendanceMPP(), GetCourseMPP());
         }
 
         public static IIntegrityBLL CreateIntegrityBLL()
@@ -226,6 +226,27 @@ namespace BLL.Helpers
         public static IBackupBLL CreateBackupBLL()
         {
             return new BackupBLL(GetBackupMPP());
+        }
+
+        /// <summary>
+        /// Anula las instancias cacheadas de MPP para que se reconstruyan
+        /// leyendo la configuración de conexión vigente (se usa después de
+        /// cambiar la cadena de conexión).
+        /// </summary>
+        public static void Reset()
+        {
+            _userMPP = null;
+            _roleMPP = null;
+            _activityMPP = null;
+            _classroomMPP = null;
+            _courseMPP = null;
+            _enrollmentMPP = null;
+            _attendanceMPP = null;
+            _ticketMPP = null;
+            _studentMPP = null;
+            _evaluationMPP = null;
+            _reportMPP = null;
+            _backupMPP = null;
         }
         #endregion
     }

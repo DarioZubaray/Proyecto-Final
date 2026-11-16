@@ -96,16 +96,18 @@ namespace TrabajoFinal_DarioZubaray
             //
             // cboStudent
             //
+            this.cboStudent.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cboStudent.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cboStudent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboStudent.Location = new System.Drawing.Point(130, 9);
             this.cboStudent.Name = "cboStudent";
-            this.cboStudent.Size = new System.Drawing.Size(180, 21);
+            this.cboStudent.Size = new System.Drawing.Size(250, 21);
             this.cboStudent.TabIndex = 1;
             //
             // lblCourse
             //
             this.lblCourse.AutoSize = true;
-            this.lblCourse.Location = new System.Drawing.Point(325, 12);
+            this.lblCourse.Location = new System.Drawing.Point(390, 12);
             this.lblCourse.Name = "lblCourse";
             this.lblCourse.Size = new System.Drawing.Size(41, 13);
             this.lblCourse.TabIndex = 2;
@@ -114,14 +116,14 @@ namespace TrabajoFinal_DarioZubaray
             // cboCourse
             //
             this.cboCourse.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCourse.Location = new System.Drawing.Point(372, 9);
+            this.cboCourse.Location = new System.Drawing.Point(437, 9);
             this.cboCourse.Name = "cboCourse";
             this.cboCourse.Size = new System.Drawing.Size(220, 21);
             this.cboCourse.TabIndex = 3;
             //
             // btnEnroll
             //
-            this.btnEnroll.Location = new System.Drawing.Point(602, 7);
+            this.btnEnroll.Location = new System.Drawing.Point(667, 7);
             this.btnEnroll.Name = "btnEnroll";
             this.btnEnroll.Size = new System.Drawing.Size(130, 23);
             this.btnEnroll.TabIndex = 4;

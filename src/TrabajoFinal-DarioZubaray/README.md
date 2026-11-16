@@ -318,8 +318,8 @@ Los códigos se agrupan en **clases anidadas por dominio**, siguiendo el patrón
 |---------|---------|---------|
 | `DB-` | `Database` | `Unavailable DB-001`, `Configuration DB-002`, `QueryFailed DB-003` |
 | `AUTH-` | `Auth` | `RequiredFields AUTH-001`, `InvalidCredentials AUTH-002`, `UserBlocked AUTH-003`, `MaxRetriesExceeded AUTH-004`, `RetryAttemptsLeft AUTH-005`, `TwoFactorInvalid AUTH-006` |
-| `VAL-` | `Validation` | `UsernameRequired VAL-001`, `PasswordRequired VAL-002`, `PasswordsMismatch VAL-003`, `NameRequired VAL-004`, `NoSelection VAL-005`, `LanguageThemeRequired VAL-006`, `AdminUsernameLocked VAL-007` |
-| `BIZ-` | `Business` | `RoleHasUsers BIZ-001`, `InvalidCurrentPassword BIZ-002`, `TraslapeHorario BIZ-003`, `YaInscripto BIZ-004`, `AdminProtected BIZ-005`, `TicketSubjectRequired BIZ-006`, `TicketDescriptionRequired BIZ-007`, `TicketAlreadyClosed BIZ-008`, `StudentFirstNameRequired BIZ-009`, `StudentLastNameRequired BIZ-010`, `StudentDocumentRequired BIZ-011`, `StudentDocumentDuplicated BIZ-012`, `EvaluationNameRequired BIZ-013`, `CourseNotOwnedByTeacher BIZ-014`, `GradeOutOfRange BIZ-015` |
+| `VAL-` | `Validation` | `UsernameRequired VAL-001`, `PasswordRequired VAL-002`, `PasswordsMismatch VAL-003`, `NameRequired VAL-004`, `NoSelection VAL-005`, `LanguageThemeRequired VAL-006`, `AdminUsernameLocked VAL-007`, `UsernameTaken VAL-008` |
+| `BIZ-` | `Business` | `RoleHasUsers BIZ-001`, `InvalidCurrentPassword BIZ-002`, `TraslapeHorario BIZ-003`, `YaInscripto BIZ-004`, `AdminProtected BIZ-005`, `TicketSubjectRequired BIZ-006`, `TicketDescriptionRequired BIZ-007`, `TicketAlreadyClosed BIZ-008`, `StudentFirstNameRequired BIZ-009`, `StudentLastNameRequired BIZ-010`, `StudentDocumentRequired BIZ-011`, `StudentDocumentDuplicated BIZ-012`, `EvaluationNameRequired BIZ-013`, `CourseNotOwnedByTeacher BIZ-014`, `GradeOutOfRange BIZ-015`, `EvaluationDateOutOfRange BIZ-016`, `AttendanceDateOutOfRange BIZ-017` |
 | `INT-` | `Integrity` | `Blocked INT-001`, `ResolveFailed INT-002`, `ScanFailed INT-003` |
 | `GEN-` | `General` | `Unhandled GEN-001` |
 

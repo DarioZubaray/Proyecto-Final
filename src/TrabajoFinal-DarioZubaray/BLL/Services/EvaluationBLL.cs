@@ -58,6 +58,15 @@ namespace BLL.Services
                 throw new InvalidOperationException("El curso seleccionado no le pertenece. (Código: BIZ-014)");
             }
 
+            CourseBE course = teacherCourses.First(c => c.Id == evaluation.CourseId);
+
+            if (evaluation.Date.Date < course.StartDate.Date ||
+                evaluation.Date.Date > course.EndDate.Date)
+            {
+                throw new InvalidOperationException(
+                    "La fecha de la evaluación debe estar dentro del período del curso. (Código: BIZ-016)");
+            }
+
             evaluation.CreatedAt = DateTime.Now;
             evaluation.LastUpdate = DateTime.Now;
 

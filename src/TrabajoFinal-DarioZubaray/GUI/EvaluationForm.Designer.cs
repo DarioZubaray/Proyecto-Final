@@ -65,6 +65,7 @@ namespace TrabajoFinal_DarioZubaray
             this.cboCourse.Name = "cboCourse";
             this.cboCourse.Size = new System.Drawing.Size(220, 21);
             this.cboCourse.TabIndex = 1;
+            this.cboCourse.SelectedIndexChanged += new System.EventHandler(this.cboCourse_SelectedIndexChanged);
             //
             // lblName
             //

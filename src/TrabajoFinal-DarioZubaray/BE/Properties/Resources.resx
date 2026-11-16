@@ -876,6 +876,18 @@
   <data name="AttendanceForm_Unauthorized" xml:space="preserve">
     <value>No tiene permiso para registrar asistencia en este curso.</value>
   </data>
+  <data name="AttendanceForm_DateOutOfRange" xml:space="preserve">
+    <value>La fecha de la asistencia debe estar dentro del período del curso.</value>
+  </data>
+  <data name="AttendanceForm_PeriodPrefix" xml:space="preserve">
+    <value>Período: </value>
+  </data>
+  <data name="AttendanceForm_ClassroomPrefix" xml:space="preserve">
+    <value>Aula: </value>
+  </data>
+  <data name="AttendanceForm_SchedulePrefix" xml:space="preserve">
+    <value>Horario: </value>
+  </data>
   <data name="Main_MenuClassrooms" xml:space="preserve">
     <value>Aulas</value>
   </data>
@@ -1224,6 +1236,9 @@
   <data name="EvaluationForm_GradeOutOfRange" xml:space="preserve">
     <value>La nota debe estar entre 0 y 10.</value>
   </data>
+  <data name="EvaluationForm_DateOutOfRange" xml:space="preserve">
+    <value>La fecha de la evaluación debe estar dentro del período del curso.</value>
+  </data>
   <data name="EvaluationForm_Saved" xml:space="preserve">
     <value>Evaluación registrada correctamente.</value>
   </data>
@@ -1271,6 +1286,21 @@
   </data>
   <data name="PerformanceForm_ValidationTitle" xml:space="preserve">
     <value>Validación</value>
+  </data>
+  <data name="PerformanceForm_Stats" xml:space="preserve">
+    <value>Alumnos: {0}  |  Con notas: {1}  |  Promedio general: {2}  |  Aprobados (≥ 6): {3}  |  Reprobados: {4}  |  Asistencia promedio: {5} %</value>
+  </data>
+  <data name="PerformanceForm_ColStatus" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="PerformanceForm_Pass" xml:space="preserve">
+    <value>Aprobado</value>
+  </data>
+  <data name="PerformanceForm_Fail" xml:space="preserve">
+    <value>Reprobado</value>
+  </data>
+  <data name="PerformanceForm_NoGrades" xml:space="preserve">
+    <value>Sin notas</value>
   </data>
   <data name="ReportForm_Title" xml:space="preserve">
     <value>Informes Personalizados</value>

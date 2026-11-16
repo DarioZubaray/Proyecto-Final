@@ -876,6 +876,18 @@
   <data name="AttendanceForm_Unauthorized" xml:space="preserve">
     <value>Você não tem permissão para registrar presença neste curso.</value>
   </data>
+  <data name="AttendanceForm_DateOutOfRange" xml:space="preserve">
+    <value>A data da frequência deve estar dentro do período do curso.</value>
+  </data>
+  <data name="AttendanceForm_PeriodPrefix" xml:space="preserve">
+    <value>Período: </value>
+  </data>
+  <data name="AttendanceForm_ClassroomPrefix" xml:space="preserve">
+    <value>Sala: </value>
+  </data>
+  <data name="AttendanceForm_SchedulePrefix" xml:space="preserve">
+    <value>Horário: </value>
+  </data>
   <data name="Main_MenuClassrooms" xml:space="preserve">
     <value>Aulas</value>
   </data>
@@ -1224,6 +1236,9 @@
   <data name="EvaluationForm_GradeOutOfRange" xml:space="preserve">
     <value>A nota deve estar entre 0 e 10.</value>
   </data>
+  <data name="EvaluationForm_DateOutOfRange" xml:space="preserve">
+    <value>A data da avaliação deve estar dentro do período do curso.</value>
+  </data>
   <data name="EvaluationForm_Saved" xml:space="preserve">
     <value>Avaliação registrada com sucesso.</value>
   </data>
@@ -1271,6 +1286,21 @@
   </data>
   <data name="PerformanceForm_ValidationTitle" xml:space="preserve">
     <value>Validação</value>
+  </data>
+  <data name="PerformanceForm_Stats" xml:space="preserve">
+    <value>Alunos: {0}  |  Com notas: {1}  |  Média geral: {2}  |  Aprovados (≥ 6): {3}  |  Reprovados: {4}  |  Presença média: {5} %</value>
+  </data>
+  <data name="PerformanceForm_ColStatus" xml:space="preserve">
+    <value>Situação</value>
+  </data>
+  <data name="PerformanceForm_Pass" xml:space="preserve">
+    <value>Aprovado</value>
+  </data>
+  <data name="PerformanceForm_Fail" xml:space="preserve">
+    <value>Reprovado</value>
+  </data>
+  <data name="PerformanceForm_NoGrades" xml:space="preserve">
+    <value>Sem notas</value>
   </data>
   <data name="ReportForm_Title" xml:space="preserve">
     <value>Relatórios Personalizados</value>

@@ -63,6 +63,7 @@ namespace TrabajoFinal_DarioZubaray
 
             dgvPerformance.DataSource = null;
             dgvPerformance.Columns.Clear();
+            lblStats.Visible = false;
 
             if (performance.Count == 0)
             {
@@ -72,12 +73,15 @@ namespace TrabajoFinal_DarioZubaray
                 return;
             }
 
+            ShowStatistics(performance);
+
             DataTable dt = new DataTable();
             dt.Columns.Add("StudentId", typeof(int));
             dt.Columns.Add("Student", typeof(string));
             dt.Columns.Add("Attendance", typeof(string));
             dt.Columns.Add("GradesCount", typeof(string));
             dt.Columns.Add("Average", typeof(string));
+            dt.Columns.Add("Status", typeof(string));
 
             foreach (StudentPerformanceBE line in performance)
             {
@@ -86,11 +90,43 @@ namespace TrabajoFinal_DarioZubaray
                     line.StudentName,
                     line.AttendancePercent.HasValue ? line.AttendancePercent.Value.ToString() : "—",
                     line.GradesCount > 0 ? line.GradesCount.ToString() : "—",
-                    line.Average.HasValue ? line.Average.Value.ToString("0.00") : "—");
+                    line.Average.HasValue ? line.Average.Value.ToString("0.00") : "—",
+                    GetStatusText(line.Average));
             }
 
             dgvPerformance.DataSource = dt;
             ConfigureGrid();
+        }
+
+        private void ShowStatistics(List<StudentPerformanceBE> performance)
+        {
+            ReportStatisticsBE statistics = ReportStatisticsHelper.Compute(performance);
+
+            lblStats.Text = string.Format(
+                Resources.PerformanceForm_Stats,
+                statistics.TotalStudents,
+                statistics.StudentsWithGrades,
+                statistics.GeneralAverage.HasValue
+                    ? statistics.GeneralAverage.Value.ToString("0.00")
+                    : "—",
+                statistics.Approved,
+                statistics.Failed,
+                statistics.AverageAttendance.HasValue
+                    ? statistics.AverageAttendance.Value.ToString()
+                    : "—");
+            lblStats.Visible = true;
+        }
+
+        private static string GetStatusText(decimal? average)
+        {
+            if (!average.HasValue)
+            {
+                return Resources.PerformanceForm_NoGrades;
+            }
+
+            return average.Value >= ReportStatisticsHelper.MinimumPassingGrade
+                ? Resources.PerformanceForm_Pass
+                : Resources.PerformanceForm_Fail;
         }
 
         private void ConfigureGrid()
@@ -116,6 +152,10 @@ namespace TrabajoFinal_DarioZubaray
             dgvPerformance.Columns["Average"].ReadOnly = true;
             dgvPerformance.Columns["Average"].Width = 130;
             dgvPerformance.Columns["Average"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvPerformance.Columns["Status"].HeaderText = Resources.PerformanceForm_ColStatus;
+            dgvPerformance.Columns["Status"].ReadOnly = true;
+            dgvPerformance.Columns["Status"].Width = 100;
+            dgvPerformance.Columns["Status"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
             dgvPerformance.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvPerformance.MultiSelect = false;

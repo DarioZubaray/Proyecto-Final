@@ -411,6 +411,31 @@ namespace BLL.Tests
         }
 
         [TestMethod]
+        public void Save_Reactivation_ResetsRetries()
+        {
+            var user = new UserBE
+            {
+                Id = 2,
+                UserName = "blockedUser",
+                IsActive = true,
+                RetriesCount = 3
+            };
+            _mockUserMPP
+                .Setup(m => m.FindById(It.Is<UserBE>(u => u.Id == 2)))
+                .Returns(new UserBE { Id = 2, UserName = "blockedUser", IsActive = false, RetriesCount = 3 });
+            _mockUserMPP
+                .Setup(m => m.Save(user))
+                .Returns(true);
+
+            var result = _userBLL.Save(user);
+
+            Assert.IsTrue(result);
+            Assert.IsTrue(user.IsActive);
+            Assert.AreEqual(0, user.RetriesCount);
+            _mockUserMPP.Verify(m => m.Save(user), Times.Once);
+        }
+
+        [TestMethod]
         public void HasRegisteredUsers_WhenOtherUsersExist_ReturnsTrue()
         {
             _mockUserMPP

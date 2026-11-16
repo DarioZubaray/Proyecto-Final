@@ -26,14 +26,24 @@ namespace TrabajoFinal_DarioZubaray
             CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
             ApplyResources();
             ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
+            ApplyVisualStyle();
             CheckDatabaseConnectionAsync();
         }
         #endregion
 
         #region Métodos
+        private void ApplyVisualStyle()
+        {
+            btnLogin.FlatStyle = FlatStyle.Flat;
+            btnLogin.FlatAppearance.BorderSize = 0;
+            btnLogin.BackColor = System.Drawing.Color.FromArgb(0, 120, 215);
+            btnLogin.ForeColor = System.Drawing.Color.White;
+            lblMessage.ForeColor = System.Drawing.Color.IndianRed;
+        }
         private void ApplyResources()
         {
             this.Text = Resources.Main_Title;
+            lblAppTitle.Text = Resources.Main_Title;
             groupBox1.Text = Resources.Login_Title;
             lblUser.Text = Resources.Login_UsernameLabel;
             lblPass.Text = Resources.Login_PasswordLabel;
@@ -43,6 +53,7 @@ namespace TrabajoFinal_DarioZubaray
             lblDbStatus.Text = Resources.Login_DbChecking;
             lblDbStatus.ForeColor = System.Drawing.Color.DarkOrange;
             btnRetry.Text = Resources.Login_RetryButton;
+            btnConfig.Text = "Configurar conexión";
         }
 
         private async void CheckDatabaseConnectionAsync()
@@ -94,6 +105,7 @@ namespace TrabajoFinal_DarioZubaray
             lblDbStatus.Text = Resources.Login_DbChecking;
             lblDbStatus.ForeColor = System.Drawing.Color.DarkOrange;
             btnRetry.Visible = false;
+            btnConfig.Visible = false;
         }
 
         private void SetDatabaseStatus(bool connected)
@@ -103,12 +115,14 @@ namespace TrabajoFinal_DarioZubaray
                 lblDbStatus.Text = Resources.Login_DbConnected;
                 lblDbStatus.ForeColor = System.Drawing.Color.SeaGreen;
                 btnRetry.Visible = false;
+                btnConfig.Visible = false;
             }
             else
             {
                 lblDbStatus.Text = Resources.Login_DbDisconnected;
                 lblDbStatus.ForeColor = System.Drawing.Color.IndianRed;
                 btnRetry.Visible = true;
+                btnConfig.Visible = true;
             }
         }
         #endregion
@@ -121,6 +135,22 @@ namespace TrabajoFinal_DarioZubaray
             bool connected = await Task.Run(() => TryTestConnection());
             SetDatabaseStatus(connected);
             btnRetry.Enabled = true;
+        }
+
+        private void btnConfig_Click(object sender, EventArgs e)
+        {
+            using (var form = new ConnectionConfigForm())
+            {
+                if (form.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+
+            ServiceLocatorBLL.Reset();
+            _authBLL = ServiceLocatorBLL.CreateAuthBLL();
+            _integrityBLL = ServiceLocatorBLL.CreateIntegrityBLL();
+            CheckDatabaseConnectionAsync();
         }
 
         private async void btnLogin_Click(object sender, EventArgs e)
@@ -178,6 +208,7 @@ namespace TrabajoFinal_DarioZubaray
                 CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
                 ApplyResources();
                 ThemeHelper.ApplyTheme(this, AppPreferencesBLL.LastTheme);
+                ApplyVisualStyle();
                 this.Show();
                 txtUser.Text = "";
                 txtUser.Focus();

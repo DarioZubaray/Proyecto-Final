@@ -24,6 +24,9 @@ namespace TrabajoFinal_DarioZubaray
             this.lblDate = new System.Windows.Forms.Label();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.btnSearch = new System.Windows.Forms.Button();
+            this.lblPeriod = new System.Windows.Forms.Label();
+            this.lblClassroom = new System.Windows.Forms.Label();
+            this.lblSchedule = new System.Windows.Forms.Label();
             this.dgvAttendance = new System.Windows.Forms.DataGridView();
             this.panelBottom = new System.Windows.Forms.Panel();
             this.btnSave = new System.Windows.Forms.Button();
@@ -39,10 +42,13 @@ namespace TrabajoFinal_DarioZubaray
             this.panelTop.Controls.Add(this.lblDate);
             this.panelTop.Controls.Add(this.dtpDate);
             this.panelTop.Controls.Add(this.btnSearch);
+            this.panelTop.Controls.Add(this.lblPeriod);
+            this.panelTop.Controls.Add(this.lblClassroom);
+            this.panelTop.Controls.Add(this.lblSchedule);
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(850, 50);
+            this.panelTop.Size = new System.Drawing.Size(850, 80);
             this.panelTop.TabIndex = 0;
             //
             // lblCourse
@@ -61,6 +67,7 @@ namespace TrabajoFinal_DarioZubaray
             this.cboCourse.Name = "cboCourse";
             this.cboCourse.Size = new System.Drawing.Size(250, 21);
             this.cboCourse.TabIndex = 1;
+            this.cboCourse.SelectedIndexChanged += new System.EventHandler(this.cboCourse_SelectedIndexChanged);
             //
             // lblDate
             //
@@ -88,6 +95,33 @@ namespace TrabajoFinal_DarioZubaray
             this.btnSearch.Text = "Buscar";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            //
+            // lblPeriod
+            //
+            this.lblPeriod.AutoSize = true;
+            this.lblPeriod.Location = new System.Drawing.Point(12, 55);
+            this.lblPeriod.Name = "lblPeriod";
+            this.lblPeriod.Size = new System.Drawing.Size(40, 13);
+            this.lblPeriod.TabIndex = 5;
+            this.lblPeriod.Text = "";
+            //
+            // lblClassroom
+            //
+            this.lblClassroom.AutoSize = true;
+            this.lblClassroom.Location = new System.Drawing.Point(300, 55);
+            this.lblClassroom.Name = "lblClassroom";
+            this.lblClassroom.Size = new System.Drawing.Size(40, 13);
+            this.lblClassroom.TabIndex = 6;
+            this.lblClassroom.Text = "";
+            //
+            // lblSchedule
+            //
+            this.lblSchedule.AutoSize = true;
+            this.lblSchedule.Location = new System.Drawing.Point(520, 55);
+            this.lblSchedule.Name = "lblSchedule";
+            this.lblSchedule.Size = new System.Drawing.Size(40, 13);
+            this.lblSchedule.TabIndex = 7;
+            this.lblSchedule.Text = "";
             //
             // dgvAttendance
             //
@@ -146,6 +180,9 @@ namespace TrabajoFinal_DarioZubaray
         private System.Windows.Forms.Label lblDate;
         private System.Windows.Forms.DateTimePicker dtpDate;
         private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.Label lblPeriod;
+        private System.Windows.Forms.Label lblClassroom;
+        private System.Windows.Forms.Label lblSchedule;
         private System.Windows.Forms.DataGridView dgvAttendance;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Button btnSave;

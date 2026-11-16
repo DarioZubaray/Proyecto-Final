@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using BE.Entities;
+using BLL.Helpers;
 using BLL.Services;
 using Moq;
 using MPP.Interfaces;
@@ -14,6 +15,7 @@ namespace BLL.Tests
     {
         #region Propiedades
         private Mock<IAttendanceMPP> _mockAttendanceMPP;
+        private Mock<ICourseMPP> _mockCourseMPP;
         private AttendanceBLL _attendanceBLL;
         #endregion
 
@@ -22,7 +24,20 @@ namespace BLL.Tests
         public void Setup()
         {
             _mockAttendanceMPP = new Mock<IAttendanceMPP>();
-            _attendanceBLL = new AttendanceBLL(_mockAttendanceMPP.Object);
+            _mockCourseMPP = new Mock<ICourseMPP>();
+            _attendanceBLL = new AttendanceBLL(_mockAttendanceMPP.Object, _mockCourseMPP.Object);
+            SetupCourse(1);
+        }
+
+        private void SetupCourse(int courseId)
+        {
+            _mockCourseMPP.Setup(m => m.FindById(courseId)).Returns(new CourseBE
+            {
+                Id = courseId,
+                Name = "Curso " + courseId,
+                StartDate = new DateTime(2026, 1, 1),
+                EndDate = new DateTime(2026, 12, 31)
+            });
         }
         #endregion
 
@@ -56,6 +71,72 @@ namespace BLL.Tests
             bool result = _attendanceBLL.RegisterAttendanceBulk(courseId, date, records);
 
             Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void RegisterAttendanceBulk_DateBeforeCourseStart_Throws()
+        {
+            var records = new List<AttendanceBE>
+            {
+                new AttendanceBE { StudentId = 20, IsPresent = true }
+            };
+
+            InvalidOperationException ex = Assert.ThrowsException<InvalidOperationException>(
+                () => _attendanceBLL.RegisterAttendanceBulk(1, new DateTime(2025, 12, 31), records));
+
+            Assert.IsTrue(ex.Message.Contains(ErrorCodesBLL.Business.AttendanceDateOutOfRange));
+            _mockAttendanceMPP.Verify(
+                m => m.RegisterAttendanceBulk(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<List<AttendanceBE>>()),
+                Times.Never);
+        }
+
+        [TestMethod]
+        public void RegisterAttendanceBulk_DateAfterCourseEnd_Throws()
+        {
+            var records = new List<AttendanceBE>
+            {
+                new AttendanceBE { StudentId = 20, IsPresent = true }
+            };
+
+            InvalidOperationException ex = Assert.ThrowsException<InvalidOperationException>(
+                () => _attendanceBLL.RegisterAttendanceBulk(1, new DateTime(2027, 1, 1), records));
+
+            Assert.IsTrue(ex.Message.Contains(ErrorCodesBLL.Business.AttendanceDateOutOfRange));
+            _mockAttendanceMPP.Verify(
+                m => m.RegisterAttendanceBulk(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<List<AttendanceBE>>()),
+                Times.Never);
+        }
+
+        [TestMethod]
+        public void RegisterAttendanceBulk_DateOnCourseStartBoundary_ReturnsTrue()
+        {
+            var records = new List<AttendanceBE>
+            {
+                new AttendanceBE { StudentId = 20, IsPresent = true }
+            };
+            _mockAttendanceMPP.Setup(m => m.RegisterAttendanceBulk(1, new DateTime(2026, 1, 1), records)).Returns(true);
+
+            bool result = _attendanceBLL.RegisterAttendanceBulk(1, new DateTime(2026, 1, 1), records);
+
+            Assert.IsTrue(result);
+            _mockAttendanceMPP.Verify(
+                m => m.RegisterAttendanceBulk(1, new DateTime(2026, 1, 1), records), Times.Once);
+        }
+
+        [TestMethod]
+        public void RegisterAttendanceBulk_DateOnCourseEndBoundary_ReturnsTrue()
+        {
+            var records = new List<AttendanceBE>
+            {
+                new AttendanceBE { StudentId = 20, IsPresent = true }
+            };
+            _mockAttendanceMPP.Setup(m => m.RegisterAttendanceBulk(1, new DateTime(2026, 12, 31), records)).Returns(true);
+
+            bool result = _attendanceBLL.RegisterAttendanceBulk(1, new DateTime(2026, 12, 31), records);
+
+            Assert.IsTrue(result);
+            _mockAttendanceMPP.Verify(
+                m => m.RegisterAttendanceBulk(1, new DateTime(2026, 12, 31), records), Times.Once);
         }
         #endregion
 

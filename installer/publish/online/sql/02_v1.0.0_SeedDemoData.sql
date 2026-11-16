@@ -324,6 +324,54 @@ WHERE e.name IN ('Parcial 1', 'Parcial 2', 'Final')
           AND g.student_id = cs.student_id
   );
 
+-- =============================================
+-- DVH: backfill del digito verificador de
+-- evaluaciones y notas (columnas agregadas en la
+-- v1.4.0; se omite si aun no existen).
+-- Replica la serializacion canonica de
+-- BLL.DVHHelperBLL: columnas menos [dvh], en orden
+-- de columna, unidas por coma; fechas estilo 126
+-- (sin fraccion si ms = 0); DATE convertido a
+-- DATETIME; SHA2_256 sobre NVARCHAR (UTF-16LE).
+-- =============================================
+IF OBJECT_ID('dbo.evaluations', 'U') IS NOT NULL
+   AND COL_LENGTH('dbo.evaluations', 'dvh') IS NOT NULL
+BEGIN
+    UPDATE e
+    SET e.[dvh] = LOWER(CONVERT(VARCHAR(64),
+        HASHBYTES('SHA2_256',
+            CONCAT(
+                CONVERT(NVARCHAR(MAX), e.[id]),                ',',
+                CONVERT(NVARCHAR(MAX), e.[course_id]),         ',',
+                e.[name],                                      ',',
+                CONVERT(NVARCHAR(30), CAST(e.[date] AS DATETIME), 126), ',',
+                CONVERT(NVARCHAR(MAX), e.[created_by]),        ',',
+                CONVERT(NVARCHAR(30), e.[created_at], 126),    ',',
+                CONVERT(NVARCHAR(30), e.[last_update], 126)
+            )
+        ), 2))
+    FROM [dbo].[evaluations] e
+    WHERE e.[dvh] IS NULL;
+END
+
+IF OBJECT_ID('dbo.grades', 'U') IS NOT NULL
+   AND COL_LENGTH('dbo.grades', 'dvh') IS NOT NULL
+BEGIN
+    UPDATE g
+    SET g.[dvh] = LOWER(CONVERT(VARCHAR(64),
+        HASHBYTES('SHA2_256',
+            CONCAT(
+                CONVERT(NVARCHAR(MAX), g.[id]),             ',',
+                CONVERT(NVARCHAR(MAX), g.[evaluation_id]),  ',',
+                CONVERT(NVARCHAR(MAX), g.[student_id]),     ',',
+                CONVERT(NVARCHAR(MAX), g.[grade])
+            )
+        ), 2))
+    FROM [dbo].[grades] g
+    WHERE g.[dvh] IS NULL;
+END
+GO
+
 -- Ticket
 IF NOT EXISTS (SELECT 1 FROM [dbo].[tickets])
 BEGIN

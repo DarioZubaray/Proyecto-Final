@@ -126,6 +126,75 @@ namespace DAL
 
             return batches.Count;
         }
+
+        /// <summary>
+        /// Crea la base si falta y aplica los scripts de esquema del
+        /// directorio. Omite seed (02), migraciones legacy (03),
+        /// rollbacks y consolidado: en una base nueva el 01 ya trae el
+        /// esquema completo (mismo criterio que el instalador, que solo
+        /// distribuye 01 y 06).
+        /// </summary>
+        public int RunDirectory(string sqlDir, Action<string> log = null)
+        {
+            if (string.IsNullOrWhiteSpace(sqlDir) || !Directory.Exists(sqlDir))
+            {
+                throw new DirectoryNotFoundException(
+                    "Directorio SQL inexistente: " + sqlDir);
+            }
+
+            EnsureDatabase();
+            log?.Invoke("base verificada");
+
+            string[] files = Directory.GetFiles(sqlDir, "*.sql");
+            Array.Sort(files, StringComparer.OrdinalIgnoreCase);
+
+            int applied = 0;
+
+            foreach (string file in files)
+            {
+                string name = Path.GetFileName(file);
+
+                if (name.StartsWith("02_", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (name.StartsWith("03_", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                if (name.IndexOf("Rollback", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
+
+                if (name.IndexOf("Consolidado", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    int batches = RunFile(file);
+                    applied++;
+                    log?.Invoke(string.Format("OK {0} ({1} lotes)", name, batches));
+                }
+                catch (Exception ex)
+                {
+                    log?.Invoke(string.Format("FAIL {0} - {1}", name, ex.Message));
+                    throw;
+                }
+            }
+
+            if (applied == 0)
+            {
+                throw new InvalidOperationException("Sin scripts en " + sqlDir);
+            }
+
+            log?.Invoke(string.Format("OK ({0} scripts)", applied));
+            return applied;
+        }
         #endregion
     }
 }
