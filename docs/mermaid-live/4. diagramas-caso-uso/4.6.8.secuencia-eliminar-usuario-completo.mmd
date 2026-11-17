@@ -1,0 +1,81 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE y RoleBE transportan los datos entre capas
+    Note over Administrador,BD: CU-06 Eliminar Usuario - flujo básico y alternativos
+
+    Administrador->>GUI: Elige "Usuarios" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL->>MPP: FindAll(): List<UserBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>GUI: Completa el campo de búsqueda y presiona "Buscar"
+    alt Texto de búsqueda vacío
+        GUI->>BLL: FindAll(): List<UserBE>
+        BLL-->>GUI: List<UserBE>
+        GUI-->>Administrador: Muestra la grilla completa de usuarios
+    else Texto de búsqueda informado
+        GUI->>BLL: FindByUserName(userName: string): List<UserBE>
+        BLL->>MPP: FindByUserName(userName: string): List<UserBE>
+        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        DAL->>BD: Consulta parametrizada por nombre parcial
+        BD-->>DAL: Filas resultantes
+        DAL-->>MPP: DataTable
+        MPP-->>BLL: List<UserBE>
+        BLL-->>GUI: List<UserBE>
+        GUI-->>Administrador: Muestra en la grilla los usuarios coincidentes
+    end
+
+    Administrador->>GUI: Presiona "Eliminar" sin seleccionar un usuario
+    GUI-->>Administrador: Muestra "Seleccione un usuario de la grilla. (Código: VAL-005)"
+
+    Administrador->>GUI: Selecciona el usuario admin y presiona "Eliminar"
+    GUI->>BLL: Delete(user: UserBE): bool
+    alt El usuario a eliminar es el admin
+        Note over BLL: UserBLL.Delete rechaza el usuario protegido
+        BLL-->>GUI: false
+        GUI-->>Administrador: Muestra "El usuario administrador no puede ser eliminado. (Código: BIZ-005)"
+    else Usuario no protegido
+        GUI-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el usuario?"
+        alt El usuario presiona "No"
+            Note over GUI: No se realiza ningún cambio
+        else El usuario presiona "Sí"
+            GUI->>BLL: Delete(user: UserBE): bool
+            BLL->>MPP: Delete(user: UserBE): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Baja lógica del usuario (is_active = 0)
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL->>MPP: FindById(user: UserBE): UserBE
+            MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+            DAL->>BD: Consulta del usuario por id
+            BD-->>DAL: Fila resultante
+            DAL-->>MPP: DataTable
+            MPP-->>BLL: UserBE
+            BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Registro del dígito verificador (DVH)
+            BD-->>DAL: 1 fila afectada
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Administrador: Muestra "Usuario eliminado correctamente."
+            GUI->>BLL: FindAll(): List<UserBE>
+            BLL-->>GUI: List<UserBE>
+            GUI-->>Administrador: Actualiza la grilla
+        end
+    end

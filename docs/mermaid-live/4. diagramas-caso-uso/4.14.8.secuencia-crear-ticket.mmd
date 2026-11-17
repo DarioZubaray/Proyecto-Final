@@ -1,0 +1,39 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: TicketBE y UserBE transportan los datos entre las capas
+    Note over Usuario,BD: CU-14 Crear Ticket - flujo básico: crear ticket (pasos 1 a 10)
+
+    Usuario->>GUI: Elige "Tickets" en el menú principal
+    GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+    BLL->>MPP: FindByUser(userId: int): List<TicketBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de tickets del usuario
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<TicketBE>
+    BLL-->>GUI: List<TicketBE>
+    GUI-->>Usuario: Muestra la ventana "Gestión de Tickets" con la grilla
+
+    Usuario->>GUI: Presiona el botón "Nuevo"
+    GUI-->>Usuario: Muestra el formulario "Nuevo Ticket" con Asunto y Descripción
+    Usuario->>GUI: Completa los campos "Asunto" y "Descripción" y presiona "Guardar"
+    GUI->>BLL: Create(ticket: TicketBE): bool
+    BLL->>MPP: Insert(ticket: TicketBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro del ticket (estado Abierto, usuario logueado)
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI-->>Usuario: Muestra "Ticket creado correctamente."
+    GUI->>BLL: FindByUser(userId: int): List<TicketBE>
+    BLL-->>GUI: List<TicketBE>
+    GUI-->>Usuario: Vuelve a la grilla con el ticket nuevo incluido

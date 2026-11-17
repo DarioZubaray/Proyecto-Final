@@ -1,0 +1,78 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE, CourseBE y EnrollmentBE transportan los datos entre las capas
+    Note over Usuario,BD: CU-13 Crear Inscripción - flujo básico (pasos 1 a 9)
+
+    Usuario->>GUI: Accede al formulario "Gestión de Inscripciones"
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL->>MPP: FindAll(): List<UserBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI->>BLL: FindAll(): List<CourseBE>
+    BLL->>MPP: FindAll(): List<CourseBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de cursos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<CourseBE>
+    BLL-->>GUI: List<CourseBE>
+    GUI->>BLL: FindAll(): List<EnrollmentBE>
+    BLL->>MPP: FindAll(): List<EnrollmentBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de inscripciones
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<EnrollmentBE>
+    BLL-->>GUI: List<EnrollmentBE>
+    GUI-->>Usuario: Muestra las listas de alumnos y cursos, la grilla y el campo de búsqueda
+
+    Usuario->>GUI: Selecciona "Alumno a inscribir" y "Curso" y presiona "Inscribir alumno"
+    GUI-->>Usuario: Muestra "¿Desea inscribir a '<alumno>' en el curso '<curso>'?"
+    Usuario->>GUI: Presiona "Sí"
+    GUI->>BLL: Enroll(courseId: int, studentId: int): bool
+    BLL->>MPP: ExistsActiveEnrollment(courseId: int, studentId: int): bool
+    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    DAL->>BD: Consulta de inscripción activa
+    BD-->>DAL: Cantidad de coincidencias
+    DAL-->>MPP: int
+    MPP-->>BLL: false
+    BLL->>MPP: FindById(courseId: int): CourseBE
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada del curso
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: CourseBE
+    BLL->>MPP: FindByStudentId(studentId: int): List<EnrollmentBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de inscripciones del alumno
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<EnrollmentBE>
+    BLL->>MPP: ExistsScheduleOverlap(studentId: int, dayOfWeek: int, startTime: TimeSpan, endTime: TimeSpan, courseIdToExclude: int): bool
+    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    DAL->>BD: Consulta de traslape de horario
+    BD-->>DAL: Cantidad de coincidencias
+    DAL-->>MPP: int
+    MPP-->>BLL: false
+    BLL->>MPP: Enroll(courseId: int, studentId: int): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro de la inscripción
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI->>BLL: FindAll(): List<EnrollmentBE>
+    BLL-->>GUI: List<EnrollmentBE>
+    GUI-->>Usuario: Muestra "Inscripción realizada exitosamente." y actualiza la grilla

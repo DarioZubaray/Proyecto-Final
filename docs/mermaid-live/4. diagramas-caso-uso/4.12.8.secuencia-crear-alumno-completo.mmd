@@ -1,0 +1,45 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: StudentBE transporta los datos entre las capas
+    Note over Usuario,BD: CU-12 Crear Alumno - flujo básico y flujos alternativos
+
+    Usuario->>GUI: Accede a "Alumnos" del menú "Administración" y presiona "Nuevo"
+    GUI-->>Usuario: Muestra el formulario de alta de alumno con sus campos
+    Usuario->>GUI: Completa "Nombre", "Apellido", "Documento", "Email" y "Número de Teléfono"
+    Usuario->>GUI: Presiona "Guardar"
+
+    alt Campos obligatorios incompletos
+        Note over GUI: ValidateInputs() evalúa en orden: nombre, apellido y documento
+        GUI-->>Usuario: Muestra "El nombre es obligatorio.", "El apellido es obligatorio." o "El documento es obligatorio." y devuelve el foco al campo observado
+    else Datos correctos
+        GUI->>BLL: Save(student: StudentBE): bool
+        alt Documento ya registrado (regla de negocio)
+            BLL-->>GUI: excepción InvalidOperationException
+            GUI-->>Usuario: Muestra "Ya existe un alumno registrado con ese documento." y devuelve el foco al campo "Documento"
+        else Datos válidos para persistir
+            BLL->>MPP: Save(student: StudentBE): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Registro del alumno
+            alt Error de base de datos
+                BD-->>DAL: excepción SqlException
+                DAL-->>MPP: excepción
+                MPP-->>BLL: excepción
+                BLL-->>GUI: excepción
+                GUI-->>Usuario: Muestra "Error al guardar el alumno: \<detalle\>" y mantiene el formulario abierto
+            else Operación exitosa
+                BD-->>DAL: 1 fila afectada
+                DAL-->>MPP: true
+                MPP-->>BLL: true
+                BLL-->>GUI: true
+                GUI-->>Usuario: Muestra "Alumno guardado correctamente.", cierra el formulario y refresca el listado
+            end
+        end
+    end

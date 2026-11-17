@@ -1,0 +1,36 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant GUI as GUI
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note over Usuario,BD: CU-20 Crear Respaldo - flujo básico y alternativos
+
+    Usuario->>GUI: Elige "Respaldo y Restauración" en el menú "Administración"
+    GUI-->>Usuario: Muestra el formulario con "Generar respaldo" y "Restaurar respaldo"
+
+    Usuario->>GUI: Presiona "Generar respaldo"
+    alt El usuario cancela el diálogo "Guardar como"
+        Note over GUI: No se genera ningún archivo
+    else El usuario confirma la ubicación
+        GUI->>BLL: CreateBackup(filePath: string): bool
+        BLL->>MPP: CreateBackup(filePath: string): bool
+        MPP->>DAL: Save(consulta: string, parameters: SqlParameter[]): bool
+        DAL->>BD: BACKUP DATABASE [DarioZubaray_TF] TO DISK = filePath
+        alt La operación falla
+            BD-->>DAL: Error de SQL Server
+            DAL-->>MPP: Excepción
+            MPP-->>BLL: Excepción
+            BLL-->>GUI: Excepción
+            GUI-->>Usuario: Muestra "Error al generar el respaldo: <detalle>"
+        else La operación termina bien
+            BD-->>DAL: Confirmación de la operación
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Usuario: Muestra "Respaldo generado correctamente."
+        end
+    end

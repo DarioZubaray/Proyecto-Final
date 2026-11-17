@@ -1,0 +1,42 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: RoleBE, PermissionBE y UserBE transportan los datos entre capas
+    Note over Administrador,BD: CU-07 Crear Rol - flujo básico
+
+    Administrador->>GUI: Elige "Roles" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<RoleBE>
+    BLL->>MPP: FindAll(): List<RoleBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de roles y permisos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<RoleBE>
+    BLL-->>GUI: List<RoleBE>
+    GUI->>BLL: GetAllPermissions(): List<PermissionBE>
+    BLL->>MPP: GetAllPermissions(): List<PermissionBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta del catálogo de permisos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<PermissionBE>
+    BLL-->>GUI: List<PermissionBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
+
+    Administrador->>GUI: Completa el campo "Rol:" y presiona "Crear Rol"
+    GUI->>BLL: Save(role: RoleBE): int
+    BLL->>MPP: Save(role: RoleBE): int
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Alta del rol con retorno de identidad (SCOPE_IDENTITY)
+    BD-->>DAL: Fila con el nuevo id
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: int
+    BLL-->>GUI: int
+    GUI-->>Administrador: Agrega el rol a la lista, lo selecciona y limpia el campo "Rol:"

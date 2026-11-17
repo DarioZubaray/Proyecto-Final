@@ -1,0 +1,62 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: RoleBE, PermissionBE y UserBE transportan los datos entre capas
+    Note over Administrador,BD: CU-09 Eliminar Rol - flujo básico y alternativos
+
+    Administrador->>GUI: Elige "Roles" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<RoleBE>
+    BLL->>MPP: FindAll(): List<RoleBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de roles y permisos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<RoleBE>
+    BLL-->>GUI: List<RoleBE>
+    GUI->>BLL: GetAllPermissions(): List<PermissionBE>
+    BLL->>MPP: GetAllPermissions(): List<PermissionBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta del catálogo de permisos
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<PermissionBE>
+    BLL-->>GUI: List<PermissionBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
+
+    Administrador->>GUI: Presiona "Eliminar" sin haber seleccionado un rol
+    GUI-->>Administrador: Muestra "Seleccione un rol de la lista. (Código: VAL-005)"
+
+    Administrador->>GUI: Selecciona un rol y presiona "Eliminar"
+    GUI->>BLL: CountByRoleId(roleId: int): int
+    BLL->>MPP: CountByRoleId(roleId: int): int
+    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    DAL->>BD: Conteo de usuarios del rol
+    BD-->>DAL: Cantidad resultante
+    DAL-->>MPP: int
+    MPP-->>BLL: int
+    BLL-->>GUI: int
+    alt El rol tiene usuarios asociados
+        GUI-->>Administrador: Muestra "No se puede eliminar el rol. Tiene N usuario(s) asociado(s). (Código: BIZ-001)"
+    else Rol sin usuarios
+        GUI-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el rol?"
+        alt El usuario presiona "No"
+            Note over GUI: No se realiza ningún cambio
+        else El usuario presiona "Sí"
+            GUI->>BLL: Delete(roleId: int): bool
+            BLL->>MPP: Delete(roleId: int): bool
+            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+            DAL->>BD: Baja de los permisos asignados y del rol
+            BD-->>DAL: Filas afectadas
+            DAL-->>MPP: true
+            MPP-->>BLL: true
+            BLL-->>GUI: true
+            GUI-->>Administrador: Actualiza la lista de roles
+        end
+    end

@@ -1,0 +1,64 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE y RoleBE transportan los datos entre capas
+    Note over Administrador,BD: CU-04 Crear Usuario - flujo básico y alternativos
+
+    Administrador->>GUI: Elige "Usuarios" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL->>MPP: FindAll(): List<UserBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Fila resultante
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>GUI: Presiona el botón "Nuevo"
+    GUI->>BLL: FindAll(): List<RoleBE>
+    BLL-->>GUI: List<RoleBE>
+    GUI-->>Administrador: Muestra el formulario "Nuevo Usuario" con los campos y la lista de roles
+
+    Administrador->>GUI: Completa "Nombre de usuario" y presiona "Guardar"
+    alt Nombre de usuario vacío
+        Note over GUI: ValidateInputs() evalúa en orden: nombre y contraseña (alta)
+        GUI-->>Administrador: Muestra "El nombre de usuario es obligatorio. (Código: VAL-001)" y devuelve el foco al campo
+    else Nombre informado
+        Administrador->>GUI: Completa "Contraseña" y presiona "Guardar"
+        alt Contraseña vacía (alta)
+            GUI-->>Administrador: Muestra "La contraseña es obligatoria. (Código: VAL-002)" y devuelve el foco al campo
+        else Datos válidos
+            Administrador->>GUI: Selecciona "Rol" y presiona "Guardar"
+            GUI->>BLL: Save(user: UserBE): bool
+            alt La operación es rechazada por la capa de negocio
+                Note over BLL: UserBLL rechaza cambios protegidos del usuario admin
+                BLL-->>GUI: false
+            else Operación correcta
+                BLL->>MPP: Save(user: UserBE): bool
+                MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                DAL->>BD: Registro del usuario
+                BD-->>DAL: 1 fila afectada
+                DAL-->>MPP: true
+                MPP-->>BLL: true
+                BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+                MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+                DAL->>BD: Registro del dígito verificador (DVH)
+                BD-->>DAL: 1 fila afectada
+                DAL-->>MPP: true
+                MPP-->>BLL: true
+                BLL-->>GUI: true
+                GUI-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+                GUI->>BLL: FindAll(): List<UserBE>
+                BLL-->>GUI: List<UserBE>
+                GUI-->>Administrador: Vuelve a la grilla con el usuario nuevo incluido
+            end
+        end
+    end

@@ -31,30 +31,32 @@ Casos de uso por rol
 Administrador
 	CU-01 Login | CU-02 Logout
 	CU-03 Register (primera ejecución)
-	CU-04 Gestionar Usuarios (Buscar | Crear | Editar | Eliminar | Desbloquear)
-	CU-05 Gestionar Roles y Permisos (Crear rol | Asignar permisos | Eliminar rol)
-	CU-15 Gestionar Respaldo y Restauracion de la base de datos
+	CU-04 Crear Usuario | CU-05 Editar Usuario | CU-06 Eliminar Usuario (Buscar | Desbloquear)
+	CU-07 Crear Rol | CU-08 Editar Rol y Permisos | CU-09 Eliminar Rol
+	CU-10 Crear Aula | CU-11 Crear Curso | CU-12 Crear Alumno (entidad students, no usuarios) | CU-13 Crear Inscripcion
+	CU-14 Crear Ticket | CU-15 Cerrar Ticket (gestion: listar todos y cerrar)
+	CU-20 Crear Respaldo | CU-21 Restaurar Respaldo
 	Auditoria de Integridad (DVH)
 
 Coordinador
 	CU-01 Login | CU-02 Logout
-	CU-06 Crear Aula
-	CU-07 Crear Curso
-	CU-08 Crear Alumno (entidad students, no usuarios)
-	CU-09 Crear Inscripcion
-	CU-10 Crear Tickets (gestion: listar todos y cerrar)
+	CU-10 Crear Aula
+	CU-11 Crear Curso
+	CU-12 Crear Alumno (entidad students, no usuarios)
+	CU-13 Crear Inscripcion
+	CU-14 Crear Ticket | CU-15 Cerrar Ticket (gestion: listar todos y cerrar)
 	Consulta de asistencia (solo lectura)
 
 Profesor
 	CU-01 Login | CU-02 Logout
-	CU-10 Crear Tickets (crear)
-	CU-11 Registrar Asistencia (solo sus cursos)
-	CU-12 Registrar Evaluacion y Cargar Notas (solo sus cursos)
+	CU-14 Crear Ticket (crear)
+	CU-16 Registrar Asistencia (solo sus cursos)
+	CU-17 Registrar Evaluacion y Notas (solo sus cursos)
 
 Director
 	CU-01 Login | CU-02 Logout
-	CU-13 Consultar Rendimiento Academico
-	CU-14 Consultar Informe Personalizado
+	CU-18 Consultar Rendimiento Academico
+	CU-19 Consultar Informe Personalizado
 
 =============================
 Alumno

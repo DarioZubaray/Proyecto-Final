@@ -1,0 +1,55 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant GUI as GUI
+    participant BE as BE
+    participant BLL as BLL
+    participant MPP as MPP
+    participant DAL as DAL
+    participant BD as Base de Datos
+
+    Note right of BE: UserBE y RoleBE transportan los datos entre capas
+    Note over Administrador,BD: CU-04 Crear Usuario - flujo básico
+
+    Administrador->>GUI: Elige "Usuarios" en el menú "Administración"
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL->>MPP: FindAll(): List<UserBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de usuarios
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>GUI: Presiona el botón "Nuevo"
+    GUI->>BLL: FindAll(): List<RoleBE>
+    BLL->>MPP: FindAll(): List<RoleBE>
+    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    DAL->>BD: Consulta parametrizada de roles
+    BD-->>DAL: Filas resultantes
+    DAL-->>MPP: DataTable
+    MPP-->>BLL: List<RoleBE>
+    BLL-->>GUI: List<RoleBE>
+    GUI-->>Administrador: Muestra el formulario "Nuevo Usuario" con los campos y la lista de roles
+
+    Administrador->>GUI: Completa "Nombre de usuario", "Contraseña" y selecciona "Rol"
+    Administrador->>GUI: Presiona el botón "Guardar"
+    GUI->>BLL: Save(user: UserBE): bool
+    BLL->>MPP: Save(user: UserBE): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro del usuario
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
+    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
+    DAL->>BD: Registro del dígito verificador (DVH)
+    BD-->>DAL: 1 fila afectada
+    DAL-->>MPP: true
+    MPP-->>BLL: true
+    BLL-->>GUI: true
+    GUI-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+    GUI->>BLL: FindAll(): List<UserBE>
+    BLL-->>GUI: List<UserBE>
+    GUI-->>Administrador: Vuelve a la grilla con el usuario nuevo incluido

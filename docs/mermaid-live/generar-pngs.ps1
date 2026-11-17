@@ -2,13 +2,13 @@ $config = Join-Path $PSScriptRoot "puppeteer-config.json"
 $excluir = @()
 $extraArgs = @{}
 
-Get-ChildItem -Path $PSScriptRoot -Filter *.mmd | ForEach-Object {
+Get-ChildItem -Path $PSScriptRoot -Filter *.mmd -Recurse | ForEach-Object {
     if ($excluir -contains $_.BaseName) {
         Write-Host "Omitiendo $($_.BaseName).mmd (fuera del script)"
         return
     }
     $output = Join-Path $_.Directory "$($_.BaseName).png"
-    Write-Host "Generando $($_.BaseName).png ..."
+    Write-Host "Generando $($_.Directory.Name)/$($_.BaseName).png ..."
     try {
         if ($extraArgs.ContainsKey($_.BaseName)) {
             mmdc -i $_.FullName -o $output -p $config -s 3 $($extraArgs[$_.BaseName] -split ' ')
