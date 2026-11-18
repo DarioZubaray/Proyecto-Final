@@ -58,6 +58,11 @@ classDiagram
         +VerifyTable(string) List~IntegrityViolationBE~
     }
 
+    class IUserBLL {
+        <<interface>>
+        +FindById(UserBE) UserBE
+    }
+
     %% ============ BLL - Servicios ============
     class ActivityLoggingDecoratorBLL {
         -IActivityLogEntryBE _activity
@@ -75,12 +80,11 @@ classDiagram
     }
 
     class IntegrityBLL {
-        -ServiceLocatorBLL _locator
         +AuditAll() List~IntegrityViolationBE~
     }
 
     class UserDvhVerifierBLL {
-        -IUserMPP _userMPP
+        -IUserBLL _userBLL
         +VerifyTable(string) List~IntegrityViolationBE~
     }
 
@@ -119,6 +123,7 @@ classDiagram
         +GetTicketMPP() ITicketMPP
         +CreateActivityBLL() IActivityBLL
         +CreateIntegrityBLL() IIntegrityBLL
+        +CreateUserBLL() IUserBLL
     }
 
     class AccessDAL {
@@ -137,24 +142,28 @@ classDiagram
 
     class IntegrityAuditForm {
         +IIntegrityBLL _integrityBLL
+        +IUserBLL _userBLL
         +btnRunAudit_Click(object, EventArgs) void
     }
 
     %% ============ Relaciones ============
-    ActivityLogBE --> UserBE : user
+    ActivityLogBE "0..*" o-- "1" UserBE : UserId
     ActivityLogEntryBE ..|> IActivityLogEntryBE
     ActivityLoggingDecoratorBLL ..|> IActivityLogEntryBE
-    ActivityLoggingDecoratorBLL --> IActivityLogEntryBE : _activity
+    ActivityLoggingDecoratorBLL "0..*" o-- "1" IActivityLogEntryBE : _activity
+    ActivityLoggingDecoratorBLL "0..*" o-- "1" IActivityMPP : _activityMPP
     ActivityBLL ..|> IActivityBLL
     ActivityMPP ..|> IActivityMPP
     IntegrityBLL ..|> IIntegrityBLL
     UserDvhVerifierBLL ..|> IDvhTableVerifierBLL
 
-    ActivityBLL --> ActivityMPP : _activityMPP
-    ActivityMPP --> AccessDAL : _access
-    IntegrityBLL --> ServiceLocatorBLL : _locator
-    IntegrityBLL --> IntegrityStateBLL : RecordScan()
-    UserDvhVerifierBLL --> IUserMPP : _userMPP
+    ActivityBLL "1" *-- "1" IActivityMPP : _activityMPP
+    ActivityMPP "1" o-- "1" AccessDAL : _access
+    IntegrityBLL ..> IntegrityStateBLL : RecordScan()
+    UserDvhVerifierBLL "0..*" o-- "1" IUserBLL : _userBLL
+    ServiceLocatorBLL ..> IUserBLL : CreateUserBLL
 
-    ActivityHistoryForm --> IActivityBLL : _activityBLL
-    IntegrityAuditForm --> IIntegrityBLL : _integrityBLL
+    ActivityHistoryForm "0..*" o-- "1" IActivityBLL : _activityBLL
+    IntegrityAuditForm "0..*" o-- "1" IIntegrityBLL : _integrityBLL
+    IntegrityAuditForm "0..*" o-- "1" IUserBLL : _userBLL
+    IntegrityAuditForm ..> ServiceLocatorBLL : CreateIntegrityBLL

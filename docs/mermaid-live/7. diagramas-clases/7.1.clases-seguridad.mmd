@@ -53,7 +53,7 @@ classDiagram
     }
 
     class PermissionLeafBE {
-        +PermissionBE _permission
+        +PermissionBE _option
     }
 
     %% ============ BLL - Interfaces ============
@@ -68,7 +68,7 @@ classDiagram
         +Save(UserBE) bool
         +Delete(UserBE) bool
         +FindAll() List~UserBE~
-        +FindById(int) UserBE
+        +FindById(UserBE) UserBE
         +ChangePassword(int, string, string) bool
         +UpdateLanguage(int, string) bool
         +UpdateTheme(int, string) bool
@@ -97,7 +97,7 @@ classDiagram
     %% ============ BLL - Servicios ============
     class AuthBLL {
         -IUserMPP _userMPP
-        -PasswordHasherBLL _hasher
+        -ITwoFactorBLL _twoFactor
         +Login(string, string) LoginResultBE
         +Logout(UserBE) bool
     }
@@ -107,7 +107,7 @@ classDiagram
         +Save(UserBE) bool
         +Delete(UserBE) bool
         +FindAll() List~UserBE~
-        +FindById(int) UserBE
+        +FindById(UserBE) UserBE
         +ChangePassword(int, string, string) bool
         +UpdateLanguage(int, string) bool
         +UpdateTheme(int, string) bool
@@ -128,6 +128,13 @@ classDiagram
 
     class PasswordHasherBLL {
         +List~IPasswordStrategyBLL~ _strategies
+        +static Default PasswordHasherBLL
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class EncryptionBLL {
+        <<static>>
         +string HashPassword(string)
         +bool VerifyPassword(string, string)
     }
@@ -151,7 +158,7 @@ classDiagram
 
     class SessionManagerBLL {
         -Dictionary~int,SessionManagerBLL~ _instances
-        -UserBE _user
+        +UserBE User
         +CreateSession(UserBE) SessionManagerBLL
         +GetInstance(int) SessionManagerBLL
         +RemoveSession(int) void
@@ -216,8 +223,7 @@ classDiagram
     }
 
     class TwoFactorForm {
-        +ITwoFactorBLL _twoFactorBLL
-        +btnVerify_Click(object, EventArgs) void
+        +btnAccept_Click(object, EventArgs) void
     }
 
     class UserManagementForm {
@@ -232,7 +238,6 @@ classDiagram
 
     class RoleManagementForm {
         +IRoleBLL _roleBLL
-        +PermissionBLL _permissionBLL
         +LoadRoles() void
     }
 
@@ -242,11 +247,13 @@ classDiagram
     }
 
     %% ============ Relaciones ============
-    UserBE --> RoleBE : role
-    RoleBE --> PermissionBE : permissions
-    RoleBE --> RoleCompositeBE : ToComposite()
-    RoleCompositeBE ..|> RoleComponentBE
-    PermissionLeafBE ..|> RoleComponentBE
+    UserBE "0..*" o-- "0..1" RoleBE : RoleId
+    RoleBE "0..*" o-- "0..*" PermissionBE : Permissions
+    RoleBE ..> RoleCompositeBE : ToComposite()
+    RoleComponentBE <|-- RoleCompositeBE
+    RoleComponentBE <|-- PermissionLeafBE
+    RoleCompositeBE "1" *-- "0..*" RoleComponentBE : _children
+    PermissionLeafBE "0..*" o-- "1" PermissionBE : _option
 
     AuthBLL ..|> IAuthBLL
     UserBLL ..|> IUserBLL
@@ -257,18 +264,22 @@ classDiagram
     UserMPP ..|> IUserMPP
     RoleMPP ..|> IRoleMPP
 
-    AuthBLL --> UserMPP : _userMPP
-    AuthBLL --> PasswordHasherBLL : uses
-    PasswordHasherBLL --> IPasswordStrategyBLL : strategies
-    UserBLL --> UserMPP : _userMPP
-    UserBLL --> DVHHelperBLL : Regenerate
-    RoleBLL --> RoleMPP : _roleMPP
-    PermissionBLL --> RoleMPP : _roleMPP
-    UserMPP --> AccessDAL : _access
-    RoleMPP --> AccessDAL : _access
+    AuthBLL "0..*" o-- "1" IUserMPP : _userMPP
+    AuthBLL ..> EncryptionBLL : VerifyPassword
+    EncryptionBLL ..> PasswordHasherBLL : Default
+    PasswordHasherBLL "0..*" o-- "0..*" IPasswordStrategyBLL : _strategies
+    UserBLL "0..*" o-- "1" IUserMPP : _userMPP
+    UserBLL ..> DVHHelperBLL : Regenerate
+    RoleBLL "1" *-- "1" IRoleMPP : _roleMPP
+    PermissionBLL "1" *-- "1" IRoleMPP : _roleMPP
+    UserMPP "1" o-- "1" AccessDAL : _access
+    RoleMPP "1" o-- "1" AccessDAL : _access
+    SessionManagerBLL "0..*" o-- "1" UserBE : User
+    LoginResultBE "0..*" o-- "0..1" UserBE : User
 
-    LoginForm --> AuthBLL : _authBLL
-    TwoFactorForm --> ITwoFactorBLL : _twoFactorBLL
-    UserManagementForm --> IUserBLL : _userBLL
-    ChangePasswordForm --> IUserBLL : _userBLL
-    RoleManagementForm --> IRoleBLL : _roleBLL
+    LoginForm "0..*" o-- "1" IAuthBLL : _authBLL
+    LoginForm ..> TwoFactorForm : new
+    UserManagementForm "0..*" o-- "1" IUserBLL : _userBLL
+    ChangePasswordForm "0..*" o-- "1" IUserBLL : _userBLL
+    RoleManagementForm "0..*" o-- "1" IRoleBLL : _roleBLL
+    UserForm "0..*" o-- "1" UserBE : _user

@@ -31,7 +31,7 @@ classDiagram
 
     class SessionManagerBLL {
         -Dictionary~int,SessionManagerBLL~ _instances
-        -UserBE _user
+        +UserBE User
         +CreateSession(UserBE) SessionManagerBLL
         +GetInstance(int) SessionManagerBLL
         +RemoveSession(int) void
@@ -121,17 +121,23 @@ classDiagram
     class AboutForm {
     }
 
-    class TestComplaintsForm {
+    %% ============ Interfaces referenciadas ============
+    class IUserMPP {
+        <<interface>>
     }
 
-    class TestReportsForm {
+    class IUserBLL {
+        <<interface>>
     }
 
     %% ============ Relaciones ============
-    MainForm --> SessionManagerBLL : _session
-    ThemeHelper --> ThemeItem : GetSupportedThemes()
-    CultureHelperBLL --> LanguageItemBLL : GetSupportedLanguages()
-    AppPreferencesBLL --> CultureHelperBLL : DefaultLanguage
-    PreferencesForm --> UserBLL : _userBLL
-    PreferencesForm --> SessionManagerBLL : _session
-    PreferencesForm --> AppPreferencesBLL : SavePreferences()
+    MainForm "0..*" o-- "1" SessionManagerBLL : _session
+    MainForm "0..*" o-- "1" UserBE : _user
+    SessionManagerBLL "0..*" o-- "1" UserBE : User
+    ThemeHelper ..> ThemeItem : GetSupportedThemes()
+    CultureHelperBLL ..> LanguageItemBLL : GetSupportedLanguages()
+    AppPreferencesBLL ..> CultureHelperBLL : DefaultLanguage
+    PreferencesForm "0..*" o-- "1" IUserBLL : _userBLL
+    PreferencesForm "0..*" o-- "1" SessionManagerBLL : _session
+    PreferencesForm ..> AppPreferencesBLL : SavePreferences()
+    UserBLL "0..*" o-- "1" IUserMPP : _userMPP

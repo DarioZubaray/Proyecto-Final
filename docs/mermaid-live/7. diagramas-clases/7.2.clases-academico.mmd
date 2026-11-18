@@ -371,11 +371,12 @@ classDiagram
     }
 
     %% ============ Relaciones ============
-    CourseBE --> ClassroomBE : classroom
-    EnrollmentBE --> CourseBE : course
-    AttendanceBE --> CourseBE : course
-    EvaluationBE --> CourseBE : course
-    GradeBE --> EvaluationBE : evaluation
+    CourseBE "0..*" o-- "1" ClassroomBE : ClassroomId
+    CourseBE "0..*" o-- "0..*" UserBE : Teachers
+    EnrollmentBE "0..*" o-- "1" CourseBE : CourseId
+    AttendanceBE "0..*" o-- "1" CourseBE : CourseId
+    EvaluationBE "0..*" o-- "1" CourseBE : CourseId
+    GradeBE "0..*" o-- "1" EvaluationBE : EvaluationId
 
     ClassroomBLL ..|> IClassroomBLL
     CourseBLL ..|> ICourseBLL
@@ -392,30 +393,33 @@ classDiagram
     EvaluationMPP ..|> IEvaluationMPP
     ReportMPP ..|> IReportMPP
 
-    ClassroomBLL --> ClassroomMPP : _classroomMPP
-    CourseBLL --> CourseMPP : _courseMPP
-    EnrollmentBLL --> EnrollmentMPP : _enrollmentMPP
-    EnrollmentBLL --> CourseBLL : _courseBLL
-    AttendanceBLL --> AttendanceMPP : _attendanceMPP
-    StudentBLL --> StudentMPP : _studentMPP
-    EvaluationBLL --> EvaluationMPP : _evaluationMPP
-    EvaluationBLL --> CourseMPP : _courseMPP
-    ReportBLL --> ReportMPP : _reportMPP
-    ClassroomMPP --> AccessDAL : _access
-    CourseMPP --> AccessDAL : _access
-    EnrollmentMPP --> AccessDAL : _access
-    AttendanceMPP --> AccessDAL : _access
-    StudentMPP --> AccessDAL : _access
-    EvaluationMPP --> AccessDAL : _access
-    ReportMPP --> AccessDAL : _access
+    ClassroomBLL "0..*" o-- "1" IClassroomMPP : _classroomMPP
+    CourseBLL "0..*" o-- "1" ICourseMPP : _courseMPP
+    EnrollmentBLL "0..*" o-- "1" IEnrollmentMPP : _enrollmentMPP
+    EnrollmentBLL "0..*" o-- "1" ICourseBLL : _courseBLL
+    AttendanceBLL "0..*" o-- "1" IAttendanceMPP : _attendanceMPP
+    StudentBLL "0..*" o-- "1" IStudentMPP : _studentMPP
+    EvaluationBLL "0..*" o-- "1" IEvaluationMPP : _evaluationMPP
+    EvaluationBLL "0..*" o-- "1" ICourseMPP : _courseMPP
+    ReportBLL "0..*" o-- "1" IReportMPP : _reportMPP
+    ClassroomMPP "1" o-- "1" AccessDAL : _access
+    CourseMPP "1" o-- "1" AccessDAL : _access
+    EnrollmentMPP "1" o-- "1" AccessDAL : _access
+    AttendanceMPP "1" o-- "1" AccessDAL : _access
+    StudentMPP "1" o-- "1" AccessDAL : _access
+    EvaluationMPP "1" o-- "1" AccessDAL : _access
+    ReportMPP "1" o-- "1" AccessDAL : _access
 
-    ClassroomManagementForm --> IClassroomBLL : _classroomBLL
-    CourseManagementForm --> ICourseBLL : _courseBLL
-    EnrollmentManagementForm --> IEnrollmentBLL : _enrollmentBLL
-    AttendanceForm --> IAttendanceBLL : _attendanceBLL
-    AttendanceViewForm --> IAttendanceBLL : _attendanceBLL
-    StudentManagementForm --> IStudentBLL : _studentBLL
-    StudentForm --> IStudentBLL : _studentBLL
-    EvaluationForm --> IEvaluationBLL : _evaluationBLL
-    PerformanceForm --> IReportBLL : _reportBLL
-    ReportForm --> IReportBLL : _reportBLL
+    ClassroomManagementForm "0..*" o-- "1" IClassroomBLL : _classroomBLL
+    ClassroomForm "0..*" o-- "1" ClassroomBE : _classroom
+    CourseManagementForm "0..*" o-- "1" ICourseBLL : _courseBLL
+    CourseForm "0..*" o-- "1" CourseBE : _course
+    EnrollmentManagementForm "0..*" o-- "1" IEnrollmentBLL : _enrollmentBLL
+    AttendanceForm "0..*" o-- "1" IAttendanceBLL : _attendanceBLL
+    AttendanceViewForm "0..*" o-- "1" IAttendanceBLL : _attendanceBLL
+    StudentManagementForm "0..*" o-- "1" IStudentBLL : _studentBLL
+    StudentForm "0..*" o-- "1" IStudentBLL : _studentBLL
+    StudentForm "0..*" o-- "1" StudentBE : _student
+    EvaluationForm "0..*" o-- "1" IEvaluationBLL : _evaluationBLL
+    PerformanceForm "0..*" o-- "1" IReportBLL : _reportBLL
+    ReportForm "0..*" o-- "1" IReportBLL : _reportBLL

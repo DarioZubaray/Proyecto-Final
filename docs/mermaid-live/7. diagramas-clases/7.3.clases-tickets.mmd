@@ -78,13 +78,13 @@ classDiagram
     }
 
     %% ============ Relaciones ============
-    TicketBE --> UserBE : user (autor) / closed by
+    TicketBE "0..*" o-- "1..2" UserBE : UserId / ClosedBy
 
     TicketBLL ..|> ITicketBLL
     TicketMPP ..|> ITicketMPP
 
-    TicketBLL --> TicketMPP : _ticketMPP
-    TicketMPP --> AccessDAL : _access
+    TicketBLL "0..*" o-- "1" ITicketMPP : _ticketMPP
+    TicketMPP "1" o-- "1" AccessDAL : _access
 
-    TicketManagementForm --> ITicketBLL : _ticketBLL
-    TicketForm --> ITicketBLL : _ticketBLL
+    TicketManagementForm "0..*" o-- "1" ITicketBLL : _ticketBLL
+    TicketForm "0..*" o-- "1" ITicketBLL : _ticketBLL
