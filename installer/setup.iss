@@ -96,6 +96,8 @@ Type: filesandordirs; Name: "{app}"
 [Code]
 var
   ConnPage: TInputQueryWizardPage;
+  AuthPage: TInputOptionWizardPage;
+  CredPage: TInputQueryWizardPage;
   GBootstrapOk: Boolean;
 
 function XmlEscape(const S: String): String;
@@ -160,48 +162,119 @@ end;
 procedure InitializeWizard;
 begin
   GBootstrapOk := False;
-  ConnPage := CreateInputQueryPage(wpWelcome,
-    'Conexion a la base de datos',
-    'Ingrese los datos de conexion a Microsoft SQL Server.',
-    'La aplicacion usara estos valores para conectarse. ' +
-    'Si la base de datos no existe, se creara en la instalacion.');
+
+  // Selección de autenticación
+  AuthPage := CreateInputOptionPage(wpWelcome,
+    'Autenticación',
+    'Seleccione el método de autenticación.',
+    'Indique cómo desea conectarse a SQL Server.',
+    True, False);
+
+  AuthPage.Add('Autenticación de Windows');
+  AuthPage.Add('Autenticación de SQL Server');
+
+  // Por defecto, Windows Authentication
+  AuthPage.SelectedValueIndex := 0;
+
+  // Datos de conexión
+  ConnPage := CreateInputQueryPage(AuthPage.ID,
+    'Conexión a la base de datos',
+    'Ingrese los datos de conexión a Microsoft SQL Server.',
+    'La aplicación usará estos valores para conectarse. ' +
+    'Si la base de datos no existe, se creará durante la instalación.');
+
   ConnPage.Add('Servidor:', False);
   ConnPage.Add('Base de datos:', False);
+
   ConnPage.Values[0] := 'localhost\SQLEXPRESS';
   ConnPage.Values[1] := 'DarioZubaray_TF';
+
+  // Credenciales SQL Server
+  CredPage := CreateInputQueryPage(ConnPage.ID,
+    'Credenciales de SQL Server',
+    'Ingrese sus credenciales.',
+    'Indique el usuario y contraseña de SQL Server.');
+
+  CredPage.Add('Usuario:', False);
+  CredPage.Add('Contraseña:', True);
+end;
+
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  Result := False;
+
+  if PageID = CredPage.ID then
+    Result := AuthPage.SelectedValueIndex = 0;
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
   Result := True;
+
   if CurPageID = ConnPage.ID then begin
+
     if Trim(ConnPage.Values[0]) = '' then begin
       MsgBox('Debe indicar el servidor SQL Server.', mbError, MB_OK);
       Result := False;
-    end else if Trim(ConnPage.Values[1]) = '' then begin
+    end
+    else if Trim(ConnPage.Values[1]) = '' then begin
       MsgBox('Debe indicar el nombre de la base de datos.', mbError, MB_OK);
       Result := False;
     end;
+
+  end;
+
+  if CurPageID = CredPage.ID then begin
+
+    if Trim(CredPage.Values[0]) = '' then begin
+      MsgBox('Debe indicar el usuario de SQL Server.', mbError, MB_OK);
+      Result := False;
+    end
+    else if CredPage.Values[1] = '' then begin
+      MsgBox('Debe indicar la contraseña.', mbError, MB_OK);
+      Result := False;
+    end;
+
   end;
 end;
 
 procedure WriteAppConfig;
 var
-  CfgPath, Content: String;
+  CfgPath, Content, AuthString: String;
 begin
-  CfgPath := ExpandConstant('{app}\TrabajoFinal-DarioZubaray.dll.config');
+  CfgPath := ExpandConstant(
+    '{app}\TrabajoFinal-DarioZubaray.dll.config');
+
+  if AuthPage.SelectedValueIndex = 0 then begin
+
+    AuthString := ';Integrated Security=True';
+
+  end else begin
+
+    AuthString := ';User Id=' +
+      XmlEscape(Trim(CredPage.Values[0])) +
+      ';Password=' +
+      XmlEscape(CredPage.Values[1]);
+
+  end;
+
   Content :=
     '<?xml version="1.0" encoding="utf-8" ?>' + #13#10 +
     '<configuration>' + #13#10 +
     '  <connectionStrings>' + #13#10 +
     '    <add name="cadenaConexion"' + #13#10 +
-    '         connectionString="Server=' + XmlEscape(Trim(ConnPage.Values[0])) +
-    ';Database=' + XmlEscape(Trim(ConnPage.Values[1])) +
-    ';Integrated Security=True;Encrypt=False;" />' + #13#10 +
+    '         connectionString="Server=' +
+      XmlEscape(Trim(ConnPage.Values[0])) +
+      ';Database=' +
+      XmlEscape(Trim(ConnPage.Values[1])) +
+      AuthString +
+      ';Encrypt=False;" />' + #13#10 +
     '  </connectionStrings>' + #13#10 +
     '</configuration>' + #13#10;
+
   if not SaveStringToFile(CfgPath, Content, False) then
-    RaiseException('No se pudo escribir el archivo de configuracion.');
+    RaiseException(
+      'No se pudo escribir el archivo de configuracion.');
 end;
 
 #if Mode == "online"
