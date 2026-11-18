@@ -1,41 +1,46 @@
-﻿sequenceDiagram
+sequenceDiagram
     autonumber
     actor Usuario
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    participant frm as frm : RegisterForm
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: UserBE transporta los datos entre las capas
-    Note over Usuario,BD: CU-03 Register - flujo básico y flujos alternativos
+    Note over Usuario,bd: CU-03 Register - flujo básico y flujos alternativos
 
-    Usuario->>GUI: Abre la aplicación sin usuarios registrados en la base de datos
-    GUI-->>Usuario: Muestra el formulario de registro de la cuenta administrador
-    Usuario->>GUI: Completa "Usuario", "Contraseña" y "Reingreso Contraseña"
-    Usuario->>GUI: Selecciona "Idioma" y "Tema"
-    Usuario->>GUI: Presiona "Registrarse"
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    Usuario->>frm: Completa "Usuario", "Contraseña", "Reingreso Contraseña", "Idioma" y "Tema" y presiona "Registrarse"
 
-    alt Contraseña vacía o reingreso no coincide
-        Note over GUI: La GUI valida usuario, contraseña y reingreso
-        GUI-->>Usuario: Muestra "La contraseña es obligatoria." o "Las contraseñas no coinciden." y devuelve el foco al campo observado
+    alt El campo "Usuario" está vacío
+        frm-->>Usuario: Muestra "El nombre de usuario es obligatorio. (Código: VAL-001)" y devuelve el foco al campo
+    else El nombre de usuario ya existe
+        frm->>userBLL: IsUsernameTaken(userName: string): bool
+        userBLL->>userMPP: FindByUserName(userName: string): List<UserBE>
+        userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        dal->>bd: Consulta parametrizada de usuarios
+        bd-->>dal: Filas resultantes
+        dal-->>userMPP: DataTable
+        userMPP-->>userBLL: List<UserBE>
+        userBLL-->>frm: true
+        frm-->>Usuario: Muestra "El usuario ya existe. (Código: VAL-008)" y mantiene el formulario abierto
+    else El campo "Contraseña" está vacío
+        frm-->>Usuario: Muestra "La contraseña es obligatoria. (Código: VAL-002)" y devuelve el foco al campo
+    else El reingreso de contraseña no coincide
+        frm-->>Usuario: Muestra "Las contraseñas no coinciden. (Código: VAL-003)" y devuelve el foco al campo
     else Datos correctos
-        GUI->>BLL: Save(user: UserBE): bool
-        BLL->>MPP: Save(user: UserBE): bool
-        MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-        DAL->>BD: Alta del usuario administrador (rol Admin)
-        alt Usuario ya registrado en la base de datos
-            BD-->>DAL: 0 filas afectadas o excepción
-            DAL-->>MPP: false o excepción
-            MPP-->>BLL: false o excepción
-            BLL-->>GUI: false o excepción
-            GUI-->>Usuario: Muestra "El usuario ya existe." y mantiene el formulario abierto
-        else Operación exitosa
-            BD-->>DAL: 1 fila afectada
-            DAL-->>MPP: true
-            MPP-->>BLL: true
-            BLL-->>GUI: true
-            GUI-->>Usuario: Muestra "Cuenta creada exitosamente." y avanza a la pantalla principal (MainForm)
-        end
+        frm->>userBLL: Save(user: UserBE): bool
+        userBLL->>userMPP: Save(user: UserBE): bool
+        userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+        dal->>bd: Alta del usuario administrador (rol Admin)
+        bd-->>dal: 1 fila afectada
+        dal-->>userMPP: true
+        userMPP-->>userBLL: true
+        userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+        userBLL-->>frm: true
+        frm-->>Usuario: Muestra "Cuenta creada exitosamente."
+        frm->>frm: CultureHelperBLL.SetCulture(languageCode: string): void
+        frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+        frm->>frm: SessionManagerBLL.CreateSession(user: UserBE): SessionManagerBLL
+        frm-->>Usuario: Avanza a la pantalla principal (MainForm) con la sesión iniciada
     end

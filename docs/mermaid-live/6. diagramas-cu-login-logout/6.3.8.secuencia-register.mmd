@@ -1,27 +1,27 @@
-﻿sequenceDiagram
+sequenceDiagram
     autonumber
     actor Usuario
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    participant frm as frm : RegisterForm
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: UserBE transporta los datos entre las capas
-    Note over Usuario,BD: CU-03 Register - flujo básico (pasos 1 a 8)
+    Note over Usuario,bd: CU-03 Register - flujo básico (pasos 1 a 8)
 
-    Usuario->>GUI: Abre la aplicación sin usuarios registrados en la base de datos
-    GUI-->>Usuario: Muestra el formulario de registro de la cuenta administrador
-    Usuario->>GUI: Completa "Usuario", "Contraseña" y "Reingreso Contraseña"
-    Usuario->>GUI: Selecciona "Idioma" y "Tema"
-    Usuario->>GUI: Presiona "Registrarse"
-    GUI->>BLL: Save(user: UserBE): bool
-    BLL->>MPP: Save(user: UserBE): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Alta del usuario administrador (rol Admin)
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
-    GUI-->>Usuario: Muestra "Cuenta creada exitosamente." y avanza a la pantalla principal (MainForm)
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    Usuario->>frm: Completa "Usuario", "Contraseña", "Reingreso Contraseña", "Idioma" y "Tema" y presiona "Registrarse"
+    frm->>userBLL: Save(user: UserBE): bool
+    userBLL->>userMPP: Save(user: UserBE): bool
+    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Alta del usuario administrador (rol Admin)
+    bd-->>dal: 1 fila afectada
+    dal-->>userMPP: true
+    userMPP-->>userBLL: true
+    userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    userBLL-->>frm: true
+    frm-->>Usuario: Muestra "Cuenta creada exitosamente."
+    frm->>frm: CultureHelperBLL.SetCulture(languageCode: string): void
+    frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+    frm->>frm: SessionManagerBLL.CreateSession(user: UserBE): SessionManagerBLL
+    frm-->>Usuario: Avanza a la pantalla principal (MainForm) con la sesión iniciada

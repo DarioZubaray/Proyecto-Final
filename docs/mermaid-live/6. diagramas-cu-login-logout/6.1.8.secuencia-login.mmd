@@ -1,43 +1,42 @@
 sequenceDiagram
     autonumber
     actor Usuario
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    participant frm as frm : LoginForm
+    participant authBLL as authBLL : AuthBLL
+    participant integrityBLL as integrityBLL : IntegrityBLL
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant activityBLL as activityBLL : ActivityBLL
+    participant activityMPP as activityMPP : ActivityMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: UserBE y LoginResultBE (DTO) transportan los datos entre capas
-    Note over Usuario,BD: CU-01 Login - flujo básico (pasos 1 a 5)
+    Note over Usuario,bd: CU-01 Login - flujo básico (pasos 1 a 5)
 
-    Usuario->>GUI: Completa "Usuario" y "Contraseña" y presiona "Ingresar"
-    GUI->>BLL: TestConnection(): bool
-    BLL->>MPP: TestConnection(): bool
-    MPP->>DAL: TestConnection(): bool
-    DAL->>BD: Abrir conexión
-    BD-->>DAL: Conexión establecida
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
-    GUI->>BLL: Login(userName: string, password: string): LoginResultBE
-    BLL->>MPP: GetByUserName(userName: string): UserBE
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada de usuarios
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: UserBE
-    BLL->>BLL: VerifyPassword(password: string, passwordHash: string): bool
-    BLL->>MPP: UpdateLastUpdate(userId: int, lastUpdate: DateTime): bool
-    BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
-    BLL-->>GUI: LoginResultBE (Success = true)
-    GUI->>BLL: LogLogin(userId: int, description: string): void
-    BLL->>MPP: Save(log: ActivityLogBE): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Registro de auditoría de acceso
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    GUI->>BLL: CreateSession(user: UserBE): SessionManagerBLL
-    GUI->>BLL: SavePreferences(language: string, theme: string): void
-    GUI-->>Usuario: Muestra la pantalla principal con las opciones de su rol
+    frm->>frm: _authBLL = ServiceLocatorBLL.CreateAuthBLL()
+    frm->>frm: _integrityBLL = ServiceLocatorBLL.CreateIntegrityBLL()
+    Usuario->>frm: Completa "Usuario" y "Contraseña" y presiona "Ingresar"
+    frm->>integrityBLL: Scan(): List<IntegrityViolationBE>
+    integrityBLL-->>frm: List<IntegrityViolationBE>
+    frm->>authBLL: Login(userName: string, password: string): LoginResultBE
+    authBLL->>userMPP: GetByUserName(userName: string): UserBE
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>authBLL: UserBE
+    authBLL->>authBLL: VerifyPassword(password: string, passwordHash: string): bool
+    authBLL->>userMPP: UpdateLastUpdate(userId: int, lastUpdate: DateTime): bool
+    authBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    authBLL->>userBLL: IsAdminName(userName: string): bool
+    authBLL-->>frm: LoginResultBE (Success = true)
+    frm->>activityBLL: LogLogin(userId: int, description: string): void
+    activityBLL->>activityMPP: Save(log: ActivityLogBE): bool
+    activityMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro de auditoría de acceso
+    bd-->>dal: 1 fila afectada
+    dal-->>activityMPP: true
+    activityMPP-->>activityBLL: true
+    frm->>frm: SessionManagerBLL.CreateSession(user: UserBE): SessionManagerBLL
+    frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+    frm-->>Usuario: Muestra la pantalla principal con las opciones de su rol

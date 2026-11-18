@@ -36,11 +36,14 @@ concreta** de la solución, rotulado con notación UML `objeto : Clase`:
 
 ```
 actor <Rol>
-participant frm as "frm : <FormClass>"
-participant <alias> as "<alias> : <Class>"
-participant dal as "dal : AccessDAL"
-participant bd as "Base de Datos"
+participant frm as frm : <FormClass>
+participant <alias> as <alias> : <Class>
+participant dal as dal : AccessDAL
+participant bd as Base de Datos
 ```
+
+  (Sin comillas: mermaid las dibujaría literalmente y el rotulo dejaría de ser
+  `frm : <FormClass>` para mostrar `"frm : <FormClass>"`.)
 
 - `<Rol>` es el rol del actor principal (`actor Profesor`, `actor Coordinador`, etc.).
   Si el caso de uso tiene **más de un actor principal** se usa `actor Usuario`.
@@ -56,7 +59,7 @@ participant bd as "Base de Datos"
   mensaje de creación (mermaid lo exige):
 
 ```
-create participant course as "course : CourseBE"
+create participant course as course : CourseBE
 frm->>course: new CourseBE()
 ```
 
@@ -87,6 +90,11 @@ frm->>course: new CourseBE()
   - la regla de negocio se dibuja como rechazo de negocio (ver abajo).
 - **El actor solo conversa con `frm`**; el ping-pong usuario ↔ sistema se respeta
   arriba (actor ↔ frm) y hacia abajo son invocaciones entre instancias.
+- **CU entre dos pantallas** (p. ej. CU-02 Logout: el menú está en `MainForm` y el
+  flujo continúa en `LoginForm`): cada formulario recibe su propio lifeline
+  (`mainForm : MainForm`, `frm : LoginForm`), el actor habla con la pantalla donde
+  ocurre su acción y el paso del control se dibuja como retorno
+  (`mainForm-->>frm: ShowDialog() retorna DialogResult.OK`).
 
 ### Solo cuestiones de negocio (3ra entrega)
 
