@@ -39,6 +39,12 @@ erDiagram
         string description
         datetime created_at
     }
+    schema_versions {
+        int id PK
+        string version
+        string script_name
+        datetime applied_at
+    }
     classrooms {
         int id PK
         string name
@@ -68,23 +74,23 @@ erDiagram
         bool is_active
         datetime created_at
     }
+    students {
+        int id PK
+        string first_name
+        string last_name
+        string document UK
+        string email
+        string phone
+        bool is_active
+        datetime created_at
+        datetime last_update
+    }
     course_students {
         int id PK
         int course_id FK
         int student_id FK
         bool is_active
         datetime created_at
-    }
-    students {
-        int id PK
-        string first_name
-        string last_name
-        string document
-        string email
-        string phone
-        bool is_active
-        datetime created_at
-        datetime last_update
     }
     attendance {
         int id PK
@@ -102,12 +108,14 @@ erDiagram
         int created_by FK
         datetime created_at
         datetime last_update
+        string dvh
     }
     grades {
         int id PK
         int evaluation_id FK
         int student_id FK
         decimal grade
+        string dvh
     }
     tickets {
         int id PK
@@ -116,8 +124,8 @@ erDiagram
         string description
         bool is_closed
         datetime created_at
-        int closed_by FK
         datetime closed_at
+        int closed_by FK
     }
 
     users }o--|| roles : "role_id"
