@@ -1,56 +1,79 @@
 sequenceDiagram
     autonumber
     actor Administrador
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    participant mgmtForm as mgmtForm : UserManagementForm
+    participant frm as frm : UserForm
+    participant user as user : UserBE
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant roleBLL as roleBLL : RoleBLL
+    participant roleMPP as roleMPP : RoleMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: UserBE y RoleBE transportan los datos entre capas
-    Note over Administrador,BD: CU-05 Editar Usuario - flujo básico
+    Note over Administrador,bd: CU-05 Editar Usuario - flujo básico (pasos 1 a 13)
 
-    Administrador->>GUI: Elige "Usuarios" en el menú "Administración"
-    GUI->>BLL: FindAll(): List<UserBE>
-    BLL->>MPP: FindAll(): List<UserBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada de usuarios
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<UserBE>
-    BLL-->>GUI: List<UserBE>
-    GUI-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+    Administrador->>mgmtForm: Elige "Usuarios" en el menú "Administración"
+    mgmtForm->>mgmtForm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    mgmtForm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
 
-    Administrador->>GUI: Completa el campo de búsqueda y presiona "Buscar"
-    GUI->>BLL: FindByUserName(userName: string): List<UserBE>
-    BLL->>MPP: FindByUserName(userName: string): List<UserBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada por nombre parcial
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<UserBE>
-    BLL-->>GUI: List<UserBE>
-    GUI-->>Administrador: Muestra en la grilla los usuarios coincidentes
+    Administrador->>mgmtForm: Completa el campo de búsqueda "Nombre de usuario:" y presiona "Buscar"
+    mgmtForm->>userBLL: FindByUserName(userName: string): List<UserBE>
+    userBLL->>userMPP: FindByUserName(userName: string): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada por nombre parcial
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Muestra en la grilla los usuarios que coinciden con lo buscado
 
-    Administrador->>GUI: Selecciona un usuario y presiona "Editar"
-    GUI-->>Administrador: Muestra el formulario "Editar Usuario" con los datos cargados
-    Administrador->>GUI: Modifica los campos y presiona "Guardar"
-    GUI->>BLL: Save(user: UserBE): bool
-    BLL->>MPP: Save(user: UserBE): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Actualización del usuario
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL->>MPP: UpdateDvh(userId: int, dvh: string): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Registro del dígito verificador (DVH)
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
-    GUI-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
-    GUI->>BLL: FindAll(): List<UserBE>
-    BLL-->>GUI: List<UserBE>
-    GUI-->>Administrador: Vuelve a la grilla con los datos actualizados
+    Administrador->>mgmtForm: Selecciona un usuario de la grilla y presiona "Editar"
+    mgmtForm-->>frm: ShowDialog() retorna DialogResult.OK
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    frm->>frm: _roleBLL = ServiceLocatorBLL.CreateRoleBLL()
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>
+    frm-->>Administrador: Muestra el formulario "Editar Usuario" con los datos del usuario y la lista de roles (sin campo de contraseña)
+
+    Administrador->>frm: Modifica los campos que correspondan
+    Administrador->>frm: Presiona el botón "Guardar"
+
+    frm->>userBLL: Save(user: UserBE): bool
+    userBLL->>userMPP: Save(user: UserBE): bool
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Actualización del usuario con retorno de la fila
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: true
+    userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro del dígito verificador (DVH)
+    bd-->>dal: 1 fila afectada
+    dal-->>userMPP: true
+    userMPP-->>userBLL: true
+    userBLL-->>frm: true
+    frm-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+    mgmtForm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Vuelve a la grilla con los datos actualizados

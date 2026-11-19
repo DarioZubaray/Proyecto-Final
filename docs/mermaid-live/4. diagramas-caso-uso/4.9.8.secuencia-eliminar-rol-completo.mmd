@@ -1,62 +1,79 @@
 sequenceDiagram
     autonumber
     actor Administrador
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    participant frm as frm : RoleManagementForm
+    participant role as role : RoleBE
+    participant roleBLL as roleBLL : RoleBLL
+    participant roleMPP as roleMPP : RoleMPP
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: RoleBE, PermissionBE y UserBE transportan los datos entre capas
-    Note over Administrador,BD: CU-09 Eliminar Rol - flujo básico y alternativos
+    Note over Administrador,bd: CU-09 Eliminar Rol - flujo básico y flujos alternativos
 
-    Administrador->>GUI: Elige "Roles" en el menú "Administración"
-    GUI->>BLL: FindAll(): List<RoleBE>
-    BLL->>MPP: FindAll(): List<RoleBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada de roles y permisos
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<RoleBE>
-    BLL-->>GUI: List<RoleBE>
-    GUI->>BLL: GetAllPermissions(): List<PermissionBE>
-    BLL->>MPP: GetAllPermissions(): List<PermissionBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta del catálogo de permisos
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<PermissionBE>
-    BLL-->>GUI: List<PermissionBE>
-    GUI-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
+    Administrador->>frm: Elige "Roles" en el menú "Administración"
+    frm->>frm: _roleBLL = ServiceLocatorBLL.CreateRoleBLL()
+    frm->>roleBLL: GetAllPermissions(): List<PermissionBE>
+    roleBLL->>roleMPP: GetAllPermissions(): List<PermissionBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del catálogo de permisos
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<PermissionBE>
+    roleBLL-->>frm: List<PermissionBE>
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>
+    frm-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
 
-    Administrador->>GUI: Presiona "Eliminar" sin haber seleccionado un rol
-    GUI-->>Administrador: Muestra "Seleccione un rol de la lista. (Código: VAL-005)"
-
-    Administrador->>GUI: Selecciona un rol y presiona "Eliminar"
-    GUI->>BLL: CountByRoleId(roleId: int): int
-    BLL->>MPP: CountByRoleId(roleId: int): int
-    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
-    DAL->>BD: Conteo de usuarios del rol
-    BD-->>DAL: Cantidad resultante
-    DAL-->>MPP: int
-    MPP-->>BLL: int
-    BLL-->>GUI: int
-    alt El rol tiene usuarios asociados
-        GUI-->>Administrador: Muestra "No se puede eliminar el rol. Tiene N usuario(s) asociado(s). (Código: BIZ-001)"
-    else Rol sin usuarios
-        GUI-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el rol?"
-        alt El usuario presiona "No"
-            Note over GUI: No se realiza ningún cambio
-        else El usuario presiona "Sí"
-            GUI->>BLL: Delete(roleId: int): bool
-            BLL->>MPP: Delete(roleId: int): bool
-            MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-            DAL->>BD: Baja de los permisos asignados y del rol
-            BD-->>DAL: Filas afectadas
-            DAL-->>MPP: true
-            MPP-->>BLL: true
-            BLL-->>GUI: true
-            GUI-->>Administrador: Actualiza la lista de roles
+    Administrador->>frm: Presiona "Eliminar" sin haber seleccionado un rol
+    alt Sin rol seleccionado
+        frm-->>Administrador: Muestra "Seleccione un rol de la lista. (Código: VAL-005)"
+    else Rol seleccionado
+        Administrador->>frm: Selecciona un rol de la lista y presiona "Eliminar"
+        frm->>frm: userBLL = ServiceLocatorBLL.CreateUserBLL()
+        frm->>userBLL: CountByRoleId(roleId: int): int
+        userBLL->>userMPP: CountByRoleId(roleId: int): int
+        userMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+        dal->>bd: Conteo de usuarios del rol
+        bd-->>dal: Cantidad resultante
+        dal-->>userMPP: int
+        userMPP-->>userBLL: int
+        userBLL-->>frm: int
+        alt El rol tiene usuarios asociados
+            frm-->>Administrador: Muestra "No se puede eliminar el rol 'Profesor'. Tiene 3 usuario(s) asociado(s). (Código: BIZ-001)"
+        else Rol sin usuarios
+            frm-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el rol "Coordinador"?"
+            alt El usuario presiona "No" en la confirmación
+                frm-->>Administrador: No realiza ningún cambio
+            else El usuario presiona "Sí"
+                frm->>roleBLL: Delete(roleId: int): bool
+                roleBLL->>roleMPP: Delete(roleId: int): bool
+                roleMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                dal->>bd: Baja de los permisos asignados del rol
+                bd-->>dal: Filas afectadas
+                dal-->>roleMPP: true
+                roleMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                dal->>bd: Baja del rol
+                bd-->>dal: Filas afectadas
+                dal-->>roleMPP: true
+                roleMPP-->>roleBLL: bool
+                roleBLL-->>frm: bool
+                frm->>roleBLL: FindAll(): List<RoleBE>
+                roleBLL->>roleMPP: FindAll(): List<RoleBE>
+                roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                dal->>bd: Consulta parametrizada de roles
+                bd-->>dal: Filas resultantes
+                dal-->>roleMPP: DataTable
+                roleMPP-->>roleBLL: List<RoleBE>
+                roleBLL-->>frm: List<RoleBE>
+                frm-->>Administrador: Actualiza la lista de roles
+            end
         end
     end
