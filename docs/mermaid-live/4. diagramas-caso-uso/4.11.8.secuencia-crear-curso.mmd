@@ -1,70 +1,83 @@
 sequenceDiagram
     autonumber
-    actor Usuario
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    actor Coordinador
+    participant frm as frm : CourseForm
+    participant classroomBLL as classroomBLL : ClassroomBLL
+    participant classroomMPP as classroomMPP : ClassroomMPP
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: CourseBE, ClassroomBE y UserBE transportan los datos entre capas
-    Note over Usuario,BD: CU-11 Crear Curso - flujo básico (pasos 1 a 15)
+    Note over Coordinador,bd: CU-11 Crear Curso - flujo básico (pasos 1 a 15)
 
-    Usuario->>GUI: Accede a "Cursos" y presiona "Nuevo"
-    GUI->>BLL: FindAll(): List<ClassroomBE>
-    BLL->>MPP: FindAll(): List<ClassroomBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada de aulas
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<ClassroomBE>
-    BLL-->>GUI: List<ClassroomBE>
-    GUI->>BLL: FindAll(): List<UserBE>
-    BLL->>MPP: FindAll(): List<UserBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada de usuarios
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<UserBE>
-    BLL-->>GUI: List<UserBE>
-    GUI-->>Usuario: Muestra el formulario de alta con los campos y las listas
+    Coordinador->>frm: Accede a "Cursos" del menú "Administración" y presiona "Nuevo"
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL()
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    create participant course as course : CourseBE
+    frm->>course: new CourseBE()
+    frm->>classroomBLL: FindAll(): List<ClassroomBE>
+    classroomBLL->>classroomMPP: FindAll(): List<ClassroomBE>
+    classroomMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de aulas
+    bd-->>dal: Filas resultantes
+    dal-->>classroomMPP: DataTable
+    classroomMPP-->>classroomBLL: List<ClassroomBE>
+    classroomBLL-->>frm: List<ClassroomBE>
+    frm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>frm: List<UserBE>
+    frm-->>Coordinador: Muestra el formulario de alta con los campos y las listas
 
-    Usuario->>GUI: Completa "Nombre", "Descripción", "Fecha de inicio", "Fecha de fin", "Aula", "Hora de inicio" y "Hora de fin"
-    Usuario->>GUI: Selecciona un docente y presiona "Agregar"
-    GUI-->>Usuario: Muestra el docente en la lista "Docentes asignados"
-    Usuario->>GUI: Presiona "Guardar"
+    Coordinador->>frm: Completa el campo "Nombre"
+    Coordinador->>frm: Completa el campo "Descripción"
+    Coordinador->>frm: Completa el campo "Fecha de inicio"
+    Coordinador->>frm: Completa el campo "Fecha de fin"
+    Coordinador->>frm: Selecciona el campo "Aula"
+    Coordinador->>frm: Completa el campo "Hora de inicio"
+    Coordinador->>frm: Completa el campo "Hora de fin"
+    Coordinador->>frm: Selecciona un docente de la lista "Docentes disponibles" y presiona el botón "Agregar"
+    frm-->>Coordinador: Muestra el docente en la lista "Docentes asignados"
+    Coordinador->>frm: Presiona el botón "Guardar"
 
-    GUI->>BLL: ValidateTeacherOverlap(courseId: int, dayOfWeek: int?, startTime: TimeSpan?, endTime: TimeSpan?, teacherIds: List<int>): bool
-    BLL->>MPP: ExistsTeacherOverlap(teacherId: int, dayOfWeek: int, startTime: TimeSpan, endTime: TimeSpan, courseIdToExclude: int): bool
-    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
-    DAL->>BD: Consulta de traslape del docente
-    BD-->>DAL: Cantidad de coincidencias
-    DAL-->>MPP: int
-    MPP-->>BLL: false
-    BLL-->>GUI: false
+    frm->>courseBLL: ValidateTeacherOverlap(courseId: int, dayOfWeek: int?, startTime: TimeSpan?, endTime: TimeSpan?, teacherIds: List<int>): bool
+    courseBLL->>courseMPP: ExistsTeacherOverlap(teacherId: int, dayOfWeek: int, startTime: TimeSpan, endTime: TimeSpan, courseIdToExclude: int): bool
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta de traslape del docente
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: false
+    courseBLL-->>frm: false
 
-    GUI->>BLL: Save(course: CourseBE): bool
-    BLL->>MPP: ExistsClassroomOverlap(classroomId: int, startDate: DateTime, endDate: DateTime, courseIdToExclude: int, dayOfWeek: int?, startTime: TimeSpan?, endTime: TimeSpan?): bool
-    MPP->>DAL: ReadScalar(consulta: string, parameters: SqlParameter[]): int
-    DAL->>BD: Consulta de traslape del aula
-    BD-->>DAL: Cantidad de coincidencias
-    DAL-->>MPP: int
-    MPP-->>BLL: false
-    BLL->>MPP: Save(course: CourseBE): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Registro del curso
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
+    frm->>courseBLL: Save(course: CourseBE): bool
+    courseBLL->>courseMPP: ExistsClassroomOverlap(classroomId: int, startDate: DateTime, endDate: DateTime, courseIdToExclude: int, dayOfWeek: int?, startTime: TimeSpan?, endTime: TimeSpan?): bool
+    courseMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    dal->>bd: Consulta de traslape del aula
+    bd-->>dal: Cantidad de coincidencias
+    dal-->>courseMPP: int
+    courseMPP-->>courseBLL: false
+    courseBLL->>courseMPP: Save(course: CourseBE): bool
+    courseMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    dal->>bd: Alta del curso con retorno de identidad (SCOPE_IDENTITY)
+    bd-->>dal: Identidad de la fila
+    dal-->>courseMPP: int
+    courseMPP-->>courseBLL: true
+    courseBLL-->>frm: true
 
-    GUI->>BLL: SaveTeachers(courseId: int, teacherIds: List<int>): bool
-    BLL->>MPP: SaveTeachers(courseId: int, teacherIds: List<int>): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Registro de la asignación de docentes
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
-    GUI-->>Usuario: Muestra "Curso creado exitosamente." y cierra el formulario
+    frm->>courseBLL: SaveTeachers(courseId: int, teacherIds: List<int>): bool
+    courseBLL->>courseMPP: SaveTeachers(courseId: int, teacherIds: List<int>): bool
+    courseMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro de la asignación de docentes
+    bd-->>dal: 1 fila afectada
+    dal-->>courseMPP: true
+    courseMPP-->>courseBLL: true
+    courseBLL-->>frm: true
+    frm-->>Coordinador: Muestra "Curso creado exitosamente." y cierra el formulario

@@ -1,29 +1,37 @@
 sequenceDiagram
     autonumber
-    actor Usuario
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    actor Coordinador
+    participant frm as frm : StudentForm
+    participant studentBLL as studentBLL : StudentBLL
+    participant studentMPP as studentMPP : StudentMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: StudentBE transporta los datos entre las capas
-    Note over Usuario,BD: CU-12 Crear Alumno - flujo básico (pasos 1 a 10)
+    Note over Coordinador,bd: CU-12 Crear Alumno - flujo básico (pasos 1 a 10)
 
-    Usuario->>GUI: Accede a "Alumnos" del menú "Administración" y presiona "Nuevo"
-    GUI-->>Usuario: Muestra el formulario de alta de alumno con sus campos
-    Usuario->>GUI: Completa "Nombre"
-    Usuario->>GUI: Completa "Apellido"
-    Usuario->>GUI: Completa "Documento"
-    Usuario->>GUI: Completa "Email" y "Número de Teléfono"
-    Usuario->>GUI: Presiona "Guardar"
-    GUI->>BLL: Save(student: StudentBE): bool
-    BLL->>MPP: Save(student: StudentBE): bool
-    MPP->>DAL: Save(operacion: string, parameters: SqlParameter[]): bool
-    DAL->>BD: Registro del alumno
-    BD-->>DAL: 1 fila afectada
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
-    GUI-->>Usuario: Muestra "Alumno guardado correctamente.", cierra el formulario y refresca el listado
+    Coordinador->>frm: Accede a "Alumnos" del menú "Administración" y presiona "Nuevo"
+    frm->>frm: _studentBLL = ServiceLocatorBLL.CreateStudentBLL()
+    create participant student as student : StudentBE
+    frm->>student: new StudentBE()
+    frm-->>Coordinador: Muestra el formulario de alta de alumno con sus campos
+    Coordinador->>frm: Completa el campo "Nombre"
+    Coordinador->>frm: Completa el campo "Apellido"
+    Coordinador->>frm: Completa el campo "Documento"
+    Coordinador->>frm: Completa el campo "Email"
+    Coordinador->>frm: Selecciona el campo "Número de Teléfono"
+    Coordinador->>frm: Presiona el botón "Guardar"
+    frm->>studentBLL: Save(student: StudentBE): bool
+    studentBLL->>studentMPP: FindByDocument(document: string): StudentBE
+    studentMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del documento del alumno
+    bd-->>dal: Filas resultantes
+    dal-->>studentMPP: DataTable
+    studentMPP-->>studentBLL: null
+    studentBLL->>studentMPP: Insert(student: StudentBE): bool
+    studentMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    dal->>bd: Alta del alumno con retorno de identidad (SCOPE_IDENTITY)
+    bd-->>dal: Identidad de la fila
+    dal-->>studentMPP: int
+    studentMPP-->>studentBLL: true
+    studentBLL-->>frm: true
+    frm-->>Coordinador: Muestra "Alumno guardado correctamente.", cierra el formulario y refresca el listado
