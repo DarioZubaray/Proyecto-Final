@@ -1,24 +1,24 @@
 sequenceDiagram
     autonumber
-    actor Usuario
-    participant GUI as GUI
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    actor Administrador
+    participant frm as frm : BackupForm
+    participant backupBLL as backupBLL : BackupBLL
+    participant backupMPP as backupMPP : BackupMPP
+    participant bd as Base de Datos
 
-    Note over Usuario,BD: CU-20 Crear Respaldo - flujo básico
+    Note over Administrador,bd: CU-20 Crear Respaldo - flujo básico (pasos 1 a 8)
 
-    Usuario->>GUI: Elige "Respaldo y Restauración" en el menú "Administración"
-    GUI-->>Usuario: Muestra el formulario con "Generar respaldo" y "Restaurar respaldo"
+    Administrador->>frm: Elige "Respaldo y Restauración" en el menú "Administración"
+    frm->>frm: _backupBLL = ServiceLocatorBLL.CreateBackupBLL()
+    frm-->>Administrador: Muestra el formulario "Respaldo y Restauración" con los botones "Generar respaldo" y "Restaurar respaldo"
 
-    Usuario->>GUI: Presiona "Generar respaldo" y confirma la ubicación en el diálogo "Guardar como"
-    GUI->>BLL: CreateBackup(filePath: string): bool
-    BLL->>MPP: CreateBackup(filePath: string): bool
-    MPP->>DAL: Save(consulta: string, parameters: SqlParameter[]): bool
-    DAL->>BD: BACKUP DATABASE [DarioZubaray_TF] TO DISK = filePath
-    BD-->>DAL: Confirmación de la operación
-    DAL-->>MPP: true
-    MPP-->>BLL: true
-    BLL-->>GUI: true
-    GUI-->>Usuario: Muestra "Respaldo generado correctamente."
+    Administrador->>frm: Presiona el botón "Generar respaldo"
+    frm-->>Administrador: Muestra el diálogo "Guardar como" en formato .bak con un nombre de archivo sugerido
+    Administrador->>frm: Confirma el nombre y la ubicación del archivo
+    frm->>backupBLL: CreateBackup(filePath: string): bool
+    backupBLL->>backupMPP: CreateBackup(filePath: string): bool
+    backupMPP->>bd: Generación del archivo de respaldo (.bak) en la ubicación elegida
+    bd-->>backupMPP: Confirmación de la operación
+    backupMPP-->>backupBLL: true
+    backupBLL-->>frm: true
+    frm-->>Administrador: Muestra "Respaldo generado correctamente."

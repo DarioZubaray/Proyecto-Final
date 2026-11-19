@@ -1,52 +1,44 @@
 sequenceDiagram
     autonumber
-    actor Usuario
-    participant GUI as GUI
-    participant BE as BE
-    participant BLL as BLL
-    participant MPP as MPP
-    participant DAL as DAL
-    participant BD as Base de Datos
+    actor Director
+    participant frm as frm : ReportForm
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant reportBLL as reportBLL : ReportBLL
+    participant reportMPP as reportMPP : ReportMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
 
-    Note right of BE: CourseBE, AttendanceReportLineBE y GradeReportLineBE transportan los datos entre capas
-    Note over Usuario,BD: CU-19 Consultar Informe Personalizado - flujos básicos
+    Note over Director,bd: CU-19 Consultar Informe Personalizado - flujo básico (pasos 1 a 11)
 
-    Usuario->>GUI: Elige "Informes Personalizados" en el menú "Reportes"
-    GUI->>BLL: FindAll(): List<CourseBE>
-    BLL->>MPP: FindAll(): List<CourseBE>
-    MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-    DAL->>BD: Consulta parametrizada de cursos
-    BD-->>DAL: Filas resultantes
-    DAL-->>MPP: DataTable
-    MPP-->>BLL: List<CourseBE>
-    BLL-->>GUI: List<CourseBE>
-    GUI-->>Usuario: Muestra el formulario "Informes Personalizados" con los tipos, los cursos y los botones
+    Director->>frm: Elige "Informes Personalizados" en el menú "Reportes"
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _reportBLL = ServiceLocatorBLL.CreateReportBLL()
+    frm->>courseBLL: FindAll(): List<CourseBE>
+    courseBLL->>courseMPP: FindAll(): List<CourseBE>
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de cursos
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: List<CourseBE>
+    courseBLL-->>frm: List<CourseBE>
+    frm-->>Director: Muestra el formulario "Informes Personalizados" con la lista de tipos, la lista de cursos y los botones "Generar" y "Exportar"
 
-    Usuario->>GUI: Selecciona el campo "Tipo de informe" y el campo "Curso"
-    Usuario->>GUI: Presiona el botón "Generar"
-    alt Tipo de informe = Asistencia por curso
-        GUI->>BLL: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
-        BLL->>MPP: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
-        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-        DAL->>BD: Consulta que cruza inscripciones y asistencia del curso
-        BD-->>DAL: Filas resultantes
-        DAL-->>MPP: DataTable
-        MPP-->>BLL: List<AttendanceReportLineBE>
-        BLL-->>GUI: List<AttendanceReportLineBE>
-    else Tipo de informe = Notas por curso
-        GUI->>BLL: GetGradesReport(courseId: int): List<GradeReportLineBE>
-        BLL->>MPP: GetGradesReport(courseId: int): List<GradeReportLineBE>
-        MPP->>DAL: Read(consulta: string, parameters: SqlParameter[]): DataTable
-        DAL->>BD: Consulta que cruza inscripciones, evaluaciones y notas del curso
-        BD-->>DAL: Filas resultantes
-        DAL-->>MPP: DataTable
-        MPP-->>BLL: List<GradeReportLineBE>
-        BLL-->>GUI: List<GradeReportLineBE>
-    end
-    GUI-->>Usuario: Muestra la grilla con el informe del curso
+    Director->>frm: Selecciona el campo "Tipo de informe"
+    Director->>frm: Selecciona el campo "Curso"
+    Director->>frm: Presiona el botón "Generar"
+    frm->>reportBLL: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
+    Note over frm: Si el tipo seleccionado es "Notas por curso" invoca GetGradesReport(courseId: int): List<GradeReportLineBE>
+    reportBLL->>reportMPP: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
+    reportMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta que cruza inscripciones y asistencia del curso
+    bd-->>dal: Filas resultantes
+    dal-->>reportMPP: DataTable
+    reportMPP-->>reportBLL: List<AttendanceReportLineBE>
+    reportBLL-->>frm: List<AttendanceReportLineBE>
+    frm-->>Director: Muestra la grilla con el informe del tipo y el curso seleccionados
 
-    Usuario->>GUI: Presiona el botón "Exportar"
-    GUI-->>Usuario: Muestra el diálogo "Guardar como" en formato CSV
-    Usuario->>GUI: Confirma el nombre y la ubicación del archivo
-    GUI->>GUI: Exporta el contenido del informe al archivo CSV
-    GUI-->>Usuario: Muestra "Informe exportado correctamente."
+    Director->>frm: Presiona el botón "Exportar"
+    frm-->>Director: Muestra el diálogo "Guardar como" en formato CSV
+    Director->>frm: Confirma el nombre y la ubicación del archivo
+    frm-->>Director: Muestra "Informe exportado correctamente."
