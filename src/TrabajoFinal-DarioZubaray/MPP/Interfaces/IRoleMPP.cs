@@ -7,6 +7,7 @@ namespace MPP.Interfaces
     {
         RoleBE FindById(int roleId);
         List<RoleBE> FindAll();
+        List<RoleBE> FindByRoleName(string roleName);
         List<PermissionBE> GetPermissionsByRoleId(int roleId);
         List<int> GetChildRoleIds(int parentId);
         int Save(RoleBE role);

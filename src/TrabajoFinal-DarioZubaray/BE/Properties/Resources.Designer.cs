@@ -862,7 +862,18 @@ namespace BE.Properties {
                 return ResourceManager.GetString("RoleManagement_NameRequired", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Busca una cadena traducida similar a El nombre del rol ya existe..
+        /// </summary>
+        public static string RoleManagement_NameExisting
+        {
+            get
+            {
+                return ResourceManager.GetString("RoleManagement_NameExisting", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Busca una cadena traducida similar a Seleccione un rol de la lista..
         /// </summary>

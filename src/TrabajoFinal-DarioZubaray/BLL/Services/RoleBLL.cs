@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-
 using BE.Entities;
 using BLL.Interfaces;
+using MPP;
 using MPP.Interfaces;
+using System.Collections.Generic;
 
 namespace BLL.Services
 {
@@ -32,6 +32,11 @@ namespace BLL.Services
         public List<RoleBE> FindAll()
         {
             return _roleMPP.FindAll();
+        }
+
+        public List<RoleBE> FindByRoleName(string roleName)
+        {
+            return _roleMPP.FindByRoleName(roleName);
         }
 
         public List<PermissionBE> GetPermissionsByRoleId(int roleId)

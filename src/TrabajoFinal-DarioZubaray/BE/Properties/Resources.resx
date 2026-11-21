@@ -1422,4 +1422,7 @@
   <data name="Register_Success" xml:space="preserve">
     <value>Cuenta creada exitosamente.</value>
   </data>
+  <data name="RoleManagement_NameExisting" xml:space="preserve">
+    <value>El nombre del rol no se encuentra disponible.</value>
+  </data>
 </root>
