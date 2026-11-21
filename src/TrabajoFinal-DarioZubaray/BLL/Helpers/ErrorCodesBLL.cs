@@ -37,6 +37,7 @@ namespace BLL.Helpers
             public const string AdminUsernameLocked = "VAL-007";
             public const string UsernameTaken = "VAL-008";
             public const string RoleNameExisting = "VAL-009";
+            public const string ClassroomNameExisting = "VAL-010";
         }
 
         public static class Business

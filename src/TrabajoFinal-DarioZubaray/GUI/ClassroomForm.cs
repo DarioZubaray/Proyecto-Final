@@ -1,10 +1,11 @@
-using System;
-using System.Windows.Forms;
-
 using BE.Entities;
 using BE.Properties;
 using BLL.Helpers;
 using BLL.Interfaces;
+using BLL.Services;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
+using System.Windows.Forms;
 
 namespace TrabajoFinal_DarioZubaray
 {
@@ -84,6 +85,15 @@ namespace TrabajoFinal_DarioZubaray
 
         private bool SaveClassroom()
         {
+            var existClassroom = _classroomBLL.FindByClassroomName(_classroom.Name);
+            if (existClassroom.Count != 0)
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ClassroomForm_NameExisting,
+                    ErrorCodesBLL.Validation.ClassroomNameExisting));
+                txtName.Focus();
+                return false;
+            }
             return _classroomBLL.Save(_classroom);
         }
 

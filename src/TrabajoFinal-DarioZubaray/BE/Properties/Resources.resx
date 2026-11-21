@@ -1425,4 +1425,7 @@
   <data name="RoleManagement_NameExisting" xml:space="preserve">
     <value>El nombre del rol no se encuentra disponible.</value>
   </data>
+  <data name="ClassroomForm_NameExisting" xml:space="preserve">
+    <value>El nombre del aula no está disponible.</value>
+  </data>
 </root>

@@ -2037,7 +2037,15 @@ namespace BE.Properties {
                 return ResourceManager.GetString("ClassroomForm_NameRequired", resourceCulture);
             }
         }
-        
+
+        public static string ClassroomForm_NameExisting
+        {
+            get
+            {
+                return ResourceManager.GetString("ClassroomForm_NameExisting", resourceCulture);
+            }
+        }
+
         public static string ClassroomForm_CapacityInvalid {
             get {
                 return ResourceManager.GetString("ClassroomForm_CapacityInvalid", resourceCulture);
