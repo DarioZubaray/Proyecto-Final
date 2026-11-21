@@ -390,7 +390,7 @@ dotnet build TrabajoFinal-DarioZubaray.sln -c Debug
 dotnet run --project GUI\GUI.csproj
 ```
 
-Al arrancar, `Program.cs` verifica la conexión (`DB-001`, con reintentos) y decide la primera pantalla: si la base **no tiene usuarios** muestra `RegisterForm` (CU-03) para crear la cuenta administradora; si ya hay usuarios, muestra `LoginForm` (CU-01).
+Al arrancar, `Program.cs` muestra un **splash** (`SplashForm`) mientras verifica la conexión en segundo plano y decide la primera pantalla: si la base **no tiene usuarios** muestra `RegisterForm` (CU-03) para crear la cuenta administradora; si ya hay usuarios, muestra `LoginForm` (CU-01). Si la verificación falla (servidor caído, instancia inexistente, base inexistente o esquema ausente), muestra un mensaje con el código **`DB-001`** y la aplicación se cierra (exit code `2`). La configuración de conexión no se abre al iniciar: puede consultarse desde `LoginForm` y `MainForm`.
 
 Usuarios de prueba: `admin` / `admin` (rol Admin, código 2FA `123`), `dario` / `123` (Admin), `coord1` / `123` (Coordinador), `prof_brooks` / `123` (Profesor). La lista completa está en `src/sql/README.md`.
 

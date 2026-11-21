@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using BE.Properties;
@@ -35,54 +36,108 @@ namespace TrabajoFinal_DarioZubaray
 
             CultureHelperBLL.SetCulture(AppPreferencesBLL.LastLanguage);
 
-            Form startupForm = CreateStartupForm();
+            Form startupForm = RunStartupWithSplash();
 
             if (startupForm == null)
             {
-                return ExitOk;
+                // Verificacion fallida (servidor caido, instancia inexistente,
+                // base inexistente o esquema ausente): se informa y se cierra.
+                MessageBox.Show(
+                    string.Format(
+                        Resources.Auth_DbUnavailable,
+                        ErrorCodesBLL.Database.Unavailable),
+                    Resources.Main_Title,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+                return ExitConnectionFailed;
             }
 
             Application.Run(startupForm);
             return ExitOk;
         }
 
-        private static Form CreateStartupForm()
+        /// <summary>
+        /// Muestra el splash y verifica la base de datos en segundo plano,
+        /// con el bucle de mensajes activo (la barra de progreso anima).
+        /// Devuelve la primera pantalla (Login/Register) o null si la
+        /// verificacion fallo.
+        /// </summary>
+        private static Form RunStartupWithSplash()
         {
-            while (true)
+            Form startupForm = null;
+            DateTime startedAt = DateTime.MinValue;
+
+            using (var splash = new SplashForm())
             {
-                try
+                splash.Shown += async (sender, e) =>
                 {
-                    // AccessDAL relea la configuracion en cada iteracion:
-                    // tras guardar una nueva cadena, el siguiente intento la usa.
-                    if (new AccessDAL().TestConnection())
+                    startedAt = DateTime.Now;
+
+                    try
                     {
-                        bool hasRegisteredUsers = ServiceLocatorBLL
-                            .CreateUserBLL()
-                            .HasRegisteredUsers();
+                        bool? hasRegisteredUsers =
+                            await Task.Run(() => ProbeDatabase());
 
-                        return hasRegisteredUsers
-                            ? (Form)new LoginForm()
-                            : new RegisterForm();
+                        if (hasRegisteredUsers.HasValue)
+                        {
+                            // Se construye en el hilo de UI: los constructores
+                            // tocan controles e inician verificaciones async.
+                            startupForm = hasRegisteredUsers.Value
+                                ? (Form)new LoginForm()
+                                : new RegisterForm();
+                        }
                     }
-                }
-                catch
-                {
-                    // Conexion caida o esquema ausente: se trata como DB-001.
-                }
-
-                using (var configForm = new ConnectionConfigForm())
-                {
-                    configForm.SetInitialMessage(string.Format(
-                        Resources.Auth_DbUnavailable,
-                        ErrorCodesBLL.Database.Unavailable));
-
-                    if (configForm.ShowDialog() != DialogResult.OK)
+                    catch
                     {
-                        return null;
+                        startupForm = null;
                     }
+                    finally
+                    {
+                        await EnsureMinimumSplashTimeAsync(startedAt);
+                        splash.RequestClose();
+                    }
+                };
+
+                Application.Run(splash);
+            }
+
+            return startupForm;
+        }
+
+        /// <summary>
+        /// Sonda de arranque (corre en un hilo de fondo). Devuelve true si
+        /// hay usuarios registrados, false si la base esta vacia, o null si
+        /// la verificacion fallo (tratado como DB-001).
+        /// </summary>
+        private static bool? ProbeDatabase()
+        {
+            try
+            {
+                // AccessDAL relea la configuracion en cada intento.
+                if (!new AccessDAL().TestConnection())
+                {
+                    return null;
                 }
 
-                ServiceLocatorBLL.Reset();
+                return ServiceLocatorBLL.CreateUserBLL().HasRegisteredUsers();
+            }
+            catch
+            {
+                // Conexion caida, instancia inexistente, base inexistente
+                // o esquema ausente: se trata como DB-001.
+                return null;
+            }
+        }
+
+        private static async Task EnsureMinimumSplashTimeAsync(DateTime startedAt)
+        {
+            const int MinimumSplashMilliseconds = 700;
+            int elapsed = (int)(DateTime.Now - startedAt).TotalMilliseconds;
+
+            if (elapsed < MinimumSplashMilliseconds)
+            {
+                await Task.Delay(MinimumSplashMilliseconds - elapsed);
             }
         }
 

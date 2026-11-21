@@ -1,0 +1,72 @@
+usecase-beta
+actor Admin("Admin")
+actor Coordinador("Coordinador")
+actor Profesor("Profesor")
+actor Director("Director")
+
+UC1("CU-01 Login")
+UC2("CU-02 Logout")
+UC3("CU-03 Register")
+
+UC4("CU-04 Crear Usuario")
+UC5("CU-05 Editar usuario")
+UC6("CU-06 Eliminar Usuario")
+
+UC7("CU-07 Crear Rol y Permiso")
+UC8("CU-08 Editar Rol y Permiso")
+UC9("CU-09 Eliminar Rol y Permiso")
+
+UC10("CU-10 Crear Aula")
+UC11("CU-11 Crear Curso")
+UC12("CU-12 Crear Alumno")
+
+UC13("CU-13 Crear Inscripción")
+UC14("CU-14 Crear Ticket")
+UC15("CU-15 Cerrar Ticket")
+
+UC16("CU-16 Registrar Asistencia")
+UC17("CU-17 Registrar Evaluaciones y Notas")
+
+UC18("CU-18 Consultar Rendimiento Academico")
+UC19("CU-19 Consultar Informe Personalizado")
+
+UC20("CU-20 Crear Respaldo")
+UC21("CU-21 Restarurar Respaldo")
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC20
+Admin --> UC21
+
+Coordinador --> UC1
+Coordinador --> UC2
+Coordinador --> UC10
+Coordinador --> UC11
+Coordinador --> UC12
+Coordinador --> UC13
+Coordinador --> UC14
+Coordinador --> UC15
+
+Profesor --> UC1
+Profesor --> UC2
+Profesor --> UC14
+Profesor --> UC16
+Profesor --> UC17
+
+Director --> UC1
+Director --> UC2
+Director --> UC18
+Director --> UC19
