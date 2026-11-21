@@ -111,6 +111,15 @@ namespace TrabajoFinal_DarioZubaray
 
         private bool SaveUser()
         {
+            var existUser = _userBLL.FindByUserName(_user.UserName);
+            if (existUser.Count != 0)
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.UserForm_UserNameTaken,
+                    ErrorCodesBLL.Validation.UsernameTaken));
+                txtUserName.Focus();
+                return false;
+            }
             return _userBLL.Save(_user);
         }
 
