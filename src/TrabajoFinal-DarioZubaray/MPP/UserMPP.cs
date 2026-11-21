@@ -103,7 +103,23 @@ namespace MPP
             return FindMany(query);
         }
 
-        public List<UserBE> FindByUserName(string userName)
+        public List<UserBE> FindByUserNameExact(string userName)
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at,
+                                   language, theme, role_id, dvh
+                            FROM users
+                            WHERE user_name = @userName";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@userName", userName)
+            };
+
+            return FindMany(query, parameters);
+        }
+
+        public List<UserBE> FindByUserNameLike(string userName)
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,

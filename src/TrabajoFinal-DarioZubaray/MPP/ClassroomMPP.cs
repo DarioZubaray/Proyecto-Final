@@ -77,11 +77,11 @@ namespace MPP
         {
             string query = @"SELECT id, name, capacity, is_active, created_at, last_update
                             FROM classrooms
-                            WHERE name LIKE @name";
+                            WHERE name = @name";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@name", "%" + name + "%")
+                new SqlParameter("@name", name)
             };
 
             return FindMany(query, parameters);

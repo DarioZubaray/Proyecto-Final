@@ -192,13 +192,13 @@ namespace BLL.Tests
             };
 
             _mockUserMPP
-                .Setup(m => m.FindByUserName("test"))
+                .Setup(m => m.FindByUserNameLike("test"))
                 .Returns(expected);
 
             var result = _userBLL.FindByUserName("test");
 
             CollectionAssert.AreEqual(expected, result);
-            _mockUserMPP.Verify(m => m.FindByUserName("test"), Times.Once);
+            _mockUserMPP.Verify(m => m.FindByUserNameLike("test"), Times.Once);
         }
 
         [TestMethod]

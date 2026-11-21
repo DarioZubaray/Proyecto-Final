@@ -66,6 +66,24 @@ namespace TrabajoFinal_DarioZubaray
                 return false;
             }
 
+            if(!_isNewClassroom && !_classroom.Name.Equals(txtName.Text.Trim()) && _classroomBLL.FindByClassroomName(txtName.Text.Trim()).Count != 0)
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ClassroomForm_NameExisting,
+                    ErrorCodesBLL.Validation.ClassroomNameExisting));
+                txtName.Focus();
+                return false;
+            }
+
+            if (_isNewClassroom && _classroomBLL.FindByClassroomName(txtName.Text.Trim()).Count != 0)
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.ClassroomForm_NameExisting,
+                    ErrorCodesBLL.Validation.ClassroomNameExisting));
+                txtName.Focus();
+                return false;
+            }
+
             return true;
         }
 
@@ -85,15 +103,6 @@ namespace TrabajoFinal_DarioZubaray
 
         private bool SaveClassroom()
         {
-            var existClassroom = _classroomBLL.FindByClassroomName(_classroom.Name);
-            if (existClassroom.Count != 0)
-            {
-                MessageBox.Show(ErrorFormatter.WithCode(
-                    Resources.ClassroomForm_NameExisting,
-                    ErrorCodesBLL.Validation.ClassroomNameExisting));
-                txtName.Focus();
-                return false;
-            }
             return _classroomBLL.Save(_classroom);
         }
 

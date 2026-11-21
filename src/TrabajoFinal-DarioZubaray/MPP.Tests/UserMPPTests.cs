@@ -149,7 +149,7 @@ namespace MPP.Tests
         [TestMethod]
         public void FindByUserName_FiltersPartialMatch()
         {
-            List<UserBE> matches = _userMPP.FindByUserName("user");
+            List<UserBE> matches = _userMPP.FindByUserNameLike("user");
 
             Assert.IsNotNull(matches);
             Assert.IsTrue(matches.Exists(u => u.UserName == "testuser"));

@@ -77,7 +77,7 @@ namespace BLL.Services
 
         public bool IsUsernameTaken(string userName)
         {
-            List<UserBE> users = FindByUserName(userName);
+            List<UserBE> users = _userMPP.FindByUserNameExact(userName);
             return users.Count > 0;
         }
 
@@ -93,7 +93,7 @@ namespace BLL.Services
 
         public List<UserBE> FindByUserName(string userName)
         {
-            return _userMPP.FindByUserName(userName);
+            return _userMPP.FindByUserNameLike(userName);
         }
 
         public bool UpdateLanguage(int userId, string language)

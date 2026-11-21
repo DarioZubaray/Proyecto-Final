@@ -57,11 +57,11 @@ namespace MPP
         {
             string query = @"SELECT id, name
                             FROM roles
-                            WHERE name LIKE @roleName";
+                            WHERE name = @roleName";
 
             SqlParameter[] parameters = new SqlParameter[]
             {
-                new SqlParameter("@roleName", "%" + roleName + "%")
+                new SqlParameter("@roleName", roleName)
             };
 
             return FindMany(query, parameters);
