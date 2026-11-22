@@ -15,11 +15,14 @@ namespace MPP.Interfaces
         bool Save(UserBE user);
         UserBE FindById(UserBE user);
         List<UserBE> FindAll();
-        List<UserBE> FindByUserName(string userName);
+        List<UserBE> FindByUserNameExact(string userName);
+        List<UserBE> FindByUserNameLike(string userName);
         bool UpdateLanguage(int userId, string language);
         bool UpdateTheme(int userId, string theme);
         bool UpdatePassword(int userId, string passwordHash);
+        bool UpdateDvh(int userId, string dvh);
         int CountByRoleId(int roleId);
+        int CountExceptUserName(string userName);
         bool TestConnection();
     }
 }

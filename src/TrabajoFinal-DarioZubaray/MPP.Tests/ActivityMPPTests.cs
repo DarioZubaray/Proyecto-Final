@@ -8,10 +8,13 @@ namespace MPP.Tests
     [TestClass]
     public class ActivityMPPTests
     {
+        #region Propiedades
         private ActivityMPP _activityMPP;
         private int _testUserId;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -30,7 +33,9 @@ namespace MPP.Tests
         {
             TestDatabaseHelper.CleanDatabase();
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Save_InsertsActivityLog()
         {
@@ -77,5 +82,6 @@ namespace MPP.Tests
             Assert.AreEqual(3, page1.Count);
             Assert.AreEqual(2, page2.Count);
         }
+        #endregion
     }
 }

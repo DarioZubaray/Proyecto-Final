@@ -1,0 +1,53 @@
+sequenceDiagram
+    autonumber
+    actor Director
+    participant frm as frm : PerformanceForm
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant reportBLL as reportBLL : ReportBLL
+    participant reportMPP as reportMPP : ReportMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Director,bd: CU-18 Consultar Rendimiento Académico - flujos básicos y alternativos
+
+    Director->>frm: Elige "Rendimiento Académico" en el menú "Reportes"
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _reportBLL = ServiceLocatorBLL.CreateReportBLL()
+    frm->>courseBLL: FindAll(): List<CourseBE>
+    Note over frm: El Director consulta el rendimiento de todos los cursos (FindAll)
+    courseBLL->>courseMPP: FindAll(): List<CourseBE>
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de cursos
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: List<CourseBE>
+    courseBLL-->>frm: List<CourseBE>
+
+    alt No hay cursos para el usuario
+        frm-->>Director: Muestra "No hay cursos para consultar." y deja deshabilitado "Consultar"
+    else Hay cursos
+        frm-->>Director: Muestra el formulario "Rendimiento Académico" con la lista de cursos
+        Director->>frm: Selecciona el campo "Curso"
+        Director->>frm: Presiona el botón "Consultar"
+
+        alt Sin curso seleccionado
+            frm-->>Director: Muestra "Seleccione un curso de la lista. (Código: VAL-005)"
+        else Curso seleccionado
+            frm->>reportBLL: GetCoursePerformance(courseId: int): List<StudentPerformanceBE>
+            reportBLL->>reportMPP: GetCoursePerformance(courseId: int): List<StudentPerformanceBE>
+            reportMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+            dal->>bd: Consulta que cruza inscripciones, asistencia y notas del curso
+            bd-->>dal: Filas resultantes
+            dal-->>reportMPP: DataTable
+            reportMPP-->>reportBLL: List<StudentPerformanceBE>
+            reportBLL-->>frm: List<StudentPerformanceBE>
+
+            alt El curso no tiene alumnos inscriptos
+                frm-->>Director: Muestra "El curso seleccionado no tiene alumnos inscriptos."
+            else Hay alumnos inscriptos
+                Note over frm: Los alumnos sin planillas de asistencia muestran "Asistencia (%)". Los alumnos sin notas muestran "Notas cargadas" y "Promedio de notas" con "—"
+                frm-->>Director: Muestra la grilla con Alumno, Asistencia (%), Notas cargadas y Promedio de notas
+            end
+        end
+    end

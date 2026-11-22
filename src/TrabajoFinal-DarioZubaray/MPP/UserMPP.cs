@@ -31,7 +31,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, theme, role_id
+                                   language, theme, role_id, dvh
                             FROM users
                             WHERE user_name = @userName";
 
@@ -45,60 +45,26 @@ namespace MPP
 
         public bool UpdateLastUpdate(int userId, DateTime lastUpdate)
         {
-            string query = @"UPDATE users
-                            SET last_update = @lastUpdate
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@lastUpdate", lastUpdate),
-                new SqlParameter("@id", userId)
-            };
-
-            return _access.Save(query, parameters);
+            return Mutate(userId, user => user.LastUpdate = lastUpdate);
         }
 
         public bool UpdateRetries(int userId, int retriesCount)
         {
-            string query = @"UPDATE users
-                            SET retries_count = @retriesCount
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@retriesCount", retriesCount),
-                new SqlParameter("@id", userId)
-            };
-
-            return _access.Save(query, parameters);
+            return Mutate(userId, user => user.RetriesCount = retriesCount);
         }
 
         public bool Deactivate(int userId)
         {
-            string query = @"UPDATE users
-                            SET is_active = 0, retries_count = 3
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
+            return Mutate(userId, user =>
             {
-                new SqlParameter("@id", userId)
-            };
-
-            return _access.Save(query, parameters);
+                user.IsActive = false;
+                user.RetriesCount = 3;
+            });
         }
 
         public bool Delete(UserBE user)
         {
-            string query = @"UPDATE users
-                            SET is_active = 0
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@id", user.Id)
-            };
-
-            return _access.Save(query, parameters);
+            return Mutate(user.Id, current => current.IsActive = false);
         }
 
         public bool Save(UserBE user)
@@ -115,7 +81,7 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, theme, role_id
+                                   language, theme, role_id, dvh
                             FROM users
                             WHERE id = @id";
 
@@ -131,17 +97,33 @@ namespace MPP
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, theme, role_id
+                                   language, theme, role_id, dvh
                             FROM users";
 
             return FindMany(query);
         }
 
-        public List<UserBE> FindByUserName(string userName)
+        public List<UserBE> FindByUserNameExact(string userName)
         {
             string query = @"SELECT id, user_name, password_hash, is_active,
                                    retries_count, last_update, created_at,
-                                   language, theme, role_id
+                                   language, theme, role_id, dvh
+                            FROM users
+                            WHERE user_name = @userName";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@userName", userName)
+            };
+
+            return FindMany(query, parameters);
+        }
+
+        public List<UserBE> FindByUserNameLike(string userName)
+        {
+            string query = @"SELECT id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at,
+                                   language, theme, role_id, dvh
                             FROM users
                             WHERE user_name LIKE @userName";
 
@@ -162,6 +144,16 @@ namespace MPP
             return _access.ReadScalar(query, parameters);
         }
 
+        public int CountExceptUserName(string userName)
+        {
+            string query = @"SELECT COUNT(*) FROM users WHERE user_name <> @userName";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@userName", userName)
+            };
+            return _access.ReadScalar(query, parameters);
+        }
+
         public bool TestConnection()
         {
             return _access.TestConnection();
@@ -169,6 +161,19 @@ namespace MPP
         #endregion
 
         #region Métodos Privados
+        private bool Mutate(int userId, Action<UserBE> mutate)
+        {
+            UserBE current = FindById(new UserBE { Id = userId });
+
+            if (current == null)
+            {
+                return false;
+            }
+
+            mutate(current);
+            return Update(current);
+        }
+
         private UserBE MapUser(DataRow row)
         {
             return new UserBE
@@ -182,7 +187,8 @@ namespace MPP
                 CreatedAt = (DateTime)row["created_at"],
                 Language = row["language"].ToString(),
                 Theme = row["theme"] != DBNull.Value ? row["theme"].ToString() : "System",
-                RoleId = row["role_id"] != DBNull.Value ? Convert.ToInt32(row["role_id"]) : 0
+                RoleId = row["role_id"] != DBNull.Value ? Convert.ToInt32(row["role_id"]) : 0,
+                Dvh = row["dvh"] != DBNull.Value ? row["dvh"].ToString() : null
             };
         }
 
@@ -202,6 +208,10 @@ namespace MPP
             };
         }
 
+        private const string PersistedColumns = @"id, user_name, password_hash, is_active,
+                                   retries_count, last_update, created_at,
+                                   language, theme, role_id, dvh";
+
         private bool Insert(UserBE user)
         {
             string query = @"INSERT INTO users
@@ -210,11 +220,11 @@ namespace MPP
                             VALUES
                                 (@userName, @passwordHash, @isActive,
                                  @retriesCount, @lastUpdate, @createdAt, @language, @theme, @roleId);
-                            SELECT SCOPE_IDENTITY();";
+                            SELECT " + PersistedColumns + @"
+                            FROM users
+                            WHERE id = SCOPE_IDENTITY();";
 
-            SqlParameter[] parameters = CreateUserParameters(user);
-            var newId = _access.ReadScalar(query, parameters);
-            return newId > 0;
+            return WriteAndReload(query, CreateUserParameters(user), user);
         }
 
         private bool Update(UserBE user)
@@ -229,59 +239,65 @@ namespace MPP
                                 language = @language,
                                 theme = @theme,
                                 role_id = @roleId
+                            WHERE id = @id;
+                            SELECT " + PersistedColumns + @"
+                            FROM users
                             WHERE id = @id";
 
             SqlParameter[] parameters = CreateUserParameters(user);
-            var idParam = new SqlParameter("@id", user.Id);
             var allParameters = new SqlParameter[parameters.Length + 1];
             parameters.CopyTo(allParameters, 0);
-            allParameters[parameters.Length] = idParam;
-            return _access.Save(query, allParameters);
+            allParameters[parameters.Length] = new SqlParameter("@id", user.Id);
+
+            return WriteAndReload(query, allParameters, user);
+        }
+
+        private bool WriteAndReload(string query, SqlParameter[] parameters, UserBE user)
+        {
+            DataTable table = _access.Read(query, parameters);
+
+            if (table.Rows.Count == 0)
+            {
+                return false;
+            }
+
+            UserBE persisted = MapUser(table.Rows[0]);
+            user.Id = persisted.Id;
+            user.LastUpdate = persisted.LastUpdate;
+            user.CreatedAt = persisted.CreatedAt;
+            user.Dvh = persisted.Dvh;
+
+            return true;
+        }
+
+        public bool UpdateDvh(int userId, string dvh)
+        {
+            string query = @"UPDATE users
+                             SET dvh = @dvh
+                             WHERE id = @id";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@dvh", dvh),
+                new SqlParameter("@id", userId)
+            };
+
+            return _access.Save(query, parameters);
         }
 
         public bool UpdateLanguage(int userId, string language)
         {
-            string query = @"UPDATE users
-                            SET language = @language
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@language", language),
-                new SqlParameter("@id", userId)
-            };
-
-            return _access.Save(query, parameters);
+            return Mutate(userId, user => user.Language = language);
         }
 
         public bool UpdateTheme(int userId, string theme)
         {
-            string query = @"UPDATE users
-                            SET theme = @theme
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@theme", theme),
-                new SqlParameter("@id", userId)
-            };
-
-            return _access.Save(query, parameters);
+            return Mutate(userId, user => user.Theme = theme);
         }
 
         public bool UpdatePassword(int userId, string passwordHash)
         {
-            string query = @"UPDATE users
-                            SET password_hash = @passwordHash
-                            WHERE id = @id";
-
-            SqlParameter[] parameters = new SqlParameter[]
-            {
-                new SqlParameter("@passwordHash", passwordHash),
-                new SqlParameter("@id", userId)
-            };
-
-            return _access.Save(query, parameters);
+            return Mutate(userId, user => user.PasswordHash = passwordHash);
         }
 
         private UserBE FindOne(string query, SqlParameter[] parameters)

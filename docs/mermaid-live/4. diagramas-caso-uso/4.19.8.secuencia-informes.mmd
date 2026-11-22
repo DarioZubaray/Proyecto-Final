@@ -1,0 +1,44 @@
+sequenceDiagram
+    autonumber
+    actor Director
+    participant frm as frm : ReportForm
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant reportBLL as reportBLL : ReportBLL
+    participant reportMPP as reportMPP : ReportMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Director,bd: CU-19 Consultar Informe Personalizado - flujo básico (pasos 1 a 11)
+
+    Director->>frm: Elige "Informes Personalizados" en el menú "Reportes"
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _reportBLL = ServiceLocatorBLL.CreateReportBLL()
+    frm->>courseBLL: FindAll(): List<CourseBE>
+    courseBLL->>courseMPP: FindAll(): List<CourseBE>
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de cursos
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: List<CourseBE>
+    courseBLL-->>frm: List<CourseBE>
+    frm-->>Director: Muestra el formulario "Informes Personalizados" con la lista de tipos, la lista de cursos y los botones "Generar" y "Exportar"
+
+    Director->>frm: Selecciona el campo "Tipo de informe"
+    Director->>frm: Selecciona el campo "Curso"
+    Director->>frm: Presiona el botón "Generar"
+    frm->>reportBLL: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
+    Note over frm: Si el tipo seleccionado es "Notas por curso" invoca GetGradesReport(courseId: int): List<GradeReportLineBE>
+    reportBLL->>reportMPP: GetAttendanceReport(courseId: int): List<AttendanceReportLineBE>
+    reportMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta que cruza inscripciones y asistencia del curso
+    bd-->>dal: Filas resultantes
+    dal-->>reportMPP: DataTable
+    reportMPP-->>reportBLL: List<AttendanceReportLineBE>
+    reportBLL-->>frm: List<AttendanceReportLineBE>
+    frm-->>Director: Muestra la grilla con el informe del tipo y el curso seleccionados
+
+    Director->>frm: Presiona el botón "Exportar"
+    frm-->>Director: Muestra el diálogo "Guardar como" en formato CSV
+    Director->>frm: Confirma el nombre y la ubicación del archivo
+    frm-->>Director: Muestra "Informe exportado correctamente."

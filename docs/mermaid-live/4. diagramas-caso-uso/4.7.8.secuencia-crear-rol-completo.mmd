@@ -1,0 +1,55 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant frm as frm : RoleManagementForm
+    participant roleBLL as roleBLL : RoleBLL
+    participant roleMPP as roleMPP : RoleMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Administrador,bd: CU-07 Crear Rol - flujo básico y flujos alternativos
+
+    Administrador->>frm: Elige "Roles" en el menú "Administración"
+    frm->>frm: _roleBLL = ServiceLocatorBLL.CreateRoleBLL()
+    frm->>roleBLL: GetAllPermissions(): List<PermissionBE>
+    roleBLL->>roleMPP: GetAllPermissions(): List<PermissionBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del catálogo de permisos
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<PermissionBE>
+    roleBLL-->>frm: List<PermissionBE>
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>
+    frm-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
+
+    Administrador->>frm: Completa el campo "Rol:" y presiona "Crear Rol"
+    alt Nombre de rol vacío
+        frm-->>Administrador: Muestra "El nombre del rol es obligatorio. (Código: VAL-004)" y devuelve el foco al campo
+    else Nombre informado
+        create participant role as role : RoleBE
+        frm->>role: new RoleBE()
+        frm->>roleBLL: Save(role: RoleBE): int
+        roleBLL->>roleMPP: Save(role: RoleBE): int
+        roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        dal->>bd: Alta del rol con retorno de identidad (SCOPE_IDENTITY)
+        bd-->>dal: Fila con el nuevo id
+        dal-->>roleMPP: DataTable
+        roleMPP-->>roleBLL: int
+        roleBLL-->>frm: int
+        frm->>roleBLL: FindAll(): List<RoleBE>
+        roleBLL->>roleMPP: FindAll(): List<RoleBE>
+        roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        dal->>bd: Consulta parametrizada de roles
+        bd-->>dal: Filas resultantes
+        dal-->>roleMPP: DataTable
+        roleMPP-->>roleBLL: List<RoleBE>
+        roleBLL-->>frm: List<RoleBE>
+        frm-->>Administrador: Agrega el rol a la lista, lo selecciona y limpia el campo "Rol:"
+    end

@@ -73,6 +73,20 @@ namespace MPP
             return MapClassroom(table.Rows[0]);
         }
 
+        public List<ClassroomBE> FindByClassroomName(string name)
+        {
+            string query = @"SELECT id, name, capacity, is_active, created_at, last_update
+                            FROM classrooms
+                            WHERE name = @name";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@name", name)
+            };
+
+            return FindMany(query, parameters);
+        }
+
         public List<ClassroomBE> FindAll()
         {
             string query = @"SELECT id, name, capacity, is_active, created_at, last_update

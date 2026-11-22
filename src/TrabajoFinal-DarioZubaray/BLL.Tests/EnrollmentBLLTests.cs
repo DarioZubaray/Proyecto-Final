@@ -42,7 +42,8 @@ namespace BLL.Tests
                 Id = courseId,
                 DayOfWeek = 1,
                 StartTime = new TimeSpan(8, 0, 0),
-                EndTime = new TimeSpan(10, 0, 0)
+                EndTime = new TimeSpan(10, 0, 0),
+                IsActive = true
             });
             _mockEnrollmentMPP.Setup(m => m.FindByStudentId(studentId)).Returns(new List<EnrollmentBE>());
             _mockEnrollmentMPP.Setup(m => m.Enroll(courseId, studentId)).Returns(true);
@@ -82,7 +83,25 @@ namespace BLL.Tests
                 Id = 1,
                 DayOfWeek = null,
                 StartTime = null,
-                EndTime = null
+                EndTime = null,
+                IsActive = true
+            });
+
+            _enrollmentBLL.Enroll(1, 20);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Enroll_CourseInactive_ThrowsException()
+        {
+            _mockEnrollmentMPP.Setup(m => m.ExistsActiveEnrollment(1, 20)).Returns(false);
+            _mockCourseBLL.Setup(m => m.FindById(1)).Returns(new CourseBE
+            {
+                Id = 1,
+                DayOfWeek = 1,
+                StartTime = new TimeSpan(8, 0, 0),
+                EndTime = new TimeSpan(10, 0, 0),
+                IsActive = false
             });
 
             _enrollmentBLL.Enroll(1, 20);
@@ -101,7 +120,8 @@ namespace BLL.Tests
                 Id = courseId,
                 DayOfWeek = 1,
                 StartTime = new TimeSpan(8, 0, 0),
-                EndTime = new TimeSpan(10, 0, 0)
+                EndTime = new TimeSpan(10, 0, 0),
+                IsActive = true
             });
 
             var existingEnrollments = new List<EnrollmentBE>

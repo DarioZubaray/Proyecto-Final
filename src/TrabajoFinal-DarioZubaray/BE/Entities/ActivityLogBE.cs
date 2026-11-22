@@ -13,7 +13,7 @@ namespace BE.Entities
         public DateTime CreatedAt { get; set; }
         #endregion
 
-        #region Constructores
+        #region Constructor
         public ActivityLogBE() { }
 
         public ActivityLogBE(int userId, string action, string formName, string description)

@@ -8,6 +8,7 @@ namespace BLL.Interfaces
     {
         bool Delete(UserBE user);
         bool Save(UserBE user);
+        bool IsUsernameTaken(string userName);
         UserBE FindById(UserBE user);
         List<UserBE> FindAll();
         List<UserBE> FindByUserName(string userName);
@@ -15,5 +16,6 @@ namespace BLL.Interfaces
         bool UpdateTheme(int userId, string theme);
         bool ChangePassword(int userId, string currentPassword, string newPassword);
         int CountByRoleId(int roleId);
+        bool HasRegisteredUsers();
     }
 }

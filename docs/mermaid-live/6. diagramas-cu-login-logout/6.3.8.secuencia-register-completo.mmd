@@ -1,0 +1,46 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant frm as frm : RegisterForm
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Usuario,bd: CU-03 Register - flujo básico y flujos alternativos
+
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    Usuario->>frm: Completa "Usuario", "Contraseña", "Reingreso Contraseña", "Idioma" y "Tema" y presiona "Registrarse"
+
+    alt El campo "Usuario" está vacío
+        frm-->>Usuario: Muestra "El nombre de usuario es obligatorio. (Código: VAL-001)" y devuelve el foco al campo
+    else El nombre de usuario ya existe
+        frm->>userBLL: IsUsernameTaken(userName: string): bool
+        userBLL->>userMPP: FindByUserName(userName: string): List<UserBE>
+        userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        dal->>bd: Consulta parametrizada de usuarios
+        bd-->>dal: Filas resultantes
+        dal-->>userMPP: DataTable
+        userMPP-->>userBLL: List<UserBE>
+        userBLL-->>frm: true
+        frm-->>Usuario: Muestra "El usuario ya existe. (Código: VAL-008)" y mantiene el formulario abierto
+    else El campo "Contraseña" está vacío
+        frm-->>Usuario: Muestra "La contraseña es obligatoria. (Código: VAL-002)" y devuelve el foco al campo
+    else El reingreso de contraseña no coincide
+        frm-->>Usuario: Muestra "Las contraseñas no coinciden. (Código: VAL-003)" y devuelve el foco al campo
+    else Datos correctos
+        frm->>userBLL: Save(user: UserBE): bool
+        userBLL->>userMPP: Save(user: UserBE): bool
+        userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+        dal->>bd: Alta del usuario administrador (rol Admin)
+        bd-->>dal: 1 fila afectada
+        dal-->>userMPP: true
+        userMPP-->>userBLL: true
+        userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+        userBLL-->>frm: true
+        frm-->>Usuario: Muestra "Cuenta creada exitosamente."
+        frm->>frm: CultureHelperBLL.SetCulture(languageCode: string): void
+        frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+        frm->>frm: SessionManagerBLL.CreateSession(user: UserBE): SessionManagerBLL
+        frm-->>Usuario: Avanza a la pantalla principal (MainForm) con la sesión iniciada
+    end

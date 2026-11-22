@@ -11,16 +11,21 @@ namespace BLL.Tests
     [TestClass]
     public class ActivityBLLTests
     {
+        #region Propiedades
         private Mock<IActivityMPP> _mockActivityMPP;
         private ActivityBLL _activityBLL;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
             _mockActivityMPP = new Mock<IActivityMPP>();
             _activityBLL = new ActivityBLL(_mockActivityMPP.Object);
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void LogFormAccess_UsesDecoratorAndSavesLog()
         {
@@ -110,6 +115,7 @@ namespace BLL.Tests
 
             Assert.AreEqual(1, _activityBLL.TotalPages(7, 10));
         }
+        #endregion
     }
 
     internal class TestActivity : IActivityLogEntryBE

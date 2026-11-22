@@ -1,0 +1,37 @@
+sequenceDiagram
+    autonumber
+    actor Coordinador
+    participant frm as frm : ClassroomForm
+    participant classroomBLL as classroomBLL : ClassroomBLL
+    participant classroomMPP as classroomMPP : ClassroomMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Coordinador,bd: CU-10 Crear Aula - flujo básico y flujos alternativos
+
+    Coordinador->>frm: Accede a "Aulas" del menú "Administración" y presiona "Nuevo"
+    frm->>frm: _classroomBLL = ServiceLocatorBLL.CreateClassroomBLL()
+    create participant classroom as classroom : ClassroomBE
+    frm->>classroom: new ClassroomBE()
+    frm-->>Coordinador: Muestra el formulario de alta de aula con sus campos
+    Coordinador->>frm: Completa el campo "Nombre"
+    Coordinador->>frm: Completa el campo "Capacidad"
+    Coordinador->>frm: Presiona el botón "Guardar"
+
+    alt Nombre vacío
+        frm->>frm: ValidateInputs(): bool
+        frm-->>Coordinador: Muestra "El nombre es obligatorio." y devuelve el foco al campo "Nombre"
+    else Capacidad no válida
+        frm->>frm: ValidateInputs(): bool
+        frm-->>Coordinador: Muestra "La capacidad debe ser mayor a 0." y devuelve el foco al campo "Capacidad"
+    else Datos correctos
+        frm->>classroomBLL: Save(classroom: ClassroomBE): bool
+        classroomBLL->>classroomMPP: Save(classroom: ClassroomBE): bool
+        classroomMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+        dal->>bd: Alta del aula con retorno de identidad (SCOPE_IDENTITY)
+        bd-->>dal: Identidad de la fila
+        dal-->>classroomMPP: int
+        classroomMPP-->>classroomBLL: true
+        classroomBLL-->>frm: true
+        frm-->>Coordinador: Muestra "Aula creada exitosamente." y cierra el formulario
+    end

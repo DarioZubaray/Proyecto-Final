@@ -1,0 +1,49 @@
+sequenceDiagram
+    autonumber
+    actor Coordinador
+    participant frm as frm : StudentForm
+    participant studentBLL as studentBLL : StudentBLL
+    participant studentMPP as studentMPP : StudentMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Coordinador,bd: CU-12 Crear Alumno - flujo básico y flujos alternativos
+
+    Coordinador->>frm: Accede a "Alumnos" del menú "Administración" y presiona "Nuevo"
+    frm->>frm: _studentBLL = ServiceLocatorBLL.CreateStudentBLL()
+    create participant student as student : StudentBE
+    frm->>student: new StudentBE()
+    frm-->>Coordinador: Muestra el formulario de alta de alumno con sus campos
+    Coordinador->>frm: Completa el campo "Nombre"
+    Coordinador->>frm: Completa el campo "Apellido"
+    Coordinador->>frm: Completa el campo "Documento"
+    Coordinador->>frm: Completa el campo "Email"
+    Coordinador->>frm: Selecciona el campo "Número de Teléfono"
+    Coordinador->>frm: Presiona el botón "Guardar"
+
+    alt Campos obligatorios incompletos
+        frm->>frm: ValidateInputs(): bool
+        frm-->>Coordinador: Muestra "El nombre del alumno es obligatorio. (Código: BIZ-009)", "El apellido del alumno es obligatorio. (Código: BIZ-010)" o "El documento del alumno es obligatorio. (Código: BIZ-011)" y devuelve el foco al campo observado
+    else Datos correctos
+        frm->>studentBLL: Save(student: StudentBE): bool
+        studentBLL->>studentMPP: FindByDocument(document: string): StudentBE
+        studentMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        dal->>bd: Consulta del documento del alumno
+        bd-->>dal: Filas resultantes
+        dal-->>studentMPP: DataTable
+        studentMPP-->>studentBLL: null
+
+        alt Documento ya registrado
+            studentBLL-->>frm: Rechaza: "Ya existe un alumno registrado con ese documento."
+            frm-->>Coordinador: Muestra "Ya existe un alumno registrado con ese documento." y devuelve el foco al campo "Documento"
+        else Datos válidos para persistir
+            studentBLL->>studentMPP: Insert(student: StudentBE): bool
+            studentMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+            dal->>bd: Alta del alumno con retorno de identidad (SCOPE_IDENTITY)
+            bd-->>dal: Identidad de la fila
+            dal-->>studentMPP: int
+            studentMPP-->>studentBLL: true
+            studentBLL-->>frm: true
+            frm-->>Coordinador: Muestra "Alumno guardado correctamente.", cierra el formulario y refresca el listado
+        end
+    end

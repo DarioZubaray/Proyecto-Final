@@ -53,6 +53,20 @@ namespace MPP
             return role;
         }
 
+        public List<RoleBE> FindByRoleName(string roleName)
+        {
+            string query = @"SELECT id, name
+                            FROM roles
+                            WHERE name = @roleName";
+
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                new SqlParameter("@roleName", roleName)
+            };
+
+            return FindMany(query, parameters);
+        }
+
         public List<RoleBE> FindAll()
         {
             string query = @"SELECT id, name FROM roles";
@@ -203,6 +217,30 @@ namespace MPP
             }
 
             return permissions;
+        }
+        #endregion
+
+        #region Métodos privados
+        private List<RoleBE> FindMany(string query, SqlParameter[] parameters)
+        {
+            List<RoleBE> roles = new List<RoleBE>();
+            DataTable table = _access.Read(query, parameters);
+
+            foreach (DataRow row in table.Rows)
+            {
+                roles.Add(MapRole(row));
+            }
+
+            return roles;
+        }
+
+        private RoleBE MapRole(DataRow row)
+        {
+            return new RoleBE
+            {
+                Id = Convert.ToInt32(row["id"]),
+                Name = row["name"].ToString()
+            };
         }
         #endregion
     }

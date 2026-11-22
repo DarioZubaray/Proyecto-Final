@@ -1,0 +1,19 @@
+flowchart LR
+    subgraph USR[Coordinador / Director / Profesor]
+        direction TB
+        U1([Inicio])
+        U2[Selecciona un curso y consulta su rendimiento]
+        U3[Revisa asistencia por alumno, notas cargadas y promedio]
+        U4[Genera un informe de asistencia o de notas]
+        U5[Exporta el informe a CSV para imprimirlo]
+        U6([Fin])
+    end
+    subgraph SIS[Sistema]
+        direction TB
+        S1[Cruza inscripciones, asistencia y notas del curso]
+        S2[Muestra la grilla con los indicadores]
+        S3[Exporta el informe en pantalla a un archivo CSV]
+    end
+    U1 --> U2 --> S1 --> S2 --> U3 --> U4
+    U4 --> S1
+    S1 --> S2 --> U5 --> S3 --> U6

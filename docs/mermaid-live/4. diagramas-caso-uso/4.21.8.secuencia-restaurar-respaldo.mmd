@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant frm as frm : BackupForm
+    participant backupBLL as backupBLL : BackupBLL
+    participant backupMPP as backupMPP : BackupMPP
+    participant bd as Base de Datos
+
+    Note over Administrador,bd: CU-21 Restaurar Respaldo - flujo básico (pasos 1 a 10)
+
+    Administrador->>frm: Elige "Respaldo y Restauración" en el menú "Administración"
+    frm->>frm: _backupBLL = ServiceLocatorBLL.CreateBackupBLL()
+    frm-->>Administrador: Muestra el formulario "Respaldo y Restauración" con los botones "Generar respaldo" y "Restaurar respaldo"
+
+    Administrador->>frm: Presiona el botón "Restaurar respaldo"
+    frm-->>Administrador: Muestra el diálogo "Abrir" en formato .bak
+    Administrador->>frm: Selecciona el archivo de respaldo y confirma el diálogo
+    frm-->>Administrador: Muestra la advertencia "La restauración reemplazará los datos actuales de la base de datos y desconectará a los demás usuarios. ¿Desea continuar?"
+    Administrador->>frm: Presiona "Sí"
+    frm->>backupBLL: RestoreBackup(filePath: string): bool
+    backupBLL->>backupMPP: RestoreBackup(filePath: string): bool
+    backupMPP->>bd: Restauración de la base de datos con el contenido del archivo seleccionado (excluye conexiones)
+    bd-->>backupMPP: Confirmación de la operación
+    backupMPP-->>backupBLL: true
+    backupBLL-->>frm: true
+    frm-->>Administrador: Muestra "Respaldo restaurado correctamente."

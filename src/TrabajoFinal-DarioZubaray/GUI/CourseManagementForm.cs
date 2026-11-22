@@ -65,7 +65,11 @@ namespace TrabajoFinal_DarioZubaray
 
         private string GetDayOfWeekName(int? day)
         {
-            if (!day.HasValue) return "-";
+            if (!day.HasValue)
+            {
+                return "-";
+            }
+
             switch (day.Value)
             {
                 case 1: return Resources.Day_Monday;

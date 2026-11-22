@@ -1,0 +1,143 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant frm as frm : LoginForm
+    participant authBLL as authBLL : AuthBLL
+    participant integrityBLL as integrityBLL : IntegrityBLL
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant activityBLL as activityBLL : ActivityBLL
+    participant activityMPP as activityMPP : ActivityMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Usuario,bd: CU-01 Login - flujo básico y flujos alternativos
+
+    frm->>frm: _authBLL = ServiceLocatorBLL.CreateAuthBLL()
+    frm->>frm: _integrityBLL = ServiceLocatorBLL.CreateIntegrityBLL()
+    Usuario->>frm: Completa "Usuario" y "Contraseña" y presiona "Ingresar"
+
+    alt Campos "Usuario" o "Contraseña" vacíos
+        frm-->>Usuario: Muestra "Usuario y contraseña son obligatorios. (AUTH-001)"
+    else Campos completos
+        frm->>integrityBLL: Scan(): List<IntegrityViolationBE>
+        integrityBLL-->>frm: List<IntegrityViolationBE>
+        Note over authBLL: Evalúa el estado de integridad registrado por Scan (IntegrityStateBLL)
+
+        frm->>authBLL: Login(userName: string, password: string): LoginResultBE
+
+        alt Integridad violada y userName no es el Administrador
+            authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = INT-001)
+            frm-->>Usuario: Muestra "Acceso bloqueado: se detectaron inconsistencias en la base de datos. Solo el administrador del sistema puede ingresar. (INT-001)"
+        else userName válido o integridad correcta
+            authBLL->>userMPP: GetByUserName(userName: string): UserBE
+            userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+            dal->>bd: Consulta parametrizada de usuarios
+            bd-->>dal: Filas resultantes
+            dal-->>userMPP: DataTable
+            userMPP-->>authBLL: UserBE
+
+            alt Usuario inexistente
+                authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = AUTH-002)
+                frm-->>Usuario: Muestra "Usuario o contraseña incorrectos. (AUTH-002)"
+            else Integridad violada y el usuario recuperado no es el sysadmin
+                authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = INT-001)
+                frm-->>Usuario: Muestra "Acceso bloqueado: se detectaron inconsistencias en la base de datos. Solo el administrador del sistema puede ingresar. (INT-001)"
+            else Cuenta inactiva (distinta del Administrador)
+                authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = AUTH-003)
+                frm-->>Usuario: Muestra "Usuario bloqueado. Contacte al administrador. (AUTH-003)"
+            else Cuenta activa
+                authBLL->>authBLL: VerifyPassword(password: string, passwordHash: string): bool
+
+                alt Contraseña inválida y el usuario es el Administrador
+                    authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = AUTH-002)
+                    frm-->>Usuario: Muestra "Usuario o contraseña incorrectos. (AUTH-002)"
+                else Contraseña inválida con reintentos disponibles
+                    authBLL->>userMPP: UpdateRetries(userId: int, retriesCount: int): bool
+                    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                    dal->>bd: Actualización del contador de reintentos
+                    bd-->>dal: 1 fila afectada
+                    dal-->>userMPP: true
+                    userMPP-->>authBLL: true
+                    authBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+                    authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = AUTH-005)
+                    frm-->>Usuario: Muestra "Usuario o contraseña incorrectos. Intentos restantes: N. (AUTH-005)"
+                else Tercer intento fallido (la cuenta queda desactivada)
+                    authBLL->>userMPP: Deactivate(userId: int): bool
+                    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                    dal->>bd: Desactivación de la cuenta
+                    bd-->>dal: 1 fila afectada
+                    dal-->>userMPP: true
+                    userMPP-->>authBLL: true
+                    authBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+                    authBLL-->>frm: LoginResultBE (Success = false, ErrorCode = AUTH-004)
+                    frm-->>Usuario: Muestra "Usuario bloqueado por exceso de intentos fallidos. Contacte al administrador. (AUTH-004)"
+                else Contraseña válida
+                    authBLL->>userMPP: UpdateLastUpdate(userId: int, lastUpdate: DateTime): bool
+                    alt Cuenta con reintentos acumulados
+                        authBLL->>userMPP: UpdateRetries(userId: int, retriesCount: 0): bool
+                    end
+                    authBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+                    authBLL->>userBLL: IsAdminName(userName: string): bool
+                    authBLL-->>frm: LoginResultBE (Success = true, RequiresTwoFactor = true si es Administrador)
+
+                    alt Cuenta con segundo factor (Administrador)
+                        frm-->>Usuario: Muestra el diálogo "Doble Factor de Autenticación"
+                        alt El usuario cancela el diálogo
+                            frm-->>Usuario: Vuelve a la pantalla de inicio de sesión sin autenticar
+                        else El usuario ingresa un código
+                            Usuario->>frm: Ingresa el código y presiona "Aceptar"
+                            frm->>authBLL: ValidateTwoFactor(user: UserBE, code: string): bool
+                            alt Código inválido
+                                authBLL-->>frm: false
+                                frm-->>Usuario: Muestra "Código de doble factor inválido. (AUTH-006)" y vuelve al diálogo
+                            else Código correcto
+                                authBLL-->>frm: true
+                            end
+                        end
+                    end
+
+                    alt Violaciones de integridad pendientes (solo Administrador)
+                        frm->>integrityBLL: GetViolations(): List<IntegrityViolationBE>
+                        integrityBLL-->>frm: List<IntegrityViolationBE>
+                        frm-->>Usuario: Muestra la pantalla "Auditoría de Integridad (DVH)" con las violaciones detectadas
+                        Usuario->>frm: Selecciona una fila y presiona "Aceptar y regenerar hash"
+                        frm->>integrityBLL: AcceptAndRegenerate(violation: IntegrityViolationBE): bool
+                        Note over integrityBLL,userBLL: Delegado en UserDvhVerifierBLL (verificador de la tabla users)
+                        integrityBLL->>userBLL: FindById(user: UserBE): UserBE
+                        userBLL->>userMPP: FindById(user: UserBE): UserBE
+                        userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                        dal->>bd: Consulta parametrizada de usuarios
+                        bd-->>dal: Filas resultantes
+                        dal-->>userMPP: DataTable
+                        userMPP-->>userBLL: UserBE
+                        userBLL-->>integrityBLL: UserBE
+                        integrityBLL->>userBLL: Save(user: UserBE): bool
+                        userBLL->>userMPP: Save(user: UserBE): bool
+                        userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                        dal->>bd: Actualización de la fila afectada
+                        bd-->>dal: 1 fila afectada
+                        dal-->>userMPP: true
+                        userMPP-->>userBLL: true
+                        userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+                        userBLL-->>integrityBLL: true
+                        integrityBLL->>integrityBLL: Scan(): List<IntegrityViolationBE>
+                        integrityBLL-->>frm: true
+                        frm-->>Usuario: Muestra "Hash regenerado correctamente."
+                        Note over frm,Usuario: Mientras queden violaciones el Administrador puede repararlas o elegir continuar igual
+                    end
+
+                    frm->>activityBLL: LogLogin(userId: int, description: string): void
+                    activityBLL->>activityMPP: Save(log: ActivityLogBE): bool
+                    activityMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                    dal->>bd: Registro de auditoría de acceso
+                    bd-->>dal: 1 fila afectada
+                    dal-->>activityMPP: true
+                    activityMPP-->>activityBLL: true
+                    frm->>frm: SessionManagerBLL.CreateSession(user: UserBE): SessionManagerBLL
+                    frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+                    frm-->>Usuario: Muestra la pantalla principal con las opciones de su rol
+                end
+            end
+        end
+    end

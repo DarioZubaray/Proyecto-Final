@@ -1,0 +1,110 @@
+sequenceDiagram
+    autonumber
+    actor Profesor
+    participant frm as frm : AttendanceForm
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant attendanceBLL as attendanceBLL : AttendanceBLL
+    participant attendanceMPP as attendanceMPP : AttendanceMPP
+    participant enrollmentBLL as enrollmentBLL : EnrollmentBLL
+    participant enrollmentMPP as enrollmentMPP : EnrollmentMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Profesor,bd: CU-16 Registrar Asistencia - flujo básico y flujos alternativos
+
+    Profesor->>frm: Accede al formulario "Registrar Asistencia"
+    frm->>frm: _attendanceBLL = ServiceLocatorBLL.CreateAttendanceBLL()
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL()
+    frm->>courseBLL: FindByTeacherId(teacherId: int): List<CourseBE>
+    courseBLL->>courseMPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de cursos del docente
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: List<CourseBE>
+    courseBLL-->>frm: List<CourseBE>
+
+    alt El Profesor no tiene cursos asignados
+        frm-->>Profesor: Muestra "No tiene cursos asignados." y deshabilita "Buscar" y "Guardar Asistencia"
+    else Tiene cursos asignados
+        frm-->>Profesor: Muestra sus cursos, el campo "Fecha" y habilita "Buscar" y "Guardar Asistencia"
+        Profesor->>frm: Selecciona "Curso" y "Fecha" y presiona "Buscar"
+
+        alt El campo "Curso" no está seleccionado
+            frm-->>Profesor: Muestra "Debe seleccionar un curso."
+        else Curso seleccionado
+            frm->>attendanceBLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+            attendanceBLL->>attendanceMPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+            attendanceMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+            dal->>bd: Consulta de pertenencia del curso
+            bd-->>dal: Cantidad de coincidencias
+            dal-->>attendanceMPP: int
+            attendanceMPP-->>attendanceBLL: int
+
+            alt El curso no le pertenece al Profesor
+                attendanceBLL-->>frm: false
+                frm-->>Profesor: Muestra "No tiene permiso para registrar asistencia en este curso."
+            else Curso asignado al Profesor
+                attendanceBLL-->>frm: true
+                frm->>enrollmentBLL: FindAll(): List<EnrollmentBE>
+                enrollmentBLL->>enrollmentMPP: FindAll(): List<EnrollmentBE>
+                enrollmentMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                dal->>bd: Consulta parametrizada de inscripciones
+                bd-->>dal: Filas resultantes
+                dal-->>enrollmentMPP: DataTable
+                enrollmentMPP-->>enrollmentBLL: List<EnrollmentBE>
+                enrollmentBLL-->>frm: List<EnrollmentBE>
+
+                alt El curso no tiene alumnos inscriptos
+                    frm-->>Profesor: Muestra "No hay alumnos inscritos en este curso."
+                else Con alumnos inscriptos
+                    frm->>attendanceBLL: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+                    attendanceBLL->>attendanceMPP: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+                    attendanceMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                    dal->>bd: Consulta parametrizada de asistencias
+                    bd-->>dal: Filas resultantes
+                    dal-->>attendanceMPP: DataTable
+                    attendanceMPP-->>attendanceBLL: List<AttendanceBE>
+                    attendanceBLL-->>frm: List<AttendanceBE>
+                    frm-->>Profesor: Muestra la grilla de alumnos con la asistencia previa de esa fecha
+
+                    Profesor->>frm: Marca o desmarca la casilla "Presente" de cada alumno y presiona "Guardar Asistencia"
+
+                    alt Guardar sin curso seleccionado o con la grilla vacía
+                        frm-->>Profesor: Muestra "Debe seleccionar un curso." o "No hay alumnos inscritos en este curso."
+                    else Curso seleccionado y grilla con alumnos
+                        alt La fecha de la asistencia está fuera del período del curso
+                            frm->>frm: IsDateWithinCoursePeriod(date: DateTime): bool
+                            frm-->>Profesor: Muestra "La fecha de la asistencia debe estar dentro del período del curso. (Código: BIZ-017)"
+                        else Fecha dentro del período del curso
+                            frm->>attendanceBLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+                            attendanceBLL->>attendanceMPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+                            attendanceMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+                            dal->>bd: Consulta de pertenencia del curso
+                            bd-->>dal: Cantidad de coincidencias
+                            dal-->>attendanceMPP: int
+                            attendanceMPP-->>attendanceBLL: int
+
+                            alt El curso no le pertenece al Profesor
+                                attendanceBLL-->>frm: false
+                                frm-->>Profesor: Muestra "No tiene permiso para registrar asistencia en este curso."
+                            else Curso asignado al Profesor
+                                attendanceBLL-->>frm: true
+                                frm->>attendanceBLL: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+                                attendanceBLL->>attendanceMPP: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+                                attendanceMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                                dal->>bd: Registro de asistencia por alumno
+                                bd-->>dal: 1 fila afectada
+                                dal-->>attendanceMPP: true
+                                attendanceMPP-->>attendanceBLL: true
+                                attendanceBLL-->>frm: true
+                                frm-->>Profesor: Muestra "Asistencia guardada exitosamente."
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end

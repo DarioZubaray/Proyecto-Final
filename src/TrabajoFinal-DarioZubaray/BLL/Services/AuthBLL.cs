@@ -13,13 +13,15 @@ namespace BLL.Services
     {
         #region Propiedades
         private readonly IUserMPP _userMPP;
+        private readonly ITwoFactorBLL _twoFactor;
         private const int MAX_RETRIES = 3;
         #endregion
 
         #region Constructor
-        public AuthBLL(IUserMPP userMPP)
+        public AuthBLL(IUserMPP userMPP, ITwoFactorBLL twoFactor)
         {
             _userMPP = userMPP;
+            _twoFactor = twoFactor;
         }
         #endregion
 
@@ -31,6 +33,11 @@ namespace BLL.Services
                 return CreateLoginFailed(Resources.Auth_RequiredFields, ErrorCodesBLL.Auth.RequiredFields);
             }
 
+            if (IntegrityStateBLL.LastScanHasFailures && !UserBLL.IsAdminName(userName))
+            {
+                return CreateLoginFailed(Resources.Auth_IntegrityBlocked, ErrorCodesBLL.Integrity.Blocked);
+            }
+
             UserBE user = _userMPP.GetByUserName(userName);
 
             if (user == null)
@@ -38,7 +45,12 @@ namespace BLL.Services
                 return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
             }
 
-            if (!user.IsActive)
+            if (IntegrityStateBLL.LastScanHasFailures && !UserBLL.IsSysAdmin(user))
+            {
+                return CreateLoginFailed(Resources.Auth_IntegrityBlocked, ErrorCodesBLL.Integrity.Blocked);
+            }
+
+            if (!user.IsActive && !IsAdmin(user))
             {
                 return CreateLoginFailed(Resources.Auth_UserBlocked, ErrorCodesBLL.Auth.UserBlocked);
             }
@@ -46,9 +58,19 @@ namespace BLL.Services
             return AuthenticateUser(user, password);
         }
 
+        public bool ValidateTwoFactor(UserBE user, string code)
+        {
+            if (user == null || string.IsNullOrEmpty(code))
+            {
+                return false;
+            }
+
+            return _twoFactor.Verify(user.UserName, code);
+        }
+
         public bool Logout(UserBE user)
         {
-            return _userMPP.Save(user);
+            return _userMPP.Save(user) && DVHHelperBLL.Regenerate(_userMPP, user);
         }
 
         public bool TestConnection()
@@ -62,6 +84,11 @@ namespace BLL.Services
         {
             return !string.IsNullOrEmpty(userName)
                 && !string.IsNullOrEmpty(password);
+        }
+
+        private bool IsAdmin(UserBE user)
+        {
+            return user != null && UserBLL.IsAdminName(user.UserName);
         }
 
         private LoginResultBE AuthenticateUser(UserBE user, string password)
@@ -87,25 +114,35 @@ namespace BLL.Services
                 _userMPP.UpdateRetries(user.Id, 0);
             }
 
+            DVHHelperBLL.Regenerate(_userMPP, user.Id);
+
             return new LoginResultBE
             {
                 Success = true,
                 Message = Resources.Auth_LoginSuccess,
-                User = user
+                User = user,
+                RequiresTwoFactor = IsAdmin(user)
             };
         }
 
         private LoginResultBE LoginFailed(UserBE user)
         {
+            if (IsAdmin(user))
+            {
+                return CreateLoginFailed(Resources.Auth_InvalidCredentials, ErrorCodesBLL.Auth.InvalidCredentials);
+            }
+
             user.RetriesCount++;
 
             if (user.RetriesCount >= MAX_RETRIES)
             {
                 _userMPP.Deactivate(user.Id);
+                DVHHelperBLL.Regenerate(_userMPP, user.Id);
                 return CreateLoginFailed(Resources.Auth_MaxRetriesExceeded, ErrorCodesBLL.Auth.MaxRetriesExceeded);
             }
 
             _userMPP.UpdateRetries(user.Id, user.RetriesCount);
+            DVHHelperBLL.Regenerate(_userMPP, user.Id);
             int retriesLeft = MAX_RETRIES - user.RetriesCount;
             return CreateLoginFailed(
                 string.Format(Resources.Auth_RetriesLeft, retriesLeft),

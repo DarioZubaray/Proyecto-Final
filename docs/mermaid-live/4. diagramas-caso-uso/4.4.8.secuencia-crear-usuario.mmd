@@ -1,0 +1,71 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant mgmtForm as mgmtForm : UserManagementForm
+    participant frm as frm : UserForm
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant roleBLL as roleBLL : RoleBLL
+    participant roleMPP as roleMPP : RoleMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Administrador,bd: CU-04 Crear Usuario - flujo básico (pasos 1 a 11)
+
+    Administrador->>mgmtForm: Elige "Usuarios" en el menú "Administración"
+    mgmtForm->>mgmtForm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    mgmtForm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>mgmtForm: Presiona el botón "Nuevo"
+    mgmtForm-->>frm: ShowDialog() retorna DialogResult.OK
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    frm->>frm: _roleBLL = ServiceLocatorBLL.CreateRoleBLL()
+    create participant user as user : UserBE
+    frm->>user: new UserBE()
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>
+    frm-->>Administrador: Muestra el formulario "Nuevo Usuario" con los campos y la lista de roles
+
+    Administrador->>frm: Completa el campo "Nombre de usuario"
+    Administrador->>frm: Completa el campo "Contraseña"
+    Administrador->>frm: Selecciona el campo "Rol"
+    Administrador->>frm: Presiona el botón "Guardar"
+
+    frm->>userBLL: Save(user: UserBE): bool
+    userBLL->>userMPP: Save(user: UserBE): bool
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Alta del usuario con retorno de la fila (SCOPE_IDENTITY)
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: true
+    userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro del dígito verificador (DVH)
+    bd-->>dal: 1 fila afectada
+    dal-->>userMPP: true
+    userMPP-->>userBLL: true
+    userBLL-->>frm: true
+    frm-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+    mgmtForm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Vuelve a la grilla con el usuario nuevo incluido

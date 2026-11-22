@@ -1,0 +1,87 @@
+sequenceDiagram
+    autonumber
+    actor Profesor
+    participant frm as frm : EvaluationForm
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant enrollmentBLL as enrollmentBLL : EnrollmentBLL
+    participant enrollmentMPP as enrollmentMPP : EnrollmentMPP
+    participant evaluationBLL as evaluationBLL : EvaluationBLL
+    participant evaluationMPP as evaluationMPP : EvaluationMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Profesor,bd: CU-17 Registrar Evaluación y Notas - flujos básicos y alternativos
+
+    Profesor->>frm: Elige "Evaluaciones" en el menú "Académico"
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL()
+    frm->>frm: _evaluationBLL = ServiceLocatorBLL.CreateEvaluationBLL()
+    frm->>courseBLL: FindByTeacherId(teacherId: int): List<CourseBE>
+    courseBLL->>courseMPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de los cursos del docente
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: List<CourseBE>
+    courseBLL-->>frm: List<CourseBE>
+
+    alt El docente no tiene cursos asignados
+        frm-->>Profesor: Muestra "No tiene cursos asignados." y deja deshabilitados "Cargar alumnos" y "Guardar"
+    else El docente tiene cursos asignados
+        frm-->>Profesor: Muestra el formulario "Evaluaciones" con la lista de cursos, los campos "Nombre" y "Fecha" y los botones "Cargar alumnos" y "Guardar"
+        Profesor->>frm: Selecciona el campo "Curso", completa "Nombre" y "Fecha"
+        Profesor->>frm: Presiona el botón "Cargar alumnos"
+        frm->>enrollmentBLL: FindAll(): List<EnrollmentBE>
+        enrollmentBLL->>enrollmentMPP: FindAll(): List<EnrollmentBE>
+        enrollmentMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+        dal->>bd: Consulta parametrizada de inscripciones con nombre de alumno
+        bd-->>dal: Filas resultantes
+        dal-->>enrollmentMPP: DataTable
+        enrollmentMPP-->>enrollmentBLL: List<EnrollmentBE>
+        enrollmentBLL-->>frm: List<EnrollmentBE>
+        Note over frm: Filtra las inscripciones activas del curso seleccionado
+
+        alt El curso no tiene alumnos inscriptos
+            frm-->>Profesor: Muestra "El curso seleccionado no tiene alumnos inscriptos."
+        else Hay alumnos inscriptos
+            frm-->>Profesor: Muestra la grilla con los alumnos inscriptos y la columna "Nota" editable
+            Profesor->>frm: Completa la "Nota" de cada alumno y presiona "Guardar"
+            Note over frm: Solo se envían las notas informadas. Las celdas vacías quedan sin registrar
+
+            alt El nombre de la evaluación está vacío
+                frm->>frm: ValidateInputs(): bool
+                frm-->>Profesor: Muestra "El nombre de la evaluación es obligatorio. (Código: BIZ-013)" y devuelve el foco al campo
+            else Una nota está fuera del rango 0 a 10
+                frm->>frm: CollectGrades(): List<GradeBE>
+                frm-->>Profesor: Muestra "La nota debe estar entre 0 y 10. (Código: BIZ-015)" y devuelve el foco a la celda inválida
+            else Datos válidos en la interfaz
+                frm->>evaluationBLL: Save(evaluation: EvaluationBE, grades: List<GradeBE>): bool
+                evaluationBLL->>courseMPP: FindByTeacherId(teacherId: int): List<CourseBE>
+                courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+                dal->>bd: Consulta parametrizada de los cursos del docente
+                bd-->>dal: Filas resultantes
+                dal-->>courseMPP: DataTable
+                courseMPP-->>evaluationBLL: List<CourseBE>
+
+                alt El curso no le pertenece al docente
+                    evaluationBLL-->>frm: Rechaza: "El curso seleccionado no le pertenece. (Código: BIZ-014)"
+                    frm-->>Profesor: Muestra "El curso seleccionado no le pertenece. (Código: BIZ-014)"
+                else Curso propio del docente
+                    evaluationBLL->>evaluationMPP: Save(evaluation: EvaluationBE): int
+                    evaluationMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+                    dal->>bd: Alta de la evaluación con retorno de identidad (SCOPE_IDENTITY)
+                    bd-->>dal: Identidad de la fila
+                    dal-->>evaluationMPP: int
+                    evaluationMPP-->>evaluationBLL: int
+                    evaluationBLL->>evaluationMPP: SaveGrades(evaluationId: int, grades: List<GradeBE>): void
+                    evaluationMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+                    dal->>bd: Alta de una fila de nota por alumno con valor cargado
+                    bd-->>dal: Filas afectadas
+                    dal-->>evaluationMPP: true
+                    evaluationBLL-->>frm: true
+                    frm-->>Profesor: Muestra "Evaluación registrada correctamente." y limpia el formulario
+                end
+            end
+        end
+    end

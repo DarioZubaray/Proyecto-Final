@@ -4,6 +4,7 @@ namespace BLL.Strategy
 {
     public class BcryptPasswordStrategyBLL : IPasswordStrategyBLL
     {
+        #region Métodos
         public bool Matches(string storedHash)
         {
             if (string.IsNullOrEmpty(storedHash))
@@ -41,5 +42,6 @@ namespace BLL.Strategy
 
             return true;
         }
+        #endregion
     }
 }

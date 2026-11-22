@@ -92,12 +92,16 @@ namespace MPP.Tests.Setup
                 connection.Open();
 
                 string sql = @"
+                    IF OBJECT_ID('dbo.grades', 'U') IS NOT NULL DROP TABLE dbo.grades;
+                    IF OBJECT_ID('dbo.evaluations', 'U') IS NOT NULL DROP TABLE dbo.evaluations;
+                    IF OBJECT_ID('dbo.tickets', 'U') IS NOT NULL DROP TABLE dbo.tickets;
                     IF OBJECT_ID('dbo.attendance', 'U') IS NOT NULL DROP TABLE dbo.attendance;
                     IF OBJECT_ID('dbo.course_students', 'U') IS NOT NULL DROP TABLE dbo.course_students;
                     IF OBJECT_ID('dbo.course_teachers', 'U') IS NOT NULL DROP TABLE dbo.course_teachers;
                     IF OBJECT_ID('dbo.courses', 'U') IS NOT NULL DROP TABLE dbo.courses;
                     IF OBJECT_ID('dbo.classrooms', 'U') IS NOT NULL DROP TABLE dbo.classrooms;
                     IF OBJECT_ID('dbo.activity_logs', 'U') IS NOT NULL DROP TABLE dbo.activity_logs;
+                    IF OBJECT_ID('dbo.students', 'U') IS NOT NULL DROP TABLE dbo.students;
                     IF OBJECT_ID('dbo.role_hierarchy', 'U') IS NOT NULL DROP TABLE dbo.role_hierarchy;
                     IF OBJECT_ID('dbo.role_permissions', 'U') IS NOT NULL DROP TABLE dbo.role_permissions;
                     IF OBJECT_ID('dbo.schema_versions', 'U') IS NOT NULL DROP TABLE dbo.schema_versions;
@@ -145,9 +149,23 @@ namespace MPP.Tests.Setup
                         [role_id]       INT            NULL,
                         [language]      NVARCHAR(10)   NOT NULL DEFAULT 'es',
                         [theme]         NVARCHAR(20)   NOT NULL DEFAULT 'System',
+                        [dvh]           NVARCHAR(64)   NULL,
                         CONSTRAINT fk_users_roles FOREIGN KEY ([role_id]) REFERENCES [dbo].[roles]([id])
                     );
                     ALTER TABLE [dbo].[users] ADD CONSTRAINT uq_users_username UNIQUE ([user_name]);
+
+                    CREATE TABLE [dbo].[students] (
+                        [id]           INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [first_name]   NVARCHAR(100)  NOT NULL,
+                        [last_name]    NVARCHAR(100)  NOT NULL,
+                        [document]     NVARCHAR(20)   NOT NULL,
+                        [email]        NVARCHAR(150)  NULL,
+                        [phone]        NVARCHAR(50)   NULL,
+                        [is_active]    BIT            NOT NULL DEFAULT 1,
+                        [created_at]   DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [last_update]  DATETIME       NOT NULL DEFAULT GETDATE()
+                    );
+                    ALTER TABLE [dbo].[students] ADD CONSTRAINT uq_students_document UNIQUE ([document]);
 
                     CREATE TABLE [dbo].[activity_logs] (
                         [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
@@ -202,7 +220,56 @@ namespace MPP.Tests.Setup
                         [is_active]    BIT      NOT NULL DEFAULT 1,
                         [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
                         CONSTRAINT fk_course_students_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
-                        CONSTRAINT fk_course_students_users   FOREIGN KEY ([student_id]) REFERENCES [dbo].[users]([id])
+                        CONSTRAINT fk_course_students_students FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id])
+                    );
+
+                    CREATE TABLE [dbo].[attendance] (
+                        [id]           INT      NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [course_id]    INT      NOT NULL,
+                        [student_id]   INT      NOT NULL,
+                        [date]         DATE     NOT NULL,
+                        [is_present]   BIT      NOT NULL DEFAULT 0,
+                        [created_at]   DATETIME NOT NULL DEFAULT GETDATE(),
+                        CONSTRAINT fk_attendance_courses FOREIGN KEY ([course_id])  REFERENCES [dbo].[courses]([id]),
+                        CONSTRAINT fk_attendance_students FOREIGN KEY ([student_id]) REFERENCES [dbo].[students]([id]),
+                        CONSTRAINT uq_attendance_unique  UNIQUE ([course_id], [student_id], [date])
+                    );
+
+                    CREATE TABLE [dbo].[evaluations] (
+                        [id]           INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [course_id]    INT            NOT NULL,
+                        [name]         NVARCHAR(200)  NOT NULL,
+                        [date]         DATE           NOT NULL,
+                        [created_by]   INT            NOT NULL,
+                        [created_at]   DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [last_update]  DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [dvh]          NVARCHAR(64)   NULL,
+                        CONSTRAINT fk_evaluations_courses FOREIGN KEY ([course_id]) REFERENCES [dbo].[courses]([id]),
+                        CONSTRAINT fk_evaluations_users   FOREIGN KEY ([created_by]) REFERENCES [dbo].[users]([id])
+                    );
+
+                    CREATE TABLE [dbo].[grades] (
+                        [id]             INT           NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [evaluation_id]  INT           NOT NULL,
+                        [student_id]     INT           NOT NULL,
+                        [grade]          DECIMAL(4,2)  NOT NULL,
+                        [dvh]            NVARCHAR(64)  NULL,
+                        CONSTRAINT fk_grades_evaluations FOREIGN KEY ([evaluation_id]) REFERENCES [dbo].[evaluations]([id]),
+                        CONSTRAINT fk_grades_students    FOREIGN KEY ([student_id])    REFERENCES [dbo].[students]([id]),
+                        CONSTRAINT uq_grades_evaluation_student UNIQUE ([evaluation_id], [student_id])
+                    );
+
+                    CREATE TABLE [dbo].[tickets] (
+                        [id]          INT            NOT NULL PRIMARY KEY IDENTITY(1,1),
+                        [user_id]     INT            NOT NULL,
+                        [subject]     NVARCHAR(200)  NOT NULL,
+                        [description] NVARCHAR(MAX)  NOT NULL,
+                        [is_closed]   BIT            NOT NULL DEFAULT 0,
+                        [created_at]  DATETIME       NOT NULL DEFAULT GETDATE(),
+                        [closed_at]   DATETIME       NULL,
+                        [closed_by]   INT            NULL,
+                        CONSTRAINT fk_tickets_user FOREIGN KEY ([user_id]) REFERENCES [dbo].[users]([id]),
+                        CONSTRAINT fk_tickets_closed_by FOREIGN KEY ([closed_by]) REFERENCES [dbo].[users]([id])
                     );
 
                     CREATE TABLE [dbo].[schema_versions] (
@@ -230,7 +297,7 @@ namespace MPP.Tests.Setup
                     INSERT INTO [dbo].[permissions] (name, label, description, is_system) VALUES
                         ('FORM_USER_MGMT', 'Usuarios', 'Gestión de usuarios', 1),
                         ('FORM_ROLE_MGMT', 'Roles', 'Gestión de roles', 1),
-                        ('FORM_COMPLAINTS', 'Reclamos', 'Gestión de reclamos', 0),
+                        ('FORM_STUDENT_MGMT', 'Alumnos', 'Gestión de alumnos', 0),
                         ('FORM_REPORTS', 'Reportes', 'Reportes', 0);
 
                     INSERT INTO [dbo].[role_permissions] (role_id, permission_id) VALUES
@@ -247,6 +314,12 @@ namespace MPP.Tests.Setup
                         ('testuser',   'hashedpassword123', 1, 0, GETDATE(), GETDATE(), 'es',    'System', 1),
                         ('seconduser', 'hashedpassword456', 1, 0, GETDATE(), GETDATE(), 'en',    'Dark',   2),
                         ('thirduser',  'hashedpassword789', 0, 3, GETDATE(), GETDATE(), 'pt-BR', 'Light',  3);
+
+                    INSERT INTO [dbo].[students]
+                        (first_name, last_name, document, email, phone, is_active, created_at, last_update)
+                    VALUES
+                        ('Juan',  'Pérez', 'DNI-10000001', 'juan.perez@test.com',  '11111111', 1, GETDATE(), GETDATE()),
+                        ('María', 'Gómez', 'DNI-10000002', 'maria.gomez@test.com', '22222222', 1, GETDATE(), GETDATE());
                 ";
 
                 var cmd = new SqlCommand(sql, connection);
@@ -260,21 +333,29 @@ namespace MPP.Tests.Setup
             {
                 connection.Open();
                 string sql = @"
+                    DELETE FROM [dbo].[grades];
+                    DELETE FROM [dbo].[evaluations];
+                    DELETE FROM [dbo].[tickets];
                     DELETE FROM [dbo].[attendance];
                     DELETE FROM [dbo].[course_students];
                     DELETE FROM [dbo].[course_teachers];
                     DELETE FROM [dbo].[courses];
                     DELETE FROM [dbo].[classrooms];
                     DELETE FROM [dbo].[activity_logs];
+                    DELETE FROM [dbo].[students];
                     DELETE FROM [dbo].[role_permissions];
                     DELETE FROM [dbo].[role_hierarchy];
                     DELETE FROM [dbo].[users];
                     DBCC CHECKIDENT ('[dbo].[users]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[students]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[classrooms]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[courses]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[course_teachers]', RESEED, 0);
                     DBCC CHECKIDENT ('[dbo].[course_students]', RESEED, 0);
-                    DBCC CHECKIDENT ('[dbo].[attendance]', RESEED, 0);";
+                    DBCC CHECKIDENT ('[dbo].[attendance]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[tickets]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[evaluations]', RESEED, 0);
+                    DBCC CHECKIDENT ('[dbo].[grades]', RESEED, 0);";
                 var cmd = new SqlCommand(sql, connection);
                 cmd.ExecuteNonQuery();
             }

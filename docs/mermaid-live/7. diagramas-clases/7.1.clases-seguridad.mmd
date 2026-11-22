@@ -1,0 +1,285 @@
+classDiagram
+    direction TB
+
+    %% ============ BE ============
+    class UserBE {
+        +int Id
+        +string UserName
+        +string PasswordHash
+        +bool IsActive
+        +int RetriesCount
+        +DateTime LastUpdate
+        +DateTime CreatedAt
+        +string Language
+        +string Theme
+        +int RoleId
+        +string RoleName
+        +string Dvh
+    }
+
+    class LoginResultBE {
+        +bool Success
+        +string Message
+        +UserBE User
+        +string ErrorCode
+    }
+
+    class RoleBE {
+        +int Id
+        +string Name
+        +List~PermissionBE~ Permissions
+        +RoleCompositeBE ToComposite()
+    }
+
+    class PermissionBE {
+        +int Id
+        +string Name
+        +string Label
+        +string Description
+        +bool IsSystem
+    }
+
+    class RoleComponentBE {
+        <<abstract>>
+        +string Name
+        +HasPermission(string) bool
+        +GetAllPermissions() List~PermissionBE~
+    }
+
+    class RoleCompositeBE {
+        +List~RoleComponentBE~ _children
+        +AddChild(RoleComponentBE) void
+        +RemoveChild(RoleComponentBE) void
+    }
+
+    class PermissionLeafBE {
+        +PermissionBE _option
+    }
+
+    %% ============ BLL - Interfaces ============
+    class IAuthBLL {
+        <<interface>>
+        +Login(string, string) LoginResultBE
+        +Logout(UserBE) bool
+    }
+
+    class IUserBLL {
+        <<interface>>
+        +Save(UserBE) bool
+        +Delete(UserBE) bool
+        +FindAll() List~UserBE~
+        +FindById(UserBE) UserBE
+        +ChangePassword(int, string, string) bool
+        +UpdateLanguage(int, string) bool
+        +UpdateTheme(int, string) bool
+    }
+
+    class IRoleBLL {
+        <<interface>>
+        +Save(RoleBE) int
+        +Delete(int) bool
+        +SavePermissions(int, List~int~) void
+    }
+
+    class ITwoFactorBLL {
+        <<interface>>
+        +GenerateCode(int) string
+        +ValidateCode(int, string) bool
+    }
+
+    class IPasswordStrategyBLL {
+        <<interface>>
+        +bool Matches(string)
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    %% ============ BLL - Servicios ============
+    class AuthBLL {
+        -IUserMPP _userMPP
+        -ITwoFactorBLL _twoFactor
+        +Login(string, string) LoginResultBE
+        +Logout(UserBE) bool
+    }
+
+    class UserBLL {
+        -IUserMPP _userMPP
+        +Save(UserBE) bool
+        +Delete(UserBE) bool
+        +FindAll() List~UserBE~
+        +FindById(UserBE) UserBE
+        +ChangePassword(int, string, string) bool
+        +UpdateLanguage(int, string) bool
+        +UpdateTheme(int, string) bool
+    }
+
+    class RoleBLL {
+        -IRoleMPP _roleMPP
+        +Save(RoleBE) int
+        +Delete(int) bool
+        +SavePermissions(int, List~int~) void
+    }
+
+    class PermissionBLL {
+        -IRoleMPP _roleMPP
+        +BuildRoleTree(int) RoleCompositeBE
+        +HasPermission(int, string) bool
+    }
+
+    class PasswordHasherBLL {
+        +List~IPasswordStrategyBLL~ _strategies
+        +static Default PasswordHasherBLL
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class EncryptionBLL {
+        <<static>>
+        +string HashPassword(string)
+        +bool VerifyPassword(string, string)
+    }
+
+    class BcryptPasswordStrategyBLL {
+        +bool Matches(string)
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class LegacySha256PasswordStrategyBLL {
+        +bool Matches(string)
+        +string Hash(string)
+        +bool Verify(string, string)
+    }
+
+    class InternalTwoFactorBLL {
+        +GenerateCode(int) string
+        +ValidateCode(int, string) bool
+    }
+
+    class SessionManagerBLL {
+        -Dictionary~int,SessionManagerBLL~ _instances
+        +UserBE User
+        +CreateSession(UserBE) SessionManagerBLL
+        +GetInstance(int) SessionManagerBLL
+        +RemoveSession(int) void
+        +HasPermission(string) bool
+        +UpdateLanguage(string) void
+        +UpdateTheme(string) void
+    }
+
+    class DVHHelperBLL {
+        <<static>>
+        +Compute(string[]) string
+        +Regenerate(IUserMPP, int) bool
+    }
+
+    %% ============ MPP ============
+    class IUserMPP {
+        <<interface>>
+        +GetByUserName(string) UserBE
+        +Save(UserBE) bool
+        +Delete(UserBE) bool
+        +UpdateLanguage(int, string) bool
+        +UpdateTheme(int, string) bool
+    }
+
+    class IRoleMPP {
+        <<interface>>
+        +Save(RoleBE) int
+        +Delete(int) bool
+        +FindAll() List~RoleBE~
+    }
+
+    class UserMPP {
+        -AccessDAL _access
+        +GetByUserName(string) UserBE
+        +Save(UserBE) bool
+        +Delete(UserBE) bool
+        +UpdateLanguage(int, string) bool
+        +UpdateTheme(int, string) bool
+        -Mutate(int, Action~UserBE~) bool
+    }
+
+    class RoleMPP {
+        -AccessDAL _access
+        +Save(RoleBE) int
+        +Delete(int) bool
+        +FindAll() List~RoleBE~
+    }
+
+    %% ============ DAL (compartido) ============
+    class AccessDAL {
+        +Read(string, SqlParameter[]) DataTable
+        +ReadScalar(string, SqlParameter[]) int
+        +Save(string, SqlParameter[]) bool
+        +Execute(string, SqlParameter[]) bool
+    }
+
+    %% ============ GUI ============
+    class LoginForm {
+        +IAuthBLL _authBLL
+        +btnLogin_Click(object, EventArgs) void
+        +TryRunIntegrityScanAsync(bool) void
+    }
+
+    class TwoFactorForm {
+        +btnAccept_Click(object, EventArgs) void
+    }
+
+    class UserManagementForm {
+        +IUserBLL _userBLL
+        +LoadUsers() void
+    }
+
+    class UserForm {
+        +UserBE _user
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    class RoleManagementForm {
+        +IRoleBLL _roleBLL
+        +LoadRoles() void
+    }
+
+    class ChangePasswordForm {
+        +IUserBLL _userBLL
+        +btnChange_Click(object, EventArgs) void
+    }
+
+    %% ============ Relaciones ============
+    UserBE "0..*" o-- "0..1" RoleBE : RoleId
+    RoleBE "0..*" o-- "0..*" PermissionBE : Permissions
+    RoleBE ..> RoleCompositeBE : ToComposite()
+    RoleComponentBE <|-- RoleCompositeBE
+    RoleComponentBE <|-- PermissionLeafBE
+    RoleCompositeBE "1" *-- "0..*" RoleComponentBE : _children
+    PermissionLeafBE "0..*" o-- "1" PermissionBE : _option
+
+    AuthBLL ..|> IAuthBLL
+    UserBLL ..|> IUserBLL
+    RoleBLL ..|> IRoleBLL
+    InternalTwoFactorBLL ..|> ITwoFactorBLL
+    BcryptPasswordStrategyBLL ..|> IPasswordStrategyBLL
+    LegacySha256PasswordStrategyBLL ..|> IPasswordStrategyBLL
+    UserMPP ..|> IUserMPP
+    RoleMPP ..|> IRoleMPP
+
+    AuthBLL "0..*" o-- "1" IUserMPP : _userMPP
+    AuthBLL ..> EncryptionBLL : VerifyPassword
+    EncryptionBLL ..> PasswordHasherBLL : Default
+    PasswordHasherBLL "0..*" o-- "0..*" IPasswordStrategyBLL : _strategies
+    UserBLL "0..*" o-- "1" IUserMPP : _userMPP
+    UserBLL ..> DVHHelperBLL : Regenerate
+    RoleBLL "1" *-- "1" IRoleMPP : _roleMPP
+    PermissionBLL "1" *-- "1" IRoleMPP : _roleMPP
+    UserMPP "1" o-- "1" AccessDAL : _access
+    RoleMPP "1" o-- "1" AccessDAL : _access
+    SessionManagerBLL "0..*" o-- "1" UserBE : User
+    LoginResultBE "0..*" o-- "0..1" UserBE : User
+
+    LoginForm "0..*" o-- "1" IAuthBLL : _authBLL
+    LoginForm ..> TwoFactorForm : new
+    UserManagementForm "0..*" o-- "1" IUserBLL : _userBLL
+    ChangePasswordForm "0..*" o-- "1" IUserBLL : _userBLL
+    RoleManagementForm "0..*" o-- "1" IRoleBLL : _roleBLL
+    UserForm "0..*" o-- "1" UserBE : _user

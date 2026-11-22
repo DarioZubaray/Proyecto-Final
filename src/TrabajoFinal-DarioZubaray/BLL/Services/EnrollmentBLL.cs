@@ -31,7 +31,7 @@ namespace BLL.Services
             }
 
             CourseBE newCourse = _courseBLL.FindById(courseId);
-            if (newCourse == null)
+            if (newCourse == null || !newCourse.IsActive)
             {
                 throw new InvalidOperationException("El curso seleccionado no existe.");
             }

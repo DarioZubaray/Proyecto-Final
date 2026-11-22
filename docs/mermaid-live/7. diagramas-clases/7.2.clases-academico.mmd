@@ -1,0 +1,425 @@
+classDiagram
+    direction TB
+
+    %% ============ BE ============
+    class ClassroomBE {
+        +int Id
+        +string Name
+        +int Capacity
+        +bool IsActive
+        +DateTime CreatedAt
+        +DateTime LastUpdate
+    }
+
+    class CourseBE {
+        +int Id
+        +string Name
+        +string Description
+        +DateTime StartDate
+        +DateTime EndDate
+        +int ClassroomId
+        +string ClassroomName
+        +int? DayOfWeek
+        +TimeSpan? StartTime
+        +TimeSpan? EndTime
+        +bool IsActive
+        +List~UserBE~ Teachers
+    }
+
+    class EnrollmentBE {
+        +int Id
+        +int CourseId
+        +int StudentId
+        +bool IsActive
+        +string CourseName
+        +string StudentName
+    }
+
+    class AttendanceBE {
+        +int Id
+        +int CourseId
+        +int StudentId
+        +DateTime Date
+        +bool IsPresent
+        +string StudentName
+        +string CourseName
+    }
+
+    class StudentBE {
+        +int Id
+        +string FirstName
+        +string LastName
+        +string Document
+        +string Email
+        +string Phone
+        +bool IsActive
+        +DateTime CreatedAt
+        +DateTime LastUpdate
+    }
+
+    class EvaluationBE {
+        +int Id
+        +int CourseId
+        +string Name
+        +DateTime Date
+        +int CreatedBy
+        +DateTime CreatedAt
+        +DateTime LastUpdate
+    }
+
+    class GradeBE {
+        +int Id
+        +int EvaluationId
+        +int StudentId
+        +decimal Grade
+    }
+
+    class StudentPerformanceBE {
+        +int StudentId
+        +string StudentName
+        +int? AttendancePercent
+        +int GradesCount
+        +decimal? Average
+    }
+
+    class AttendanceReportLineBE {
+        +int StudentId
+        +string StudentName
+        +int TotalPlans
+        +int PresentPlans
+        +int? AttendancePercent
+    }
+
+    class GradeReportLineBE {
+        +int StudentId
+        +string StudentName
+        +int EvaluationsCount
+        +int GradesCount
+        +decimal? Average
+    }
+
+    %% ============ BLL - Interfaces ============
+    class IClassroomBLL {
+        <<interface>>
+        +Save(ClassroomBE) bool
+        +Delete(ClassroomBE) bool
+        +FindAll() List~ClassroomBE~
+    }
+
+    class ICourseBLL {
+        <<interface>>
+        +Save(CourseBE) bool
+        +Delete(CourseBE) bool
+        +FindAll() List~CourseBE~
+    }
+
+    class IEnrollmentBLL {
+        <<interface>>
+        +Enroll(int, int) bool
+        +Unenroll(int, int) bool
+    }
+
+    class IAttendanceBLL {
+        <<interface>>
+        +RegisterAttendanceBulk(int, DateTime, List~AttendanceBE~) bool
+    }
+
+    class IStudentBLL {
+        <<interface>>
+        +Save(StudentBE) bool
+        +Delete(StudentBE) bool
+        +FindAll() List~StudentBE~
+    }
+
+    class IEvaluationBLL {
+        <<interface>>
+        +Save(EvaluationBE, List~GradeBE~) bool
+        +FindByCourseId(int) List~EvaluationBE~
+        +FindGradesByEvaluationId(int) List~GradeBE~
+    }
+
+    class IReportBLL {
+        <<interface>>
+        +GetCoursePerformance(int) List~StudentPerformanceBE~
+        +GetAttendanceReport(int) List~AttendanceReportLineBE~
+        +GetGradesReport(int) List~GradeReportLineBE~
+    }
+
+    %% ============ BLL - Servicios ============
+    class ClassroomBLL {
+        -IClassroomMPP _classroomMPP
+        +Save(ClassroomBE) bool
+        +Delete(ClassroomBE) bool
+        +FindById(int) ClassroomBE
+        +FindAll() List~ClassroomBE~
+        +Count() int
+    }
+
+    class CourseBLL {
+        -ICourseMPP _courseMPP
+        +Save(CourseBE) bool
+        +Delete(CourseBE) bool
+        +FindById(int) CourseBE
+        +FindAll() List~CourseBE~
+        +ExistsClassroomOverlap(...) bool
+        +SaveTeachers(int, List~int~) bool
+    }
+
+    class EnrollmentBLL {
+        -IEnrollmentMPP _enrollmentMPP
+        -ICourseBLL _courseBLL
+        +Enroll(int, int) bool
+        +Unenroll(int, int) bool
+        +FindByStudentId(int) List~EnrollmentBE~
+    }
+
+    class AttendanceBLL {
+        -IAttendanceMPP _attendanceMPP
+        +RegisterAttendanceBulk(int, DateTime, List~AttendanceBE~) bool
+        +FindByCourseIdAndDate(int, DateTime) List~AttendanceBE~
+        +IsTeacherOfCourse(int, int) bool
+    }
+
+    class StudentBLL {
+        -IStudentMPP _studentMPP
+        +Save(StudentBE) bool
+        +Delete(StudentBE) bool
+        +FindAll() List~StudentBE~
+    }
+
+    class EvaluationBLL {
+        -IEvaluationMPP _evaluationMPP
+        -ICourseMPP _courseMPP
+        +Save(EvaluationBE, List~GradeBE~) bool
+        +FindByCourseId(int) List~EvaluationBE~
+        +FindGradesByEvaluationId(int) List~GradeBE~
+    }
+
+    class ReportBLL {
+        -IReportMPP _reportMPP
+        +GetCoursePerformance(int) List~StudentPerformanceBE~
+        +GetAttendanceReport(int) List~AttendanceReportLineBE~
+        +GetGradesReport(int) List~GradeReportLineBE~
+    }
+
+    %% ============ MPP ============
+    class IClassroomMPP {
+        <<interface>>
+        +Save(ClassroomBE) bool
+        +Delete(ClassroomBE) bool
+    }
+
+    class ICourseMPP {
+        <<interface>>
+        +Save(CourseBE) bool
+        +Delete(CourseBE) bool
+    }
+
+    class IEnrollmentMPP {
+        <<interface>>
+        +Enroll(int, int) bool
+        +Unenroll(int, int) bool
+    }
+
+    class IAttendanceMPP {
+        <<interface>>
+        +SaveBulk(int, DateTime, List~AttendanceBE~) bool
+    }
+
+    class IStudentMPP {
+        <<interface>>
+        +Save(StudentBE) bool
+        +Delete(StudentBE) bool
+    }
+
+    class IEvaluationMPP {
+        <<interface>>
+        +Save(EvaluationBE) int
+        +SaveGrades(int, List~GradeBE~) void
+        +FindByCourseId(int) List~EvaluationBE~
+        +FindGradesByEvaluationId(int) List~GradeBE~
+    }
+
+    class IReportMPP {
+        <<interface>>
+        +GetCoursePerformance(int) List~StudentPerformanceBE~
+        +GetAttendanceReport(int) List~AttendanceReportLineBE~
+        +GetGradesReport(int) List~GradeReportLineBE~
+    }
+
+    class ClassroomMPP {
+        -AccessDAL _access
+        +Save(ClassroomBE) bool
+        +Delete(ClassroomBE) bool
+        +FindById(int) ClassroomBE
+        +FindAll() List~ClassroomBE~
+    }
+
+    class CourseMPP {
+        -AccessDAL _access
+        +Save(CourseBE) bool
+        +Delete(CourseBE) bool
+        +FindById(int) CourseBE
+        +FindAll() List~CourseBE~
+        +ExistsClassroomOverlap(...) bool
+    }
+
+    class EnrollmentMPP {
+        -AccessDAL _access
+        +Enroll(int, int) bool
+        +Unenroll(int, int) bool
+        +ExistsActiveEnrollment(int, int) bool
+        +FindByStudentId(int) List~EnrollmentBE~
+    }
+
+    class AttendanceMPP {
+        -AccessDAL _access
+        +SaveBulk(int, DateTime, List~AttendanceBE~) bool
+        +FindByCourseIdAndDate(int, DateTime) List~AttendanceBE~
+    }
+
+    class StudentMPP {
+        -AccessDAL _access
+        +Save(StudentBE) bool
+        +Delete(StudentBE) bool
+        +FindAll() List~StudentBE~
+    }
+
+    class EvaluationMPP {
+        -AccessDAL _access
+        +Save(EvaluationBE) int
+        +SaveGrades(int, List~GradeBE~) void
+        +FindByCourseId(int) List~EvaluationBE~
+        +FindGradesByEvaluationId(int) List~GradeBE~
+    }
+
+    class ReportMPP {
+        -AccessDAL _access
+        +GetCoursePerformance(int) List~StudentPerformanceBE~
+        +GetAttendanceReport(int) List~AttendanceReportLineBE~
+        +GetGradesReport(int) List~GradeReportLineBE~
+    }
+
+    %% ============ DAL (compartido) ============
+    class AccessDAL {
+        +Read(string, SqlParameter[]) DataTable
+        +ReadScalar(string, SqlParameter[]) int
+        +Save(string, SqlParameter[]) bool
+        +Execute(string, SqlParameter[]) bool
+    }
+
+    %% ============ GUI ============
+    class ClassroomManagementForm {
+        +IClassroomBLL _classroomBLL
+        +LoadClassrooms() void
+    }
+
+    class ClassroomForm {
+        +ClassroomBE _classroom
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    class CourseManagementForm {
+        +ICourseBLL _courseBLL
+        +LoadCourses() void
+    }
+
+    class CourseForm {
+        +CourseBE _course
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    class EnrollmentManagementForm {
+        +IEnrollmentBLL _enrollmentBLL
+        +LoadEnrollments() void
+    }
+
+    class AttendanceForm {
+        +IAttendanceBLL _attendanceBLL
+        +btnSaveAttendance_Click(object, EventArgs) void
+    }
+
+    class AttendanceViewForm {
+        +IAttendanceBLL _attendanceBLL
+        +LoadAttendance() void
+    }
+
+    class StudentManagementForm {
+        +IStudentBLL _studentBLL
+        +LoadStudents() void
+    }
+
+    class StudentForm {
+        +StudentBE _student
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    class EvaluationForm {
+        +IEvaluationBLL _evaluationBLL
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    class PerformanceForm {
+        +IReportBLL _reportBLL
+        +btnConsult_Click(object, EventArgs) void
+    }
+
+    class ReportForm {
+        +IReportBLL _reportBLL
+        +btnGenerate_Click(object, EventArgs) void
+        +btnExport_Click(object, EventArgs) void
+    }
+
+    %% ============ Relaciones ============
+    CourseBE "0..*" o-- "1" ClassroomBE : ClassroomId
+    CourseBE "0..*" o-- "0..*" UserBE : Teachers
+    EnrollmentBE "0..*" o-- "1" CourseBE : CourseId
+    AttendanceBE "0..*" o-- "1" CourseBE : CourseId
+    EvaluationBE "0..*" o-- "1" CourseBE : CourseId
+    GradeBE "0..*" o-- "1" EvaluationBE : EvaluationId
+
+    ClassroomBLL ..|> IClassroomBLL
+    CourseBLL ..|> ICourseBLL
+    EnrollmentBLL ..|> IEnrollmentBLL
+    AttendanceBLL ..|> IAttendanceBLL
+    StudentBLL ..|> IStudentBLL
+    EvaluationBLL ..|> IEvaluationBLL
+    ReportBLL ..|> IReportBLL
+    ClassroomMPP ..|> IClassroomMPP
+    CourseMPP ..|> ICourseMPP
+    EnrollmentMPP ..|> IEnrollmentMPP
+    AttendanceMPP ..|> IAttendanceMPP
+    StudentMPP ..|> IStudentMPP
+    EvaluationMPP ..|> IEvaluationMPP
+    ReportMPP ..|> IReportMPP
+
+    ClassroomBLL "0..*" o-- "1" IClassroomMPP : _classroomMPP
+    CourseBLL "0..*" o-- "1" ICourseMPP : _courseMPP
+    EnrollmentBLL "0..*" o-- "1" IEnrollmentMPP : _enrollmentMPP
+    EnrollmentBLL "0..*" o-- "1" ICourseBLL : _courseBLL
+    AttendanceBLL "0..*" o-- "1" IAttendanceMPP : _attendanceMPP
+    StudentBLL "0..*" o-- "1" IStudentMPP : _studentMPP
+    EvaluationBLL "0..*" o-- "1" IEvaluationMPP : _evaluationMPP
+    EvaluationBLL "0..*" o-- "1" ICourseMPP : _courseMPP
+    ReportBLL "0..*" o-- "1" IReportMPP : _reportMPP
+    ClassroomMPP "1" o-- "1" AccessDAL : _access
+    CourseMPP "1" o-- "1" AccessDAL : _access
+    EnrollmentMPP "1" o-- "1" AccessDAL : _access
+    AttendanceMPP "1" o-- "1" AccessDAL : _access
+    StudentMPP "1" o-- "1" AccessDAL : _access
+    EvaluationMPP "1" o-- "1" AccessDAL : _access
+    ReportMPP "1" o-- "1" AccessDAL : _access
+
+    ClassroomManagementForm "0..*" o-- "1" IClassroomBLL : _classroomBLL
+    ClassroomForm "0..*" o-- "1" ClassroomBE : _classroom
+    CourseManagementForm "0..*" o-- "1" ICourseBLL : _courseBLL
+    CourseForm "0..*" o-- "1" CourseBE : _course
+    EnrollmentManagementForm "0..*" o-- "1" IEnrollmentBLL : _enrollmentBLL
+    AttendanceForm "0..*" o-- "1" IAttendanceBLL : _attendanceBLL
+    AttendanceViewForm "0..*" o-- "1" IAttendanceBLL : _attendanceBLL
+    StudentManagementForm "0..*" o-- "1" IStudentBLL : _studentBLL
+    StudentForm "0..*" o-- "1" IStudentBLL : _studentBLL
+    StudentForm "0..*" o-- "1" StudentBE : _student
+    EvaluationForm "0..*" o-- "1" IEvaluationBLL : _evaluationBLL
+    PerformanceForm "0..*" o-- "1" IReportBLL : _reportBLL
+    ReportForm "0..*" o-- "1" IReportBLL : _reportBLL

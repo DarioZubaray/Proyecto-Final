@@ -35,6 +35,11 @@ namespace BLL.Services
             return _classroomMPP.FindById(id);
         }
 
+        public List<ClassroomBE> FindByClassroomName(string name)
+        {
+            return _classroomMPP.FindByClassroomName(name);
+        }
+
         public List<ClassroomBE> FindAll()
         {
             return _classroomMPP.FindAll();

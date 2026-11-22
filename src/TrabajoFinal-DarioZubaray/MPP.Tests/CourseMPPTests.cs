@@ -9,10 +9,13 @@ namespace MPP.Tests
     [TestClass]
     public class CourseMPPTests
     {
+        #region Propiedades
         private ClassroomMPP _classroomMPP;
         private CourseMPP _courseMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -44,7 +47,9 @@ namespace MPP.Tests
             List<ClassroomBE> all = _classroomMPP.FindAll();
             return all[all.Count - 1].Id;
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Save_NewCourse_ReturnsTrue()
         {
@@ -162,5 +167,85 @@ namespace MPP.Tests
 
             Assert.IsFalse(result);
         }
+
+        [TestMethod]
+        public void ExistsClassroomOverlap_Overlap_ReturnsTrue()
+        {
+            int classroomId = CreateTestClassroom();
+            CreateTestCourseWithSchedule(classroomId);
+
+            bool result = _courseMPP.ExistsClassroomOverlap(
+                classroomId,
+                new DateTime(2026, 8, 1),
+                new DateTime(2026, 12, 31),
+                0,
+                1,
+                new TimeSpan(9, 0, 0),
+                new TimeSpan(11, 0, 0));
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ExistsTeacherOverlap_Overlap_ReturnsTrue()
+        {
+            int classroomId = CreateTestClassroom();
+            int courseId = CreateTestCourseWithSchedule(classroomId);
+            int teacherId = GetTestUserId();
+            _courseMPP.SaveTeachers(courseId, new List<int> { teacherId });
+
+            bool result = _courseMPP.ExistsTeacherOverlap(
+                teacherId, 1, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0), 0);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ExistsTeacherOverlap_NoOverlap_ReturnsFalse()
+        {
+            int classroomId = CreateTestClassroom();
+            int courseId = CreateTestCourseWithSchedule(classroomId);
+            int teacherId = GetTestUserId();
+            _courseMPP.SaveTeachers(courseId, new List<int> { teacherId });
+
+            bool result = _courseMPP.ExistsTeacherOverlap(
+                teacherId, 2, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0), 0);
+
+            Assert.IsFalse(result);
+        }
+        #endregion
+
+        #region Métodos
+        private int CreateTestCourseWithSchedule(int classroomId)
+        {
+            var course = new CourseBE
+            {
+                Name = "Curso Solape",
+                StartDate = new DateTime(2026, 8, 1),
+                EndDate = new DateTime(2026, 12, 31),
+                ClassroomId = classroomId,
+                DayOfWeek = 1,
+                StartTime = new TimeSpan(8, 0, 0),
+                EndTime = new TimeSpan(10, 0, 0),
+                IsActive = true,
+                CreatedAt = DateTime.Now,
+                LastUpdate = DateTime.Now
+            };
+            _courseMPP.Save(course);
+            List<CourseBE> all = _courseMPP.FindAll();
+            return all.Find(c => c.Name == "Curso Solape").Id;
+        }
+
+        private int GetTestUserId()
+        {
+            using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var cmd = new Microsoft.Data.SqlClient.SqlCommand(
+                    "SELECT id FROM users WHERE user_name = 'testuser'", connection);
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
+        #endregion
     }
 }

@@ -9,11 +9,14 @@ namespace MPP.Tests
     [TestClass]
     public class EnrollmentMPPTests
     {
+        #region Propiedades
         private ClassroomMPP _classroomMPP;
         private CourseMPP _courseMPP;
         private EnrollmentMPP _enrollmentMPP;
         private string _connectionString;
+        #endregion
 
+        #region Inicialización
         [TestInitialize]
         public void Setup()
         {
@@ -63,7 +66,9 @@ namespace MPP.Tests
             List<CourseBE> courses = _courseMPP.FindAll();
             return courses[courses.Count - 1].Id;
         }
+        #endregion
 
+        #region Tests
         [TestMethod]
         public void Enroll_ReturnsTrue()
         {
@@ -134,17 +139,59 @@ namespace MPP.Tests
             Assert.IsFalse(exists);
         }
 
+        [TestMethod]
+        public void ExistsScheduleOverlap_Overlap_ReturnsTrue()
+        {
+            int courseId = CreateTestCourse();
+            int studentId = GetStudentId();
+            _enrollmentMPP.Enroll(courseId, studentId);
+
+            bool result = _enrollmentMPP.ExistsScheduleOverlap(
+                studentId, 1, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0), 0);
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void ExistsScheduleOverlap_NoOverlap_ReturnsFalse()
+        {
+            int courseId = CreateTestCourse();
+            int studentId = GetStudentId();
+            _enrollmentMPP.Enroll(courseId, studentId);
+
+            bool result = _enrollmentMPP.ExistsScheduleOverlap(
+                studentId, 3, new TimeSpan(9, 0, 0), new TimeSpan(11, 0, 0), 0);
+
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void ExistsScheduleOverlap_ExcludesGivenCourse_ReturnsFalse()
+        {
+            int courseId = CreateTestCourse();
+            int studentId = GetStudentId();
+            _enrollmentMPP.Enroll(courseId, studentId);
+
+            bool result = _enrollmentMPP.ExistsScheduleOverlap(
+                studentId, 1, new TimeSpan(8, 0, 0), new TimeSpan(12, 0, 0), courseId);
+
+            Assert.IsFalse(result);
+        }
+        #endregion
+
+        #region Métodos
         private int GetStudentId()
         {
             using (var connection = new Microsoft.Data.SqlClient.SqlConnection(_connectionString))
             {
                 connection.Open();
                 var cmd = new Microsoft.Data.SqlClient.SqlCommand(
-                    @"INSERT INTO users (user_name, password_hash, is_active, retries_count, last_update, created_at, language, theme, role_id)
-                      VALUES ('test_student', 'hash', 1, 0, GETDATE(), GETDATE(), 'es', 'System', NULL);
+                    @"INSERT INTO students (first_name, last_name, document, email, phone, is_active, created_at, last_update)
+                      VALUES ('Test', 'Enrollment', 'DNI-INS-1', NULL, NULL, 1, GETDATE(), GETDATE());
                       SELECT SCOPE_IDENTITY();", connection);
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        #endregion
     }
 }

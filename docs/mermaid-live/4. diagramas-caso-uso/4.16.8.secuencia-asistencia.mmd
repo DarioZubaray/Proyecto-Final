@@ -1,0 +1,74 @@
+sequenceDiagram
+    autonumber
+    actor Profesor
+    participant frm as frm : AttendanceForm
+    participant courseBLL as courseBLL : CourseBLL
+    participant courseMPP as courseMPP : CourseMPP
+    participant attendanceBLL as attendanceBLL : AttendanceBLL
+    participant attendanceMPP as attendanceMPP : AttendanceMPP
+    participant enrollmentBLL as enrollmentBLL : EnrollmentBLL
+    participant enrollmentMPP as enrollmentMPP : EnrollmentMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Profesor,bd: CU-16 Registrar Asistencia - flujo básico (pasos 1 a 10)
+
+    Profesor->>frm: Accede al formulario "Registrar Asistencia"
+    frm->>frm: _attendanceBLL = ServiceLocatorBLL.CreateAttendanceBLL()
+    frm->>frm: _courseBLL = ServiceLocatorBLL.CreateCourseBLL()
+    frm->>frm: _enrollmentBLL = ServiceLocatorBLL.CreateEnrollmentBLL()
+    frm->>courseBLL: FindByTeacherId(teacherId: int): List<CourseBE>
+    courseBLL->>courseMPP: FindByTeacherId(teacherId: int): List<CourseBE>
+    courseMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de cursos del docente
+    bd-->>dal: Filas resultantes
+    dal-->>courseMPP: DataTable
+    courseMPP-->>courseBLL: List<CourseBE>
+    courseBLL-->>frm: List<CourseBE>
+    frm-->>Profesor: Muestra sus cursos, el campo "Fecha" y habilita "Buscar" y "Guardar Asistencia"
+
+    Profesor->>frm: Selecciona "Curso" y "Fecha" y presiona "Buscar"
+    frm->>attendanceBLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    attendanceBLL->>attendanceMPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    attendanceMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    dal->>bd: Consulta de pertenencia del curso
+    bd-->>dal: Cantidad de coincidencias
+    dal-->>attendanceMPP: int
+    attendanceMPP-->>attendanceBLL: int
+    attendanceBLL-->>frm: true
+    frm->>enrollmentBLL: FindAll(): List<EnrollmentBE>
+    enrollmentBLL->>enrollmentMPP: FindAll(): List<EnrollmentBE>
+    enrollmentMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de inscripciones
+    bd-->>dal: Filas resultantes
+    dal-->>enrollmentMPP: DataTable
+    enrollmentMPP-->>enrollmentBLL: List<EnrollmentBE>
+    enrollmentBLL-->>frm: List<EnrollmentBE>
+    frm->>attendanceBLL: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+    attendanceBLL->>attendanceMPP: FindByCourseIdAndDate(courseId: int, date: DateTime): List<AttendanceBE>
+    attendanceMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de asistencias
+    bd-->>dal: Filas resultantes
+    dal-->>attendanceMPP: DataTable
+    attendanceMPP-->>attendanceBLL: List<AttendanceBE>
+    attendanceBLL-->>frm: List<AttendanceBE>
+    frm-->>Profesor: Muestra la grilla de alumnos con la asistencia previa de esa fecha
+
+    Profesor->>frm: Marca o desmarca la casilla "Presente" de cada alumno y presiona "Guardar Asistencia"
+    frm->>attendanceBLL: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    attendanceBLL->>attendanceMPP: IsTeacherOfCourse(courseId: int, teacherId: int): bool
+    attendanceMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    dal->>bd: Consulta de pertenencia del curso
+    bd-->>dal: Cantidad de coincidencias
+    dal-->>attendanceMPP: int
+    attendanceMPP-->>attendanceBLL: int
+    attendanceBLL-->>frm: true
+    frm->>attendanceBLL: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+    attendanceBLL->>attendanceMPP: RegisterAttendanceBulk(courseId: int, date: DateTime, records: List<AttendanceBE>): bool
+    attendanceMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro de asistencia por alumno
+    bd-->>dal: 1 fila afectada
+    dal-->>attendanceMPP: true
+    attendanceMPP-->>attendanceBLL: true
+    attendanceBLL-->>frm: true
+    frm-->>Profesor: Muestra "Asistencia guardada exitosamente."

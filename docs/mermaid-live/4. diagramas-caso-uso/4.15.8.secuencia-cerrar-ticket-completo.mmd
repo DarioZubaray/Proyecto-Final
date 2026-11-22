@@ -1,0 +1,51 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant frm as frm : TicketManagementForm
+    participant ticketBLL as ticketBLL : TicketBLL
+    participant ticketMPP as ticketMPP : TicketMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Usuario,bd: CU-15 Cerrar Ticket - flujos básicos y alternativos
+
+    Usuario->>frm: Elige "Tickets" en el menú principal
+    frm->>frm: _ticketBLL = ServiceLocatorBLL.CreateTicketBLL()
+    frm->>ticketBLL: FindAll(): List<TicketBE>
+    ticketBLL->>ticketMPP: FindAll(): List<TicketBE>
+    ticketMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de todos los tickets
+    bd-->>dal: Filas resultantes
+    dal-->>ticketMPP: DataTable
+    ticketMPP-->>ticketBLL: List<TicketBE>
+    ticketBLL-->>frm: List<TicketBE>
+    frm-->>Usuario: Muestra la ventana "Gestión de Tickets" con la grilla
+
+    Usuario->>frm: Selecciona un ticket de la grilla y presiona "Cerrar"
+    alt El ticket seleccionado ya está cerrado
+        frm-->>Usuario: Muestra "Seleccione un ticket abierto."
+    else Ticket en estado Abierto
+        frm-->>Usuario: Muestra la confirmación "¿Cerrar el ticket seleccionado?"
+        alt El usuario presiona "Sí"
+            frm->>ticketBLL: Close(ticketId: int, closedBy: int): bool
+            ticketBLL->>ticketMPP: Close(ticketId: int, closedBy: int, closedAt: DateTime): bool
+            ticketMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+            dal->>bd: Registro del cierre (fecha y autor del cierre)
+            bd-->>dal: 1 fila afectada
+            dal-->>ticketMPP: true
+            ticketMPP-->>ticketBLL: true
+            ticketBLL-->>frm: true
+            frm-->>Usuario: Muestra "Ticket cerrado correctamente."
+            frm->>ticketBLL: FindAll(): List<TicketBE>
+            ticketBLL->>ticketMPP: FindAll(): List<TicketBE>
+            ticketMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+            dal->>bd: Consulta parametrizada de todos los tickets
+            bd-->>dal: Filas resultantes
+            dal-->>ticketMPP: DataTable
+            ticketMPP-->>ticketBLL: List<TicketBE>
+            ticketBLL-->>frm: List<TicketBE>
+            frm-->>Usuario: Actualiza la grilla con el ticket en estado Cerrado
+        else El usuario presiona "No"
+            frm-->>Usuario: No realiza ningún cambio y mantiene la grilla sin modificar
+        end
+    end

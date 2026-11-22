@@ -11,7 +11,7 @@ namespace BLL.Tests
     [TestClass]
     public class StrategyTests
     {
-        #region BcryptPasswordStrategy
+        #region Tests BcryptPasswordStrategy
         [TestMethod]
         public void BcryptStrategy_Verify_CorrectPassword_ReturnsTrue()
         {
@@ -43,7 +43,7 @@ namespace BLL.Tests
         }
         #endregion
 
-        #region LegacySha256PasswordStrategy
+        #region Tests LegacySha256PasswordStrategy
         [TestMethod]
         public void LegacyStrategy_Verify_CorrectPassword_ReturnsTrue()
         {
@@ -85,7 +85,7 @@ namespace BLL.Tests
         }
         #endregion
 
-        #region PasswordHasher (contexto)
+        #region Tests PasswordHasher (contexto)
         [TestMethod]
         public void PasswordHasher_Hash_IsVerifiableByBcrypt()
         {

@@ -1,0 +1,158 @@
+classDiagram
+    class UserBE {
+        -int Id
+        -string UserName
+        -string PasswordHash
+        -bool IsActive
+        -int RetriesCount
+        -int RoleId
+        -string Language
+        -string Theme
+        -string Dvh
+    }
+    class RoleBE {
+        -int Id
+        -string Name
+        +List~PermissionBE~ Permissions
+        +RoleCompositeBE ToComposite(List~RoleBE~)
+        +bool HasPermission(string)
+    }
+    class PermissionBE {
+        -int Id
+        -string Name
+        -string Label
+        -string Description
+        -bool IsSystem
+    }
+    class CourseBE {
+        -int Id
+        -string Name
+        -string Description
+        -DateTime StartDate
+        -DateTime EndDate
+        -int ClassroomId
+        -int? DayOfWeek
+        -TimeSpan? StartTime
+        -TimeSpan? EndTime
+        -bool IsActive
+        +List~UserBE~ Teachers
+    }
+    class ClassroomBE {
+        -int Id
+        -string Name
+        -int Capacity
+        -bool IsActive
+    }
+    class EnrollmentBE {
+        -int Id
+        -int CourseId
+        -int StudentId
+        -bool IsActive
+    }
+    class AttendanceBE {
+        -int Id
+        -int CourseId
+        -int StudentId
+        -DateTime Date
+        -bool IsPresent
+    }
+    class StudentBE {
+        -int Id
+        -string FirstName
+        -string LastName
+        -string Document
+        -string Email
+        -string Phone
+        -bool IsActive
+    }
+    class EvaluationBE {
+        -int Id
+        -int CourseId
+        -string Name
+        -DateTime Date
+        -int CreatedBy
+    }
+    class GradeBE {
+        -int Id
+        -int EvaluationId
+        -int StudentId
+        -decimal Grade
+    }
+    class ActivityLogBE {
+        -int Id
+        -int UserId
+        -string Action
+        -string FormName
+        -string Description
+    }
+    class TicketBE {
+        -int Id
+        -int UserId
+        -string Subject
+        -string Description
+        -bool IsClosed
+        -DateTime CreatedAt
+        -DateTime? ClosedAt
+        -int? ClosedBy
+    }
+    class ActivityLogEntryBE {
+        -int UserId
+        -string Action
+        -string FormName
+        -string Description
+        +bool Execute()
+    }
+    class IActivityLogEntryBE {
+        <<interface>>
+        +int UserId
+        +string Action
+        +string FormName
+        +string Description
+        +bool Execute()
+    }
+    class RoleComponentBE {
+        <<abstract>>
+        +string Name
+        +bool HasPermission(string)
+        +List~PermissionBE~ GetAllPermissions()
+    }
+    class RoleCompositeBE {
+        -int Id
+        -string Name
+        -List~RoleComponentBE~ _children
+        +void AddChild(RoleComponentBE)
+        +void RemoveChild(RoleComponentBE)
+        +List~RoleComponentBE~ GetChildren()
+        +bool HasPermission(string)
+        +List~PermissionBE~ GetAllPermissions()
+    }
+    class PermissionLeafBE {
+        -PermissionBE _option
+        +string Name
+        +bool HasPermission(string)
+        +List~PermissionBE~ GetAllPermissions()
+    }
+
+    IActivityLogEntryBE <|.. ActivityLogEntryBE
+
+    RoleComponentBE <|.. RoleCompositeBE
+    RoleComponentBE <|.. PermissionLeafBE
+    RoleCompositeBE "1" o-- "0..*" RoleComponentBE : compone
+    PermissionLeafBE "1" --> "1" PermissionBE : envuelve
+
+    RoleBE "1" --> "0..*" PermissionBE : contiene
+    RoleBE ..> RoleCompositeBE : construye
+    UserBE "0..*" --> "1" RoleBE : pertenece a
+    CourseBE "0..*" --> "1" ClassroomBE : se dicta en
+    CourseBE "1" --> "0..*" UserBE : dictada por
+    EnrollmentBE "0..*" --> "1" CourseBE : se inscribe en
+    EnrollmentBE "0..*" --> "1" StudentBE : alumno
+    AttendanceBE "0..*" --> "1" CourseBE : de la clase de
+    AttendanceBE "0..*" --> "1" StudentBE : del alumno
+    EvaluationBE "0..*" --> "1" CourseBE : evaluación de
+    EvaluationBE "0..*" --> "1" UserBE : creada por
+    GradeBE "0..*" --> "1" EvaluationBE : nota de
+    GradeBE "0..*" --> "1" StudentBE : alumno
+    ActivityLogBE "0..*" --> "1" UserBE : registrada por
+    TicketBE "0..*" --> "1" UserBE : reportado por
+    TicketBE "0..*" --> "0..1" UserBE : cerrado por

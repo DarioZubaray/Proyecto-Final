@@ -1,0 +1,79 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant mgmtForm as mgmtForm : UserManagementForm
+    participant frm as frm : UserForm
+    participant user as user : UserBE
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant roleBLL as roleBLL : RoleBLL
+    participant roleMPP as roleMPP : RoleMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Administrador,bd: CU-05 Editar Usuario - flujo básico (pasos 1 a 13)
+
+    Administrador->>mgmtForm: Elige "Usuarios" en el menú "Administración"
+    mgmtForm->>mgmtForm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    mgmtForm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>mgmtForm: Completa el campo de búsqueda "Nombre de usuario:" y presiona "Buscar"
+    mgmtForm->>userBLL: FindByUserName(userName: string): List<UserBE>
+    userBLL->>userMPP: FindByUserName(userName: string): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada por nombre parcial
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Muestra en la grilla los usuarios que coinciden con lo buscado
+
+    Administrador->>mgmtForm: Selecciona un usuario de la grilla y presiona "Editar"
+    mgmtForm-->>frm: ShowDialog() retorna DialogResult.OK
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    frm->>frm: _roleBLL = ServiceLocatorBLL.CreateRoleBLL()
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>
+    frm-->>Administrador: Muestra el formulario "Editar Usuario" con los datos del usuario y la lista de roles (sin campo de contraseña)
+
+    Administrador->>frm: Modifica los campos que correspondan
+    Administrador->>frm: Presiona el botón "Guardar"
+
+    frm->>userBLL: Save(user: UserBE): bool
+    userBLL->>userMPP: Save(user: UserBE): bool
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Actualización del usuario con retorno de la fila
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: true
+    userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro del dígito verificador (DVH)
+    bd-->>dal: 1 fila afectada
+    dal-->>userMPP: true
+    userMPP-->>userBLL: true
+    userBLL-->>frm: true
+    frm-->>Administrador: Muestra "Usuario guardado correctamente." y cierra el formulario
+    mgmtForm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>mgmtForm: List<UserBE>
+    mgmtForm-->>Administrador: Vuelve a la grilla con los datos actualizados

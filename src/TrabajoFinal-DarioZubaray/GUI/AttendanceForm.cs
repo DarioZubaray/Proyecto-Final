@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -42,6 +43,7 @@ namespace TrabajoFinal_DarioZubaray
             lblDate.Text = Resources.AttendanceForm_DateLabel;
             btnSearch.Text = Resources.AttendanceForm_SearchButton;
             btnSave.Text = Resources.AttendanceForm_SaveButton;
+            UpdateCourseInfoLabels();
         }
 
         private void LoadCourses()
@@ -52,6 +54,7 @@ namespace TrabajoFinal_DarioZubaray
             cboCourse.DataSource = _teacherCourses;
             cboCourse.DisplayMember = "Name";
             cboCourse.ValueMember = "Id";
+            UpdateCourseInfoLabels();
 
             if (_teacherCourses.Count == 0)
             {
@@ -61,6 +64,106 @@ namespace TrabajoFinal_DarioZubaray
                     Resources.AttendanceForm_ValidationTitle,
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private void UpdateCourseInfoLabels()
+        {
+            if (!(cboCourse.SelectedItem is CourseBE course))
+            {
+                lblPeriod.Text = "";
+                lblClassroom.Text = "";
+                lblSchedule.Text = "";
+                return;
+            }
+
+            lblPeriod.Text = Resources.AttendanceForm_PeriodPrefix
+                + course.StartDate.ToString("dd/MM/yyyy")
+                + " – "
+                + course.EndDate.ToString("dd/MM/yyyy");
+
+            lblClassroom.Text = string.IsNullOrWhiteSpace(course.ClassroomName)
+                ? ""
+                : Resources.AttendanceForm_ClassroomPrefix + course.ClassroomName;
+
+            lblSchedule.Text = BuildScheduleText(course);
+        }
+
+        private static string BuildScheduleText(CourseBE course)
+        {
+            if (!course.DayOfWeek.HasValue)
+            {
+                return "";
+            }
+
+            int value = course.DayOfWeek.Value;
+            DayOfWeek day = value == 7 ? DayOfWeek.Sunday : (DayOfWeek)value;
+            string dayName = CultureInfo.CurrentUICulture.DateTimeFormat.GetDayName(day);
+
+            if (course.StartTime.HasValue && course.EndTime.HasValue)
+            {
+                return Resources.AttendanceForm_SchedulePrefix
+                    + dayName
+                    + " "
+                    + course.StartTime.Value.ToString(@"hh\:mm")
+                    + " - "
+                    + course.EndTime.Value.ToString(@"hh\:mm");
+            }
+
+            return Resources.AttendanceForm_SchedulePrefix + dayName;
+        }
+
+        private void ClampDateToCourse()
+        {
+            if (!(cboCourse.SelectedItem is CourseBE course))
+            {
+                return;
+            }
+
+            DateTime min = course.StartDate.Date;
+            DateTime max = course.EndDate.Date;
+
+            if (min > max)
+            {
+                return;
+            }
+
+            dtpDate.MinDate = new DateTime(1753, 1, 1);
+            dtpDate.MaxDate = new DateTime(9998, 12, 31);
+
+            if (dtpDate.Value.Date < min)
+            {
+                dtpDate.Value = min;
+            }
+            else if (dtpDate.Value.Date > max)
+            {
+                dtpDate.Value = max;
+            }
+
+            dtpDate.MinDate = min;
+            dtpDate.MaxDate = max;
+        }
+
+        private bool IsDateWithinCoursePeriod(DateTime date)
+        {
+            if (!(cboCourse.SelectedItem is CourseBE course))
+            {
+                return true;
+            }
+
+            if (date.Date < course.StartDate.Date || date.Date > course.EndDate.Date)
+            {
+                MessageBox.Show(
+                    ErrorFormatter.WithCode(
+                        Resources.AttendanceForm_DateOutOfRange,
+                        ErrorCodesBLL.Business.AttendanceDateOutOfRange),
+                    Resources.AttendanceForm_ValidationTitle,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                dtpDate.Focus();
+                return false;
+            }
+
+            return true;
         }
 
         private void LoadStudents()
@@ -133,6 +236,12 @@ namespace TrabajoFinal_DarioZubaray
         #endregion
 
         #region Eventos
+        private void cboCourse_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ClampDateToCourse();
+            UpdateCourseInfoLabels();
+        }
+
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (cboCourse.SelectedValue == null)
@@ -179,6 +288,11 @@ namespace TrabajoFinal_DarioZubaray
                 int courseId = (int)cboCourse.SelectedValue;
                 DateTime date = dtpDate.Value.Date;
 
+                if (!IsDateWithinCoursePeriod(date))
+                {
+                    return;
+                }
+
                 if (!_attendanceBLL.IsTeacherOfCourse(courseId, _currentUser.Id))
                 {
                     MessageBox.Show(Resources.AttendanceForm_Unauthorized,
@@ -191,7 +305,10 @@ namespace TrabajoFinal_DarioZubaray
 
                 foreach (DataGridViewRow row in dgvAttendance.Rows)
                 {
-                    if (row.Cells["StudentId"].Value == null) continue;
+                    if (row.Cells["StudentId"].Value == null)
+                    {
+                        continue;
+                    }
 
                     int studentId = Convert.ToInt32(row.Cells["StudentId"].Value);
                     bool isPresent = Convert.ToBoolean(row.Cells["IsPresent"].Value);

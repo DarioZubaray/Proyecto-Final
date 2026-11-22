@@ -1,5 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -103,6 +162,27 @@
   <data name="Auth_RetriesLeft" xml:space="preserve">
     <value>Invalid username or password. Attempts remaining: {0}</value>
   </data>
+  <data name="Auth_TwoFactorPrompt" xml:space="preserve">
+    <value>Enter the two-factor authentication code.</value>
+  </data>
+  <data name="Auth_TwoFactorInvalid" xml:space="preserve">
+    <value>Invalid two-factor code.</value>
+  </data>
+  <data name="TwoFactor_Title" xml:space="preserve">
+    <value>Two-Factor Authentication</value>
+  </data>
+  <data name="TwoFactor_CodeLabel" xml:space="preserve">
+    <value>Verification code:</value>
+  </data>
+  <data name="TwoFactor_AcceptButton" xml:space="preserve">
+    <value>Accept</value>
+  </data>
+  <data name="TwoFactor_CancelButton" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="UserManagement_DeleteDenied" xml:space="preserve">
+    <value>The administrator user cannot be deleted.</value>
+  </data>
   <data name="Role_OptionsCount" xml:space="preserve">
     <value>{0} options</value>
   </data>
@@ -129,6 +209,9 @@
   </data>
   <data name="Preferences_SaveSuccess" xml:space="preserve">
     <value>Language saved successfully.</value>
+  </data>
+  <data name="Preferences_GroupBox" xml:space="preserve">
+    <value>Preferences</value>
   </data>
   <data name="Main_MenuPreferences" xml:space="preserve">
     <value>Preferences</value>
@@ -199,6 +282,9 @@
   <data name="UserForm_UserNameRequired" xml:space="preserve">
     <value>Username is required.</value>
   </data>
+  <data name="UserForm_UserNameAdminLocked" xml:space="preserve">
+    <value>The administrator username cannot be changed.</value>
+  </data>
   <data name="UserForm_PasswordRequired" xml:space="preserve">
     <value>Password is required.</value>
   </data>
@@ -240,9 +326,6 @@
   </data>
   <data name="ChangePassword_Success" xml:space="preserve">
     <value>Password changed successfully.</value>
-  </data>
-  <data name="Preferences_GroupBox" xml:space="preserve">
-    <value>Preferences</value>
   </data>
   <data name="ChangePassword_GroupBox" xml:space="preserve">
     <value>Change Password</value>
@@ -652,6 +735,18 @@
   <data name="EnrollmentManagementForm_ColEnrollDate" xml:space="preserve">
     <value>Enrollment Date</value>
   </data>
+  <data name="EnrollmentManagementForm_StudentLabel" xml:space="preserve">
+    <value>Student to enroll:</value>
+  </data>
+  <data name="EnrollmentManagementForm_EnrollButton" xml:space="preserve">
+    <value>Enroll student</value>
+  </data>
+  <data name="EnrollmentManagementForm_SelectStudent" xml:space="preserve">
+    <value>Select a student to enroll.</value>
+  </data>
+  <data name="EnrollmentManagementForm_ConfirmEnrollMessage" xml:space="preserve">
+    <value>Do you want to enroll '{0}' in the course '{1}'?</value>
+  </data>
   <data name="CourseManagementForm_Title" xml:space="preserve">
     <value>Course Management</value>
   </data>
@@ -781,6 +876,18 @@
   <data name="AttendanceForm_Unauthorized" xml:space="preserve">
     <value>You do not have permission to register attendance for this course.</value>
   </data>
+  <data name="AttendanceForm_DateOutOfRange" xml:space="preserve">
+    <value>The attendance date must be within the course period.</value>
+  </data>
+  <data name="AttendanceForm_PeriodPrefix" xml:space="preserve">
+    <value>Period: </value>
+  </data>
+  <data name="AttendanceForm_ClassroomPrefix" xml:space="preserve">
+    <value>Room: </value>
+  </data>
+  <data name="AttendanceForm_SchedulePrefix" xml:space="preserve">
+    <value>Schedule: </value>
+  </data>
   <data name="Main_MenuClassrooms" xml:space="preserve">
     <value>Classrooms</value>
   </data>
@@ -867,5 +974,458 @@
   </data>
   <data name="AttendanceViewForm_Title" xml:space="preserve">
     <value>View Attendance</value>
+  </data>
+  <data name="Auth_IntegrityBlocked" xml:space="preserve">
+    <value>Access blocked: inconsistencies were detected in the database. Only the system administrator can log in.</value>
+  </data>
+  <data name="Integrity_Title" xml:space="preserve">
+    <value>Integrity Audit (DVH)</value>
+  </data>
+  <data name="Integrity_InfoLabel" xml:space="preserve">
+    <value>Rows whose verification digit does not match their content were detected. Select a row to edit it, or accept it and regenerate its hash.</value>
+  </data>
+  <data name="Integrity_ColTable" xml:space="preserve">
+    <value>Table</value>
+  </data>
+  <data name="Integrity_ColRowId" xml:space="preserve">
+    <value>Row ID</value>
+  </data>
+  <data name="Integrity_ColDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Integrity_ColStoredHash" xml:space="preserve">
+    <value>Stored hash</value>
+  </data>
+  <data name="Integrity_ColComputedHash" xml:space="preserve">
+    <value>Recomputed hash</value>
+  </data>
+  <data name="Integrity_EditButton" xml:space="preserve">
+    <value>Edit row</value>
+  </data>
+  <data name="Integrity_AcceptButton" xml:space="preserve">
+    <value>Accept and regenerate hash</value>
+  </data>
+  <data name="Integrity_RefreshButton" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="Integrity_CloseButton" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Integrity_SelectRow" xml:space="preserve">
+    <value>Select a row to continue.</value>
+  </data>
+  <data name="Integrity_AcceptConfirmMessage" xml:space="preserve">
+    <value>Regenerate the hash of row {0} with its current values?</value>
+  </data>
+  <data name="Integrity_AcceptSuccess" xml:space="preserve">
+    <value>Hash regenerated successfully.</value>
+  </data>
+  <data name="Integrity_AcceptFailed" xml:space="preserve">
+    <value>The row hash could not be regenerated.</value>
+  </data>
+  <data name="Integrity_NoViolations" xml:space="preserve">
+    <value>No altered rows. Data integrity is correct.</value>
+  </data>
+  <data name="Integrity_PendingContinueMessage" xml:space="preserve">
+    <value>There are unresolved rows. Continue anyway?</value>
+  </data>
+  <data name="Main_MenuTickets" xml:space="preserve">
+    <value>Tickets</value>
+  </data>
+  <data name="Main_MenuSupport" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="TicketManagementForm_Title" xml:space="preserve">
+    <value>Ticket Management</value>
+  </data>
+  <data name="TicketManagementForm_BtnNew" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="TicketManagementForm_BtnClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="TicketManagementForm_ColUser" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="TicketManagementForm_ColSubject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="TicketManagementForm_ColStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="TicketManagementForm_ColCreatedAt" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="TicketManagementForm_ColClosedAt" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="TicketManagementForm_StatusOpen" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="TicketManagementForm_StatusClosed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
+  <data name="TicketManagementForm_CloseConfirm" xml:space="preserve">
+    <value>Close the selected ticket?</value>
+  </data>
+  <data name="TicketManagementForm_CloseSuccess" xml:space="preserve">
+    <value>Ticket closed successfully.</value>
+  </data>
+  <data name="TicketManagementForm_SelectOpenTicket" xml:space="preserve">
+    <value>Select an open ticket.</value>
+  </data>
+  <data name="TicketForm_Title" xml:space="preserve">
+    <value>New Ticket</value>
+  </data>
+  <data name="TicketForm_SubjectLabel" xml:space="preserve">
+    <value>Subject:</value>
+  </data>
+  <data name="TicketForm_DescriptionLabel" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="TicketForm_BtnSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="TicketForm_BtnCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="TicketForm_SubjectRequired" xml:space="preserve">
+    <value>The ticket subject is required.</value>
+  </data>
+  <data name="TicketForm_DescriptionRequired" xml:space="preserve">
+    <value>The ticket description is required.</value>
+  </data>
+  <data name="TicketForm_CreatedSuccess" xml:space="preserve">
+    <value>Ticket created successfully.</value>
+  </data>
+  <data name="TicketForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="Main_MenuStudents" xml:space="preserve">
+    <value>Students</value>
+  </data>
+  <data name="StudentForm_Title" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="StudentForm_FirstNameLabel" xml:space="preserve">
+    <value>First name:</value>
+  </data>
+  <data name="StudentForm_LastNameLabel" xml:space="preserve">
+    <value>Last name:</value>
+  </data>
+  <data name="StudentForm_DocumentLabel" xml:space="preserve">
+    <value>Document:</value>
+  </data>
+  <data name="StudentForm_EmailLabel" xml:space="preserve">
+    <value>Email:</value>
+  </data>
+  <data name="StudentForm_PhoneLabel" xml:space="preserve">
+    <value>Phone:</value>
+  </data>
+  <data name="StudentForm_BtnSave" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="StudentForm_BtnCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="StudentForm_FirstNameRequired" xml:space="preserve">
+    <value>The student's first name is required.</value>
+  </data>
+  <data name="StudentForm_LastNameRequired" xml:space="preserve">
+    <value>The student's last name is required.</value>
+  </data>
+  <data name="StudentForm_DocumentRequired" xml:space="preserve">
+    <value>The student's document is required.</value>
+  </data>
+  <data name="StudentForm_SaveSuccess" xml:space="preserve">
+    <value>Student saved successfully.</value>
+  </data>
+  <data name="StudentForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="StudentManagementForm_Title" xml:space="preserve">
+    <value>Student Management</value>
+  </data>
+  <data name="StudentManagementForm_SearchLabel" xml:space="preserve">
+    <value>Name or document:</value>
+  </data>
+  <data name="StudentManagementForm_SearchButton" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="StudentManagementForm_NewButton" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="StudentManagementForm_EditButton" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="StudentManagementForm_DeleteButton" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="StudentManagementForm_ColFirstName" xml:space="preserve">
+    <value>First name</value>
+  </data>
+  <data name="StudentManagementForm_ColLastName" xml:space="preserve">
+    <value>Last name</value>
+  </data>
+  <data name="StudentManagementForm_ColDocument" xml:space="preserve">
+    <value>Document</value>
+  </data>
+  <data name="StudentManagementForm_ColEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="StudentManagementForm_ColPhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="StudentManagementForm_ColActive" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="StudentManagementForm_SelectToEdit" xml:space="preserve">
+    <value>Select a student to edit.</value>
+  </data>
+  <data name="StudentManagementForm_SelectToDelete" xml:space="preserve">
+    <value>Select a student to delete.</value>
+  </data>
+  <data name="StudentManagementForm_ConfirmDeleteTitle" xml:space="preserve">
+    <value>Confirm deletion</value>
+  </data>
+  <data name="StudentManagementForm_ConfirmDeleteMessage" xml:space="preserve">
+    <value>Are you sure you want to delete student {0}?</value>
+  </data>
+  <data name="StudentManagementForm_DeleteSuccess" xml:space="preserve">
+    <value>Student deleted successfully.</value>
+  </data>
+  <data name="StudentManagementForm_InfoTitle" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="Main_MenuEvaluations" xml:space="preserve">
+    <value>Evaluations</value>
+  </data>
+  <data name="EvaluationForm_Title" xml:space="preserve">
+    <value>Evaluations</value>
+  </data>
+  <data name="EvaluationForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="EvaluationForm_NameLabel" xml:space="preserve">
+    <value>Name:</value>
+  </data>
+  <data name="EvaluationForm_DateLabel" xml:space="preserve">
+    <value>Date:</value>
+  </data>
+  <data name="EvaluationForm_LoadStudentsButton" xml:space="preserve">
+    <value>Load students</value>
+  </data>
+  <data name="EvaluationForm_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="EvaluationForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="EvaluationForm_ColGrade" xml:space="preserve">
+    <value>Grade</value>
+  </data>
+  <data name="EvaluationForm_NoCourses" xml:space="preserve">
+    <value>You have no assigned courses.</value>
+  </data>
+  <data name="EvaluationForm_NoStudents" xml:space="preserve">
+    <value>The selected course has no enrolled students.</value>
+  </data>
+  <data name="EvaluationForm_NameRequired" xml:space="preserve">
+    <value>The evaluation name is required.</value>
+  </data>
+  <data name="EvaluationForm_GradeOutOfRange" xml:space="preserve">
+    <value>The grade must be between 0 and 10.</value>
+  </data>
+  <data name="EvaluationForm_DateOutOfRange" xml:space="preserve">
+    <value>The evaluation date must be within the course period.</value>
+  </data>
+  <data name="EvaluationForm_Saved" xml:space="preserve">
+    <value>Evaluation registered successfully.</value>
+  </data>
+  <data name="EvaluationForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="Main_MenuReports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+  <data name="Main_MenuPerformance" xml:space="preserve">
+    <value>Academic Performance</value>
+  </data>
+  <data name="Main_MenuReportsCustom" xml:space="preserve">
+    <value>Custom Reports</value>
+  </data>
+  <data name="PerformanceForm_Title" xml:space="preserve">
+    <value>Academic Performance</value>
+  </data>
+  <data name="PerformanceForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="PerformanceForm_ConsultButton" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="PerformanceForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="PerformanceForm_ColAttendance" xml:space="preserve">
+    <value>Attendance (%)</value>
+  </data>
+  <data name="PerformanceForm_ColGradesCount" xml:space="preserve">
+    <value>Grades entered</value>
+  </data>
+  <data name="PerformanceForm_ColAverage" xml:space="preserve">
+    <value>Grades average</value>
+  </data>
+  <data name="PerformanceForm_NoCourses" xml:space="preserve">
+    <value>There are no courses to query.</value>
+  </data>
+  <data name="PerformanceForm_NoStudents" xml:space="preserve">
+    <value>The selected course has no enrolled students.</value>
+  </data>
+  <data name="PerformanceForm_SelectCourse" xml:space="preserve">
+    <value>Select a course from the list.</value>
+  </data>
+  <data name="PerformanceForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="PerformanceForm_Stats" xml:space="preserve">
+    <value>Students: {0}  |  With grades: {1}  |  Overall average: {2}  |  Passed (≥ 6): {3}  |  Failed: {4}  |  Average attendance: {5} %</value>
+  </data>
+  <data name="PerformanceForm_ColStatus" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="PerformanceForm_Pass" xml:space="preserve">
+    <value>Passed</value>
+  </data>
+  <data name="PerformanceForm_Fail" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="PerformanceForm_NoGrades" xml:space="preserve">
+    <value>No grades</value>
+  </data>
+  <data name="ReportForm_Title" xml:space="preserve">
+    <value>Custom Reports</value>
+  </data>
+  <data name="ReportForm_TypeLabel" xml:space="preserve">
+    <value>Report type:</value>
+  </data>
+  <data name="ReportForm_CourseLabel" xml:space="preserve">
+    <value>Course:</value>
+  </data>
+  <data name="ReportForm_GenerateButton" xml:space="preserve">
+    <value>Generate</value>
+  </data>
+  <data name="ReportForm_ExportButton" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="ReportForm_TypeAttendance" xml:space="preserve">
+    <value>Attendance by course</value>
+  </data>
+  <data name="ReportForm_TypeGrades" xml:space="preserve">
+    <value>Grades by course</value>
+  </data>
+  <data name="ReportForm_ColStudent" xml:space="preserve">
+    <value>Student</value>
+  </data>
+  <data name="ReportForm_ColPlans" xml:space="preserve">
+    <value>Sheets</value>
+  </data>
+  <data name="ReportForm_ColPresent" xml:space="preserve">
+    <value>Present</value>
+  </data>
+  <data name="ReportForm_ColAttendancePercent" xml:space="preserve">
+    <value>Attendance (%)</value>
+  </data>
+  <data name="ReportForm_ColEvaluations" xml:space="preserve">
+    <value>Evaluations</value>
+  </data>
+  <data name="ReportForm_ColGradesCount" xml:space="preserve">
+    <value>Grades entered</value>
+  </data>
+  <data name="ReportForm_ColAverage" xml:space="preserve">
+    <value>Grades average</value>
+  </data>
+  <data name="ReportForm_NoCourses" xml:space="preserve">
+    <value>There are no courses to query.</value>
+  </data>
+  <data name="ReportForm_NoData" xml:space="preserve">
+    <value>There is no data for the selected criteria.</value>
+  </data>
+  <data name="ReportForm_SelectType" xml:space="preserve">
+    <value>Select the report type.</value>
+  </data>
+  <data name="ReportForm_SelectCourse" xml:space="preserve">
+    <value>Select a course from the list.</value>
+  </data>
+  <data name="ReportForm_ExportBeforeGenerate" xml:space="preserve">
+    <value>Generate the report before exporting it.</value>
+  </data>
+  <data name="ReportForm_Exported" xml:space="preserve">
+    <value>Report exported successfully.</value>
+  </data>
+  <data name="ReportForm_ValidationTitle" xml:space="preserve">
+    <value>Validation</value>
+  </data>
+  <data name="Main_MenuBackup" xml:space="preserve">
+    <value>Backup and Restore</value>
+  </data>
+  <data name="BackupForm_Title" xml:space="preserve">
+    <value>Backup and Restore</value>
+  </data>
+  <data name="BackupForm_GenerateButton" xml:space="preserve">
+    <value>Generate backup</value>
+  </data>
+  <data name="BackupForm_RestoreButton" xml:space="preserve">
+    <value>Restore backup</value>
+  </data>
+  <data name="BackupForm_BackupGenerated" xml:space="preserve">
+    <value>Backup generated successfully.</value>
+  </data>
+  <data name="BackupForm_Restored" xml:space="preserve">
+    <value>Backup restored successfully.</value>
+  </data>
+  <data name="BackupForm_BackupError" xml:space="preserve">
+    <value>Error generating backup:</value>
+  </data>
+  <data name="BackupForm_RestoreError" xml:space="preserve">
+    <value>Error restoring backup:</value>
+  </data>
+  <data name="BackupForm_Filter" xml:space="preserve">
+    <value>SQL Backup (*.bak)|*.bak</value>
+  </data>
+  <data name="BackupForm_RestoreScriptButton" xml:space="preserve">
+    <value>Restore from script</value>
+  </data>
+  <data name="BackupForm_ScriptFilter" xml:space="preserve">
+    <value>SQL Script (*.sql)|*.sql</value>
+  </data>
+  <data name="BackupForm_ScriptRestored" xml:space="preserve">
+    <value>Script executed successfully. Demo data loaded.</value>
+  </data>
+  <data name="BackupForm_RestoreScriptError" xml:space="preserve">
+    <value>Error executing script:</value>
+  </data>
+  <data name="BackupForm_InfoLabel" xml:space="preserve">
+    <value>Generate a backup, restore from a .bak file or load a .sql script</value>
+  </data>
+  <data name="UserForm_UserNameTaken" xml:space="preserve">
+    <value>The username is not available</value>
+  </data>
+  <data name="Register_Title" xml:space="preserve">
+    <value>Account registration</value>
+  </data>
+  <data name="Register_Button" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Register_ConfirmLabel" xml:space="preserve">
+    <value>Confirm password</value>
+  </data>
+  <data name="Register_Success" xml:space="preserve">
+    <value>Account created successfully.</value>
+  </data>
+  <data name="RoleManagement_NameExisting" xml:space="preserve">
+    <value>The role name is not available.</value>
+  </data>
+  <data name="ClassroomForm_NameExisting" xml:space="preserve">
+    <value>The classroom name is not available.</value>
   </data>
 </root>

@@ -1,0 +1,73 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant frm as frm : RoleManagementForm
+    participant role as role : RoleBE
+    participant roleBLL as roleBLL : RoleBLL
+    participant roleMPP as roleMPP : RoleMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Administrador,bd: CU-08 Editar Rol y Permisos - flujo básico (pasos 1 a 11)
+
+    Administrador->>frm: Elige "Roles" en el menú "Administración"
+    frm->>frm: _roleBLL = ServiceLocatorBLL.CreateRoleBLL()
+    frm->>roleBLL: GetAllPermissions(): List<PermissionBE>
+    roleBLL->>roleMPP: GetAllPermissions(): List<PermissionBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del catálogo de permisos
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<PermissionBE>
+    roleBLL-->>frm: List<PermissionBE>
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>
+    frm-->>Administrador: Muestra la ventana "Gestión de Roles" con la lista de roles y los botones
+
+    Administrador->>frm: Selecciona un rol de la lista
+    frm->>roleBLL: FindById(roleId: int): RoleBE
+    roleBLL->>roleMPP: FindById(roleId: int): RoleBE
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del rol por id
+    bd-->>dal: Fila resultante
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: RoleBE
+    roleBLL-->>frm: RoleBE
+    frm-->>Administrador: Muestra en "Asignados" los permisos del rol y en "Disponibles" los permisos faltantes (sin permisos de sistema)
+
+    Administrador->>frm: Selecciona un permiso en "Disponibles" y presiona ">>"
+    frm-->>Administrador: Mueve el permiso a la lista "Asignados"
+
+    Administrador->>frm: Selecciona un permiso en "Asignados" y presiona "<<"
+    frm-->>Administrador: Mueve el permiso a la lista "Disponibles"
+
+    Administrador->>frm: Presiona el botón "Guardar"
+    frm->>roleBLL: SavePermissions(roleId: int, permissionIds: List<int>)
+    roleBLL->>roleMPP: GetPermissionsByRoleId(roleId: int): List<PermissionBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta de los permisos del rol
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<PermissionBE>
+    roleBLL->>roleBLL: Re-agrega los permisos de sistema a la lista antes de guardar
+    roleBLL->>roleMPP: SavePermissions(roleId: int, permissionIds: List<int>)
+    roleMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Reemplazo de los permisos asignados del rol
+    bd-->>dal: Filas afectadas
+    dal-->>roleMPP: true
+    roleBLL-->>frm: void
+    frm-->>Administrador: Muestra "Los permisos del rol se guardaron correctamente."
+    frm->>roleBLL: FindAll(): List<RoleBE>
+    roleBLL->>roleMPP: FindAll(): List<RoleBE>
+    roleMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de roles
+    bd-->>dal: Filas resultantes
+    dal-->>roleMPP: DataTable
+    roleMPP-->>roleBLL: List<RoleBE>
+    roleBLL-->>frm: List<RoleBE>

@@ -133,6 +133,15 @@ namespace TrabajoFinal_DarioZubaray
             }
 
             var newRole = new RoleBE { Name = roleName };
+            var existRole = _roleBLL.FindByRoleName(newRole.Name);
+            if (existRole.Count != 0)
+            {
+                MessageBox.Show(ErrorFormatter.WithCode(
+                    Resources.RoleManagement_NameExisting,
+                    ErrorCodesBLL.Validation.RoleNameExisting));
+                txtRoleName.Focus();
+                return;
+            }
             int newId = _roleBLL.Save(newRole);
             newRole.Id = newId;
 

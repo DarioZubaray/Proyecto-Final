@@ -1,0 +1,30 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant mainForm as mainForm : MainForm
+    participant frm as frm : LoginForm
+    participant activityBLL as activityBLL : ActivityBLL
+    participant activityMPP as activityMPP : ActivityMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Usuario,bd: CU-02 Logout - flujo básico y flujos alternativos
+
+    alt El usuario selecciona "Cerrar Sesión" del menú principal
+        mainForm-->>frm: ShowDialog() retorna DialogResult.OK
+        frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+        frm->>frm: SessionManagerBLL.RemoveSession(userId: int): void
+        frm->>activityBLL: LogLogout(userId: int, description: string): void
+        activityBLL->>activityMPP: Save(log: ActivityLogBE): bool
+        activityMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+        dal->>bd: Registro de auditoría de cierre de sesión
+        bd-->>dal: 1 fila afectada
+        dal-->>activityMPP: true
+        activityMPP-->>activityBLL: true
+        frm->>frm: CultureHelperBLL.SetCulture(languageCode: string): void
+        frm->>frm: ApplyResources(): void
+        frm->>frm: ThemeHelper.ApplyTheme(root: Control, themeCode: string): void
+        frm-->>Usuario: Muestra la pantalla de inicio de sesión con los campos vacíos
+    else El usuario cierra la ventana principal con el botón "X"
+        mainForm-->>Usuario: La aplicación finaliza por completo sin registrar el cierre de sesión en la bitácora
+    end

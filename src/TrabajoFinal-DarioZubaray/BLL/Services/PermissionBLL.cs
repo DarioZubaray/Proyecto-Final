@@ -24,7 +24,7 @@ namespace BLL.Services
         }
         #endregion
 
-        #region Métodos Públicos
+        #region Métodos
         public RoleCompositeBE BuildRoleTree(int roleId)
         {
             RoleBE role = _roleMPP.FindById(roleId);

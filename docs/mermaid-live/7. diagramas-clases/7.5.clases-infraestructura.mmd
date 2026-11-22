@@ -1,0 +1,143 @@
+classDiagram
+    direction TB
+
+    %% ============ DAL ============
+    class AccessDAL {
+        +Read(string, SqlParameter[]) DataTable
+        +ReadScalar(string, SqlParameter[]) int
+        +Save(string, SqlParameter[]) bool
+        +Execute(string, SqlParameter[]) bool
+    }
+
+    %% ============ BLL - Infraestructura ============
+    class ServiceLocatorBLL {
+        <<static>>
+        +GetUserMPP() IUserMPP
+        +GetRoleMPP() IRoleMPP
+        +GetTicketMPP() ITicketMPP
+        +CreateAuthBLL() IAuthBLL
+        +CreateUserBLL() IUserBLL
+        +CreateRoleBLL() IRoleBLL
+        +CreatePermissionBLL() PermissionBLL
+        +CreateClassroomBLL() IClassroomBLL
+        +CreateCourseBLL() ICourseBLL
+        +CreateEnrollmentBLL() IEnrollmentBLL
+        +CreateAttendanceBLL() IAttendanceBLL
+        +CreateActivityBLL() IActivityBLL
+        +CreateTicketBLL() ITicketBLL
+        +CreateIntegrityBLL() IIntegrityBLL
+        +CreateTwoFactorBLL() ITwoFactorBLL
+    }
+
+    class SessionManagerBLL {
+        -Dictionary~int,SessionManagerBLL~ _instances
+        +UserBE User
+        +CreateSession(UserBE) SessionManagerBLL
+        +GetInstance(int) SessionManagerBLL
+        +RemoveSession(int) void
+        +HasPermission(string) bool
+        +UpdateLanguage(string) void
+        +UpdateTheme(string) void
+    }
+
+    class EncryptionBLL {
+        <<static>>
+        +Encrypt(string) string
+        +Decrypt(string) string
+    }
+
+    class ErrorCodesBLL {
+        <<static>>
+        +Database class
+        +Auth class
+        +Integrity class
+        +Validation class
+        +Business class
+        +General class
+    }
+
+    %% ============ BLL - Preferencias / Cultura ============
+    class UserBLL {
+        -IUserMPP _userMPP
+        +UpdateLanguage(int, string) bool
+        +UpdateTheme(int, string) bool
+    }
+
+    class AppPreferencesBLL {
+        <<static>>
+        +LastLanguage string
+        +LastTheme string
+        +SavePreferences(string, string) void
+        +LoadPreferences() void
+    }
+
+    class CultureHelperBLL {
+        <<static>>
+        +DefaultLanguage es
+        +SetCulture(string) void
+        +GetSupportedLanguages() List~LanguageItemBLL~
+    }
+
+    class LanguageItemBLL {
+        +string Code
+        +string DisplayName
+    }
+
+    %% ============ GUI - Helpers ============
+    class ErrorFormatter {
+        <<static>>
+        +WithCode(string, string) string
+    }
+
+    class ThemeHelper {
+        <<static>>
+        +DefaultTheme System
+        +GetSupportedThemes() List~ThemeItem~
+        +ApplyTheme(Control, string) void
+        +ApplyThemeToAllOpenForms(string) void
+    }
+
+    class ThemeItem {
+        +string Code
+        +string DisplayName
+    }
+
+    %% ============ GUI - Formularios base ============
+    class MainForm {
+        +SessionManagerBLL _session
+        +UserBE _user
+        +ConfigureMenuVisibility() void
+        +ApplyResources() void
+        +ApplyTheme() void
+        +ShowChildForm(...) void
+    }
+
+    class PreferencesForm {
+        +UserBLL _userBLL
+        +SessionManagerBLL _session
+        +btnSave_Click(object, EventArgs) void
+    }
+
+    class AboutForm {
+    }
+
+    %% ============ Interfaces referenciadas ============
+    class IUserMPP {
+        <<interface>>
+    }
+
+    class IUserBLL {
+        <<interface>>
+    }
+
+    %% ============ Relaciones ============
+    MainForm "0..*" o-- "1" SessionManagerBLL : _session
+    MainForm "0..*" o-- "1" UserBE : _user
+    SessionManagerBLL "0..*" o-- "1" UserBE : User
+    ThemeHelper ..> ThemeItem : GetSupportedThemes()
+    CultureHelperBLL ..> LanguageItemBLL : GetSupportedLanguages()
+    AppPreferencesBLL ..> CultureHelperBLL : DefaultLanguage
+    PreferencesForm "0..*" o-- "1" IUserBLL : _userBLL
+    PreferencesForm "0..*" o-- "1" SessionManagerBLL : _session
+    PreferencesForm ..> AppPreferencesBLL : SavePreferences()
+    UserBLL "0..*" o-- "1" IUserMPP : _userMPP

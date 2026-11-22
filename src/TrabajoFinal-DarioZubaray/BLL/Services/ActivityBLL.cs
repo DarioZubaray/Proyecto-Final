@@ -13,7 +13,7 @@ namespace BLL.Services
         private readonly IActivityMPP _activityMPP;
         #endregion
 
-        #region Constructores
+        #region Constructor
         public ActivityBLL() : this(new ActivityMPP())
         {
         }

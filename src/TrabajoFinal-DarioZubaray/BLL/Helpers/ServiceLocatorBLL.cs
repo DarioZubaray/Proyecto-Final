@@ -15,6 +15,11 @@ namespace BLL.Helpers
         private static ICourseMPP _courseMPP;
         private static IEnrollmentMPP _enrollmentMPP;
         private static IAttendanceMPP _attendanceMPP;
+        private static ITicketMPP _ticketMPP;
+        private static IStudentMPP _studentMPP;
+        private static IEvaluationMPP _evaluationMPP;
+        private static IReportMPP _reportMPP;
+        private static IBackupMPP _backupMPP;
         #endregion
 
         #region Métodos
@@ -80,7 +85,12 @@ namespace BLL.Helpers
 
         public static IAuthBLL CreateAuthBLL()
         {
-            return new AuthBLL(GetUserMPP());
+            return new AuthBLL(GetUserMPP(), CreateTwoFactorBLL());
+        }
+
+        public static ITwoFactorBLL CreateTwoFactorBLL()
+        {
+            return new InternalTwoFactorBLL();
         }
 
         public static IUserBLL CreateUserBLL()
@@ -130,7 +140,113 @@ namespace BLL.Helpers
 
         public static IAttendanceBLL CreateAttendanceBLL()
         {
-            return new AttendanceBLL(GetAttendanceMPP());
+            return new AttendanceBLL(GetAttendanceMPP(), GetCourseMPP());
+        }
+
+        public static IIntegrityBLL CreateIntegrityBLL()
+        {
+            return new IntegrityBLL(new IDvhTableVerifierBLL[]
+            {
+                new UserDvhVerifierBLL(CreateUserBLL()),
+                new EvaluationDvhVerifierBLL(GetEvaluationMPP()),
+                new GradeDvhVerifierBLL(GetEvaluationMPP())
+            });
+        }
+
+        public static ITicketMPP GetTicketMPP()
+        {
+            if (_ticketMPP == null)
+            {
+                _ticketMPP = new TicketMPP();
+            }
+
+            return _ticketMPP;
+        }
+
+        public static ITicketBLL CreateTicketBLL()
+        {
+            return new TicketBLL(GetTicketMPP());
+        }
+
+        public static IStudentMPP GetStudentMPP()
+        {
+            if (_studentMPP == null)
+            {
+                _studentMPP = new StudentMPP();
+            }
+
+            return _studentMPP;
+        }
+
+        public static IStudentBLL CreateStudentBLL()
+        {
+            return new StudentBLL(GetStudentMPP());
+        }
+
+        public static IEvaluationMPP GetEvaluationMPP()
+        {
+            if (_evaluationMPP == null)
+            {
+                _evaluationMPP = new EvaluationMPP();
+            }
+
+            return _evaluationMPP;
+        }
+
+        public static IEvaluationBLL CreateEvaluationBLL()
+        {
+            return new EvaluationBLL(GetEvaluationMPP(), GetCourseMPP());
+        }
+
+        public static IReportMPP GetReportMPP()
+        {
+            if (_reportMPP == null)
+            {
+                _reportMPP = new ReportMPP();
+            }
+
+            return _reportMPP;
+        }
+
+        public static IReportBLL CreateReportBLL()
+        {
+            return new ReportBLL(GetReportMPP());
+        }
+
+        public static IBackupMPP GetBackupMPP()
+        {
+            if (_backupMPP == null)
+            {
+                _backupMPP = new BackupMPP();
+            }
+
+            return _backupMPP;
+        }
+
+        public static IBackupBLL CreateBackupBLL()
+        {
+            return new BackupBLL(GetBackupMPP());
+        }
+
+        /// <summary>
+        /// Anula las instancias cacheadas de MPP para que se reconstruyan
+        /// leyendo la configuración de conexión vigente (se usa después de
+        /// cambiar la cadena de conexión).
+        /// </summary>
+        public static void Reset()
+        {
+            _userMPP = null;
+            _roleMPP = null;
+            _activityMPP = null;
+            _classroomMPP = null;
+            _courseMPP = null;
+            _enrollmentMPP = null;
+            _attendanceMPP = null;
+            _ticketMPP = null;
+            _studentMPP = null;
+            _evaluationMPP = null;
+            _reportMPP = null;
+            _backupMPP = null;
         }
         #endregion
     }

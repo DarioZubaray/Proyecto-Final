@@ -1,0 +1,26 @@
+flowchart LR
+    subgraph ADM[Administrador]
+        direction TB
+        A1([Inicio])
+        A2[Elige 'Respaldo y Restauración' en el menú 'Administración']
+        A3{Acción}
+        A4[Elige la ubicación en el diálogo 'Guardar como']
+        A5[Selecciona el archivo .bak en el diálogo 'Abrir']
+        A6([Fin])
+    end
+    subgraph SIS[Sistema]
+        direction TB
+        S1[Muestra el formulario con 'Generar respaldo' y 'Restaurar respaldo']
+        S2[Ejecuta el respaldo de la base de datos]
+        S3[Muestra 'Respaldo generado correctamente.']
+        S4[Ejecuta la restauración de la base de datos]
+        S5[Muestra 'Respaldo restaurado correctamente.']
+        S6[Muestra el mensaje de error]
+    end
+    A1 --> A2 --> S1 --> A3
+    A3 -->|Generar respaldo| A4 --> S2
+    A3 -->|Restaurar respaldo| A5 --> S4
+    S2 -->|Operación exitosa| S3 --> A6
+    S2 -->|Operación fallida| S6 --> A6
+    S4 -->|Operación exitosa| S5 --> A6
+    S4 -->|Operación fallida| S6 --> A6

@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant frm as frm : RegisterForm
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Usuario,bd: CU-03 Register - flujo básico (pasos 1 a 8)
+
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    Usuario->>frm: Completa "Usuario", "Contraseña", "Reingreso Contraseña", "Idioma" y "Tema" y presiona "Registrarse"
+    frm->>userBLL: Save(user: UserBE): bool
+    userBLL->>userMPP: Save(user: UserBE): bool
+    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Alta del usuario administrador (rol Admin)
+    bd-->>dal: 1 fila afectada
+    dal-->>userMPP: true
+    userMPP-->>userBLL: true
+    userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    userBLL-->>frm: true
+    frm-->>Usuario: Muestra "Cuenta creada exitosamente."
+    frm->>frm: CultureHelperBLL.SetCulture(languageCode: string): void
+    frm->>frm: AppPreferencesBLL.SavePreferences(language: string, theme: string): void
+    frm->>frm: SessionManagerBLL.CreateSession(user: UserBE): SessionManagerBLL
+    frm-->>Usuario: Avanza a la pantalla principal (MainForm) con la sesión iniciada

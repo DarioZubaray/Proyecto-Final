@@ -1,0 +1,72 @@
+sequenceDiagram
+    autonumber
+    actor Administrador
+    participant frm as frm : UserManagementForm
+    participant user as user : UserBE
+    participant userBLL as userBLL : UserBLL
+    participant userMPP as userMPP : UserMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Administrador,bd: CU-06 Eliminar Usuario - flujo básico (pasos 1 a 11)
+
+    Administrador->>frm: Elige "Usuarios" en el menú "Administración"
+    frm->>frm: _userBLL = ServiceLocatorBLL.CreateUserBLL()
+    frm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>frm: List<UserBE>
+    frm-->>Administrador: Muestra la ventana "Gestión de Usuarios" con la grilla
+
+    Administrador->>frm: Completa el campo de búsqueda "Nombre de usuario:" y presiona "Buscar"
+    frm->>userBLL: FindByUserName(userName: string): List<UserBE>
+    userBLL->>userMPP: FindByUserName(userName: string): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada por nombre parcial
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>frm: List<UserBE>
+    frm-->>Administrador: Muestra en la grilla los usuarios que coinciden con lo buscado
+
+    Administrador->>frm: Selecciona un usuario de la grilla y presiona "Eliminar"
+    frm-->>Administrador: Muestra la confirmación "¿Está seguro que desea eliminar el usuario "jperez"?"
+    Administrador->>frm: Presiona "Sí"
+    frm->>userBLL: Delete(user: UserBE): bool
+    userBLL->>userMPP: Delete(user: UserBE): bool
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del usuario por id
+    bd-->>dal: Fila resultante
+    dal-->>userMPP: DataTable
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Baja lógica del usuario con retorno de la fila
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: true
+    userBLL->>userMPP: FindById(user: UserBE): UserBE
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta del usuario por id
+    bd-->>dal: Fila resultante
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: UserBE
+    userBLL->>userMPP: UpdateDvh(userId: int, dvh: string): bool
+    userMPP->>dal: Save(operacion: string, parameters: SqlParameter[]): bool
+    dal->>bd: Registro del dígito verificador (DVH)
+    bd-->>dal: 1 fila afectada
+    dal-->>userMPP: true
+    userMPP-->>userBLL: true
+    userBLL-->>frm: true
+    frm-->>Administrador: Muestra "Usuario eliminado correctamente."
+    frm->>userBLL: FindAll(): List<UserBE>
+    userBLL->>userMPP: FindAll(): List<UserBE>
+    userMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de usuarios
+    bd-->>dal: Filas resultantes
+    dal-->>userMPP: DataTable
+    userMPP-->>userBLL: List<UserBE>
+    userBLL-->>frm: List<UserBE>
+    frm-->>Administrador: Actualiza la grilla con el usuario dado de baja

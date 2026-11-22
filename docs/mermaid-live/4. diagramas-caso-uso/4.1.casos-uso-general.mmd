@@ -1,0 +1,79 @@
+graph LR
+    ADM["Administrador"]@{ shape: person, lbl: "Administrador" }
+    COO["Coordinador"]@{ shape: person, lbl: "Coordinador" }
+    PRO["Profesor"]@{ shape: person, lbl: "Profesor" }
+    DIR["Director"]@{ shape: person, lbl: "Director" }
+
+    CU01(["CU-01: Login"])
+    CU02(["CU-02: Logout"])
+    CU03(["CU-03: Register"])
+
+    CU04(["CU-04 Crear Usuario"])
+    CU05(["CU-05 Editar Usuario"])
+    CU06(["CU-06 Eliminar Usuario"])
+    CU07(["CU-07 Crear Rol"])
+    CU08(["CU-08 Editar Rol y Permisos"])
+    CU09(["CU-09 Eliminar Rol"])
+
+    CU10(["CU-10 Crear Aula"])
+    CU11(["CU-11 Crear Curso"])
+    CU12(["CU-12 Crear Alumno"])
+    CU13(["CU-13 Crear Inscripción"])
+
+    CU14(["CU-14 Crear Ticket"])
+    CU15(["CU-15 Cerrar Ticket"])
+
+    CU16(["CU-16 Registrar Asistencia"])
+    CU17(["CU-17 Registrar Evaluación y Notas"])
+
+    CU18(["CU-18 Consultar Rendimiento Académico"])
+    CU19(["CU-19 Consultar Informe Personalizado"])
+
+    CU20(["CU-20 Crear Respaldo"])
+    CU21(["CU-21 Restaurar Respaldo"])
+
+    %% Módulo Base / Sesión: todos los roles autenticados
+    ADM --> CU01
+    ADM --> CU02
+    COO --> CU01
+    COO --> CU02
+    PRO --> CU01
+    PRO --> CU02
+    DIR --> CU01
+    DIR --> CU02
+
+    %% Módulo Administración
+    ADM --> CU03
+    ADM --> CU04
+    ADM --> CU05
+    ADM --> CU06
+    ADM --> CU07
+    ADM --> CU08
+    ADM --> CU09
+    ADM --> CU20
+    ADM --> CU21
+
+    %% Módulo Académico (oferta e inscripción)
+    ADM --> CU10
+    ADM --> CU11
+    ADM --> CU12
+    ADM --> CU13
+    COO --> CU10
+    COO --> CU11
+    COO --> CU12
+    COO --> CU13
+
+    %% Módulo Tickets
+    ADM --> CU14
+    ADM --> CU15
+    COO --> CU14
+    COO --> CU15
+    PRO --> CU14
+
+    %% Módulo Operaciones académicas
+    PRO --> CU16
+    PRO --> CU17
+
+    %% Módulo Reportes (solo lectura)
+    DIR --> CU18
+    DIR --> CU19

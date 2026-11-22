@@ -1,0 +1,52 @@
+sequenceDiagram
+    autonumber
+    actor Usuario
+    participant mgmtForm as mgmtForm : TicketManagementForm
+    participant frm as frm : TicketForm
+    participant ticketBLL as ticketBLL : TicketBLL
+    participant ticketMPP as ticketMPP : TicketMPP
+    participant dal as dal : AccessDAL
+    participant bd as Base de Datos
+
+    Note over Usuario,bd: CU-14 Crear Ticket - flujo básico (pasos 1 a 10)
+
+    Usuario->>mgmtForm: Elige "Tickets" en el menú principal
+    mgmtForm->>mgmtForm: _ticketBLL = ServiceLocatorBLL.CreateTicketBLL()
+    mgmtForm->>ticketBLL: FindByUser(userId: int): List<TicketBE>
+    ticketBLL->>ticketMPP: FindByUser(userId: int): List<TicketBE>
+    ticketMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de tickets del usuario
+    bd-->>dal: Filas resultantes
+    dal-->>ticketMPP: DataTable
+    ticketMPP-->>ticketBLL: List<TicketBE>
+    ticketBLL-->>mgmtForm: List<TicketBE>
+    mgmtForm-->>Usuario: Muestra la ventana "Gestión de Tickets" con la grilla
+
+    Usuario->>mgmtForm: Presiona el botón "Nuevo"
+    mgmtForm-->>frm: ShowDialog() retorna DialogResult.OK
+    frm->>frm: _ticketBLL = ServiceLocatorBLL.CreateTicketBLL()
+    frm-->>Usuario: Muestra el formulario "Nuevo Ticket" con Asunto y Descripción
+
+    Usuario->>frm: Completa el campo "Asunto"
+    Usuario->>frm: Completa el campo "Descripción"
+    Usuario->>frm: Presiona el botón "Guardar"
+    create participant ticket as ticket : TicketBE
+    frm->>ticket: new TicketBE()
+    frm->>ticketBLL: Create(ticket: TicketBE): bool
+    ticketBLL->>ticketMPP: Insert(ticket: TicketBE): bool
+    ticketMPP->>dal: ReadScalar(consulta: string, parameters: SqlParameter[]): int
+    dal->>bd: Alta del ticket con retorno de identidad (SCOPE_IDENTITY)
+    bd-->>dal: Identidad de la fila
+    dal-->>ticketMPP: int
+    ticketMPP-->>ticketBLL: true
+    ticketBLL-->>frm: true
+    frm-->>Usuario: Muestra "Ticket creado correctamente."
+    mgmtForm->>ticketBLL: FindByUser(userId: int): List<TicketBE>
+    ticketBLL->>ticketMPP: FindByUser(userId: int): List<TicketBE>
+    ticketMPP->>dal: Read(consulta: string, parameters: SqlParameter[]): DataTable
+    dal->>bd: Consulta parametrizada de tickets del usuario
+    bd-->>dal: Filas resultantes
+    dal-->>ticketMPP: DataTable
+    ticketMPP-->>ticketBLL: List<TicketBE>
+    ticketBLL-->>mgmtForm: List<TicketBE>
+    mgmtForm-->>Usuario: Vuelve a la grilla con el ticket nuevo incluido
